@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import {
   EuiFieldText,
+  EuiCheckbox,
   EuiSuperSelect,
   EuiPageSideBar,
   EuiFlexGroup,
@@ -85,6 +86,22 @@ const emptyMessageTemplates = (
   </div>
 )
 
+const options = [
+  {
+    value: 'option_one',
+    inputDisplay: 'Dashboard',
+    'data-test-subj': 'option one',
+  },
+  {
+    value: 'option_two',
+    inputDisplay: 'Saved Search',
+  },
+  {
+    value: 'option_three',
+    inputDisplay: "Visualization",
+  },
+];
+
 const emptyMessageScheduledReports = (
   <div>
     <h3>You Have No Scheduled Reports</h3>
@@ -94,7 +111,6 @@ const emptyMessageScheduledReports = (
     <EuiButton fill>Create Schedule</EuiButton>
   </div>
 )
-
 const loading = false
 
 export class Main extends React.Component {
@@ -108,8 +124,12 @@ export class Main extends React.Component {
       schedulerEmailAddress: "",
       scheduledReportFileName: [],
       pagination: this.pagination,
+      renderCreateReport: false,
     };
     this.renderDashboardTable = this.renderDashboardTable.bind(this);
+    this._createReportScreen = this._createReportScreen.bind(this);
+    this._onButtonClick = this._onButtonClick.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
   onSelectedTabChanged = id => {
@@ -189,6 +209,26 @@ export class Main extends React.Component {
     }
   ]
 
+  _createReportScreen() {
+    console.log("in create report screen")
+    // return (
+    //   <EuiPage>
+    //     Hello
+    //   </EuiPage>
+    // )
+    window.open('create_report.js');
+  }
+
+  _onButtonClick() {
+    this.setState({
+      showComponent: true,
+    });
+  }
+
+  onChange = e => {
+    setChecked(e.target.checked);
+  };
+
   componentDidMount() {
     const { httpClient } = this.props;
     httpClientGlobal = httpClient;
@@ -205,6 +245,7 @@ export class Main extends React.Component {
       });
     });
   }
+
   render() {
     const { title } = this.props;
     return (
@@ -225,9 +266,14 @@ export class Main extends React.Component {
               <EuiFlexItem component="span" grow={false}>
                 <EuiButton 
                   fill={true}
-                  onClick={CreateReport}>
+                  // onClick={this._createReportScreen}
+                >
                   Create
                 </EuiButton>
+                {this.state.showComponent ?
+                  <CreateReport /> :
+                  null
+                }
               </EuiFlexItem>          
             </EuiFlexGroup>
             <EuiHorizontalRule/>
@@ -283,6 +329,95 @@ export class Main extends React.Component {
               selection={reports_list_selection_value} // todo: change?
               isSelectable={true}
             />
+          </EuiPageContent>
+          <EuiSpacer/>
+          <EuiPageContent panelPaddingSize={"l"}>
+            <EuiPageHeader>
+              <EuiTitle>
+                <h2>Report Settings</h2>
+              </EuiTitle>
+            </EuiPageHeader>
+            <EuiHorizontalRule/>
+            <EuiPageContentBody>
+              <b>Name</b> <br/>
+              Specify a descriptive report name <br/>
+              <br/>
+              <EuiFieldText
+                placeholder="Report Name"
+              />
+              <br/>
+              <b>Source</b> <br/>
+              <EuiSuperSelect
+                options={options}
+              />
+            </EuiPageContentBody>
+          </EuiPageContent>
+          <EuiSpacer/>
+          <EuiPageContent panelPaddingSize={"l"}>
+            <EuiPageHeader>
+              <EuiTitle>
+                <h2>Delivery</h2>
+              </EuiTitle>
+            </EuiPageHeader>
+            <EuiHorizontalRule/>
+            <EuiPageContentBody>
+              <b>Channel</b><br/>
+              <br/>
+              Define delivery notification channel <br/>
+              <br/>
+              <EuiCheckbox
+                id={"checkbox"}
+                label="None (report will be available in reports list page)"
+                onChange={e => this.onChange(e)}
+              />
+              <EuiCheckbox
+                id={"checkbox"}
+                label="Email"
+                onChange={e => this.onChange(e)}
+              />
+              <EuiCheckbox
+                id={"checkbox"}
+                label="Chime"
+                onChange={e => this.onChange(e)}
+              />
+              <EuiCheckbox
+                id={"checkbox"}
+                label="Other (webhook)"
+                onChange={e => this.onChange(e)}
+              />
+              <br/>
+              <b>Recipients</b>
+            </EuiPageContentBody>
+          </EuiPageContent>
+          <EuiSpacer/>
+          <EuiPageContent panelPaddingSize={"l"}>
+            <EuiPageHeader>
+              <EuiTitle>
+                <h2>Schedule</h2>
+              </EuiTitle>
+            </EuiPageHeader>
+            <EuiHorizontalRule/>
+            <EuiPageContentBody>
+              <b>Request Time</b> <br/>
+              <br/>
+              Define delivery schedule and frequency <br/> 
+              <br/>
+              <EuiCheckbox
+                id={"checkbox"}
+                label="Now"
+                onChange={e => this.onChange(e)}
+              />
+              <EuiCheckbox
+                id={"checkbox"}
+                label="Future date"
+                onChange={e => this.onChange(e)}
+              />
+              <EuiCheckbox
+                id={"checkbox"}
+                label="Recurring"
+                onChange={e => this.onChange(e)}
+              />
+            </EuiPageContentBody>
           </EuiPageContent>
         </EuiPageBody>
       </EuiPage>

@@ -35,7 +35,15 @@ import {
 
     render() {
         return (
-            <div>Test page shows up</div>
+           <EuiPage>
+               <EuiPageBody>
+                <EuiPageContent>
+                    <EuiTitle>
+                        Report Settings
+                    </EuiTitle>
+                </EuiPageContent>
+               </EuiPageBody>
+           </EuiPage>
         )
     }
   }
