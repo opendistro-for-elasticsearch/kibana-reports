@@ -334,7 +334,6 @@ export class Main extends React.Component {
   }
 
   render() {
-    const { title } = this.props;
     return (
       <EuiPage>
         <EuiPageBody>
@@ -353,14 +352,10 @@ export class Main extends React.Component {
               <EuiFlexItem component="span" grow={false}>
                 <EuiButton 
                   fill={true}
-                  // onClick={this._createReportScreen}
+                  onClick={() => {window.location.assign('reporting#/create')}}
                 >
                   Create
                 </EuiButton>
-                {this.state.showComponent ?
-                  <CreateReport /> :
-                  null
-                }
               </EuiFlexItem>          
             </EuiFlexGroup>
             <EuiHorizontalRule/>
@@ -416,28 +411,6 @@ export class Main extends React.Component {
               selection={reports_list_selection_value} // todo: change?
               isSelectable={true}
             />
-          </EuiPageContent>
-          <EuiSpacer/>
-          <EuiPageContent panelPaddingSize={"l"}>
-            <EuiPageHeader>
-              <EuiTitle>
-                <h2>Report Settings</h2>
-              </EuiTitle>
-            </EuiPageHeader>
-            <EuiHorizontalRule/>
-            <EuiPageContentBody>
-              <b>Name</b> <br/>
-              Specify a descriptive report name <br/>
-              <br/>
-              <EuiFieldText
-                placeholder="Report Name"
-              />
-              <br/>
-              <b>Source</b> <br/>
-              <EuiSuperSelect
-                options={source_options}
-              />
-            </EuiPageContentBody>
           </EuiPageContent>
           <EuiSpacer/>
           <EuiPageContent panelPaddingSize={"l"}>

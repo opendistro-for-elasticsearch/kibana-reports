@@ -2,14 +2,14 @@ import React from 'react';
 import { uiModules } from 'ui/modules';
 import chrome from 'ui/chrome';
 import { render, unmountComponentAtNode } from 'react-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { I18nProvider } from '@kbn/i18n/react';
 
 
 import 'ui/autoload/styles';
-import { Main } from './components/main';
-import { Template } from './components/main';
+import { RouterHome } from './components/main/router_home';
 
-const app = uiModules.get('apps/downloadButton');
+const app = uiModules.get('apps/reporting');
 
 app.config($locationProvider => {
   $locationProvider.html5Mode({
@@ -28,7 +28,11 @@ function RootController($scope, $element, $http) {
   // render react to DOM
   render(
     <I18nProvider>
-      <Main title="download_button" httpClient={$http} />
+      <Router>
+        <Route
+          render={(props) => <RouterHome title="Reporting" httpClient={$http} {...props} />}
+        />
+      </Router>
     </I18nProvider>,
     domNode
   );
@@ -39,4 +43,4 @@ function RootController($scope, $element, $http) {
   });
 }
 
-chrome.setRootController('downloadButton', RootController);
+chrome.setRootController('reporting', RootController);

@@ -21,6 +21,7 @@
     "jquery": "^3.5.0",
     "puppeteer": "^2.1.1",
     "react-navigation": "^4.3.9",
+    "react-router-dom": "^5.2.0",
     "ws": "^7.2.3",
     "xmlhttprequest": "^1.8.0"
   },
