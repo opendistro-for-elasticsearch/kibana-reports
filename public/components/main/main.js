@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import {
   EuiFieldText,
   EuiCheckbox,
+  EuiComboBox,
   EuiSuperSelect,
-  EuiPageSideBar,
   EuiFlexGroup,
   EuiFlexItem,
   EuiButton,
@@ -20,7 +20,6 @@ import {
   EuiSpacer,
   EuiSearchBar,
   EuiLink,
-  EuiHealth,
   EuiText,
   EuiEmptyPrompt
 } from '@elastic/eui';
@@ -86,7 +85,7 @@ const emptyMessageTemplates = (
   </div>
 )
 
-const options = [
+const source_options = [
   {
     value: 'option_one',
     inputDisplay: 'Dashboard',
@@ -101,6 +100,51 @@ const options = [
     inputDisplay: "Visualization",
   },
 ];
+
+const schedule_delivery_recipient_options = [
+  {
+    label: 'davidcui@amazon.com'
+  },
+  {
+    label: 'jadhanir@amazon.com'
+  },
+  {
+    label: 'kvngar@amazon.com'
+  },
+  {
+    label: 'anextremelyverylongemailaddress@amazon.com'
+  }
+];
+
+// const [selectedOptions, setSelected] = useState([schedule_delivery_recipient_options[2], schedule_delivery_recipient_options[4]]);
+
+// const onChangeDeliveryRecipients = selectedOptions => {
+//   setSelected(selectedOptions);
+// };
+
+// const onCreateOption = (searchValue, flattenedOptions = []) => {
+//   const normalizedSearchValue = searchValue.trim().toLowerCase();
+
+//   if (!normalizedSearchValue) {
+//     return;
+//   }
+
+//   const newOption = {
+//     label: searchValue,
+//   };
+
+//   // Create the option if it doesn't exist.
+//   if (
+//     flattenedOptions.findIndex(
+//       option => option.label.trim().toLowerCase() === normalizedSearchValue
+//     ) === -1
+//   ) {
+//     schedule_delivery_recipient_options.push(newOption);
+//   }
+
+//   // Select the option.
+//   setSelected([...selectedOptions, newOption]);
+// };
 
 const emptyMessageScheduledReports = (
   <div>
@@ -125,12 +169,55 @@ export class Main extends React.Component {
       scheduledReportFileName: [],
       pagination: this.pagination,
       renderCreateReport: false,
+      selectedOptions: this.selectedOptions,
+      setSelected: this.setSelected,
     };
     this.renderDashboardTable = this.renderDashboardTable.bind(this);
     this._createReportScreen = this._createReportScreen.bind(this);
     this._onButtonClick = this._onButtonClick.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onChangeDeliveryRecipients = this.onChangeDeliveryRecipients.bind(this);
+    this.onCreateOption = this.onCreateOption.bind(this);
+    this.setSelectedFunc = this.setSelectedFunc.bind(this);
+    this.setSelectedOptions = this.setSelectedOptions.bind(this);
   }
+
+  // [selectedOptions, setSelected] = useState(schedule_delivery_recipient_options[1], schedule_delivery_recipient_options[2]);
+  setSelectedOptions() {
+    selectedOptions = useState(schedule_delivery_recipient_options[1]);
+  }
+
+  setSelectedFunc() {
+    setSelected = useState(schedule_delivery_recipient_options[2]);
+  }
+
+  onChangeDeliveryRecipients = selectedOptions => {
+    this.setSelected(selectedOptions);
+  };
+  
+  onCreateOption = (searchValue, flattenedOptions = []) => {
+    const normalizedSearchValue = searchValue.trim().toLowerCase();
+  
+    if (!normalizedSearchValue) {
+      return;
+    }
+  
+    const newOption = {
+      label: searchValue,
+    };
+  
+    // Create the option if it doesn't exist.
+    if (
+      flattenedOptions.findIndex(
+        option => option.label.trim().toLowerCase() === normalizedSearchValue
+      ) === -1
+    ) {
+      schedule_delivery_recipient_options.push(newOption);
+    }
+  
+    // Select the option.
+    this.setSelected([...selectedOptions, newOption]);
+  };
 
   onSelectedTabChanged = id => {
     setSelectedTabId(id);
@@ -348,7 +435,7 @@ export class Main extends React.Component {
               <br/>
               <b>Source</b> <br/>
               <EuiSuperSelect
-                options={options}
+                options={source_options}
               />
             </EuiPageContentBody>
           </EuiPageContent>
@@ -386,7 +473,18 @@ export class Main extends React.Component {
                 onChange={e => this.onChange(e)}
               />
               <br/>
-              <b>Recipients</b>
+              <b>Recipients</b><br/>
+              <br/>
+              Select or add recipients <br/>
+              <br/>
+              <EuiComboBox
+                placeholder="Select or add recipients"
+                options={schedule_delivery_recipient_options}
+                selectedOptions={this.selectedOptions}
+                onChange={this.onChangeDeliveryRecipients}
+                onCreateOption={this.onCreateOption}
+                isClearable={true}
+              />
             </EuiPageContentBody>
           </EuiPageContent>
           <EuiSpacer/>
