@@ -349,14 +349,6 @@ export class Main extends React.Component {
                   Delete
                 </EuiButton>  
               </EuiFlexItem>  
-              <EuiFlexItem component="span" grow={false}>
-                <EuiButton 
-                  fill={true}
-                  onClick={() => {window.location.assign('reporting#/create')}}
-                >
-                  Create
-                </EuiButton>
-              </EuiFlexItem>          
             </EuiFlexGroup>
             <EuiHorizontalRule/>
             <EuiInMemoryTable
@@ -392,7 +384,10 @@ export class Main extends React.Component {
                 </EuiButton>  
               </EuiFlexItem>              
               <EuiFlexItem component="span" grow={false}>
-                <EuiButton fill={true}>
+                <EuiButton 
+                  fill={true}
+                  onClick={() => {window.location.assign('reporting#/create')}}
+                >
                   Create
                 </EuiButton>
               </EuiFlexItem>          
@@ -411,84 +406,6 @@ export class Main extends React.Component {
               selection={reports_list_selection_value} // todo: change?
               isSelectable={true}
             />
-          </EuiPageContent>
-          <EuiSpacer/>
-          <EuiPageContent panelPaddingSize={"l"}>
-            <EuiPageHeader>
-              <EuiTitle>
-                <h2>Delivery</h2>
-              </EuiTitle>
-            </EuiPageHeader>
-            <EuiHorizontalRule/>
-            <EuiPageContentBody>
-              <b>Channel</b><br/>
-              <br/>
-              Define delivery notification channel <br/>
-              <br/>
-              <EuiCheckbox
-                id={"checkbox"}
-                label="None (report will be available in reports list page)"
-                onChange={e => this.onChange(e)}
-              />
-              <EuiCheckbox
-                id={"checkbox"}
-                label="Email"
-                onChange={e => this.onChange(e)}
-              />
-              <EuiCheckbox
-                id={"checkbox"}
-                label="Chime"
-                onChange={e => this.onChange(e)}
-              />
-              <EuiCheckbox
-                id={"checkbox"}
-                label="Other (webhook)"
-                onChange={e => this.onChange(e)}
-              />
-              <br/>
-              <b>Recipients</b><br/>
-              <br/>
-              Select or add recipients <br/>
-              <br/>
-              <EuiComboBox
-                placeholder="Select or add recipients"
-                options={schedule_delivery_recipient_options}
-                selectedOptions={this.selectedOptions}
-                onChange={this.onChangeDeliveryRecipients}
-                onCreateOption={this.onCreateOption}
-                isClearable={true}
-              />
-            </EuiPageContentBody>
-          </EuiPageContent>
-          <EuiSpacer/>
-          <EuiPageContent panelPaddingSize={"l"}>
-            <EuiPageHeader>
-              <EuiTitle>
-                <h2>Schedule</h2>
-              </EuiTitle>
-            </EuiPageHeader>
-            <EuiHorizontalRule/>
-            <EuiPageContentBody>
-              <b>Request Time</b> <br/>
-              <br/>
-              Define delivery schedule and frequency <br/> 
-              <br/>
-              <EuiCheckbox
-                id={"checkbox"}
-                label="Now"
-                onChange={e => this.onChange(e)}
-              />
-              <EuiCheckbox
-                id={"checkbox"}
-                label="Future date"
-                onChange={e => this.onChange(e)}
-              />
-              <EuiCheckbox
-                id={"checkbox"}
-                label="Recurring"
-                onChange={e => this.onChange(e)}
-              />
-            </EuiPageContentBody>
           </EuiPageContent>
         </EuiPageBody>
       </EuiPage>

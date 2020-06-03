@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import {
+    EuiButtonEmpty,
+    EuiComboBox,
     EuiFieldText,
     EuiSuperSelect,
     EuiPageSideBar,
@@ -21,6 +23,7 @@ import {
     EuiLink,
     EuiHealth,
     EuiText,
+    EuiTextArea,
     EuiEmptyPrompt,
     EuiRadioGroup,
   } from '@elastic/eui';
@@ -137,6 +140,53 @@ import {
       );
   };
 
+  const DeliveryRecipientsBox = () => {
+    const options = [
+    ];
+    const [selectedOptions, setSelected] = useState([]);
+  
+    const onChangeDeliveryRecipients = selectedOptions => {
+      setSelected(selectedOptions);
+    };
+  
+    const onCreateDeliveryRecipientOption = (searchValue, flattenedOptions = []) => {
+      const normalizedSearchValue = searchValue.trim().toLowerCase();
+  
+      if (!normalizedSearchValue) {
+        return;
+      }
+  
+      const newOption = {
+        label: searchValue,
+      };
+  
+      // Create the option if it doesn't exist.
+      if (
+        flattenedOptions.findIndex(
+          option => option.label.trim().toLowerCase() === normalizedSearchValue
+        ) === -1
+      ) {
+        options.push(newOption);
+      }
+  
+      // Select the option.
+      setSelected([...selectedOptions, newOption]);
+    };
+  
+    return (
+      /* DisplayToggles wrapper for Docs only */
+        <EuiComboBox
+          placeholder="Select or create options"
+          options={options}
+          selectedOptions={selectedOptions}
+          onChange={onChangeDeliveryRecipients}
+          onCreateOption={onCreateDeliveryRecipientOption}
+          isClearable={true}
+          data-test-subj="demoComboBox"
+        />
+    );
+  };
+
 
   export class CreateReport extends React.Component {
     constructor(props) {
@@ -145,6 +195,8 @@ import {
             reportSettingsRadioIdSelected: '',
             reportSettingsSetRadioIdSelected: `${idPrefix}1`,
             reportSettingsDashboard: '',
+            deliveryEmailSubject: "",
+            deliveryEmailBody: "",
         };
     }
 
@@ -156,6 +208,18 @@ import {
     onChangeReportSettingsDashboard = (e) => {
         this.setState({
             reportSettingsDashboard: e.target.value
+        });
+    }
+
+    onChangeDeliveryEmailSubject = (e) => {
+        this.setState({
+            deliveryEmailSubject: e.target.value
+        });
+    }
+
+    onChangeDeliveryEmailBody = (e) => {
+        this.setState({
+            deliveryEmailBody: e.target.value
         });
     }
 
@@ -218,8 +282,8 @@ import {
                             /> */}
                             <b>Dashboard</b> <br/>
                             <br/>
-                            <EuiFlexGroup gutterSize="l" component="div">
-                                <EuiFlexItem grow={1}>
+                            <EuiFlexGroup justifyContent="flexStart">
+                                <EuiFlexItem>
                                     <EuiFieldText
                                         placeholder="Start typing to display suggestions"
                                         value={this.state.reportSettingsDashboard}
@@ -227,7 +291,7 @@ import {
                                     />
                                 </EuiFlexItem>
                                 <EuiFlexItem grow={false}>
-                                    <EuiButton size="m" fill>Browse</EuiButton>
+                                    <EuiButton fill>Browse</EuiButton>
                                 </EuiFlexItem>
                             </EuiFlexGroup>
                         </EuiPageContentBody>
@@ -249,7 +313,23 @@ import {
                             <br/>
                             <b>Recipients</b><br/>
                             <br/>
-
+                            <DeliveryRecipientsBox/>
+                            <br/>
+                            <b>Email subject</b><br/>
+                            <br/>
+                            <EuiFieldText
+                                placeholder="Subject line"
+                                value={this.state.deliveryEmailSubject}
+                                onChange={this.onChangeDeliveryEmailSubject}
+                            />
+                            <br/>
+                            <b>Email body</b><br/>
+                            <br/>
+                            <EuiTextArea
+                                placeholder="email body"
+                                value={this.state.deliveryEmailBody}
+                                onChange={this.onChangeDeliveryEmailBody}
+                            />
                         </EuiPageContentBody>
                     </EuiPageContent>
                     <EuiSpacer/>
@@ -268,6 +348,17 @@ import {
                             <ScheduleRadio/>
                         </EuiPageContentBody>
                     </EuiPageContent>
+                    <EuiSpacer/>
+                    <EuiFlexGroup justifyContent="flexEnd">
+                        <EuiFlexItem grow={false}>
+                            <EuiButtonEmpty>
+                                Cancel
+                            </EuiButtonEmpty>
+                        </EuiFlexItem>
+                        <EuiFlexItem grow={false}>
+                            <EuiButton fill>Create</EuiButton>
+                        </EuiFlexItem>
+                    </EuiFlexGroup>
                </EuiPageBody>
            </EuiPage>
         );
