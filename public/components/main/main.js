@@ -14,16 +14,11 @@ import {
   EuiPageBody,
   EuiPageContent,
   EuiPageContentBody,
-  EuiPageContentHeaderSection,
   EuiInMemoryTable,
   EuiHorizontalRule,
   EuiSpacer,
-  EuiSearchBar,
-  EuiLink,
-  EuiText,
   EuiEmptyPrompt
 } from '@elastic/eui';
-import { CreateReport } from './create_report';
 import {reports_list_columns, reports_list_users, reports_list_search, reports_list_selection_value} from './reports_table'
 import {scheduled_report_columns, scheduled_reports} from './scheduled_reports_table'
 import { Fragment } from 'react';
@@ -64,88 +59,6 @@ const emptyMessageReports = (
   />
 )
 
-const emptyMessageTemplatesEui = (
-  <EuiEmptyPrompt
-    title={<h3>You Have No Templates</h3>}
-    titleSize="xs"
-    body="Create a new teplate to get started"
-    actions={
-      <EuiButton fill>Create Template</EuiButton>
-    }
-  />
-)
-
-const emptyMessageTemplates = (
-  <div>
-    <h3>You Have No Templates</h3>
-    <p>
-      Create a new template to get started
-    </p>
-    <EuiButton fill>Create Template</EuiButton>
-  </div>
-)
-
-const source_options = [
-  {
-    value: 'option_one',
-    inputDisplay: 'Dashboard',
-    'data-test-subj': 'option one',
-  },
-  {
-    value: 'option_two',
-    inputDisplay: 'Saved Search',
-  },
-  {
-    value: 'option_three',
-    inputDisplay: "Visualization",
-  },
-];
-
-const schedule_delivery_recipient_options = [
-  {
-    label: 'davidcui@amazon.com'
-  },
-  {
-    label: 'jadhanir@amazon.com'
-  },
-  {
-    label: 'kvngar@amazon.com'
-  },
-  {
-    label: 'anextremelyverylongemailaddress@amazon.com'
-  }
-];
-
-// const [selectedOptions, setSelected] = useState([schedule_delivery_recipient_options[2], schedule_delivery_recipient_options[4]]);
-
-// const onChangeDeliveryRecipients = selectedOptions => {
-//   setSelected(selectedOptions);
-// };
-
-// const onCreateOption = (searchValue, flattenedOptions = []) => {
-//   const normalizedSearchValue = searchValue.trim().toLowerCase();
-
-//   if (!normalizedSearchValue) {
-//     return;
-//   }
-
-//   const newOption = {
-//     label: searchValue,
-//   };
-
-//   // Create the option if it doesn't exist.
-//   if (
-//     flattenedOptions.findIndex(
-//       option => option.label.trim().toLowerCase() === normalizedSearchValue
-//     ) === -1
-//   ) {
-//     schedule_delivery_recipient_options.push(newOption);
-//   }
-
-//   // Select the option.
-//   setSelected([...selectedOptions, newOption]);
-// };
-
 const emptyMessageScheduledReports = (
   <div>
     <h3>You Have No Scheduled Reports</h3>
@@ -173,55 +86,7 @@ export class Main extends React.Component {
       setSelected: this.setSelected,
     };
     this.renderDashboardTable = this.renderDashboardTable.bind(this);
-    this._createReportScreen = this._createReportScreen.bind(this);
-    this._onButtonClick = this._onButtonClick.bind(this);
-    this.onChange = this.onChange.bind(this);
-    this.onChangeDeliveryRecipients = this.onChangeDeliveryRecipients.bind(this);
-    this.onCreateOption = this.onCreateOption.bind(this);
-    this.setSelectedFunc = this.setSelectedFunc.bind(this);
-    this.setSelectedOptions = this.setSelectedOptions.bind(this);
   }
-
-  // [selectedOptions, setSelected] = useState(schedule_delivery_recipient_options[1], schedule_delivery_recipient_options[2]);
-  setSelectedOptions() {
-    selectedOptions = useState(schedule_delivery_recipient_options[1]);
-  }
-
-  setSelectedFunc() {
-    setSelected = useState(schedule_delivery_recipient_options[2]);
-  }
-
-  onChangeDeliveryRecipients = selectedOptions => {
-    this.setSelected(selectedOptions);
-  };
-  
-  onCreateOption = (searchValue, flattenedOptions = []) => {
-    const normalizedSearchValue = searchValue.trim().toLowerCase();
-  
-    if (!normalizedSearchValue) {
-      return;
-    }
-  
-    const newOption = {
-      label: searchValue,
-    };
-  
-    // Create the option if it doesn't exist.
-    if (
-      flattenedOptions.findIndex(
-        option => option.label.trim().toLowerCase() === normalizedSearchValue
-      ) === -1
-    ) {
-      schedule_delivery_recipient_options.push(newOption);
-    }
-  
-    // Select the option.
-    this.setSelected([...selectedOptions, newOption]);
-  };
-
-  onSelectedTabChanged = id => {
-    setSelectedTabId(id);
-  };
 
   renderDashboardTable() {
     return this.state.dashboardList.map((dashboard, index) => {
@@ -235,85 +100,9 @@ export class Main extends React.Component {
     })
   }
 
-
-  onChangeDashboard = selectedDashboard => {
-    this.setState({ selectedDashboard });
-  };
-
   pagination = {
     initialPageSize: 10,
     pageSizeOptions: [8, 10, 13],
-  };
-
-  tabs = [
-    {
-      id: 'report',
-      name: 'Reports',
-      content: (
-        <Fragment>
-          <EuiSpacer />
-            <div>
-              <EuiInMemoryTable
-              items={reports_list_users}
-              itemId="id"
-              error={this.error}
-              loading={loading}
-              message={emptyMessageReports}
-              columns={reports_list_columns}
-              search={reports_list_search}
-              pagination={this.pagination}
-              sorting={true}
-              selection={reports_list_selection_value}
-              isSelectable={true}
-              />
-            </div>
-        </Fragment>
-      )
-    },
-    {
-      id: 'scheduled-reports',
-      name: 'Scheduled Reports',
-      content: (
-        <Fragment>
-          <EuiSpacer />
-            <EuiText textAlign={"center"}>
-              {emptyMessageScheduledReports}
-            </EuiText>
-        </Fragment> 
-      )
-    },
-    {
-      id: 'templates',
-      name: 'Templates',
-      content: (
-        <Fragment>
-          <EuiSpacer />
-            <EuiText textAlign={"center"}>
-              {emptyMessageTemplatesEui}
-            </EuiText>
-        </Fragment>
-      )
-    }
-  ]
-
-  _createReportScreen() {
-    console.log("in create report screen")
-    // return (
-    //   <EuiPage>
-    //     Hello
-    //   </EuiPage>
-    // )
-    window.open('create_report.js');
-  }
-
-  _onButtonClick() {
-    this.setState({
-      showComponent: true,
-    });
-  }
-
-  onChange = e => {
-    setChecked(e.target.checked);
   };
 
   componentDidMount() {

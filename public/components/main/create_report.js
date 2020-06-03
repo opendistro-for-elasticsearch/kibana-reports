@@ -3,11 +3,12 @@ import ReactDOM from 'react-dom';
 import {
     EuiButtonEmpty,
     EuiComboBox,
+    EuiDatePicker,
     EuiFieldText,
-    EuiSuperSelect,
-    EuiPageSideBar,
+    EuiSelect,
     EuiFlexGroup,
     EuiFlexItem,
+    EuiFormRow,
     EuiButton,
     EuiPage,
     EuiPageHeader,
@@ -15,19 +16,17 @@ import {
     EuiPageBody,
     EuiPageContent,
     EuiPageContentBody,
-    EuiPageContentHeaderSection,
     EuiInMemoryTable,
     EuiHorizontalRule,
     EuiSpacer,
     EuiSearchBar,
     EuiLink,
-    EuiHealth,
-    EuiText,
     EuiTextArea,
     EuiEmptyPrompt,
     EuiRadioGroup,
   } from '@elastic/eui';
   import { htmlIdGenerator } from '@elastic/eui/lib/services';
+  import moment from 'moment';
 
   const idPrefix = htmlIdGenerator()();
 
@@ -109,15 +108,15 @@ import {
     const radios = [
         {
           id: `${idPrefix}7`,
-          label: 'Dashboard',
+          label: 'Now',
         },
         {
           id: `${idPrefix}8`,
-          label: 'Visualization',
+          label: 'Future Date',
         },
         {
           id: `${idPrefix}9`,
-          label: 'Saved Search',
+          label: 'Recurring',
         },
       ];
     
@@ -197,6 +196,8 @@ import {
             reportSettingsDashboard: '',
             deliveryEmailSubject: "",
             deliveryEmailBody: "",
+            scheduleRadioFutureDateSelected: false,
+            scheduleUTCOffset: '',
         };
     }
 
@@ -246,8 +247,99 @@ import {
         const { httpClient } = this.props;
     }
 
+    ScheduleRadioInClass = () => {
+        const radios = [
+            {
+              id: `${idPrefix}7`,
+              label: 'Now',
+            },
+            {
+              id: `${idPrefix}8`,
+              label: 'Future Date',
+            },
+            {
+              id: `${idPrefix}9`,
+              label: 'Recurring',
+            },
+          ];
+        
+          const [radioIdSelected, setRadioIdSelected] = useState(`${idPrefix}7`);
+        
+          const onChangeSettingsRadio = optionId => {
+            setRadioIdSelected(optionId);
+            console.log(optionId)
+            if (optionId === `${idPrefix}8`) {
+                this.setState({
+                    scheduleRadioFutureDateSelected: true
+                });
+            }
+            else {
+                this.setState({
+                    scheduleRadioFutureDateSelected: false
+                });
+            }
+          };
+        
+          return (
+              <EuiRadioGroup
+                options={radios}
+                idSelected={radioIdSelected}
+                onChange={id => onChangeSettingsRadio(id)}
+                name="schedule radio group"
+                legend={{
+                  children: <span>This is a legend for a radio group</span>,
+                }}
+              />
+          );
+    };
+
+    ScheduleDatePicker = () => {
+        const [startDate, setStartDate] = useState(moment());
+
+        const timezone_options = [
+            { value: -4, text: 'EDT -04:00' },
+            { value: -5, text: 'CDT -05:00' },
+            { value: -6, text: 'MDT -06:00' },
+            { value: -7, text: 'MST/PDT -07:00' },
+            { value: -8, text: 'AKDT -08:00' },
+            { value: -10, text: 'HST -10:00' }
+          ];
+      
+
+        const handleChangeScheduleDate = date => {
+            setStartDate(date);
+        };
+
+        const onSelectOffsetChange = e => {
+            this.setState({
+              scheduleUTCOffset: parseInt(e.target.value, 10),
+            });
+          };
+
+        return (
+          <div>
+            <EuiFormRow label="Time select on">
+                <EuiDatePicker
+                showTimeSelect
+                selected={startDate}
+                onChange={handleChangeScheduleDate}
+                />
+            </EuiFormRow>
+            <EuiFormRow label="UTC offset">
+                <EuiSelect
+                options={timezone_options}
+                value={this.state.scheduleUTCOffset}
+                onChange={onSelectOffsetChange}
+                />
+            </EuiFormRow>
+          </div>
+        );
+    }
+
     render() {
-        const { httpClient } = this.props;
+        const scheduleFutureDateCalendar = this.state.scheduleRadioFutureDateSelected
+            ? <this.ScheduleDatePicker/> 
+            : null;
         return (
            <EuiPage>
                <EuiPageBody>
@@ -345,7 +437,9 @@ import {
                             <br/>
                             Define delivery schedule and frequency <br/>
                             <br/>
-                            <ScheduleRadio/>
+                            <this.ScheduleRadioInClass/>
+                            <br/>
+                            {scheduleFutureDateCalendar}
                         </EuiPageContentBody>
                     </EuiPageContent>
                     <EuiSpacer/>
