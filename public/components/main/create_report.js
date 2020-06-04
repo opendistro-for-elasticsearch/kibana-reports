@@ -27,6 +27,7 @@ import {
   } from '@elastic/eui';
   import { htmlIdGenerator } from '@elastic/eui/lib/services';
   import moment from 'moment';
+import { thisExpression } from '@babel/types';
 
   const idPrefix = htmlIdGenerator()();
 
@@ -104,41 +105,6 @@ import {
       );
   };
 
-  const ScheduleRadio = () => {
-    const radios = [
-        {
-          id: `${idPrefix}7`,
-          label: 'Now',
-        },
-        {
-          id: `${idPrefix}8`,
-          label: 'Future Date',
-        },
-        {
-          id: `${idPrefix}9`,
-          label: 'Recurring',
-        },
-      ];
-    
-      const [radioIdSelected, setRadioIdSelected] = useState(`${idPrefix}7`);
-    
-      const onChangeSettingsRadio = optionId => {
-        setRadioIdSelected(optionId);
-      };
-    
-      return (
-          <EuiRadioGroup
-            options={radios}
-            idSelected={radioIdSelected}
-            onChange={id => onChangeSettingsRadio(id)}
-            name="schedule radio group"
-            legend={{
-              children: <span>This is a legend for a radio group</span>,
-            }}
-          />
-      );
-  };
-
   const DeliveryRecipientsBox = () => {
     const options = [
     ];
@@ -197,7 +163,11 @@ import {
             deliveryEmailSubject: "",
             deliveryEmailBody: "",
             scheduleRadioFutureDateSelected: false,
+            scheduleRadioRecurringSelected: false,
             scheduleUTCOffset: '',
+            scheduleRecurringFrequency: 'Daily',
+            scheduleRecurringDailyTime: '',
+            scheduleRecurringDailyUTCOffset: '',
         };
     }
 
@@ -272,10 +242,16 @@ import {
                 this.setState({
                     scheduleRadioFutureDateSelected: true
                 });
+                this.setState({
+                    scheduleRadioRecurringSelected: false
+                });
             }
-            else {
+            else if (`${idPrefix}9`) {
                 this.setState({
                     scheduleRadioFutureDateSelected: false
+                });
+                this.setState({
+                    scheduleRadioRecurringSelected: true
                 });
             }
           };
@@ -293,19 +269,18 @@ import {
           );
     };
 
-    ScheduleDatePicker = () => {
+    timezone_options = [
+        { value: -4, text: 'EDT -04:00' },
+        { value: -5, text: 'CDT -05:00' },
+        { value: -6, text: 'MDT -06:00' },
+        { value: -7, text: 'MST/PDT -07:00' },
+        { value: -8, text: 'AKDT -08:00' },
+        { value: -10, text: 'HST -10:00' }
+    ];
+
+    ScheduleFutureDatePicker = () => {
         const [startDate, setStartDate] = useState(moment());
-
-        const timezone_options = [
-            { value: -4, text: 'EDT -04:00' },
-            { value: -5, text: 'CDT -05:00' },
-            { value: -6, text: 'MDT -06:00' },
-            { value: -7, text: 'MST/PDT -07:00' },
-            { value: -8, text: 'AKDT -08:00' },
-            { value: -10, text: 'HST -10:00' }
-          ];
       
-
         const handleChangeScheduleDate = date => {
             setStartDate(date);
         };
@@ -314,7 +289,7 @@ import {
             this.setState({
               scheduleUTCOffset: parseInt(e.target.value, 10),
             });
-          };
+        };
 
         return (
           <div>
@@ -327,7 +302,7 @@ import {
             </EuiFormRow>
             <EuiFormRow label="UTC offset">
                 <EuiSelect
-                options={timezone_options}
+                options={this.timezone_options}
                 value={this.state.scheduleUTCOffset}
                 onChange={onSelectOffsetChange}
                 />
@@ -336,9 +311,103 @@ import {
         );
     }
 
+    ScheduleRecurringDailyInput = () => {
+        const [startDate, setStartDate] = useState(moment());
+
+        const handleTimeChange = date => {
+          setStartDate(date);
+        };
+
+        const onSelectOffsetChange = e => {
+            this.setState({
+              scheduleRecurringDailyUTCOffset: parseInt(e.target.value, 10),
+            });
+        };
+
+        return (
+            <div>
+                <EuiFormRow label="Around">
+                    <EuiDatePicker
+                        showTimeSelect
+                        showTimeSelectOnly
+                        selected={startDate}
+                        onChange={handleTimeChange}
+                        dateFormat="HH:mm"
+                        timeFormat="HH:mm"
+                    />
+                </EuiFormRow>
+                <EuiFormRow label="UTC offset">
+                    <EuiSelect
+                    options={this.timezone_options}
+                    value={this.state.scheduleRecurringDailyUTCOffset}
+                    onChange={onSelectOffsetChange}
+                    />
+                </EuiFormRow>
+            </div>
+        )
+    }
+
+    ScheduleRecurringWeeklyInput = () => {
+        const recurringDayOptions = [
+            { value: 'Monday', text: 'Monday' },
+            { value: 'Tuesday', text: 'Tuesday' },
+            { value: 'Wednesday', text: 'Wednesday' },
+            { value: 'Thursday', text: 'Thursday' },
+            { value: 'Friday', text: 'Friday' },
+            { value: 'Saturday', text: 'Saturday' },
+            { value: 'Sunday', text: 'Sunday' },
+        ]
+        return (
+            <div>
+                <EuiFormRow label="Every">
+
+                </EuiFormRow>
+            </div>
+        );
+    }
+
+    ScheduleRecurringMonthlyInput = () => {
+
+    }
+
+    ScheduleRecurringFrequency = () => {
+        const options = [
+            { value: 'Daily', text: 'Daily' },
+            { value: 'Weekly', text: 'Weekly' },
+            { value: 'Monthly', text: 'Monthly' },
+        ]
+
+        const onChangeScheduleRecurringFrequency = e => {
+            this.setState({
+                scheduleRecurringFrequency: e.target.value
+            });
+        }
+
+        const daily = (this.state.scheduleRecurringFrequency == 'Daily')
+        ? <this.ScheduleRecurringDailyInput/>
+        : null;
+
+        return (
+            <div>
+                <EuiFormRow label="Frequency">
+                    <EuiSelect
+                        options={options}
+                        value={this.state.scheduleRecurringFrequency}
+                        onChange={onChangeScheduleRecurringFrequency}
+                    />
+                </EuiFormRow>
+                {daily}
+            </div>
+        );
+    }
+
     render() {
         const scheduleFutureDateCalendar = this.state.scheduleRadioFutureDateSelected
-            ? <this.ScheduleDatePicker/> 
+            ? <this.ScheduleFutureDatePicker/> 
+            : null;
+
+        const scheduleRecurringFrequencySelect = this.state.scheduleRadioRecurringSelected
+            ? <this.ScheduleRecurringFrequency/>
             : null;
         return (
            <EuiPage>
@@ -440,6 +509,7 @@ import {
                             <this.ScheduleRadioInClass/>
                             <br/>
                             {scheduleFutureDateCalendar}
+                            {scheduleRecurringFrequencySelect}
                         </EuiPageContentBody>
                     </EuiPageContent>
                     <EuiSpacer/>
