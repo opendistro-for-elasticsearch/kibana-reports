@@ -167,7 +167,9 @@ import { thisExpression } from '@babel/types';
             scheduleUTCOffset: '',
             scheduleRecurringFrequency: 'Daily',
             scheduleRecurringDailyTime: '',
-            scheduleRecurringDailyUTCOffset: '',
+            scheduleRecurringUTCOffset: '',
+            scheduleRecurringWeeklyDayOfWeek: 'Monday',
+            scheduleRecurringStartDate: moment(),
         };
     }
 
@@ -238,7 +240,15 @@ import { thisExpression } from '@babel/types';
           const onChangeSettingsRadio = optionId => {
             setRadioIdSelected(optionId);
             console.log(optionId)
-            if (optionId === `${idPrefix}8`) {
+            if (optionId === `${idPrefix}7`) {
+                this.setState({
+                    scheduleRadioFutureDateSelected: false
+                });
+                this.setState({
+                    scheduleRadioRecurringSelected: false
+                });
+            }
+            else if (optionId === `${idPrefix}8`) {
                 this.setState({
                     scheduleRadioFutureDateSelected: true
                 });
@@ -316,11 +326,16 @@ import { thisExpression } from '@babel/types';
 
         const handleTimeChange = date => {
           setStartDate(date);
+          this.setState({
+              scheduleRecurringStartDate: date
+          });
+          console.log(this.state.scheduleRecurringStartDate)
+          console.log(startDate)
         };
 
         const onSelectOffsetChange = e => {
             this.setState({
-              scheduleRecurringDailyUTCOffset: parseInt(e.target.value, 10),
+              scheduleRecurringUTCOffset: parseInt(e.target.value, 10),
             });
         };
 
@@ -339,7 +354,7 @@ import { thisExpression } from '@babel/types';
                 <EuiFormRow label="UTC offset">
                     <EuiSelect
                     options={this.timezone_options}
-                    value={this.state.scheduleRecurringDailyUTCOffset}
+                    value={this.state.scheduleRecurringUTCOffset}
                     onChange={onSelectOffsetChange}
                     />
                 </EuiFormRow>
@@ -348,6 +363,7 @@ import { thisExpression } from '@babel/types';
     }
 
     ScheduleRecurringWeeklyInput = () => {
+
         const recurringDayOptions = [
             { value: 'Monday', text: 'Monday' },
             { value: 'Tuesday', text: 'Tuesday' },
@@ -356,18 +372,48 @@ import { thisExpression } from '@babel/types';
             { value: 'Friday', text: 'Friday' },
             { value: 'Saturday', text: 'Saturday' },
             { value: 'Sunday', text: 'Sunday' },
-        ]
+        ];
+
+        const onChangeDayOfWeek = (e) => {
+            this.setState({
+                scheduleRecurringWeeklyDayOfWeek: e.target.value
+            });
+        }
+
         return (
             <div>
                 <EuiFormRow label="Every">
-
+                    <EuiSelect
+                        options={recurringDayOptions}
+                        value={this.state.scheduleRecurringWeeklyDayOfWeek}
+                        onChange={onChangeDayOfWeek}
+                    />
                 </EuiFormRow>
+                <this.ScheduleRecurringDailyInput/>
             </div>
         );
     }
 
     ScheduleRecurringMonthlyInput = () => {
 
+        const handleChangeMonthly = (date) => {
+            this.setState({
+                scheduleRecurringStartDate: date
+            })
+        }
+        return (
+            <div>
+                <EuiFormRow label="On">
+                    <EuiDatePicker
+                        showTimeSelect
+                        selected={this.state.scheduleRecurringStartDate}
+                        onChange={handleChangeMonthly}
+                        minDate={moment()}
+                        maxDate={moment().endOf('month')}
+                    />
+                </EuiFormRow>
+            </div>
+        );
     }
 
     ScheduleRecurringFrequency = () => {
@@ -384,8 +430,16 @@ import { thisExpression } from '@babel/types';
         }
 
         const daily = (this.state.scheduleRecurringFrequency == 'Daily')
-        ? <this.ScheduleRecurringDailyInput/>
-        : null;
+            ? <this.ScheduleRecurringDailyInput/>
+            : null;
+
+        const weekly = (this.state.scheduleRecurringFrequency == 'Weekly')
+            ? <this.ScheduleRecurringWeeklyInput/>
+            : null;
+
+        const monthly = (this.state.scheduleRecurringFrequency == 'Monthly')
+            ? <this.ScheduleRecurringMonthlyInput/>
+            : null;
 
         return (
             <div>
@@ -397,6 +451,8 @@ import { thisExpression } from '@babel/types';
                     />
                 </EuiFormRow>
                 {daily}
+                {weekly}
+                {monthly}
             </div>
         );
     }
