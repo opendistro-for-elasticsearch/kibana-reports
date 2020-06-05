@@ -64,13 +64,6 @@ export class RouterHome extends React.Component {
                                         <Main title="Reporting Homepage" httpClient={httpClient} {...props} />
                                     )}
                                 />
-                                {/* <Route
-                                    path="/create"
-                                    // component={CreateReport}
-                                    render={(props) => (
-                                        <CreateReport title="Create Report" httpClient={httpClient} {...props} />
-                                    )}
-                                /> */}
                             </Switch>
                         </EuiPageContentBody>
                         </EuiPageContent>
