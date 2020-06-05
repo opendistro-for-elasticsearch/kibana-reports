@@ -26,6 +26,7 @@ import { htmlIdGenerator } from '@elastic/eui/lib/services';
 import moment from 'moment';
 import { thisExpression } from '@babel/types';
 import { ReportSettings } from './report_settings/report_settings';
+import { ReportDelivery } from './delivery/delivery';
 
 const idPrefix = htmlIdGenerator()();
 
@@ -455,41 +456,14 @@ export class CreateReport extends React.Component {
 						onChangeReportSettingsDashboard={this.onChangeReportSettingsDashboard}
 					/>
 					<EuiSpacer/>
-					<EuiPageContent panelPaddingSize={"l"}>
-						<EuiPageHeader>
-							<EuiTitle>
-								<h2>Delivery</h2>
-							</EuiTitle>
-						</EuiPageHeader>
-						<EuiHorizontalRule/>
-						<EuiPageContentBody>
-							<b>Channel</b><br/>
-							<br/>
-							Define delivery notification channel <br/>
-							<br/>
-							<DeliveryChannelRadio/>
-							<br/>
-							<b>Recipients</b><br/>
-							<br/>
-							<DeliveryRecipientsBox/>
-							<br/>
-							<b>Email subject</b><br/>
-							<br/>
-							<EuiFieldText
-								placeholder="Subject line"
-								value={this.state.deliveryEmailSubject}
-								onChange={this.onChangeDeliveryEmailSubject}
-							/>
-							<br/>
-							<b>Email body</b><br/>
-							<br/>
-							<EuiTextArea
-								placeholder="email body"
-								value={this.state.deliveryEmailBody}
-								onChange={this.onChangeDeliveryEmailBody}
-							/>
-						</EuiPageContentBody>
-					</EuiPageContent>
+					<ReportDelivery
+						DeliveryChannelRadio={DeliveryChannelRadio}
+						DeliveryRecipientsBox={DeliveryRecipientsBox}
+						deliveryEmailSubject={this.state.deliveryEmailSubject}
+						onChangeDeliveryEmailSubject={this.onChangeDeliveryEmailSubject}
+						deliveryEmailBody={this.state.deliveryEmailBody}
+						onChangeDeliveryEmailBody={this.onChangeDeliveryEmailBody}
+					/>
 						<EuiSpacer/>
 						<EuiPageContent panelPaddingSize={"l"}>
 							<EuiPageHeader>

@@ -1,8 +1,5 @@
 import React from 'react';
 import {
-	EuiButtonEmpty,
-	EuiComboBox,
-	EuiDatePicker,
 	EuiFieldText,
 	EuiSelect,
 	EuiFlexGroup,
@@ -12,15 +9,9 @@ import {
 	EuiPage,
 	EuiPageHeader,
 	EuiTitle,
-	EuiPageBody,
 	EuiPageContent,
 	EuiPageContentBody,
-	EuiInMemoryTable,
 	EuiHorizontalRule,
-	EuiSpacer,
-	EuiSuggest,
-	EuiTextArea,
-	EuiRadioGroup,
 } from '@elastic/eui';
 
 const ReportSettings = (props) => {
