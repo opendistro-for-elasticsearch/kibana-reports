@@ -26,28 +26,28 @@ import {
   } from '@elastic/eui';
 
   export class ReportDetails extends React.Component {
-      constructor(props) {
-          super(props);
-          this.state = {};
-      }
+    constructor(props) {
+      super(props);
+      this.state = {};
+    }
 
-      componentDidMount() {
-        const { httpClient } = this.props;
-      }
+    componentDidMount() {
+      const { httpClient } = this.props;
+    }
 
-      render() {
-        return (
-            <EuiPage>
-                <EuiPageBody>
-                    <EuiPageContent>
-                        <EuiPageHeader>
-                            <EuiTitle>
-                                <h2>Report Details</h2>
-                            </EuiTitle>
-                        </EuiPageHeader>
-                    </EuiPageContent>
-                </EuiPageBody>
-            </EuiPage>
-        )
-      }
+    render() {
+      return (
+        <EuiPage>
+          <EuiPageBody>
+            <EuiPageContent>
+              <EuiPageHeader>
+                <EuiTitle>
+                  <h2>Report Details</h2>
+                </EuiTitle>
+              </EuiPageHeader>
+            </EuiPageContent>
+          </EuiPageBody>
+        </EuiPage>
+      )
+    }
   }

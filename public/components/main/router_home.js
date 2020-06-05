@@ -1,60 +1,60 @@
 import React from 'react';
 import {
-	EuiPage,
-	EuiPageBody,
-	EuiPageContent,
-	EuiPageContentHeader,
-	EuiPageContentBody,
-	EuiPageContentHeaderSection,
+  EuiPage,
+  EuiPageBody,
+  EuiPageContent,
+  EuiPageContentHeader,
+  EuiPageContentBody,
+  EuiPageContentHeaderSection,
 } from '@elastic/eui';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { Main } from './main';
 import { CreateReport } from '../create_report/create_report';
 
 export class RouterHome extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {};
-	}
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
 
-	render() {
-		const { httpClient } = this.props;
-		return (
-			<Router basename={'/reporting'}>
-				<EuiPage>
-					<EuiPageBody>
-							<EuiPageContent>
-								<EuiPageContentHeader>
-									<EuiPageContentHeaderSection></EuiPageContentHeaderSection>
-								</EuiPageContentHeader>
-								<EuiPageContentBody>
-									<Switch>
-										<Route
-											path="/report_details/:id"
-											render={(props) => (
-												<ReportDetails title="Report Details" httpClient={httpClient} {...props} />
-											)}
-										/>
-										<Route
-											path="/create"
-											render={(props) => (
-												<CreateReport title="Create Report" httpClient={httpClient} {...props} />
-											)}
-										/>
-										<Route
-											path="/"
-											render={(props) => (
-												<Main title="Reporting Homepage" httpClient={httpClient} {...props} />
-											)}
-										/>
-									</Switch>
-								</EuiPageContentBody>
-							</EuiPageContent>
-						</EuiPageBody>
-				</EuiPage>
-			</Router>
-		);
-	}
+  render() {
+    const { httpClient } = this.props;
+    return (
+      <Router basename={'/reporting'}>
+        <EuiPage>
+          <EuiPageBody>
+              <EuiPageContent>
+                <EuiPageContentHeader>
+                  <EuiPageContentHeaderSection></EuiPageContentHeaderSection>
+                </EuiPageContentHeader>
+                <EuiPageContentBody>
+                  <Switch>
+                    <Route
+                      path="/report_details/:id"
+                      render={(props) => (
+                        <ReportDetails title="Report Details" httpClient={httpClient} {...props} />
+                      )}
+                    />
+                    <Route
+                      path="/create"
+                      render={(props) => (
+                        <CreateReport title="Create Report" httpClient={httpClient} {...props} />
+                      )}
+                    />
+                    <Route
+                      path="/"
+                      render={(props) => (
+                        <Main title="Reporting Homepage" httpClient={httpClient} {...props} />
+                      )}
+                    />
+                  </Switch>
+                </EuiPageContentBody>
+              </EuiPageContent>
+            </EuiPageBody>
+        </EuiPage>
+      </Router>
+    );
+  }
 }
 
 
