@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
 import {
     EuiButtonEmpty,
     EuiComboBox,
@@ -21,7 +20,6 @@ import {
     EuiSpacer,
     EuiSuggest,
     EuiTextArea,
-    EuiEmptyPrompt,
     EuiRadioGroup,
   } from '@elastic/eui';
 import { htmlIdGenerator } from '@elastic/eui/lib/services';
