@@ -27,6 +27,7 @@ import moment from 'moment';
 import { thisExpression } from '@babel/types';
 import { ReportSettings } from './report_settings/report_settings';
 import { ReportDelivery } from './delivery/delivery';
+import { ReportSchedule } from './schedule/schedule';
 
 const idPrefix = htmlIdGenerator()();
 
@@ -464,38 +465,25 @@ export class CreateReport extends React.Component {
 						deliveryEmailBody={this.state.deliveryEmailBody}
 						onChangeDeliveryEmailBody={this.onChangeDeliveryEmailBody}
 					/>
-						<EuiSpacer/>
-						<EuiPageContent panelPaddingSize={"l"}>
-							<EuiPageHeader>
-								<EuiTitle>
-									<h2>Schedule</h2>
-								</EuiTitle>
-							</EuiPageHeader>
-							<EuiHorizontalRule/>
-							<EuiPageContentBody>
-								<b>Request Time</b> <br/>
-								<br/>
-								Define delivery schedule and frequency <br/>
-								<br/>
-								<this.ScheduleRadio/>
-								<br/>
-								{scheduleFutureDateCalendar}
-								{scheduleRecurringFrequencySelect}
-							</EuiPageContentBody>
-						</EuiPageContent>
-						<EuiSpacer/>
-						<EuiFlexGroup justifyContent="flexEnd">
-							<EuiFlexItem grow={false}>
-								<EuiButtonEmpty
-										onClick={() => {window.location.assign('reporting#/')}}
-								>
-										Cancel
-								</EuiButtonEmpty>
-							</EuiFlexItem>
-							<EuiFlexItem grow={false}>
-								<EuiButton fill>Create</EuiButton>
-							</EuiFlexItem>
-						</EuiFlexGroup>
+					<EuiSpacer/>
+					<ReportSchedule
+						ScheduleRadio={this.ScheduleRadio}
+						scheduleFutureDateCalendar={scheduleFutureDateCalendar}
+						scheduleRecurringFrequencySelect={scheduleRecurringFrequencySelect}
+					/>
+					<EuiSpacer/>
+					<EuiFlexGroup justifyContent="flexEnd">
+						<EuiFlexItem grow={false}>
+							<EuiButtonEmpty
+								onClick={() => {window.location.assign('reporting#/')}}
+							>
+								Cancel
+							</EuiButtonEmpty>
+						</EuiFlexItem>
+						<EuiFlexItem grow={false}>
+							<EuiButton fill>Create</EuiButton>
+						</EuiFlexItem>
+					</EuiFlexGroup>
 				</EuiPageBody>
 			</EuiPage>
 		);

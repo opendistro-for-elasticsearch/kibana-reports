@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 import {
-    EuiButtonEmpty,
-    EuiComboBox,
-    EuiDatePicker,
     EuiFieldText,
     EuiSelect,
     EuiFlexGroup,
