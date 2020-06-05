@@ -36,18 +36,21 @@ export const reports_list_columns = [
 
 export const reports_list_users = [
     {
+        id: 1,
         reportName: 'Daily Sales Report, April 21',
         created: 'April 21, 2020 @ 17:00:00',
         reportSource: 'dashboard/daily_saves',
         reportPDF: 'daily_sales_report_2020-04-21_17-e29f99ec3ce8.pdf'
     },
     {
+        id: 2,
         reportName: 'Daily Sales Report, April 22',
         created: 'April 22, 2020 @ 17:00:00',
         reportSource: 'dashboard/daily_saves',
         reportPDF: 'daily_sales_report_2020-04-22_17-0012395b51ed.pdf'
     },
     {
+        id: 3,
         reportName: 'Daily Sales Report, April 23',
         created: 'April 23, 2020 @ 17:00:00',
         reportSource: 'dashboard/daily_saves',

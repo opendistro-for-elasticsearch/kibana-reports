@@ -19,8 +19,7 @@ import {
     EuiInMemoryTable,
     EuiHorizontalRule,
     EuiSpacer,
-    EuiSearchBar,
-    EuiLink,
+    EuiSuggest,
     EuiTextArea,
     EuiEmptyPrompt,
     EuiRadioGroup,
@@ -217,6 +216,45 @@ import { thisExpression } from '@babel/types';
 
     componentDidMount() {
         const { httpClient } = this.props;
+    }
+
+    ReportSettingsDashboardSelect = () => {
+        const description = 'this is a short description';
+        const sampleItems = [
+            {
+                type: { iconType: 'kqlField', color: 'tint4' },
+                label: 'Flight Dashboard Data',
+                description: description,
+              },
+              {
+                type: { iconType: 'kqlValue', color: 'tint0' },
+                label: 'E-commerce data',
+                description: description,
+              },
+              {
+                type: { iconType: 'kqlSelector', color: 'tint2' },
+                label: 'Ticket data',
+                description: description,
+              },
+        ];
+
+        const [status, setStatus] = useState('unchanged');
+
+        const onItemClick = item => {
+            alert(`Item [${item.label}] was clicked`);
+          };
+
+        return (
+            <div>
+                <EuiSuggest
+                    status={status}
+                    onInputChange={() => {}}
+                    onItemClick={this.onChangeReportSettingsDashboard}
+                    placeholder="Start typing to display suggestions"
+                    suggestions={sampleItems}
+                />
+            </div>
+        );
     }
 
     ScheduleRadioInClass = () => {
@@ -486,8 +524,8 @@ import { thisExpression } from '@babel/types';
                                 placeholder="Report Name"
                             />
                             <br/>
-                            <b>Source</b> <br/>
-                            <ReportSettingsRadio/> <br/>
+                            {/* <b>Source</b> <br/> */}
+                            {/* <ReportSettingsRadio/> <br/> */}
                             {/* <EuiRadioGroup
                                 options={this.radios}
                                 idSelected={this.state.reportSettingsSetRadioIdSelected}
@@ -499,13 +537,14 @@ import { thisExpression } from '@babel/types';
                             /> */}
                             <b>Dashboard</b> <br/>
                             <br/>
-                            <EuiFlexGroup justifyContent="flexStart">
-                                <EuiFlexItem>
+                            <EuiFlexGroup justifyContent="spaceEvenly" gutterSize={"s"}>
+                                <EuiFlexItem grow={4}>
                                     <EuiFieldText
                                         placeholder="Start typing to display suggestions"
                                         value={this.state.reportSettingsDashboard}
                                         onChange={this.onChangeReportSettingsDashboard}
                                     />
+                                    {/* <this.ReportSettingsDashboardSelect/> */}
                                 </EuiFlexItem>
                                 <EuiFlexItem grow={false}>
                                     <EuiButton fill>Browse</EuiButton>
@@ -571,7 +610,9 @@ import { thisExpression } from '@babel/types';
                     <EuiSpacer/>
                     <EuiFlexGroup justifyContent="flexEnd">
                         <EuiFlexItem grow={false}>
-                            <EuiButtonEmpty>
+                            <EuiButtonEmpty
+                                onClick={() => {window.location.assign('reporting#/')}}
+                            >
                                 Cancel
                             </EuiButtonEmpty>
                         </EuiFlexItem>

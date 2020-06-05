@@ -26,7 +26,7 @@ import {
   } from '@elastic/eui';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { Main } from './main';
-import { CreateReport } from './create_report';
+import { CreateReport } from '../create_report/create_report';
 
 export class RouterHome extends React.Component {
     constructor(props) {
@@ -47,8 +47,13 @@ export class RouterHome extends React.Component {
                         <EuiPageContentBody>
                             <Switch>
                                 <Route
+                                    path="/report_details/:id"
+                                    render={(props) => (
+                                        <ReportDetails title="Report Details" httpClient={httpClient} {...props} />
+                                    )}
+                                />
+                                <Route
                                     path="/create"
-                                    // component={CreateReport}
                                     render={(props) => (
                                         <CreateReport title="Create Report" httpClient={httpClient} {...props} />
                                     )}
