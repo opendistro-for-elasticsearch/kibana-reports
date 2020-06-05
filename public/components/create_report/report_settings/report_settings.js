@@ -1,12 +1,9 @@
 import React from 'react';
 import {
 	EuiFieldText,
-	EuiSelect,
 	EuiFlexGroup,
 	EuiFlexItem,
-	EuiFormRow,
 	EuiButton,
-	EuiPage,
 	EuiPageHeader,
 	EuiTitle,
 	EuiPageContent,

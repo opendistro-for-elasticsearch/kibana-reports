@@ -1,23 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-    EuiFieldText,
-    EuiSelect,
-    EuiFlexGroup,
-    EuiFlexItem,
-    EuiFormRow,
-    EuiButton,
-    EuiPage,
     EuiPageHeader,
     EuiTitle,
-    EuiPageBody,
     EuiPageContent,
     EuiPageContentBody,
-    EuiInMemoryTable,
     EuiHorizontalRule,
-    EuiSpacer,
-    EuiSuggest,
-    EuiTextArea,
-    EuiRadioGroup,
   } from '@elastic/eui';
 
 const ReportSchedule = (props) => {
