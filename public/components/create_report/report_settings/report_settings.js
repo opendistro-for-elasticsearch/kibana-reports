@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+
 import React from 'react';
 import {
   EuiFieldText,
@@ -31,17 +46,6 @@ const ReportSettings = (props) => {
           placeholder="Report Name"
         />
         <br/>
-        {/* <b>Source</b> <br/> */}
-        {/* <ReportSettingsRadio/> <br/> */}
-        {/* <EuiRadioGroup
-            options={this.radios}
-            idSelected={this.state.reportSettingsSetRadioIdSelected}
-            onChange={this.onChangeReportSettingsRadio}
-            name="radio group"
-            legend={{
-            children: <span>This is a legend for a radio group</span>,
-            }}
-        /> */}
         <b>Dashboard</b> <br/>
         <br/>
         <EuiFlexGroup justifyContent="spaceEvenly" gutterSize={"s"}>
@@ -51,7 +55,6 @@ const ReportSettings = (props) => {
               value={reportSettingsDashboard}
               onChange={onChangeReportSettingsDashboard}
             />
-            {/* <this.ReportSettingsDashboardSelect/> */}
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
             <EuiButton fill>Browse</EuiButton>

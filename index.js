@@ -1,10 +1,24 @@
+/*
+ * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+
 import { resolve } from 'path';
 import { existsSync } from 'fs';
 
 
 import { i18n } from '@kbn/i18n';
 
-import exampleRoute from './server/routes/example';
 import reportRoute from './server/routes/report';
 import dashboardRoute from './server/routes/dashboard';
 import schedulerRoute from './server/routes/scheduler';
@@ -12,11 +26,11 @@ import schedulerRoute from './server/routes/scheduler';
 export default function (kibana) {
   return new kibana.Plugin({
     require: ['elasticsearch'],
-    name: 'reporting',
+    name: 'opendistro-reporting',
     uiExports: {
       app: {
         title: 'Reporting',
-        description: 'download report',
+        description: 'Kibana Reporting Plugin',
         main: 'plugins/reporting/app',
       },
       hacks: [
@@ -32,42 +46,8 @@ export default function (kibana) {
     },
 
     init(server, options) { // eslint-disable-line no-unused-vars
-        const xpackMainPlugin = server.plugins.xpack_main;
-        if (xpackMainPlugin) {
-          const featureId = 'download_button';
-
-          xpackMainPlugin.registerFeature({
-            id: featureId,
-            name: i18n.translate('downloadButton.featureRegistry.featureName', {
-              defaultMessage: 'download_button',
-            }),
-            navLinkId: featureId,
-            icon: 'questionInCircle',
-            app: [featureId, 'kibana'],
-            catalogue: [],
-            privileges: {
-              all: {
-                api: [],
-                savedObject: {
-                  all: [],
-                  read: [],
-                },
-                ui: ['show'],
-              },
-              read: {
-                api: [],
-                savedObject: {
-                  all: [],
-                  read: [],
-                },
-                ui: ['show'],
-              },
-            },
-          });
-        }
 
       // Add server routes and initialize the plugin here
-      exampleRoute(server);
       reportRoute(server);
       dashboardRoute(server);
       schedulerRoute(server);
