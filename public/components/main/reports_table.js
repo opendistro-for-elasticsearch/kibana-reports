@@ -159,13 +159,6 @@ export default class ReportsTable extends React.Component {
           field: 'reportPDF',
           name: 'File',
           truncateText: true,
-          // dataType: 'boolean',
-          // render: online => {
-          //   const color = online ? 'success' : 'danger';
-          //   const label = online ? 'Online' : 'Offline';
-          //   return <EuiHealth color={color}>{label}</EuiHealth>;
-          // },
-          // sortable: true,
         },
       ];
     
@@ -176,19 +169,6 @@ export default class ReportsTable extends React.Component {
           incremental: true,
         },
         filters: [
-          // {
-          //   type: 'is',
-          //   field: 'online',
-          //   name: 'Online',
-          //   negatedName: 'Offline',
-          // },
-          // {
-          //   type: 'field_value_selection',
-          //   field: 'nationality',
-          //   name: 'Nationality',
-          //   multiSelect: false,
-          //   options: options,
-          // },
         ],
       };
     

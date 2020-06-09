@@ -38,7 +38,6 @@ export default function (server) {
     method: 'POST',
     async handler(response) {
       settings.url = response.payload["url"];
-      
       try {
         await generatePDF(settings)
       }

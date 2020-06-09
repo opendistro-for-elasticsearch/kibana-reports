@@ -123,11 +123,9 @@ export class Main extends React.Component {
   componentDidMount() {
     const { httpClient } = this.props;
     httpClientGlobal = httpClient;
-    httpClient.get('../api/reporting/example').then((resp) => {
-      this.setState({ time: resp.data.time });
-    });
     httpClient.get('../api/reporting/get_dashboards').then((resp) => {
-      this.setState({ dashboardList: getDashboardList(resp.data) })
+      // this.setState({ dashboardList: getDashboardList(resp.data) });
+      console.log(resp.data);
       let dropdownDashboardList = resp.map(dashboard => {
         return {value: dashboard, display: dashboard}
       });

@@ -13,20 +13,35 @@
  * permissions and limitations under the License.
  */
 
+import { Server, Request, ResponseToolkit } from 'hapi';
+
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
-export default function (server) {
+  export default function (server) {
+    const { callWithRequest } = server.plugins.elasticsearch.getCluster('data'); 
+
     server.route({
       path: '/api/reporting/get_dashboards',
       method: 'GET',
-      async handler() {
-        try {
-          var dashboards = getDashboards();
-        }
-        catch (e) {
-          console.log(e);
-        }
-        return dashboards;
+      async handler(req, h) {
+        // try {
+        //   var dashboards = getDashboards();
+        // }
+        // catch (e) {
+        //   console.log(e);
+        // }
+        // return dashboards;
+        console.log(callWithRequest);
+        const response = await callWithRequest(req, 'search', {
+          index: '.kibana',
+          from: 0,
+          size: 10,
+        }, {
+          ignore: [404],
+          maxRetries: 3
+        });
+        console.log(response);
+        return response;
       }
     });
   }
@@ -38,6 +53,7 @@ export default function (server) {
   }
 
   function getJson() {
+      const { callWithRequest } = server.plugins.elasticsearch.getCluster('data'); 
       var url = "http://localhost:9200/.kibana/_search?q=type:dashboard";
       var HttpRequest = new XMLHttpRequest();
       HttpRequest.open("GET", url, false);

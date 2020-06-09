@@ -34,7 +34,6 @@ export default function (kibana) {
         main: 'plugins/reporting/app',
       },
       hacks: [
-        'plugins/reporting/hack'
       ],
       styleSheetPaths: [resolve(__dirname, 'public/app.scss'), resolve(__dirname, 'public/app.css')].find(p => existsSync(p)),
     },
