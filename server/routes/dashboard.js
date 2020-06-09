@@ -24,24 +24,13 @@ const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
       path: '/api/reporting/get_dashboards',
       method: 'GET',
       async handler(req, h) {
-        // try {
-        //   var dashboards = getDashboards();
-        // }
-        // catch (e) {
-        //   console.log(e);
-        // }
-        // return dashboards;
-        console.log(callWithRequest);
-        const response = await callWithRequest(req, 'search', {
-          index: '.kibana',
-          from: 0,
-          size: 10,
-        }, {
-          ignore: [404],
-          maxRetries: 3
-        });
-        console.log(response);
-        return response;
+        try {
+          var dashboards = getDashboards();
+        }
+        catch (e) {
+          console.log(e);
+        }
+        return dashboards;
       }
     });
   }
@@ -53,7 +42,6 @@ const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
   }
 
   function getJson() {
-      const { callWithRequest } = server.plugins.elasticsearch.getCluster('data'); 
       var url = "http://localhost:9200/.kibana/_search?q=type:dashboard";
       var HttpRequest = new XMLHttpRequest();
       HttpRequest.open("GET", url, false);
