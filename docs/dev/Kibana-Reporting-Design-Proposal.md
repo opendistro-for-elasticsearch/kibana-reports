@@ -1,10 +1,10 @@
 # Kibana Reporting
 
-### ***You don’t have to go a dashboard, we will bring dashboards to you. ***
+### *You don’t have to go a dashboard, we will bring dashboards to you. *
 
 ## 1. Overview
 
-### **1.1 Motivation **
+### 1.1 Motivation
 
 The ability to generate reports from dashboards and views on Kibana is a highly requested feature .
 This plugin will introduce the ability to generate reports, as well as enable the user to customize them, receive them on a schedule or monitor, and have the reports received on external channels such as email, Slack and Chime. 
@@ -65,11 +65,13 @@ We will provide user to generate two kind of reports :
 
 
 
-[Image: dashboard_reports.png]
-*Figure -1 *
+![Dashboard Reports](img/dashboard_reports.png)
 
-[Image: SQL_query_report.png]
-*Figure -2 *
+*Figure -1*
+
+![SQL Reports](img/SQL_query_report.png)
+
+*Figure -2*
 
 ### 3.2 When: (Schedule)
 
@@ -84,13 +86,13 @@ Storing the reports  **TODO: why we don’t want to store reports, kibana detach
 2. For reports triggered by non-browser clients (ODFE Report scheduler plugin , ODFE plugin), it will be mandatory to provide delivery channels such as email, Chime or Slack endpoints. 
 
 
+![Delivery channels](img/delivery.png)
 
-[Image: Delivery.png]
 *Figure - 3*
 
 ### 3.4 How:
 
-**(I) **We want to reduce time to market and avoid reinventing the wheel. To create PDF/PNG based reports for dashboard we will be relying on open source headless browser libraries.
+**(I)** We want to reduce time to market and avoid reinventing the wheel. To create PDF/PNG based reports for dashboard we will be relying on open source headless browser libraries.
 
 List of curated headless browsers https://github.com/dhamaniasad/HeadlessBrowsers
 
@@ -120,7 +122,9 @@ Based on the above technical requirements, we propose the following architecture
 
 In this architecture , the Kibana backend plugin will handle both the report generation logic as well as scheduling mechanism.
 
-[Image: arch_1.png]
+![Architecture 1](img/arch_1.png)
+
+
 **Pros:**
 
 * Easy to manage in terms of release and distribution since all the report generation, notification and scheduling are embedded in a single application.
@@ -134,8 +138,9 @@ In this architecture , the Kibana backend plugin will handle both the report gen
 
 In this architecture , the Kibana backend plugin will handle only the report generation logic and the scheduling functionality will be delegated to a separate Elasticsearch plugin
 
+![Architecture 2](img/arch_2.png)
 
-[Image: arch_2.png]
+
 **Pros:**
 
 * No need to reinvent the integrated scheduling mechanism, since we can leverage ODFE Job scheduler plugin.
@@ -150,7 +155,9 @@ In this architecture , the Kibana backend plugin will handle only the report gen
 
 In this architecture , the whole report generation and scheduling functionality will implemented as Elasticsearch plugin. Kibana backend will act as a proxy between Kibana UI and ES plugin.
 
-[Image: arch_3.png]**Pros:**
+![Architecture 3](img/arch_3.png)
+
+**Pros:**
 
 
 * Since Kibana server plugin will act as proxy, the Kibana APIs will have chances of modification and in the future
@@ -173,7 +180,7 @@ Because of the limited distributed nature of Kibana sever and added effort to de
 
 TODO: write-up
 
-[Image: data_model.png]
+![Data Model](img/data_model.png)
 
 TODO: Add index mappings . 
 
@@ -215,8 +222,8 @@ generateReport(report_id)
 
 ```
 
-**
-(B) createReport**
+**(B) createReport**
+
 Create a schedule report with destination
 
 ```
@@ -243,6 +250,7 @@ listReports()
 
 
 **(D) updateReport**
+
 Update different attributes of the report like report configuration and/or schedule and/or destination
 
 ```
@@ -338,7 +346,9 @@ https://github.com/opendistro-for-elasticsearch/job-scheduler
 ### 4.4 Workflows
 
 Scheduled Report Creation workflow
-[Image: workflows.png]
+
+![Scheduled Report Creation workflow ](img/workflows.png)
+
 ### 4.4 Alerting Integration
 
 https://opendistro.github.io/for-elasticsearch-docs/docs/alerting/
@@ -346,25 +356,24 @@ https://opendistro.github.io/for-elasticsearch-docs/docs/alerting/
 ODFE Alerting can be used as an external trigger. To generate the report the `generateReport()` API can be utilized as `custom_webhook` destination.
 
 ```
-`POST _opendistro``/``_alerting``/``destinations`
+POST _opendistro/_alerting/destinations
 
-`{`
-`  ``"type"``:`` ``"custom_webhook"``,`
-`  ``"name"``:`` ``"my-custom-destination"``,`
-`  ``"custom_webhook"``:`` ``{`
-`    ``"path"``:`` ``"/api/kibana/generateReport/<report-id>"``,`` ``<-----`
-`    ``"header_params"``:`` ``{`
-`      ``"Content-Type"``:`` ``"application/json"`
-`    ``},`
-`    ``"scheme"``:`` ``"HTTPS"``,`
-`    ``"port"``:`` <kibana-port>``,`
-`    ``"query_params"``:`` ``{`
-`      ``"token"``:`` ``"R2x1UlN4ZHF8MXxxVFJpelJNVDgzdGNwXXXXXXXXX"`
-`    ``},`
-`    ``"host"``:`` ``<kibana-host>`
-`  ``}`
-`}`
-
+{
+  "type": "custom_webhook",
+  "name": "my-custom-destination",
+  "custom_webhook": {
+    "path": "/api/kibana/generateReport/<report-id>", <-----
+    "header_params": {
+      "Content-Type": "application/json"
+    },
+    "scheme": "HTTPS",
+    "port": <kibana-port>,
+    "query_params": {
+      "token": "R2x1UlN4ZHF8MXxxVFJpelJNVDgzdGNwXXXXXXXXX"
+    },
+    "host": <kibana-host>
+  }
+}
 
 ```
 
@@ -375,22 +384,6 @@ ODFE Alerting can be used as an external trigger. To generate the report the `ge
 TODO
 
 
-
-### CSV reports
-
-Apart from generating/exporting PDFs of dashboards, one of the highly requested feature is  to generate CSV reports from queries. 
-https://discuss.opendistrocommunity.dev/t/csv-export-download-from-saved-search-in-opendistro/2386
-https://discuss.opendistrocommunity.dev/search?q=csv
-
-Elasticsearch natively does not supports results in CSV format. Since CSV results are supported via OpenDistro SQL plugin, user should be able to provide a mechanism to provide SQL queries and generate and downloaded a  `.csv` file. Currently user’s can do this by manually running the query via Kibana Dev Tools or any HTTP client, then creating a  .`csv` file and copying the results into it.
-
-With the launch of Kibana SQL plugin, users can now download the results in CSV format. We want to a provide a unified solution where the user can generate different reports from a single UI, along with the schedule  or generate based on 
-external triggers (this could include custom scripts or integration with OpenDistro Alerting plugin).
-
-
-### PDF/PNG reports
-
-TODO
 
 * * *
 
