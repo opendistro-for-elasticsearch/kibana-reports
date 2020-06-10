@@ -15,6 +15,7 @@
 
 import { resolve } from 'path';
 import { existsSync } from 'fs';
+import { schema } from '@kbn/config-schema';
 
 
 import { i18n } from '@kbn/i18n';
@@ -31,7 +32,7 @@ export default function (kibana) {
       app: {
         title: 'Reporting',
         description: 'Kibana Reporting Plugin',
-        main: 'plugins/reporting/app',
+        main: 'plugins/opendistro-reporting/app',
       },
       hacks: [
       ],

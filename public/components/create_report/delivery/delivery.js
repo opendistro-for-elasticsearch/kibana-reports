@@ -16,9 +16,6 @@
 import React, { useState } from 'react';
 import {
     EuiFieldText,
-    EuiSelect,
-    EuiFlexGroup,
-    EuiFlexItem,
     EuiFormRow,
     EuiButton,
     EuiPage,
@@ -33,17 +30,104 @@ import {
     EuiSuggest,
     EuiTextArea,
     EuiRadioGroup,
+    EuiComboBox,
   } from '@elastic/eui';
+import { htmlIdGenerator } from '@elastic/eui/lib/services';
+
 
 const ReportDelivery = (props) => {
   const { 
-    DeliveryChannelRadio, 
-    DeliveryRecipientsBox, 
     deliveryEmailSubject, 
     onChangeDeliveryEmailSubject,
     deliveryEmailBody,
     onChangeDeliveryEmailBody
   } = props;
+
+  const idPrefix = htmlIdGenerator()();
+
+  const DeliveryChannelRadio = () => {
+    const radios = [
+      {
+        id: `${idPrefix}3`,
+        label: 'None (report will be available in Reports List page)',
+      },
+      {
+        id: `${idPrefix}4`,
+        label: 'Email',
+      },
+      {
+        id: `${idPrefix}5`,
+        label: 'Chime',
+      },
+      {
+        id: `${idPrefix}6`,
+        label: 'Other (webhook)'
+      }
+    ];
+    
+    const [radioIdSelected, setRadioIdSelected] = useState(`${idPrefix}3`);
+
+    const handleChangeDeliveryChannel = optionId => {
+      setRadioIdSelected(optionId);
+    };
+    
+    return (
+        <EuiRadioGroup
+          options={radios}
+          idSelected={radioIdSelected}
+          onChange={handleChangeDeliveryChannel}
+          name="deliveryChannelRadioGroup"
+          legend={{
+            children: <span>This is a legend for a radio group</span>,
+          }}
+        />
+    );
+  };
+
+  const DeliveryRecipientsBox = () => {
+    const options = [];
+    const [selectedOptions, setSelected] = useState([]);
+  
+    const onChangeDeliveryRecipients = selectedOptions => {
+      setSelected(selectedOptions);
+    };
+  
+    const onCreateDeliveryRecipientOption = (searchValue, flattenedOptions = []) => {
+      const normalizedSearchValue = searchValue.trim().toLowerCase();
+    
+      if (!normalizedSearchValue) {
+        return;
+      }
+    
+      const newOption = {
+        label: searchValue,
+      };
+    
+      // Create the option if it doesn't exist.
+      if (
+        flattenedOptions.findIndex(
+        option => option.label.trim().toLowerCase() === normalizedSearchValue
+        ) === -1
+      ) {
+        options.push(newOption);
+      }
+    
+      // Select the option.
+      setSelected([...selectedOptions, newOption]);
+    };
+  
+    return (
+      <EuiComboBox
+        placeholder="Select or create options"
+        options={options}
+        selectedOptions={selectedOptions}
+        onChange={onChangeDeliveryRecipients}
+        onCreateOption={onCreateDeliveryRecipientOption}
+        isClearable={true}
+        data-test-subj="demoComboBox"
+      />
+    );
+  };
 
   return (
     <EuiPageContent panelPaddingSize={"l"}>
@@ -54,31 +138,26 @@ const ReportDelivery = (props) => {
       </EuiPageHeader>
       <EuiHorizontalRule/>
       <EuiPageContentBody>
-        <b>Channel</b><br/>
-        <br/>
-        Define delivery notification channel <br/>
-        <br/>
-        <DeliveryChannelRadio/>
-        <br/>
-        <b>Recipients</b><br/>
-        <br/>
-        <DeliveryRecipientsBox/>
-        <br/>
-        <b>Email subject</b><br/>
-        <br/>
-        <EuiFieldText
+        <EuiFormRow label="Channel" helpText="Define delivery notification channel">
+          <DeliveryChannelRadio/>
+        </EuiFormRow>
+        <EuiFormRow label="Recipients">
+          <DeliveryRecipientsBox/>
+        </EuiFormRow>
+        <EuiFormRow label="Email Subject">
+          <EuiFieldText
             placeholder="Subject line"
             value={deliveryEmailSubject}
             onChange={onChangeDeliveryEmailSubject}
-        />
-        <br/>
-        <b>Email body</b><br/>
-        <br/>
-        <EuiTextArea
+          />
+        </EuiFormRow>
+        <EuiFormRow label="Email Body">
+          <EuiTextArea
             placeholder="email body"
             value={deliveryEmailBody}
             onChange={onChangeDeliveryEmailBody}
-        />
+          />  
+        </EuiFormRow>
       </EuiPageContentBody>
     </EuiPageContent>
   );

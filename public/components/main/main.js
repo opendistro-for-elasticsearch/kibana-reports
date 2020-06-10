@@ -69,18 +69,18 @@ const emptyMessageReports = (
     titleSize="xs"
     body="Create a report from a dashboard or template"
     actions={
-      <EuiButton fill>Create Report</EuiButton>
+      <EuiButton fill>Create report</EuiButton>
     }
   />
 )
 
 const emptyMessageScheduledReports = (
   <div>
-    <h3>You Have No Scheduled Reports</h3>
+    <h3>You have no scheduled reports</h3>
     <p>
       Create a new schedule to get started
     </p>
-    <EuiButton fill>Create Schedule</EuiButton>
+    <EuiButton fill>Create schedule</EuiButton>
   </div>
 )
 const loading = false
@@ -172,7 +172,7 @@ export class Main extends React.Component {
             <EuiFlexGroup justifyContent="spaceEvenly">
               <EuiFlexItem>
                 <EuiTitle>
-          <h2>Scheduled Reports ({scheduled_reports.length})</h2>
+                  <h2>Scheduled Reports ({scheduled_reports.length})</h2>
                 </EuiTitle>
               </EuiFlexItem>
               <EuiFlexItem component="span" grow={false}>
@@ -188,7 +188,7 @@ export class Main extends React.Component {
               <EuiFlexItem component="span" grow={false}>
                 <EuiButton 
                   fill={true}
-                  onClick={() => {window.location.assign('reporting#/create')}}
+                  onClick={() => {window.location.assign('opendistro-reporting#/create')}}
                 >
                   Create
                 </EuiButton>

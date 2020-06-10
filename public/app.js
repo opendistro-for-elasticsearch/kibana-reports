@@ -24,7 +24,7 @@ import { I18nProvider } from '@kbn/i18n/react';
 import 'ui/autoload/styles';
 import { RouterHome } from './components/main/router_home';
 
-const app = uiModules.get('apps/reporting');
+const app = uiModules.get('apps/opendistro-reporting');
 
 app.config($locationProvider => {
   $locationProvider.html5Mode({

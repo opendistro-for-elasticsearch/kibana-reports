@@ -1,5 +1,5 @@
 {
-  "name": "reporting",
+  "name": "opendistro-reporting",
   "version": "0.0.11",
   "description": "Kibana Reporting Plugin",
   "main": "index.js",

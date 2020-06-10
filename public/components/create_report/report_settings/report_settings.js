@@ -18,12 +18,14 @@ import {
   EuiFieldText,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiFormRow,
   EuiButton,
   EuiPageHeader,
   EuiTitle,
   EuiPageContent,
   EuiPageContentBody,
   EuiHorizontalRule,
+  EuiText,
 } from '@elastic/eui';
 
 const ReportSettings = (props) => {
@@ -39,25 +41,31 @@ const ReportSettings = (props) => {
       </EuiPageHeader>
       <EuiHorizontalRule/>
       <EuiPageContentBody>
-        <b>Name</b> <br/>
-        Specify a descriptive report name <br/>
-        <br/>
-        <EuiFieldText
-          placeholder="Report Name"
-        />
-        <br/>
-        <b>Dashboard</b> <br/>
-        <br/>
-        <EuiFlexGroup justifyContent="spaceEvenly" gutterSize={"s"}>
-          <EuiFlexItem grow={4}>
-            <EuiFieldText
-              placeholder="Start typing to display suggestions"
-              value={reportSettingsDashboard}
-              onChange={onChangeReportSettingsDashboard}
-            />
+        <EuiFlexGroup>
+          <EuiFlexItem>
+            <EuiFormRow label="Name" helpText="Specify a descriptive report name">
+              <EuiFieldText
+                placeholder="Report Name"
+              />
+            </EuiFormRow>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiFlexGroup style={{ maxWidth: 600 }}>
+          <EuiFlexItem>
+            <EuiFormRow label="Dashboard">
+              <EuiFieldText
+                placeholder="Start typing to display suggestions"
+                value={reportSettingsDashboard}
+                onChange={onChangeReportSettingsDashboard}
+              />
+            </EuiFormRow>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton fill>Browse</EuiButton>
+            <EuiFormRow hasEmptyLabelSpace>
+              <EuiButton>
+                Browse
+              </EuiButton>
+            </EuiFormRow>
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiPageContentBody>

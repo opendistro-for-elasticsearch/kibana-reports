@@ -20,10 +20,15 @@ import {
     EuiPageContent,
     EuiPageContentBody,
     EuiHorizontalRule,
+    EuiFormRow,
   } from '@elastic/eui';
 
 const ReportSchedule = (props) => {
-  const {ScheduleRadio, scheduleFutureDateCalendar, scheduleRecurringFrequencySelect } = props;
+  const {
+    ScheduleRadio, 
+    scheduleFutureDateCalendar, 
+    scheduleRecurringFrequencySelect 
+  } = props;
 
   return (
     <EuiPageContent panelPaddingSize={"l"}>
@@ -34,12 +39,9 @@ const ReportSchedule = (props) => {
       </EuiPageHeader>
       <EuiHorizontalRule/>
       <EuiPageContentBody>
-        <b>Request Time</b> <br/>
-        <br/>
-        Define delivery schedule and frequency <br/>
-        <br/>
-        <ScheduleRadio/>
-        <br/>
+        <EuiFormRow label="Request Time" helpText="Define delivery schedule and frequency">
+          <ScheduleRadio/>
+        </EuiFormRow>
         {scheduleFutureDateCalendar}
         {scheduleRecurringFrequencySelect}
       </EuiPageContentBody>
