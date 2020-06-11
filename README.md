@@ -5,7 +5,6 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 # Request for Comments ( RFC ) 
  Please add your feature requests here [RFCs](https://github.com/opendistro-for-elasticsearch/kibana-reports/projects/1).
 # License
->>>>>>> upstream/master
 
 This project is licensed under the Apache-2.0 License.
 
