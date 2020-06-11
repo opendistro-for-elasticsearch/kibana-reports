@@ -24,7 +24,7 @@ import { I18nProvider } from '@kbn/i18n/react';
 import 'ui/autoload/styles';
 import { RouterHome } from './components/main/router_home';
 
-const app = uiModules.get('apps/opendistro-reporting');
+const app = uiModules.get('apps/opendistro-kibana-reports');
 
 app.config($locationProvider => {
   $locationProvider.html5Mode({
@@ -58,4 +58,4 @@ function RootController($scope, $element, $http) {
   });
 }
 
-chrome.setRootController('reporting', RootController);
+chrome.setRootController('reports', RootController);

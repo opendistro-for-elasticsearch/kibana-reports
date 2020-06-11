@@ -396,7 +396,7 @@ export class CreateReport extends React.Component {
           <EuiFlexGroup justifyContent="flexEnd">
             <EuiFlexItem grow={false}>
               <EuiButtonEmpty
-                onClick={() => {window.location.assign('opendistro-reporting#/')}}
+                onClick={() => {window.location.assign('opendistro-kibana-reports#/')}}
               >
                 Cancel
               </EuiButtonEmpty>

@@ -187,7 +187,7 @@ export class Main extends React.Component {
               <EuiFlexItem component="span" grow={false}>
                 <EuiButton 
                   fill={true}
-                  onClick={() => {window.location.assign('opendistro-reporting#/create')}}
+                  onClick={() => {window.location.assign('opendistro-kibana-reports#/create')}}
                 >
                   Create
                 </EuiButton>

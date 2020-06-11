@@ -35,7 +35,7 @@ export class RouterHome extends React.Component {
   render() {
     const { httpClient } = this.props;
     return (
-      <Router basename={'/opendistro-reporting'}>
+      <Router basename={'/opendistro-kibana-reports'}>
         <EuiPage>
           <EuiPageBody>
               <EuiPageContent>
