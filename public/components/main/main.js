@@ -83,7 +83,6 @@ const emptyMessageScheduledReports = (
     <EuiButton fill>Create schedule</EuiButton>
   </div>
 )
-const loading = false
 
 export class Main extends React.Component {
   constructor(props) {

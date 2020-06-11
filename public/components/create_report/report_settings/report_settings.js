@@ -45,7 +45,7 @@ const ReportSettings = (props) => {
           <EuiFlexItem>
             <EuiFormRow label="Name" helpText="Specify a descriptive report name">
               <EuiFieldText
-                placeholder="Report Name"
+                placeholder="Report name"
               />
             </EuiFormRow>
           </EuiFlexItem>

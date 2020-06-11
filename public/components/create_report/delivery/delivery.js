@@ -32,8 +32,8 @@ import {
     EuiRadioGroup,
     EuiComboBox,
   } from '@elastic/eui';
-import { htmlIdGenerator } from '@elastic/eui/lib/services';
-
+import { DeliveryRecipientsBox } from './delivery_recipients_box';
+import { DeliveryChannelRadio } from './delivery_channel_radio';
 
 const ReportDelivery = (props) => {
   const { 
@@ -42,92 +42,6 @@ const ReportDelivery = (props) => {
     deliveryEmailBody,
     onChangeDeliveryEmailBody
   } = props;
-
-  const idPrefix = htmlIdGenerator()();
-
-  const DeliveryChannelRadio = () => {
-    const radios = [
-      {
-        id: `${idPrefix}3`,
-        label: 'None (report will be available in Reports List page)',
-      },
-      {
-        id: `${idPrefix}4`,
-        label: 'Email',
-      },
-      {
-        id: `${idPrefix}5`,
-        label: 'Chime',
-      },
-      {
-        id: `${idPrefix}6`,
-        label: 'Other (webhook)'
-      }
-    ];
-    
-    const [radioIdSelected, setRadioIdSelected] = useState(`${idPrefix}3`);
-
-    const handleChangeDeliveryChannel = optionId => {
-      setRadioIdSelected(optionId);
-    };
-    
-    return (
-        <EuiRadioGroup
-          options={radios}
-          idSelected={radioIdSelected}
-          onChange={handleChangeDeliveryChannel}
-          name="deliveryChannelRadioGroup"
-          legend={{
-            children: <span>This is a legend for a radio group</span>,
-          }}
-        />
-    );
-  };
-
-  const DeliveryRecipientsBox = () => {
-    const options = [];
-    const [selectedOptions, setSelected] = useState([]);
-  
-    const onChangeDeliveryRecipients = selectedOptions => {
-      setSelected(selectedOptions);
-    };
-  
-    const onCreateDeliveryRecipientOption = (searchValue, flattenedOptions = []) => {
-      const normalizedSearchValue = searchValue.trim().toLowerCase();
-    
-      if (!normalizedSearchValue) {
-        return;
-      }
-    
-      const newOption = {
-        label: searchValue,
-      };
-    
-      // Create the option if it doesn't exist.
-      if (
-        flattenedOptions.findIndex(
-        option => option.label.trim().toLowerCase() === normalizedSearchValue
-        ) === -1
-      ) {
-        options.push(newOption);
-      }
-    
-      // Select the option.
-      setSelected([...selectedOptions, newOption]);
-    };
-  
-    return (
-      <EuiComboBox
-        placeholder="Select or create options"
-        options={options}
-        selectedOptions={selectedOptions}
-        onChange={onChangeDeliveryRecipients}
-        onCreateOption={onCreateDeliveryRecipientOption}
-        isClearable={true}
-        data-test-subj="demoComboBox"
-      />
-    );
-  };
 
   return (
     <EuiPageContent panelPaddingSize={"l"}>
