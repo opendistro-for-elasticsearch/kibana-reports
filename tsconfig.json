@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "allowJs": true,
+    /* Visit https://aka.ms/tsconfig.json to read more about this file */
+
+    /* Basic Options */
+    "baseUrl": ".",
+    "paths": {
+      "kibana": ["./kibana"],
+      "ui/*": ["src/legacy/ui/public/*"],
+      "test_utils/*": ["src/test_utils/public/*"]
+    },
+    "target": "es5",                          
+    "module": "commonjs",                     
+    "outDir": "",                             
+    "noEmit": true,                        
+    "types": ["node", "jest", "react"],
+    "typeRoots": [
+      "../node_modules/@types"
+    ],   
+    "strict": true,                          
+    "esModuleInterop": true,                  
+    "skipLibCheck": true,                     
+    "forceConsistentCasingInFileNames": true  
+  },
+  "include": [
+    "test/**/*",
+  ],
+  "exclude": [
+    "node_modules",
+    "*/node_modules/",
+    "public/components/**/*",
+  ]
+}
