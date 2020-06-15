@@ -27,12 +27,12 @@ import schedulerRoute from './server/routes/scheduler';
 export default function (kibana) {
   return new kibana.Plugin({
     require: ['elasticsearch'],
-    name: 'opendistro-reporting',
+    name: 'opendistro-kibana-reports',
     uiExports: {
       app: {
         title: 'Reporting',
-        description: 'Kibana Reporting Plugin',
-        main: 'plugins/opendistro-reporting/app',
+        description: 'Kibana Reports',
+        main: 'plugins/opendistro-kibana-reports/app',
       },
       hacks: [
       ],

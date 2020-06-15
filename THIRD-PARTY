@@ -1,5 +1,4 @@
-** reporting-kibana-plugin; version 1.0 --
-https://github.com/opendistro-for-elasticsearch/reporting-kibana-plugin
+** @elastic/eui; version 5.1.0 -- https://elastic.github.io/eui/#/
 
 Apache License
 
@@ -199,6 +198,6 @@ See the License for the specific language governing permissions and
 
 limitations under the License.
 
-* For reporting-kibana-plugin see also this required NOTICE:
-    reporting-kibana-plugin
+* For kibana-reports see also this required NOTICE:
+    kibana-reports
     Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
