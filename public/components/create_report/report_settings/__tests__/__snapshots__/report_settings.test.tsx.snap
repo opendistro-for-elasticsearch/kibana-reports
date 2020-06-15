@@ -27,12 +27,12 @@ exports[`<ReportSettings /> panel render component 1`] = `
       >
         <div
           class="euiFormRow"
-          id="gwpbftyn-row"
+          id="random-id-row"
         >
           <div>
             <label
               class="euiFormLabel"
-              for="gwpbftyn"
+              for="random-id"
             >
               Name
             </label>
@@ -44,9 +44,9 @@ exports[`<ReportSettings /> panel render component 1`] = `
               class="euiFormControlLayout__childrenWrapper"
             >
               <input
-                aria-describedby="gwpbftyn-help"
+                aria-describedby="random-id-help"
                 class="euiFieldText"
-                id="gwpbftyn"
+                id="random-id"
                 placeholder="Report name"
                 type="text"
                 value=""
@@ -55,7 +55,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
           </div>
           <div
             class="euiFormHelpText euiFormRow__text"
-            id="gwpbftyn-help"
+            id="random-id-help"
           >
             Specify a descriptive report name
           </div>
@@ -71,12 +71,12 @@ exports[`<ReportSettings /> panel render component 1`] = `
       >
         <div
           class="euiFormRow"
-          id="33h1kdf9-row"
+          id="random-id-row"
         >
           <div>
             <label
               class="euiFormLabel"
-              for="33h1kdf9"
+              for="random-id"
             >
               Dashboard
             </label>
@@ -89,7 +89,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
             >
               <input
                 class="euiFieldText"
-                id="33h1kdf9"
+                id="random-id"
                 placeholder="Start typing to display suggestions"
                 type="text"
                 value="testDashboardValue"
@@ -103,11 +103,11 @@ exports[`<ReportSettings /> panel render component 1`] = `
       >
         <div
           class="euiFormRow euiFormRow--hasEmptyLabelSpace"
-          id="hq3sox99-row"
+          id="random-id-row"
         >
           <button
             class="euiButton euiButton--primary"
-            id="hq3sox99"
+            id="random-id"
             type="button"
           >
             <span

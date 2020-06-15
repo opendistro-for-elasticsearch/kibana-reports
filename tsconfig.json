@@ -2,19 +2,11 @@
   "compilerOptions": {
     "jsx": "react",
     "allowJs": true,
-    /* Visit https://aka.ms/tsconfig.json to read more about this file */
-
-    /* Basic Options */
     "baseUrl": ".",
-    "paths": {
-      "kibana": ["./kibana"],
-      "ui/*": ["src/legacy/ui/public/*"],
-      "test_utils/*": ["src/test_utils/public/*"]
-    },
-    "target": "es5",                          
+    "target": "esnext", 
     "module": "commonjs",                     
     "outDir": "",                             
-    "noEmit": true,                        
+    "noEmit": true,                  
     "types": ["node", "jest", "react"],
     "typeRoots": [
       "../node_modules/@types"
@@ -30,6 +22,6 @@
   "exclude": [
     "node_modules",
     "*/node_modules/",
-    "public/components/**/*",
+    "public/**/*",
   ]
 }

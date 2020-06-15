@@ -13,20 +13,14 @@
  * permissions and limitations under the License.
  */
 
-import React from 'react';
-import { render } from '@testing-library/react';
-import { ReportSettings } from '../report_settings';
-
-describe('<ReportSettings /> panel', () => {
-  test('render component', () => {
-    let reportSettingsDashboard = "testDashboardValue";
-    const { container } = render(
-      <ReportSettings
-        reportSettingsDashboard={reportSettingsDashboard}
-        onChangeReportSettingsDashboard={jest.fn()}
-      />
-    );
-
-    expect(container.firstChild).toMatchSnapshot();
-  });
-});
+module.exports = {
+  rootDir: '../',
+  setUpFiles: ['<rootDir>/test/setupTests.ts'],
+  setupFilesAfterEnv: ['<rootDir>/test/setup.jest.ts'],
+  roots: ['<rootDir>'],
+  testMatch: ['**/*.test.js', '**/*.test.jsx', '**/*.test.ts', '**/*.test.tsx'],
+  clearMocks: true,
+  modulePathIgnorePatterns: ['<rootDir>/offline-module-cache/'],
+  testPathIgnorePatterns: ['<rootDir>/build/', '<rootDir>/node_modules/'],
+  transformIgnorePatterns: ['<rootDir>/node_modules'],
+}

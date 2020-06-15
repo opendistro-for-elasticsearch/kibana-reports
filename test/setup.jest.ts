@@ -13,21 +13,17 @@
  * permissions and limitations under the License.
  */
 
-module.exports = {
-  rootDir: '../',
-  setUpFiles: [
-    '<rootDir>/test/index.js',
-  ],
-  setupFilesAfterEnv: ['<rootDir>/test/setup.jest.ts'],
-  roots: ['<rootDir>'],
-  testMatch: ['**/*.test.js', '**/*.test.jsx', '**/*.test.ts', '**/*.test.tsx'],
-  collectCoverageFrom: [
-    '**/*.ts',
-    '**/*.tsx',
-    '**/*.js',
-    '**/*.jsx',
-  ],
-  modulePathIgnorePatterns: ['<rootDir>/offline-module-cache/'],
-  testPathIgnorePatterns: ['<rootDir>/build/', '<rootDir>/node_modules/'],
-  transformIgnorePatterns: ['<rootDir>/node_modules'],
-}
+import '@testing-library/jest-dom/extend-expect';
+import { configure } from '@testing-library/react';
+
+configure({ testIdAttribute: 'data-test-subj' });
+
+jest.mock('@elastic/eui/lib/components/form/form_row/make_id', () => () =>
+  'random-id'
+);
+
+jest.mock('@elastic/eui/lib/services/accessibility/html_id_generator', () => ({
+  htmlIdGenerator: () => {
+    return () => 'random_html_id';
+  },
+}));
