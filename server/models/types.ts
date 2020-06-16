@@ -1,0 +1,1 @@
+export type ServerResponse<T> = { ok: false; error: string } | { ok: true; response: T };
