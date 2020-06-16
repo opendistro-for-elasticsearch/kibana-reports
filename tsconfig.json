@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "allowJs": true,
+    "baseUrl": ".",
+    "target": "esnext", 
+    "module": "commonjs",                     
+    "outDir": "",                             
+    "noEmit": true,                  
+    "types": ["node", "jest", "react"],
+    "typeRoots": [
+      "../node_modules/@types"
+    ],   
+    "strict": true,                          
+    "esModuleInterop": true,                  
+    "skipLibCheck": true,                     
+    "forceConsistentCasingInFileNames": true  
+  },
+  "include": [
+    "test/**/*",
+  ],
+  "exclude": [
+    "node_modules",
+    "*/node_modules/",
+  ]
+}

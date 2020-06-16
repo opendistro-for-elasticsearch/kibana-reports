@@ -1,0 +1,128 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ReportSettings /> panel render component 1`] = `
+<div
+  class="euiPanel euiPanel--paddingLarge euiPageContent"
+>
+  <div
+    class="euiPageHeader euiPageHeader--responsive"
+  >
+    <h2
+      class="euiTitle euiTitle--medium"
+    >
+      Report Settings
+    </h2>
+  </div>
+  <hr
+    class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
+  />
+  <div
+    class="euiPageContentBody"
+  >
+    <div
+      class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+    >
+      <div
+        class="euiFlexItem"
+      >
+        <div
+          class="euiFormRow"
+          id="random-id-row"
+        >
+          <div>
+            <label
+              class="euiFormLabel"
+              for="random-id"
+            >
+              Name
+            </label>
+          </div>
+          <div
+            class="euiFormControlLayout"
+          >
+            <div
+              class="euiFormControlLayout__childrenWrapper"
+            >
+              <input
+                aria-describedby="random-id-help"
+                class="euiFieldText"
+                id="random-id"
+                placeholder="Report name"
+                type="text"
+                value=""
+              />
+            </div>
+          </div>
+          <div
+            class="euiFormHelpText euiFormRow__text"
+            id="random-id-help"
+          >
+            Specify a descriptive report name
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      style="max-width: 600px;"
+    >
+      <div
+        class="euiFlexItem"
+      >
+        <div
+          class="euiFormRow"
+          id="random-id-row"
+        >
+          <div>
+            <label
+              class="euiFormLabel"
+              for="random-id"
+            >
+              Dashboard
+            </label>
+          </div>
+          <div
+            class="euiFormControlLayout"
+          >
+            <div
+              class="euiFormControlLayout__childrenWrapper"
+            >
+              <input
+                class="euiFieldText"
+                id="random-id"
+                placeholder="Start typing to display suggestions"
+                type="text"
+                value="testDashboardValue"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="euiFlexItem euiFlexItem--flexGrowZero"
+      >
+        <div
+          class="euiFormRow euiFormRow--hasEmptyLabelSpace"
+          id="random-id-row"
+        >
+          <button
+            class="euiButton euiButton--primary"
+            id="random-id"
+            type="button"
+          >
+            <span
+              class="euiButton__content"
+            >
+              <span
+                class="euiButton__text"
+              >
+                Browse
+              </span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

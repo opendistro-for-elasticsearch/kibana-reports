@@ -30,7 +30,7 @@ import {
 
 const ReportSettings = (props) => {
   
-  const { reportSettingsDashboard, onChangeReportSettingsDashboard} = props;
+  const { reportSettingsDashboard, onChangeReportSettingsDashboard } = props;
 
   return(
     <EuiPageContent panelPaddingSize={"l"}>
