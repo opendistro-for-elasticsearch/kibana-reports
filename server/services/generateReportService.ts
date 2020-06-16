@@ -1,5 +1,21 @@
+/*
+ * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+
 //@ts-ignore
 import { Legacy } from 'kibana';
+import { Server, Request, ResponseToolkit } from 'hapi';
 import { RequestParams } from '@elastic/elasticsearch';
 import puppeteer from 'puppeteer';
 import imagesToPdf from 'images-to-pdf';
@@ -11,9 +27,7 @@ import { v1 as uuidv1 } from 'uuid';
 import { ServerResponse } from '../models/types';
 import { CLUSTER } from '../utils/constants';
 
-type Request = Legacy.Request;
 type ElasticsearchPlugin = Legacy.Plugins.elasticsearch.Plugin;
-type ResponseToolkit = Legacy.ResponseToolkit;
 
 export default class GenerateReportService {
   esDriver: ElasticsearchPlugin;
@@ -24,25 +38,45 @@ export default class GenerateReportService {
 
   report = async (req: Request, h: ResponseToolkit): Promise<any> => {
     try {
-      const { url, item_name, reportFormat } = req.payload as {
+      const {
+        url,
+        itemName,
+        reportFormat,
+        width = '1200',
+        length = '800',
+      } = req.payload as {
         url: string;
-        item_name: string;
+        itemName: string;
         reportFormat: string;
+        width?: string;
+        length?: string;
       };
+      const windowWidth = parseInt(width, 10);
+      const windowLength = parseInt(length, 10);
 
       if (reportFormat === 'png') {
-        const { file_name } = await this._generatePNG(url, item_name);
+        const { fileName } = await this._generatePNG(
+          url,
+          itemName,
+          windowWidth,
+          windowLength
+        );
         // TODO: save metadata into ES
         // const { callWithRequest } = this.esDriver.getCluster(CLUSTER.DATA)
-        // const params: RequestParams.Index = { index: "report", body: { url, item_name, reportFormat, timeCreated } }
+        // const params: RequestParams.Index = { index: "report", body: { url, itemName, reportFormat, timeCreated } }
         // await callWithRequest(req, "index", params)
-      
 
-        return h.file(file_name + '.png', {mode: 'attachment'});
-        
+        //@ts-ignore
+        return h.file(fileName + '.png', { mode: 'attachment' });
       } else if (reportFormat === 'pdf') {
-        const { file_name } = await this._generatePDF(url, item_name);
-        return h.file(file_name + '.pdf', {mode: 'attachment'});
+        const { fileName } = await this._generatePDF(
+          url,
+          itemName,
+          windowWidth,
+          windowLength
+        );
+        //@ts-ignore
+        return h.file(fileName + '.pdf', { mode: 'attachment' });
       }
 
       return { message: 'no support for such format: ' + reportFormat };
@@ -52,7 +86,7 @@ export default class GenerateReportService {
     }
 
     // TODO: file clean-up
-    // fs.unlink(file_name + '.png', (err) => {
+    // fs.unlink(fileName + '.png', (err) => {
     //   if (err) throw err;
     //   console.log('path/file.txt was deleted');
     // });
@@ -60,8 +94,10 @@ export default class GenerateReportService {
 
   _generatePNG = async (
     url: string,
-    item_name: string
-  ): Promise<{ timeCreated: string; file_name: string }> => {
+    itemName: string,
+    windowWidth: number,
+    windowLength: number
+  ): Promise<{ timeCreated: string; fileName: string }> => {
     const browser = await puppeteer.launch({
       headless: true,
     });
@@ -69,8 +105,8 @@ export default class GenerateReportService {
     await page.goto(url, { waitUntil: 'networkidle0' });
 
     await page.setViewport({
-      width: 1200,
-      height: 800,
+      width: Number(windowWidth),
+      height: Number(windowLength),
     });
 
     // TODO: use is_printable to set up output file in A4 or sth
@@ -79,10 +115,10 @@ export default class GenerateReportService {
     // const ele = await page.$('div[class="react-grid-layout dshLayout--viewing"]')
 
     const timeCreated = new Date().toISOString();
-    const file_name = item_name + '_' + timeCreated + '_' + uuidv1();
+    const fileName = itemName + '_' + timeCreated + '_' + uuidv1();
 
     await page.screenshot({
-      path: file_name + '.png',
+      path: fileName + '.png',
       fullPage: true,
       // Add encoding: "base64" if asked for data url
     });
@@ -90,16 +126,23 @@ export default class GenerateReportService {
     //TODO: Add header and footer
 
     await browser.close();
-    return { timeCreated, file_name };
+    return { timeCreated, fileName };
   };
 
   _generatePDF = async (
     url: string,
-    item_name: string
-  ): Promise<{ timeCreated: string; file_name: string }> => {
-    const { timeCreated, file_name } = await this._generatePNG(url, item_name);
+    itemName: string,
+    windowWidth: number,
+    windowLength: number
+  ): Promise<{ timeCreated: string; fileName: string }> => {
+    const { timeCreated, fileName } = await this._generatePNG(
+      url,
+      itemName,
+      windowWidth,
+      windowLength
+    );
     //add png to pdf to avoid long page split
-    await imagesToPdf([file_name + '.png'], file_name + '.pdf');
-    return { timeCreated, file_name };
+    await imagesToPdf([fileName + '.png'], fileName + '.pdf');
+    return { timeCreated, fileName };
   };
 }
