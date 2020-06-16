@@ -40,7 +40,11 @@ import {
     EuiRadioGroup,
   } from '@elastic/eui';
 
-  export class ReportDetails extends React.Component {
+  interface RouterHomeProps {
+    httpClient?: any,
+  }
+
+  export class ReportDetails extends React.Component<RouterHomeProps> {
     constructor(props) {
       super(props);
       this.state = {};

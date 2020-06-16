@@ -132,7 +132,7 @@ export class Main extends React.Component<RouterHomeProps> {
               />
           </EuiPageContent>
           <EuiSpacer/>
-          <EuiPageContent panelPaddingSize={"l"} component="div" width="50px">
+          <EuiPageContent panelPaddingSize={"l"}>
             <EuiFlexGroup justifyContent="spaceEvenly">
               <EuiFlexItem>
                 <EuiTitle>

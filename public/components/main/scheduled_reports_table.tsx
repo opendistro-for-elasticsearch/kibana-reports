@@ -15,6 +15,7 @@
 
 import React from 'react';
 import {
+  // @ts-ignore
   EuiLink
 } from '@elastic/eui';
 
@@ -33,7 +34,7 @@ export const scheduled_report_columns = [
   {
     field: 'reportSource',
     name: 'Source',
-    render: username => (
+    render: (username: any) => (
       <EuiLink href={`https://github.com/${username}`} target="_blank">
         {username}
       </EuiLink>
