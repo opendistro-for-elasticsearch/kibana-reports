@@ -25,9 +25,14 @@ import {
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { Main } from './main';
 import { CreateReport } from '../create_report/create_report';
+import { ReportDetails } from './report_details';
 
-export class RouterHome extends React.Component {
-  constructor(props) {
+interface RouterHomeProps {
+  httpClient?: any
+}
+
+export class RouterHome extends React.Component<RouterHomeProps> {
+  constructor(props: any) {
     super(props);
     this.state = {};
   }
@@ -71,11 +76,3 @@ export class RouterHome extends React.Component {
     );
   }
 }
-
-
-
-
-
-
-
-
