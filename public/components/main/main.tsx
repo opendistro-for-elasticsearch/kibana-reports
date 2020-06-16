@@ -16,31 +16,29 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import {
-  EuiFieldText,
-  EuiCheckbox,
-  EuiComboBox,
-  EuiSuperSelect,
   EuiFlexGroup,
   EuiFlexItem,
   EuiButton,
+  // @ts-ignore
   EuiPage,
-  EuiPageHeader,
   EuiTitle,
+  // @ts-ignore
   EuiPageBody,
+  // @ts-ignore
   EuiPageContent,
-  EuiPageContentBody,
+  // @ts-ignore
   EuiInMemoryTable,
   EuiHorizontalRule,
   EuiSpacer,
+  // @ts-ignore
   EuiEmptyPrompt
 } from '@elastic/eui';
 import {reports_list_columns, reports_list_users, reports_list_search, reports_list_selection_value} from './reports_table'
 import {scheduled_report_columns, scheduled_reports} from './scheduled_reports_table'
-import { Fragment } from 'react';
 
-let httpClientGlobal;
+let httpClientGlobal: { post: (arg0: string, arg1: string) => Promise<any>; };
 
-function fetchDownloadApi(url) {
+function fetchDownloadApi(url: string) {
     console.log("fetch download api")
     var data = {
       url: url
@@ -48,19 +46,6 @@ function fetchDownloadApi(url) {
      httpClientGlobal.post('../api/reporting/download', JSON.stringify(data)).then((resp) => {
       console.log(resp)
     });
-}
-
-function getDashboardList(data) {
-  var hits = data.hits["hits"];
-  var dashboardList = new Array(hits.length);
-  for (var i = 0; i < hits.length; ++i) {
-    var dashboardDict = {};
-    dashboardDict["name"] = hits[i]["_source"]["dashboard"]["title"];
-    dashboardDict["id"] = hits[i]["_id"];
-    dashboardDict["id"] = dashboardDict["id"].replace("dashboard:", "");
-    dashboardList[i] = dashboardDict;
-  }
-  return dashboardList;
 }
 
 const emptyMessageReports = (
@@ -74,6 +59,10 @@ const emptyMessageReports = (
   />
 )
 
+interface RouterHomeProps {
+  httpClient?: any
+}
+
 const emptyMessageScheduledReports = (
   <div>
     <h3>You have no scheduled reports</h3>
@@ -84,8 +73,10 @@ const emptyMessageScheduledReports = (
   </div>
 )
 
-export class Main extends React.Component {
-  constructor(props) {
+const error = "Error: Unable to load table";
+
+export class Main extends React.Component<RouterHomeProps> {
+  constructor(props: any) {
     super(props);
     this.state = {
       dashboardList: [],
@@ -96,22 +87,7 @@ export class Main extends React.Component {
       scheduledReportFileName: [],
       pagination: this.pagination,
       renderCreateReport: false,
-      selectedOptions: this.selectedOptions,
-      setSelected: this.setSelected,
     };
-    this.renderDashboardTable = this.renderDashboardTable.bind(this);
-  }
-
-  renderDashboardTable() {
-    return this.state.dashboardList.map((dashboard, index) => {
-      const { name, id } = dashboard;
-      return (
-        <tr key={id}>
-           <EuiButton type="primary" 
-           onClick={() => fetchDownloadApi("http://localhost:5601/app/kibana#/dashboard/" + id)}>{name}</EuiButton>
-        </tr>
-      )
-    })
   }
 
   pagination = {
@@ -122,16 +98,6 @@ export class Main extends React.Component {
   componentDidMount() {
     const { httpClient } = this.props;
     httpClientGlobal = httpClient;
-    httpClient.get('../api/reporting/get_dashboards').then((resp) => {
-      // this.setState({ dashboardList: getDashboardList(resp.data) });
-      console.log(resp.data);
-      let dropdownDashboardList = resp.map(dashboard => {
-        return {value: dashboard, display: dashboard}
-      });
-      this.setState({
-        dropdownDashboardList: [{value: '', display: '(Select a dashboard to download)'}].concat(dropdownDashboardList)
-      });
-    });
   }
 
   render() {
@@ -155,7 +121,6 @@ export class Main extends React.Component {
             <EuiInMemoryTable
               items={reports_list_users}
               itemId="id"
-              error={this.error}
               loading={false}
               message={emptyMessageReports}
               columns={reports_list_columns}
@@ -197,7 +162,6 @@ export class Main extends React.Component {
             <EuiInMemoryTable
               items={scheduled_reports}
               itemId="id"
-              error={this.error}
               loading={false}
               message={emptyMessageScheduledReports}
               columns={scheduled_report_columns}
