@@ -13,8 +13,8 @@
  * permissions and limitations under the License.
  */
 
-//@ts-ignore
 import { Server } from 'hapi';
+import * as Joi from '@hapi/joi';
 import { NodeServices } from '../models/interfaces';
 import { NODE_API, REQUEST } from '../utils/constants';
 
@@ -25,5 +25,17 @@ export default function (server: Server, services: NodeServices) {
     path: NODE_API.GENERATE_REPORT,
     method: REQUEST.POST,
     handler: generateReportService.report,
+    options: {
+      // input validation
+      validate: {
+        payload: Joi.object({
+          url: Joi.string().uri().required(),
+          itemName: Joi.string().required(),
+          reportFormat: Joi.string().valid('png', 'pdf').required(),
+          windowWidth: Joi.number().positive().integer(),
+          windowLength: Joi.number().positive().integer(),
+        }),
+      },
+    },
   });
 }

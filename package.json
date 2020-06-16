@@ -28,8 +28,8 @@
     "@types/react-test-renderer": "^16.9.2",
     "jest-cli": "^26.0.1",
     "jest-dom": "^4.0.0",
+    "@hapi/joi": "15.1.1",
     "images-to-pdf": "^1.0.3",
-    "uuid": "^8.1.0",
     "jquery": "^3.5.0",
     "mocha": "^8.0.1",
     "puppeteer": "^2.1.1",
@@ -38,6 +38,7 @@
     "ts-jest": "^26.1.0",
     "tsc": "^1.20150623.0",
     "typescript": "^3.9.5",
+    "uuid": "^8.1.0",
     "ws": "^7.2.3",
     "xmlhttprequest": "^1.8.0"
   },

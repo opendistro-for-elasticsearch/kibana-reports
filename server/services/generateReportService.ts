@@ -42,17 +42,15 @@ export default class GenerateReportService {
         url,
         itemName,
         reportFormat,
-        width = '1200',
-        length = '800',
+        windowWidth = 1200,
+        windowLength = 800,
       } = req.payload as {
         url: string;
         itemName: string;
         reportFormat: string;
-        width?: string;
-        length?: string;
+        windowWidth: number;
+        windowLength: number;
       };
-      const windowWidth = parseInt(width, 10);
-      const windowLength = parseInt(length, 10);
 
       if (reportFormat === 'png') {
         const { fileName } = await this._generatePNG(
@@ -105,8 +103,8 @@ export default class GenerateReportService {
     await page.goto(url, { waitUntil: 'networkidle0' });
 
     await page.setViewport({
-      width: Number(windowWidth),
-      height: Number(windowLength),
+      width: windowWidth,
+      height: windowLength,
     });
 
     // TODO: use is_printable to set up output file in A4 or sth
