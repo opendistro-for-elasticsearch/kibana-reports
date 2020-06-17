@@ -12,27 +12,43 @@ This plugin will introduce the ability to generate reports, as well as enable th
 - https://discuss.opendistrocommunity.dev/t/reporting-module/153
 - https://github.com/opendistro-for-elasticsearch/community/issues/16
 
+### 1.2 Introduction
+
+Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including but not limited to developers, DevOps, IT Engineer, and IT admin) export and share reports from Kibana dashboards, saved search, alerts and visualizations. It helps automate the process of scheduling reports on an on-demand or a periodical basis (on cron schedules as well). Further, it also automates the process of exporting and sharing reports triggered for various alerts. The feature is present in the Dashboard, Discover, and Visualization tabs. Scheduled reports can be sent to (shared with) self or various stakeholders within the organization such as, including but not limited to, executives, managers, engineers (developers, DevOps, IT Engineer) in the form of pdf, hyperlinks, csv, excel via various channels such as email, slack, Amazon Chime. However, in order to export, schedule and share reports, report owners should have the necessary permissions as defined under Roles and Privileges.
+
 
 ## 2. Requirements
 
 
 * As a user, I want to install and enable Kibana reports as a plugin in Kibana plugin directory so that I can see a ‘Create Reports’ and ‘My Reports’ widgets/options on the menus for Dashboard, Visualization and Discover tab. If the installation is unsuccessful, an error should be thrown.
-* As a user, when I click ‘Create Report’, I should be able to create, configure, save, and share the report. 
-    * As a user, I should be able to set/edit the report name. 
-    * As a user, if not a one time report, I should be able to schedule frequency (hourly, daily, weekly, monthly), start and end date & time to create a report. 
-    * As a user, I should be able to set the file format of report to be shared (pdf, png, HTML, csv, excel). 
-    * As a user, I should be able to set the sharing option (download, email, slack), and sharing coordinates (email address, slack name, slack channel, message etc.) so that I can create, schedule and share a report. 
-    * As a user, I should be able to save the information and configuration entered and trigger sharing of report.
+* As a user, I should be able to export and share reports only if I have the permissions to do so. Else, an error should be thrown.
+* As a user, when I click ‘Export and Share’ I should be able to configure, save, export and share the report. 
+    * As a user, when I click ‘Export and Share’, the system should allow me to share the dashboard or saved search or visualizations that I am currently working on as a report.
+        * Here is the matrix showing various panels and what kind of export option should be available.
+        ![](img/matrix.png)
+    * As a user, I should be able to share the report that belongs to one of the three categories- alert based, one time and schedule based.
+    * As a user, I should be able to set/edit the report name.
+    * As a user, if I select the schedule based report option, I should be able to schedule frequency (hourly, daily, weekly, monthly), start and end date & time to share a report. 
+    * As a user, if I select the one time report option, I should be able to share a report
+    * As a user, if I select the alert based report option, I should be able to select the alert so that the report gets triggered when the particular alert occurs.
+    * As a user, I should be able to set the file format of report to be shared (pdf, png, dashboard link, csv, excel). 
+    * As a user, I should be able to set the sharing option (download, email), and sharing coordinates (email address) so that I can share a report. 
+    * As a user, I should be able to save the information and configuration entered and trigger sharing of the report.
     * As a user, when I click share, the report should show up as a list item in ‘My Reports’ for me under the ‘Shared Reports’ tab and for the end user under the ‘Received Reports’ tab
+    * As a user, I should be able to select the cards (visualizations, data) to be shared 
+    * As a user, I should be able to add header (255 characters), footer (255 characters) to the report.
+        * The header should show date, time and report name, along with sender and receiver’s names by default
 * As a user, when I click ‘My Reports’, I should be able to view the list of current reports that I have generated/created and scheduled, and archived reports. As a user, I should be also be able to see the reports that I have sent and the reports that I have received.
     * For Shared Reports
         * As a user, I should see report name, frequency, save/share status, start date, end date, edit/unschedule/reactivate/archive options
-        * As a user, when I click a particular report in the list, I should be able to edit and save, share if not already shared, and unschedule or reactivate a schedule, and archive unscheduled or inactive reports. 
+        * As a user, when I click a particular report in the list, I should be able to edit and save, share if not already shared, and unschedule or reactivate a schedule, and archive unscheduled or inactive reports, delete report, change the file format of the report, sharing coordinates, sharing options, end date. 
+        * As a user, when I click a particular report in the list and it belongs to the alert based reports category, I should be able to edit and save, change the report name, share if not already shared, choose another alert, stop/pause/resume a report, archive stopped reports, delete report, change the file format of the report, sharing coordinates, sharing options.
         * As a user, I should be able to see a list of reports archived for the past 100 days.
     * For Received Reports
         * As a user, I should see report name, frequency, status will always be ‘shared’, start date, end date, name and role of the person who shared the report
         * As a user, when I click a particular report in the list, I should be able to view the report in a browser using a URL. 
         * As a user, I should be able to archive reports. 
+            * Delete option should not be there as it might lead to complications such as one wherein the user who receives the reports deletes them and says that they never received the reports
         * As a user, I should be able to see a list of reports archived for the past 100 days. NOTE: Reports will be stored as hyperlinks/urls and NOT as actual reports. If the data is available at the time when the url is clicked, report will be created and can be viewed in a browser and can be downloaded.
 
 ### Functional 
