@@ -53,7 +53,7 @@ export default class GenerateReportService {
       };
 
       if (reportFormat === 'png') {
-        const { fileName } = await this._generatePNG(
+        const { fileName } = await _generatePNG(
           url,
           itemName,
           windowWidth,
@@ -67,7 +67,7 @@ export default class GenerateReportService {
         //@ts-ignore
         return h.file(fileName + '.png', { mode: 'attachment' });
       } else if (reportFormat === 'pdf') {
-        const { fileName } = await this._generatePDF(
+        const { fileName } = await _generatePDF(
           url,
           itemName,
           windowWidth,
@@ -89,58 +89,58 @@ export default class GenerateReportService {
     //   console.log('path/file.txt was deleted');
     // });
   };
-
-  _generatePNG = async (
-    url: string,
-    itemName: string,
-    windowWidth: number,
-    windowLength: number
-  ): Promise<{ timeCreated: string; fileName: string }> => {
-    const browser = await puppeteer.launch({
-      headless: true,
-    });
-    const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'networkidle0' });
-
-    await page.setViewport({
-      width: windowWidth,
-      height: windowLength,
-    });
-
-    // TODO: use is_printable to set up output file in A4 or sth
-
-    // TODO: this element is for Dashboard page, need to think about addition params to select html element with source(Visualization, Dashboard)
-    // const ele = await page.$('div[class="react-grid-layout dshLayout--viewing"]')
-
-    const timeCreated = new Date().toISOString();
-    const fileName = itemName + '_' + timeCreated + '_' + uuidv1();
-
-    await page.screenshot({
-      path: fileName + '.png',
-      fullPage: true,
-      // Add encoding: "base64" if asked for data url
-    });
-
-    //TODO: Add header and footer
-
-    await browser.close();
-    return { timeCreated, fileName };
-  };
-
-  _generatePDF = async (
-    url: string,
-    itemName: string,
-    windowWidth: number,
-    windowLength: number
-  ): Promise<{ timeCreated: string; fileName: string }> => {
-    const { timeCreated, fileName } = await this._generatePNG(
-      url,
-      itemName,
-      windowWidth,
-      windowLength
-    );
-    //add png to pdf to avoid long page split
-    await imagesToPdf([fileName + '.png'], fileName + '.pdf');
-    return { timeCreated, fileName };
-  };
 }
+
+export const _generatePDF = async (
+  url: string,
+  itemName: string,
+  windowWidth: number,
+  windowLength: number
+): Promise<{ timeCreated: string; fileName: string }> => {
+  const { timeCreated, fileName } = await _generatePNG(
+    url,
+    itemName,
+    windowWidth,
+    windowLength
+  );
+  //add png to pdf to avoid long page split
+  await imagesToPdf([fileName + '.png'], fileName + '.pdf');
+  return { timeCreated, fileName };
+};
+
+export const _generatePNG = async (
+  url: string,
+  itemName: string,
+  windowWidth: number,
+  windowLength: number
+): Promise<{ timeCreated: string; fileName: string }> => {
+  const browser = await puppeteer.launch({
+    headless: true,
+  });
+  const page = await browser.newPage();
+  await page.goto(url, { waitUntil: 'networkidle0' });
+
+  await page.setViewport({
+    width: windowWidth,
+    height: windowLength,
+  });
+
+  // TODO: use is_printable to set up output file in A4 or sth
+
+  // TODO: this element is for Dashboard page, need to think about addition params to select html element with source(Visualization, Dashboard)
+  // const ele = await page.$('div[class="react-grid-layout dshLayout--viewing"]')
+
+  const timeCreated = new Date().toISOString();
+  const fileName = itemName + '_' + timeCreated + '_' + uuidv1();
+
+  await page.screenshot({
+    path: fileName + '.png',
+    fullPage: true,
+    // Add encoding: "base64" if asked for data url
+  });
+
+  //TODO: Add header and footer
+
+  await browser.close();
+  return { timeCreated, fileName };
+};
