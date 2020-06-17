@@ -19,10 +19,10 @@ import { existsSync } from 'fs';
 import { GenerateReportService } from './server/services';
 import { generateReport } from './server/routes';
 
-export default function(kibana) {
+export default function (kibana) {
   return new kibana.Plugin({
     require: ['elasticsearch'],
-    name: 'opendistro-reporting',
+    name: 'opendistro-kibana-reports',
     uiExports: {
       app: {
         title: 'Reporting',
@@ -33,7 +33,7 @@ export default function(kibana) {
       styleSheetPaths: [
         resolve(__dirname, 'public/app.scss'),
         resolve(__dirname, 'public/app.css'),
-      ].find(p => existsSync(p)),
+      ].find((p) => existsSync(p)),
     },
 
     config(Joi) {
