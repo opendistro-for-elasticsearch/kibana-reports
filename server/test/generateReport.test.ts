@@ -1,7 +1,7 @@
 import 'regenerator-runtime/runtime';
 import fs from 'fs';
 
-import { _generatePDF, _generatePNG } from '../services/generateReportService';
+import { generatePDF, generatePNG } from '../services/generateReportService';
 
 describe('test png', () => {
   afterAll(() => {
@@ -21,13 +21,13 @@ describe('test png', () => {
       windowLength: 800,
     };
 
-    const { timeCreated, fileName } = await _generatePNG(
+    const { timeCreated, fileName } = await generatePNG(
       input.url,
       input.itemName,
       input.windowWidth,
       input.windowLength
     );
-    expect(fileName).toContain(input.itemName);
+    expect(fileName).toContain(input.itemName + '_' + timeCreated);
   }, 20000);
 
   test('generate PDF success', async () => {
@@ -39,12 +39,12 @@ describe('test png', () => {
       windowLength: 800,
     };
 
-    const { timeCreated, fileName } = await _generatePDF(
+    const { timeCreated, fileName } = await generatePDF(
       input.url,
       input.itemName,
       input.windowWidth,
       input.windowLength
     );
-    expect(fileName).toContain(input.itemName);
+    expect(fileName).toContain(input.itemName + '_' + timeCreated);
   }, 20000);
 });

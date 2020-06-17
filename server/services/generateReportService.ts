@@ -53,7 +53,7 @@ export default class GenerateReportService {
       };
 
       if (reportFormat === 'png') {
-        const { fileName } = await _generatePNG(
+        const { fileName } = await generatePNG(
           url,
           itemName,
           windowWidth,
@@ -67,7 +67,7 @@ export default class GenerateReportService {
         //@ts-ignore
         return h.file(fileName + '.png', { mode: 'attachment' });
       } else if (reportFormat === 'pdf') {
-        const { fileName } = await _generatePDF(
+        const { fileName } = await generatePDF(
           url,
           itemName,
           windowWidth,
@@ -91,13 +91,13 @@ export default class GenerateReportService {
   };
 }
 
-export const _generatePDF = async (
+export const generatePDF = async (
   url: string,
   itemName: string,
   windowWidth: number,
   windowLength: number
 ): Promise<{ timeCreated: string; fileName: string }> => {
-  const { timeCreated, fileName } = await _generatePNG(
+  const { timeCreated, fileName } = await generatePNG(
     url,
     itemName,
     windowWidth,
@@ -108,7 +108,7 @@ export const _generatePDF = async (
   return { timeCreated, fileName };
 };
 
-export const _generatePNG = async (
+export const generatePNG = async (
   url: string,
   itemName: string,
   windowWidth: number,
@@ -124,8 +124,6 @@ export const _generatePNG = async (
     width: windowWidth,
     height: windowLength,
   });
-
-  // TODO: use is_printable to set up output file in A4 or sth
 
   // TODO: this element is for Dashboard page, need to think about addition params to select html element with source(Visualization, Dashboard)
   // const ele = await page.$('div[class="react-grid-layout dshLayout--viewing"]')
