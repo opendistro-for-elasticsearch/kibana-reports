@@ -38,14 +38,34 @@ import {
     EuiRadioGroup,
   } from '@elastic/eui';
 import { htmlIdGenerator } from '@elastic/eui/lib/services';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import { ReportSettings } from './report_settings/report_settings';
 import { ReportDelivery } from './delivery/delivery';
 import { ReportSchedule } from './schedule/schedule';
 
 const idPrefix = htmlIdGenerator()();
 
-export class CreateReport extends React.Component {
+interface RouterHomeProps {
+  httpClient?: any
+}
+
+interface CreateReportState {
+  reportSettingsRadioIdSelected: string,
+  reportSettingsSetRadioIdSelected: string,
+  reportSettingsDashboard: string,
+  deliveryEmailSubject: string,
+  deliveryEmailBody: string,
+  scheduleRadioFutureDateSelected: boolean,
+  scheduleRadioRecurringSelected: boolean,
+  scheduleUTCOffset: number,
+  scheduleRecurringFrequency: string,
+  scheduleRecurringDailyTime: string, 
+  scheduleRecurringUTCOffset: number,
+  scheduleRecurringWeeklyDayOfWeek: string,
+  scheduleRecurringStartDate: Moment
+}
+
+export class CreateReport extends React.Component<RouterHomeProps, CreateReportState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -56,10 +76,10 @@ export class CreateReport extends React.Component {
       deliveryEmailBody: "",
       scheduleRadioFutureDateSelected: false,
       scheduleRadioRecurringSelected: false,
-      scheduleUTCOffset: '',
+      scheduleUTCOffset: 0,
       scheduleRecurringFrequency: 'Daily',
       scheduleRecurringDailyTime: '',
-      scheduleRecurringUTCOffset: '',
+      scheduleRecurringUTCOffset: 0,
       scheduleRecurringWeeklyDayOfWeek: 'Monday',
       scheduleRecurringStartDate: moment(),
     };

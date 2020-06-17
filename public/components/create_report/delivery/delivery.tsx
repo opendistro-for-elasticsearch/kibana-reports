@@ -13,24 +13,16 @@
  * permissions and limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import {
     EuiFieldText,
     EuiFormRow,
-    EuiButton,
-    EuiPage,
     EuiPageHeader,
     EuiTitle,
-    EuiPageBody,
     EuiPageContent,
     EuiPageContentBody,
-    EuiInMemoryTable,
     EuiHorizontalRule,
-    EuiSpacer,
-    EuiSuggest,
     EuiTextArea,
-    EuiRadioGroup,
-    EuiComboBox,
   } from '@elastic/eui';
 import { DeliveryRecipientsBox } from './delivery_recipients_box';
 import { DeliveryChannelRadio } from './delivery_channel_radio';
