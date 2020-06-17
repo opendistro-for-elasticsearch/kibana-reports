@@ -56,10 +56,6 @@ export default class GenerateReportService {
           windowWidth,
           windowLength
         );
-        // TODO: save metadata into ES
-        // const { callWithRequest } = this.esDriver.getCluster(CLUSTER.DATA)
-        // const params: RequestParams.Index = { index: "report", body: { url, itemName, reportFormat, timeCreated } }
-        // await callWithRequest(req, "index", params)
 
         //@ts-ignore
         return h.file(fileName + '.png', { mode: 'attachment' });

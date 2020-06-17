@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ describe('test png', () => {
   test('generate PDF success', async () => {
     expect.assertions(1);
     const input = {
-      url: 'https://www.google.com/',
+      url: 'https://opendistro.github.io/for-elasticsearch-docs/',
       itemName: 'test',
       windowWidth: 1200,
       windowLength: 800,
