@@ -14,7 +14,7 @@
  */
 
 import { Server } from 'hapi';
-import * as Joi from '@hapi/joi';
+import Joi from '@hapi/joi';
 import { NodeServices } from '../models/interfaces';
 import { NODE_API, REQUEST } from '../utils/constants';
 

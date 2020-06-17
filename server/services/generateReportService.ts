@@ -21,9 +21,6 @@ import puppeteer from 'puppeteer';
 import imagesToPdf from 'images-to-pdf';
 import fs from 'fs';
 import { v1 as uuidv1 } from 'uuid';
-
-// TODO: change the following accordingly
-// import { AcknowledgedResponse, AddPolicyResponse, AddResponse, CatIndex, GetIndicesResponse, SearchResponse } from "../models/interfaces";
 import { ServerResponse } from '../models/types';
 import { CLUSTER } from '../utils/constants';
 

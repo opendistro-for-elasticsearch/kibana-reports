@@ -13,4 +13,6 @@
  * permissions and limitations under the License.
  */
 
-export type ServerResponse<T> = { ok: false; error: string } | { ok: true; response: T };
+export type ServerResponse<T> =
+  | { ok: false; error: string }
+  | { ok: true; response: T };
