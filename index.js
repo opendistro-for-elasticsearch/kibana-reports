@@ -45,9 +45,24 @@ export default function (kibana) {
     init(server, options) {
       //TODO: Create clusters (SQL and scheduler plugin in the future)
 
+      const initializerContext = {
+        logger: {
+          get() {
+            return {
+              info: (log) => console.log(log),
+              error: (log) => console.error(log),
+              warn: (log) => console.warn(log),
+            };
+          },
+        },
+      };
+
       //Initialize services
       const esDriver = server.plugins.elasticsearch;
-      const generateReportService = new GenerateReportService(esDriver);
+      const generateReportService = new GenerateReportService(
+        initializerContext,
+        esDriver
+      );
       const services = { generateReportService };
 
       // Add server routes

@@ -30,7 +30,7 @@ describe('test png', () => {
   test('generate PNG success', async () => {
     expect.assertions(1);
     const input = {
-      url: 'https://www.google.com/',
+      url: 'https://opendistro.github.io/for-elasticsearch-docs/',
       itemName: 'test',
       windowWidth: 1200,
       windowLength: 800,
@@ -42,7 +42,7 @@ describe('test png', () => {
       input.windowWidth,
       input.windowLength
     );
-    expect(fileName).toContain(input.itemName + '_' + timeCreated);
+    expect(fileName).toContain(`${input.itemName}_${timeCreated}`);
   }, 20000);
 
   test('generate PDF success', async () => {
@@ -52,14 +52,16 @@ describe('test png', () => {
       itemName: 'test',
       windowWidth: 1200,
       windowLength: 800,
+      reportFormat: 'pdf',
     };
 
     const { timeCreated, fileName } = await generatePDF(
       input.url,
       input.itemName,
       input.windowWidth,
-      input.windowLength
+      input.windowLength,
+      input.reportFormat
     );
-    expect(fileName).toContain(input.itemName + '_' + timeCreated);
+    expect(fileName).toContain(`${input.itemName}_${timeCreated}`);
   }, 20000);
 });

@@ -14,7 +14,7 @@
  */
 
 //@ts-ignore
-import { Legacy } from 'kibana';
+import { Legacy, Logger, PluginInitializerContext } from 'kibana';
 import { Server, Request, ResponseToolkit } from 'hapi';
 import { RequestParams } from '@elastic/elasticsearch';
 import puppeteer from 'puppeteer';
@@ -22,15 +22,20 @@ import imagesToPdf from 'images-to-pdf';
 import fs from 'fs';
 import { v1 as uuidv1 } from 'uuid';
 import { ServerResponse } from '../models/types';
-import { CLUSTER } from '../utils/constants';
+import { CLUSTER, FORMAT } from '../utils/constants';
 
 type ElasticsearchPlugin = Legacy.Plugins.elasticsearch.Plugin;
 
 export default class GenerateReportService {
   esDriver: ElasticsearchPlugin;
+  private readonly log: Logger;
 
-  constructor(esDriver: ElasticsearchPlugin) {
+  constructor(
+    private readonly initializerContext: PluginInitializerContext,
+    esDriver: ElasticsearchPlugin
+  ) {
     this.esDriver = esDriver;
+    this.log = this.initializerContext.logger.get();
   }
 
   report = async (req: Request, h: ResponseToolkit): Promise<any> => {
@@ -49,7 +54,7 @@ export default class GenerateReportService {
         windowLength: number;
       };
 
-      if (reportFormat === 'png') {
+      if (reportFormat === FORMAT.png) {
         const { fileName } = await generatePNG(
           url,
           itemName,
@@ -58,21 +63,22 @@ export default class GenerateReportService {
         );
 
         //@ts-ignore
-        return h.file(fileName + '.png', { mode: 'attachment' });
-      } else if (reportFormat === 'pdf') {
+        return h.file(`${fileName}.${reportFormat}`, { mode: 'attachment' });
+      } else if (reportFormat === FORMAT.pdf) {
         const { fileName } = await generatePDF(
           url,
           itemName,
           windowWidth,
-          windowLength
+          windowLength,
+          reportFormat
         );
         //@ts-ignore
-        return h.file(fileName + '.pdf', { mode: 'attachment' });
+        return h.file(`${fileName}.${reportFormat}`, { mode: 'attachment' });
       }
 
       return { message: 'no support for such format: ' + reportFormat };
     } catch (err) {
-      console.error('Reporting-Generate-PDF', err);
+      this.log.error(`Reporting-Generate-PDF: ${err}`);
       return { message: err.message };
     }
 
@@ -88,7 +94,8 @@ export const generatePDF = async (
   url: string,
   itemName: string,
   windowWidth: number,
-  windowLength: number
+  windowLength: number,
+  reportFormat: string
 ): Promise<{ timeCreated: string; fileName: string }> => {
   const { timeCreated, fileName } = await generatePNG(
     url,
@@ -96,9 +103,13 @@ export const generatePDF = async (
     windowWidth,
     windowLength
   );
-  //add png to pdf to avoid long page split
-  await imagesToPdf([fileName + '.png'], fileName + '.pdf');
-  return { timeCreated, fileName };
+  try {
+    //add png to pdf to avoid long page split
+    await imagesToPdf([`${fileName}.png`], `${fileName}.${reportFormat}`);
+    return { timeCreated, fileName };
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const generatePNG = async (
@@ -107,31 +118,39 @@ export const generatePNG = async (
   windowWidth: number,
   windowLength: number
 ): Promise<{ timeCreated: string; fileName: string }> => {
-  const browser = await puppeteer.launch({
-    headless: true,
-  });
-  const page = await browser.newPage();
-  await page.goto(url, { waitUntil: 'networkidle0' });
+  try {
+    const browser = await puppeteer.launch({
+      headless: true,
+    });
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: 'networkidle0' });
 
-  await page.setViewport({
-    width: windowWidth,
-    height: windowLength,
-  });
+    await page.setViewport({
+      width: windowWidth,
+      height: windowLength,
+    });
 
-  // TODO: this element is for Dashboard page, need to think about addition params to select html element with source(Visualization, Dashboard)
-  // const ele = await page.$('div[class="react-grid-layout dshLayout--viewing"]')
+    // TODO: this element is for Dashboard page, need to think about addition params to select html element with source(Visualization, Dashboard)
+    // const ele = await page.$('div[class="react-grid-layout dshLayout--viewing"]')
 
-  const timeCreated = new Date().toISOString();
-  const fileName = itemName + '_' + timeCreated + '_' + uuidv1();
+    const timeCreated = new Date().toISOString();
+    const fileName = getFileName(itemName, timeCreated);
 
-  await page.screenshot({
-    path: fileName + '.png',
-    fullPage: true,
-    // Add encoding: "base64" if asked for data url
-  });
+    await page.screenshot({
+      path: `${fileName}.png`,
+      fullPage: true,
+      // Add encoding: "base64" if asked for data url
+    });
 
-  //TODO: Add header and footer
+    //TODO: Add header and footer
 
-  await browser.close();
-  return { timeCreated, fileName };
+    await browser.close();
+    return { timeCreated, fileName };
+  } catch (error) {
+    throw error;
+  }
 };
+
+function getFileName(itemName: string, timeCreated: string): string {
+  return `${itemName}_${timeCreated}_${uuidv1()}`;
+}

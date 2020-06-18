@@ -31,3 +31,8 @@ export enum CLUSTER {
   ADMIN = 'admin',
   DATA = 'data',
 }
+
+export enum FORMAT {
+  pdf = 'pdf',
+  png = 'png',
+}
