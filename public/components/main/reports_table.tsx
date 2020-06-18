@@ -35,7 +35,7 @@ export const reports_list_columns = [
   {
     field: 'reportSource',
     name: 'Source',
-    render: (username: any) => (
+    render: (username: string) => (
       <EuiLink href={`https://github.com/${username}`} target="_blank">
         {username}
       </EuiLink>
@@ -122,8 +122,8 @@ export const reports_list_search = {
 };
 
 export const reports_list_selection_value = {
-  selectable: (user: { online: any; }) => user.online,
-  selectableMessage: (selectable: any) =>
-      !selectable ? 'User is currently offline' : undefined,
-  onSelectionChange: (selection: any) => onSelectionChange,
+  selectable: (user: { online: boolean; }) => user.online,
+  selectableMessage: (selectable: boolean) =>
+    !selectable ? 'User is currently offline' : undefined,
+  onSelectionChange: (selection: string[]) => onSelectionChange,
 };
