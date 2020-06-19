@@ -16,25 +16,16 @@
 import React, { useState } from 'react';
 import {
     EuiButtonEmpty,
-    EuiComboBox,
     EuiDatePicker,
-    EuiFieldText,
     EuiSelect,
     EuiFlexGroup,
     EuiFlexItem,
     EuiFormRow,
     EuiButton,
     EuiPage,
-    EuiPageHeader,
     EuiTitle,
     EuiPageBody,
-    EuiPageContent,
-    EuiPageContentBody,
-    EuiInMemoryTable,
-    EuiHorizontalRule,
     EuiSpacer,
-    EuiSuggest,
-    EuiTextArea,
     EuiRadioGroup,
   } from '@elastic/eui';
 import { htmlIdGenerator } from '@elastic/eui/lib/services';
@@ -45,108 +36,49 @@ import { ReportSchedule } from './schedule/schedule';
 
 const idPrefix = htmlIdGenerator()();
 
-interface RouterHomeProps {
-  httpClient?: any
-}
+export function CreateReport() {
+  const [reportSettingsDashboard, setReportSettingsDashboard] = useState('');
+  const [deliveryEmailSubject, setDeliveryEmailSubject] = useState('');
+  const [deliveryEmailBody, setDeliveryEmailBody] = useState('');
+  const [scheduleRadioFutureDateSelected, setScheduleRadioFutureDateSelected] = useState(false);
+  const [scheduleRadioRecurringSelected, setScheduleRadioRecurringSelected] = useState(false);
+  const [scheduleUTCOffset, setScheduleUTCOffset] = useState(0);
+  const [scheduleFutureDate, setScheduleFutureDate] = useState(moment());
+  const [scheduleRecurringFrequency, setScheduleRecurringFrequency] = useState('Daily');
+  const [scheduleRecurringUTCOffset, setScheduleRecurringUTCOffset] = useState(0);
+  const [scheduleRecurringWeeklyDayOfWeek, setScheduleRecurringWeeklyDayOfWeek] = useState('Monday');
+  const [scheduleRecurringStartDate, setScheduleRecurringStartDate] = useState(moment());
+  const [scheduleRadioIdSelected, setScheduleRadioIdSelected] = useState(`${idPrefix}7`);
 
-interface CreateReportState {
-  reportSettingsRadioIdSelected: string,
-  reportSettingsSetRadioIdSelected: string,
-  reportSettingsDashboard: string,
-  deliveryEmailSubject: string,
-  deliveryEmailBody: string,
-  scheduleRadioFutureDateSelected: boolean,
-  scheduleRadioRecurringSelected: boolean,
-  scheduleUTCOffset: number,
-  scheduleRecurringFrequency: string,
-  scheduleRecurringDailyTime: string, 
-  scheduleRecurringUTCOffset: number,
-  scheduleRecurringWeeklyDayOfWeek: string,
-  scheduleRecurringStartDate: Moment
-}
-
-export class CreateReport extends React.Component<RouterHomeProps, CreateReportState> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      reportSettingsRadioIdSelected: '',
-      reportSettingsSetRadioIdSelected: `${idPrefix}1`,
-      reportSettingsDashboard: '',
-      deliveryEmailSubject: "",
-      deliveryEmailBody: "",
-      scheduleRadioFutureDateSelected: false,
-      scheduleRadioRecurringSelected: false,
-      scheduleUTCOffset: 0,
-      scheduleRecurringFrequency: 'Daily',
-      scheduleRecurringDailyTime: '',
-      scheduleRecurringUTCOffset: 0,
-      scheduleRecurringWeeklyDayOfWeek: 'Monday',
-      scheduleRecurringStartDate: moment(),
-    };
-  }
-  
-  onChangeReportSettingsDashboard = (e) => {
-    this.setState({
-        reportSettingsDashboard: e.target.value
-    });
+  const onChangeReportSettingsDashboard = (e) => {
+    setReportSettingsDashboard(e.target.value);
   }
 
-  onChangeDeliveryEmailSubject = (e) => {
-    this.setState({
-        deliveryEmailSubject: e.target.value
-    });
+  const onChangeDeliveryEmailSubject = (e) => {
+    setDeliveryEmailSubject(e.target.value);
   }
 
-  onChangeDeliveryEmailBody = (e) => {
-    this.setState({
-        deliveryEmailBody: e.target.value
-    });
+  const onChangeDeliveryEmailBody = (e) => {;
+    setDeliveryEmailBody(e.target.value);
   }
 
-  componentDidMount() {
-    const { httpClient } = this.props;
-  }
+  const onChangeScheduleSettingsRadio = optionId => {
+    setScheduleRadioIdSelected(optionId);
+    if (optionId === `${idPrefix}7`) {
+      setScheduleRadioFutureDateSelected(false);
+      setScheduleRadioRecurringSelected(false);
+    }
+    else if (optionId === `${idPrefix}8`) {
+      setScheduleRadioFutureDateSelected(true);
+      setScheduleRadioRecurringSelected(false);    
+    }
+    else if (optionId === `${idPrefix}9`) {
+      setScheduleRadioFutureDateSelected(false);
+      setScheduleRadioRecurringSelected(true);
+    }
+  };
 
-  ReportSettingsDashboardSelect = () => {
-    const description = 'this is a short description';
-    const sampleItems = [
-      {
-        type: { iconType: 'kqlField', color: 'tint4' },
-        label: 'Flight Dashboard Data',
-        description: description,
-      },
-      {
-        type: { iconType: 'kqlValue', color: 'tint0' },
-        label: 'E-commerce data',
-        description: description,
-      },
-      {
-        type: { iconType: 'kqlSelector', color: 'tint2' },
-        label: 'Ticket data',
-        description: description,
-      },
-    ];
-
-    const [status, setStatus] = useState('unchanged');
-
-    const onItemClick = item => {
-      alert(`Item [${item.label}] was clicked`);
-    };
-
-    return (
-      <div>
-        <EuiSuggest
-          status={status}
-          onInputChange={ () => {} }
-          onItemClick={this.onChangeReportSettingsDashboard}
-          placeholder="Start typing to display suggestions"
-          suggestions={sampleItems}
-        />
-      </div>
-    );
-  }
-
-  ScheduleRadio = () => {
+  const ScheduleRadio = () => {
     const radios = [
       {
         id: `${idPrefix}7`,
@@ -161,72 +93,32 @@ export class CreateReport extends React.Component<RouterHomeProps, CreateReportS
         label: 'Recurring',
       },
     ];
-        
-    const [radioIdSelected, setRadioIdSelected] = useState(`${idPrefix}7`);
-        
-    const onChangeSettingsRadio = optionId => {
-      setRadioIdSelected(optionId);
-      console.log(optionId)
-      if (optionId === `${idPrefix}7`) {
-        this.setState({
-          scheduleRadioFutureDateSelected: false
-        });
-        this.setState({
-          scheduleRadioRecurringSelected: false
-        });
-      }
-      else if (optionId === `${idPrefix}8`) {
-        this.setState({
-          scheduleRadioFutureDateSelected: true
-        });
-        this.setState({
-          scheduleRadioRecurringSelected: false
-        });
-      }
-      else if (optionId === `${idPrefix}9`) {
-        this.setState({
-          scheduleRadioFutureDateSelected: false
-        });
-        this.setState({
-          scheduleRadioRecurringSelected: true
-        });
-      }
-    };
-        
     return (
       <EuiRadioGroup
         options={radios}
-        idSelected={radioIdSelected}
-        onChange={id => onChangeSettingsRadio(id)}
+        idSelected={scheduleRadioIdSelected}
+        onChange={onChangeScheduleSettingsRadio}
         name="scheduleRadioGroup"
-        legend={{
-          children: <span>This is a legend for a radio group</span>,
-        }}
       />
     );
   };
   
-
-  timezone_options = [
-      { value: -4, text: 'EDT -04:00' },
-      { value: -5, text: 'CDT -05:00' },
-      { value: -6, text: 'MDT -06:00' },
-      { value: -7, text: 'MST/PDT -07:00' },
-      { value: -8, text: 'AKDT -08:00' },
-      { value: -10, text: 'HST -10:00' }
+  const timezone_options = [
+    { value: -4, text: 'EDT -04:00' },
+    { value: -5, text: 'CDT -05:00' },
+    { value: -6, text: 'MDT -06:00' },
+    { value: -7, text: 'MST/PDT -07:00' },
+    { value: -8, text: 'AKDT -08:00' },
+    { value: -10, text: 'HST -10:00' }
   ];
 
-  ScheduleFutureDatePicker = () => {
-    const [startDate, setStartDate] = useState(moment());
-  
+  const ScheduleFutureDatePicker = () => {  
     const handleChangeScheduleDate = date => {
-      setStartDate(date);
+      setScheduleFutureDate(date);
     };
 
     const onSelectOffsetChange = e => {
-      this.setState({
-          scheduleUTCOffset: parseInt(e.target.value, 10),
-      });
+      setScheduleUTCOffset(parseInt(e.target.value, 10));
     };
 
     return (
@@ -234,14 +126,14 @@ export class CreateReport extends React.Component<RouterHomeProps, CreateReportS
         <EuiFormRow label="Time select on">
           <EuiDatePicker
             showTimeSelect
-            selected={startDate}
+            selected={scheduleFutureDate}
             onChange={handleChangeScheduleDate}
           />
         </EuiFormRow>
         <EuiFormRow label="UTC offset">
           <EuiSelect
-            options={this.timezone_options}
-            value={this.state.scheduleUTCOffset}
+            options={timezone_options}
+            value={scheduleUTCOffset}
             onChange={onSelectOffsetChange}
           />
         </EuiFormRow>
@@ -249,20 +141,13 @@ export class CreateReport extends React.Component<RouterHomeProps, CreateReportS
     );
   }
 
-  ScheduleRecurringDailyInput = () => {
-    const [startDate, setStartDate] = useState(moment());
-
+  const ScheduleRecurringDailyInput = () => {
     const handleTimeChange = date => {
-      setStartDate(date);
-      this.setState({
-        scheduleRecurringStartDate: date
-      });
+      setScheduleRecurringStartDate(date);
     };
 
     const onSelectOffsetChange = e => {
-      this.setState({
-        scheduleRecurringUTCOffset: parseInt(e.target.value, 10),
-      });
+      setScheduleRecurringUTCOffset(parseInt(e.target.value, 10));
     };
 
     return (
@@ -271,7 +156,7 @@ export class CreateReport extends React.Component<RouterHomeProps, CreateReportS
           <EuiDatePicker
             showTimeSelect
             showTimeSelectOnly
-            selected={startDate}
+            selected={scheduleRecurringStartDate}
             onChange={handleTimeChange}
             dateFormat="HH:mm"
             timeFormat="HH:mm"
@@ -279,8 +164,8 @@ export class CreateReport extends React.Component<RouterHomeProps, CreateReportS
         </EuiFormRow>
         <EuiFormRow label="UTC offset">
           <EuiSelect
-            options={this.timezone_options}
-            value={this.state.scheduleRecurringUTCOffset}
+            options={timezone_options}
+            value={scheduleRecurringUTCOffset}
             onChange={onSelectOffsetChange}
           />
         </EuiFormRow>
@@ -288,49 +173,45 @@ export class CreateReport extends React.Component<RouterHomeProps, CreateReportS
     );
   }
 
-  ScheduleRecurringWeeklyInput = () => {
+  const ScheduleRecurringWeeklyInput = () => {
     const recurringDayOptions = [
-        { value: 'Monday', text: 'Monday' },
-        { value: 'Tuesday', text: 'Tuesday' },
-        { value: 'Wednesday', text: 'Wednesday' },
-        { value: 'Thursday', text: 'Thursday' },
-        { value: 'Friday', text: 'Friday' },
-        { value: 'Saturday', text: 'Saturday' },
-        { value: 'Sunday', text: 'Sunday' },
+      { value: 'Monday', text: 'Monday' },
+      { value: 'Tuesday', text: 'Tuesday' },
+      { value: 'Wednesday', text: 'Wednesday' },
+      { value: 'Thursday', text: 'Thursday' },
+      { value: 'Friday', text: 'Friday' },
+      { value: 'Saturday', text: 'Saturday' },
+      { value: 'Sunday', text: 'Sunday' },
     ];
 
     const onChangeDayOfWeek = (e) => {
-        this.setState({
-            scheduleRecurringWeeklyDayOfWeek: e.target.value
-        });
+      setScheduleRecurringWeeklyDayOfWeek(e.target.value);
     }
 
     return (
-        <div>
-          <EuiFormRow label="Every">
-            <EuiSelect
-              options={recurringDayOptions}
-              value={this.state.scheduleRecurringWeeklyDayOfWeek}
-              onChange={onChangeDayOfWeek}
-            />
-          </EuiFormRow>
-          <this.ScheduleRecurringDailyInput/>
-        </div>
+      <div>
+        <EuiFormRow label="Every">
+          <EuiSelect
+            options={recurringDayOptions}
+            value={scheduleRecurringWeeklyDayOfWeek}
+            onChange={onChangeDayOfWeek}
+          />
+        </EuiFormRow>
+        <ScheduleRecurringDailyInput/>
+      </div>
     );
   }
 
-  ScheduleRecurringMonthlyInput = () => {
+  const ScheduleRecurringMonthlyInput = () => {
     const handleChangeMonthly = (date) => {
-      this.setState({
-        scheduleRecurringStartDate: date
-      });
+      setScheduleRecurringStartDate(date);
     }
     return (
       <div>
         <EuiFormRow label="On">
           <EuiDatePicker
             showTimeSelect
-            selected={this.state.scheduleRecurringStartDate}
+            selected={scheduleRecurringStartDate}
             onChange={handleChangeMonthly}
             minDate={moment()}
             maxDate={moment().endOf('month')}
@@ -340,7 +221,7 @@ export class CreateReport extends React.Component<RouterHomeProps, CreateReportS
     );
   }
 
-  ScheduleRecurringFrequency = () => {
+  const ScheduleRecurringFrequency = () => {
     const options = [
       { value: 'Daily', text: 'Daily' },
       { value: 'Weekly', text: 'Weekly' },
@@ -348,21 +229,19 @@ export class CreateReport extends React.Component<RouterHomeProps, CreateReportS
     ];
 
     const onChangeScheduleRecurringFrequency = e => {
-      this.setState({
-        scheduleRecurringFrequency: e.target.value
-      });
+      setScheduleRecurringFrequency(e.target.value);
     }
 
-    const daily = (this.state.scheduleRecurringFrequency == 'Daily')
-      ? <this.ScheduleRecurringDailyInput/>
+    const daily = (scheduleRecurringFrequency == 'Daily')
+      ? <ScheduleRecurringDailyInput/>
       : null;
 
-    const weekly = (this.state.scheduleRecurringFrequency == 'Weekly')
-      ? <this.ScheduleRecurringWeeklyInput/>
+    const weekly = (scheduleRecurringFrequency == 'Weekly')
+      ? <ScheduleRecurringWeeklyInput/>
       : null;
 
-    const monthly = (this.state.scheduleRecurringFrequency == 'Monthly')
-      ? <this.ScheduleRecurringMonthlyInput/>
+    const monthly = (scheduleRecurringFrequency == 'Monthly')
+      ? <ScheduleRecurringMonthlyInput/>
       : null;
 
     return (
@@ -370,7 +249,7 @@ export class CreateReport extends React.Component<RouterHomeProps, CreateReportS
         <EuiFormRow label="Frequency">
           <EuiSelect
             options={options}
-            value={this.state.scheduleRecurringFrequency}
+            value={scheduleRecurringFrequency}
             onChange={onChangeScheduleRecurringFrequency}
           />
         </EuiFormRow>
@@ -381,52 +260,51 @@ export class CreateReport extends React.Component<RouterHomeProps, CreateReportS
     );
   }
 
-  render() {
-    const scheduleFutureDateCalendar = this.state.scheduleRadioFutureDateSelected
-      ? <this.ScheduleFutureDatePicker/> 
-      : null;
+  const scheduleFutureDateCalendar = scheduleRadioFutureDateSelected
+    ? <ScheduleFutureDatePicker/> 
+    : null;
 
-    const scheduleRecurringFrequencySelect = this.state.scheduleRadioRecurringSelected
-      ? <this.ScheduleRecurringFrequency/>
-      : null;
-    return (
-      <EuiPage>
-        <EuiPageBody>
-          <EuiTitle>
-            <h1>Create Report</h1>
-          </EuiTitle>
-          <ReportSettings
-            reportSettingsDashboard={this.state.reportSettingsDashboard}
-            onChangeReportSettingsDashboard={this.onChangeReportSettingsDashboard}
-          />
-          <EuiSpacer/>
-          <ReportDelivery
-            deliveryEmailSubject={this.state.deliveryEmailSubject}
-            onChangeDeliveryEmailSubject={this.onChangeDeliveryEmailSubject}
-            deliveryEmailBody={this.state.deliveryEmailBody}
-            onChangeDeliveryEmailBody={this.onChangeDeliveryEmailBody}
-          />
-          <EuiSpacer/>
-          <ReportSchedule
-            ScheduleRadio={this.ScheduleRadio}
-            scheduleFutureDateCalendar={scheduleFutureDateCalendar}
-            scheduleRecurringFrequencySelect={scheduleRecurringFrequencySelect}
-          />
-          <EuiSpacer/>
-          <EuiFlexGroup justifyContent="flexEnd">
-            <EuiFlexItem grow={false}>
-              <EuiButtonEmpty
-                onClick={() => {window.location.assign('opendistro-kibana-reports#/')}}
-              >
-                Cancel
-              </EuiButtonEmpty>
-            </EuiFlexItem>
-            <EuiFlexItem grow={false}>
-              <EuiButton fill>Create</EuiButton>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-        </EuiPageBody>
-      </EuiPage>
-    );
-  }
+  const scheduleRecurringFrequencySelect = scheduleRadioRecurringSelected
+    ? <ScheduleRecurringFrequency/>
+    : null;
+
+  return (
+    <EuiPage>
+      <EuiPageBody>
+        <EuiTitle>
+          <h1>Create Report</h1>
+        </EuiTitle>
+        <ReportSettings
+          reportSettingsDashboard={reportSettingsDashboard}
+          onChangeReportSettingsDashboard={onChangeReportSettingsDashboard}
+        />
+        <EuiSpacer/>
+        <ReportDelivery
+          deliveryEmailSubject={deliveryEmailSubject}
+          onChangeDeliveryEmailSubject={onChangeDeliveryEmailSubject}
+          deliveryEmailBody={deliveryEmailBody}
+          onChangeDeliveryEmailBody={onChangeDeliveryEmailBody}
+        />
+        <EuiSpacer/>
+        <ReportSchedule
+          ScheduleRadio={ScheduleRadio}
+          scheduleFutureDateCalendar={scheduleFutureDateCalendar}
+          scheduleRecurringFrequencySelect={scheduleRecurringFrequencySelect}
+        />
+        <EuiSpacer/>
+        <EuiFlexGroup justifyContent="flexEnd">
+          <EuiFlexItem grow={false}>
+            <EuiButtonEmpty
+              onClick={() => {window.location.assign('opendistro-kibana-reports#/')}}
+            >
+              Cancel
+            </EuiButtonEmpty>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <EuiButton fill>Create</EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiPageBody>
+    </EuiPage>
+  );
 }
