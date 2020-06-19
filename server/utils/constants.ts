@@ -13,28 +13,26 @@
  * permissions and limitations under the License.
  */
 
-const response_code = {
-  status: "success",
-  code: 200,
-  message: "Schedule created successfully"
+export const BASE_API_PATH = '/api/reporting';
+export const NODE_API = Object.freeze({
+  GENERATE_REPORT: `${BASE_API_PATH}/generateReport`,
+  // TODO: SCHEDULE_REPORT: `${BASE_API_PATH}/scheduleReport`,
+});
+
+export const REQUEST = Object.freeze({
+  PUT: 'PUT',
+  DELETE: 'DELETE',
+  GET: 'GET',
+  POST: 'POST',
+  HEAD: 'HEAD',
+});
+
+export enum CLUSTER {
+  ADMIN = 'admin',
+  DATA = 'data',
 }
 
-export default function (server) {
-    server.route({
-      path: '/api/reporting/schedule',
-      method: 'POST',
-      async handler(response) {
-        try {
-            await schedule_job()
-          }
-          catch (e) {
-            console.log(e)
-        }
-        return response_code
-      }
-    });
-}
-
-async function schedule_job() {
-
+export enum FORMAT {
+  pdf = 'pdf',
+  png = 'png',
 }
