@@ -15,14 +15,9 @@
 
 import { resolve } from 'path';
 import { existsSync } from 'fs';
-import { schema } from '@kbn/config-schema';
 
-
-import { i18n } from '@kbn/i18n';
-
-import reportRoute from './server/routes/report';
-import dashboardRoute from './server/routes/dashboard';
-import schedulerRoute from './server/routes/scheduler';
+import { GenerateReportService } from './server/services';
+import { generateReport } from './server/routes';
 
 export default function (kibana) {
   return new kibana.Plugin({
@@ -34,9 +29,11 @@ export default function (kibana) {
         description: 'Kibana Reports',
         main: 'plugins/opendistro-kibana-reports/app',
       },
-      hacks: [
-      ],
-      styleSheetPaths: [resolve(__dirname, 'public/app.scss'), resolve(__dirname, 'public/app.css')].find(p => existsSync(p)),
+      hacks: [],
+      styleSheetPaths: [
+        resolve(__dirname, 'public/app.scss'),
+        resolve(__dirname, 'public/app.css'),
+      ].find((p) => existsSync(p)),
     },
 
     config(Joi) {
@@ -45,12 +42,31 @@ export default function (kibana) {
       }).default();
     },
 
-    init(server, options) { // eslint-disable-line no-unused-vars
+    init(server, options) {
+      //TODO: Create clusters (SQL and scheduler plugin in the future)
 
-      // Add server routes and initialize the plugin here
-      reportRoute(server);
-      dashboardRoute(server);
-      schedulerRoute(server);
-    }
+      const initializerContext = {
+        logger: {
+          get() {
+            return {
+              info: (log) => console.log(log),
+              error: (log) => console.error(log),
+              warn: (log) => console.warn(log),
+            };
+          },
+        },
+      };
+
+      //Initialize services
+      const esDriver = server.plugins.elasticsearch;
+      const generateReportService = new GenerateReportService(
+        initializerContext,
+        esDriver
+      );
+      const services = { generateReportService };
+
+      // Add server routes
+      generateReport(server, services);
+    },
   });
 }
