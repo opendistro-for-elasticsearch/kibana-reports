@@ -28,10 +28,10 @@ import { CreateReport } from '../create_report/create_report';
 import { ReportDetails } from './report_details';
 
 interface RouterHomeProps {
-  httpClient?: any
+  httpClient?: any,
 }
 
-export class RouterHome extends React.Component<RouterHomeProps> {
+export class RouterHome extends React.Component<RouterHomeProps, any> {
   constructor(props: any) {
     super(props);
     this.state = {};

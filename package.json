@@ -21,6 +21,8 @@
   "dependencies": {
     "@babel/core": "^7.10.2",
     "@hapi/joi": "15.1.1",
+    "@elastic/eui": "^26.0.0",
+    "@types/reach__router": "^1.3.5",
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^10.2.1",
     "@types/jest": "^26.0.0",

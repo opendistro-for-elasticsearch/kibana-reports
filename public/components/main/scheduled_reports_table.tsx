@@ -33,7 +33,7 @@ export const scheduled_report_columns = [
   {
     field: 'reportSource',
     name: 'Source',
-    render: username => (
+    render: (username: string) => (
       <EuiLink href={`https://github.com/${username}`} target="_blank">
         {username}
       </EuiLink>
