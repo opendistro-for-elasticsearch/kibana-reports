@@ -36,6 +36,16 @@ import { ReportSchedule } from './schedule/schedule';
 
 const idPrefix = htmlIdGenerator()();
 
+const recurringDayOptions = [
+  { value: 'Monday', text: 'Monday' },
+  { value: 'Tuesday', text: 'Tuesday' },
+  { value: 'Wednesday', text: 'Wednesday' },
+  { value: 'Thursday', text: 'Thursday' },
+  { value: 'Friday', text: 'Friday' },
+  { value: 'Saturday', text: 'Saturday' },
+  { value: 'Sunday', text: 'Sunday' },
+];
+
 export function CreateReport() {
   const [reportSettingsDashboard, setReportSettingsDashboard] = useState('');
   const [deliveryEmailSubject, setDeliveryEmailSubject] = useState('');
@@ -174,16 +184,6 @@ export function CreateReport() {
   }
 
   const ScheduleRecurringWeeklyInput = () => {
-    const recurringDayOptions = [
-      { value: 'Monday', text: 'Monday' },
-      { value: 'Tuesday', text: 'Tuesday' },
-      { value: 'Wednesday', text: 'Wednesday' },
-      { value: 'Thursday', text: 'Thursday' },
-      { value: 'Friday', text: 'Friday' },
-      { value: 'Saturday', text: 'Saturday' },
-      { value: 'Sunday', text: 'Sunday' },
-    ];
-
     const onChangeDayOfWeek = (e) => {
       setScheduleRecurringWeeklyDayOfWeek(e.target.value);
     }
@@ -232,17 +232,18 @@ export function CreateReport() {
       setScheduleRecurringFrequency(e.target.value);
     }
 
-    const daily = (scheduleRecurringFrequency == 'Daily')
-      ? <ScheduleRecurringDailyInput/>
-      : null;
-
-    const weekly = (scheduleRecurringFrequency == 'Weekly')
-      ? <ScheduleRecurringWeeklyInput/>
-      : null;
-
-    const monthly = (scheduleRecurringFrequency == 'Monthly')
-      ? <ScheduleRecurringMonthlyInput/>
-      : null;
+    let frequency = null;
+    switch(scheduleRecurringFrequency) {
+      case 'Daily':
+        frequency=<ScheduleRecurringDailyInput/>
+        break;
+      case 'Weekly':
+        frequency=<ScheduleRecurringWeeklyInput/>
+        break;
+      case 'Monthly':
+        frequency=<ScheduleRecurringMonthlyInput/>
+        break;
+    }
 
     return (
       <div>
@@ -253,9 +254,7 @@ export function CreateReport() {
             onChange={onChangeScheduleRecurringFrequency}
           />
         </EuiFormRow>
-        {daily}
-        {weekly}
-        {monthly}
+        {frequency}
       </div>
     );
   }
