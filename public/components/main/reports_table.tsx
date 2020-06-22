@@ -16,6 +16,7 @@
 import React from 'react';
 import {
   EuiButton,
+  // @ts-ignore
   EuiLink
 } from '@elastic/eui';
 
@@ -34,7 +35,7 @@ export const reports_list_columns = [
   {
     field: 'reportSource',
     name: 'Source',
-    render: username => (
+    render: (username: string) => (
       <EuiLink href={`https://github.com/${username}`} target="_blank">
         {username}
       </EuiLink>
@@ -70,15 +71,11 @@ export const reports_list_users = [
     reportPDF: 'daily_sales_report_2020-04-23_17-44cf47ed1283jd.pdf'
   },
 ]
-
-export const reports_list_search = {
-  toolsLeft: renderToolsLeft,
-  toolsRight: renderToolsRight,
-  box: {
-    incremental: true,
-  },
-  filters: [],
-};
+  const loadUsers = () => {};
+  const loadUsersWithError = () => {};
+  const loading = false;
+  const selection = [];
+  const onSelectionChange = () => {};
 
 const renderToolsRight = () => {
   return [
@@ -106,21 +103,27 @@ const renderToolsLeft = () => {
     return;
   }
 
-  const onClick = () => {
-    store.deleteUsers(...selection.map(user => user.id));
-    setSelection([]);
-  };
+  const onClick = () => {};
 
   return (
     <EuiButton color="danger" iconType="trash" onClick={onClick}>
-      Delete {selection.length} Users
+      Delete Users
     </EuiButton>
   );
 };
 
+export const reports_list_search = {
+  toolsLeft: renderToolsLeft,
+  toolsRight: renderToolsRight,
+  box: {
+    incremental: true,
+  },
+  filters: [],
+};
+
 export const reports_list_selection_value = {
-  selectable: user => user.online,
-  selectableMessage: selectable =>
-      !selectable ? 'User is currently offline' : undefined,
-  onSelectionChange: selection => setSelection(selection),
+  selectable: (user: { online: boolean; }) => user.online,
+  selectableMessage: (selectable: boolean) =>
+    !selectable ? 'User is currently offline' : undefined,
+  onSelectionChange: (selection: string[]) => onSelectionChange,
 };
