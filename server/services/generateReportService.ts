@@ -14,7 +14,8 @@
  */
 
 //@ts-ignore
-import { Legacy, Logger, PluginInitializerContext } from 'kibana';
+import { Legacy, PluginInitializerContext } from 'kibana';
+import { Logger } from '../../../../src/core/server/logging';
 import { Server, Request, ResponseToolkit } from 'hapi';
 import { RequestParams } from '@elastic/elasticsearch';
 import puppeteer from 'puppeteer';
@@ -22,20 +23,21 @@ import imagesToPdf from 'images-to-pdf';
 import fs from 'fs';
 import { v1 as uuidv1 } from 'uuid';
 import { ServerResponse } from '../models/types';
-import { CLUSTER, FORMAT } from '../utils/constants';
+import { CLUSTER, FORMAT, TMP_DIR } from '../utils/constants';
+import { SearchResponse } from 'elasticsearch';
 
 type ElasticsearchPlugin = Legacy.Plugins.elasticsearch.Plugin;
 
 export default class GenerateReportService {
   esDriver: ElasticsearchPlugin;
-  private readonly log: Logger;
+  logger: Logger;
 
   constructor(
     private readonly initializerContext: PluginInitializerContext,
     esDriver: ElasticsearchPlugin
   ) {
     this.esDriver = esDriver;
-    this.log = this.initializerContext.logger.get();
+    this.logger = this.initializerContext.logger.get();
   }
 
   report = async (req: Request, h: ResponseToolkit): Promise<any> => {
@@ -43,42 +45,63 @@ export default class GenerateReportService {
       const {
         url,
         itemName,
+        source,
         reportFormat,
         windowWidth = 1200,
         windowLength = 800,
       } = req.payload as {
         url: string;
         itemName: string;
+        source: string;
         reportFormat: string;
-        windowWidth: number;
-        windowLength: number;
+        windowWidth?: number;
+        windowLength?: number;
       };
 
       if (reportFormat === FORMAT.png) {
-        const { fileName } = await generatePNG(
+        const { timeCreated, fileName } = await generatePNG(
           url,
           itemName,
           windowWidth,
           windowLength
         );
+        // TODO: save metadata into ES
+        const { callWithRequest } = this.esDriver.getCluster(CLUSTER.DATA);
+        const params: RequestParams.Index = {
+          index: 'report',
+          body: { url, itemName, source, reportFormat, timeCreated },
+        };
+        await callWithRequest(req, 'index', params);
 
         //@ts-ignore
-        return h.file(`${fileName}.${reportFormat}`, { mode: 'attachment' });
+        return h.file(`${TMP_DIR}/${fileName}.${reportFormat}`, {
+          mode: 'attachment',
+        });
       } else if (reportFormat === FORMAT.pdf) {
-        const { fileName } = await generatePDF(
+        const { timeCreated, fileName } = await generatePDF(
           url,
           itemName,
           windowWidth,
           windowLength,
           reportFormat
         );
+        // TODO: save metadata into ES
+        const { callWithRequest } = this.esDriver.getCluster(CLUSTER.DATA);
+        const params: RequestParams.Index = {
+          index: 'report',
+          body: { url, itemName, source, reportFormat, timeCreated },
+        };
+        await callWithRequest(req, 'index', params);
+
         //@ts-ignore
-        return h.file(`${fileName}.${reportFormat}`, { mode: 'attachment' });
+        return h.file(`${TMP_DIR}/${fileName}.${reportFormat}`, {
+          mode: 'attachment',
+        });
       }
 
       return { message: 'no support for such format: ' + reportFormat };
     } catch (err) {
-      this.log.error(`Reporting-Generate-PDF: ${err}`);
+      this.logger.info(`Reporting - Report - Service: ${err}`);
       return { message: err.message };
     }
 
@@ -87,6 +110,54 @@ export default class GenerateReportService {
     //   if (err) throw err;
     //   console.log('path/file.txt was deleted');
     // });
+  };
+
+  getReports = async (
+    req: Request,
+    h: ResponseToolkit
+  ): Promise<ServerResponse<any>> => {
+    try {
+      const { size = '100', sortField, sortDirection } = req.query as {
+        size?: string;
+        sortField: string;
+        sortDirection: string;
+      };
+      const sizeNumber = parseInt(size, 10);
+      const params: RequestParams.Search = {
+        index: 'report',
+        size: sizeNumber,
+        sort: `${sortField}:${sortDirection}`,
+      };
+      const { callWithRequest } = this.esDriver.getCluster(CLUSTER.DATA);
+      const results: SearchResponse<any> = await callWithRequest(
+        req,
+        'search',
+        params
+      );
+      return { ok: true, response: results };
+    } catch (err) {
+      console.error('Reporting - Report - Service', err);
+      return { ok: false, error: err.message };
+    }
+  };
+
+  getReport = async (
+    req: Request,
+    h: ResponseToolkit
+  ): Promise<ServerResponse<any>> => {
+    try {
+      const { reportId } = req.params;
+      const { callWithRequest } = this.esDriver.getCluster(CLUSTER.DATA);
+      const result = await callWithRequest(req, 'get', {
+        index: 'report',
+        type: '_doc',
+        id: reportId,
+      });
+      return { ok: true, response: result };
+    } catch (err) {
+      console.error('Reporting - Report - Service', err);
+      return { ok: false, error: err.message };
+    }
   };
 }
 
@@ -105,7 +176,10 @@ export const generatePDF = async (
   );
   try {
     //add png to pdf to avoid long page split
-    await imagesToPdf([`${fileName}.png`], `${fileName}.${reportFormat}`);
+    await imagesToPdf(
+      [`${TMP_DIR}/${fileName}.png`],
+      `${TMP_DIR}/${fileName}.${reportFormat}`
+    );
     return { timeCreated, fileName };
   } catch (error) {
     throw error;
@@ -136,8 +210,12 @@ export const generatePNG = async (
     const timeCreated = new Date().toISOString();
     const fileName = getFileName(itemName, timeCreated);
 
+    if (!fs.existsSync(TMP_DIR)) {
+      fs.mkdirSync(TMP_DIR);
+    }
+
     await page.screenshot({
-      path: `${fileName}.png`,
+      path: `${TMP_DIR}/${fileName}.png`,
       fullPage: true,
       // Add encoding: "base64" if asked for data url
     });

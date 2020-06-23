@@ -16,6 +16,8 @@
 export const BASE_API_PATH = '/api/reporting';
 export const NODE_API = Object.freeze({
   GENERATE_REPORT: `${BASE_API_PATH}/generateReport`,
+  GET_REPORTS: `${BASE_API_PATH}/reports`,
+  GET_REPORT: `${BASE_API_PATH}/reports/{reportId}`,
   // TODO: SCHEDULE_REPORT: `${BASE_API_PATH}/scheduleReport`,
 });
 
@@ -36,3 +38,5 @@ export enum FORMAT {
   pdf = 'pdf',
   png = 'png',
 }
+
+export const TMP_DIR = './tmp';
