@@ -20,7 +20,7 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 ## 2. Requirements
 
 
-* As a user, I want to install and enable Kibana reports as a plugin in Kibana plugin directory so that I can see a ‘Create Reports’ and ‘My Reports’ widgets/options on the menus for Dashboard, Visualization and Discover tab. If the installation is unsuccessful, an error should be thrown.
+* As a user, I want to see a 'Share >' 'PDF' > 'Export & Share', 'Download' on the share menu for Dashboard and Visualization Tabs, and 'Share >' 'CSV' > 'Export & Share', 'Download' for the Discover tab.
 * As a user, I should be able to export and share reports only if I have the permissions to do so. Else, an error should be thrown.
 * As a user, when I click ‘Export and Share’ I should be able to configure, save, export and share the report. 
     * As a user, when I click ‘Export and Share’, the system should allow me to share the dashboard or saved search or visualizations that I am currently working on as a report.
