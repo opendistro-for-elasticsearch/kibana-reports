@@ -35,7 +35,6 @@ export default class SetupService {
       const indexExist          = await callWithRequest(_req, 'indices.exists', { index: INDEX_NAME });
       return { ok: true, resp: indexExist };
     } catch (err) {
-      console.error('Reporting - SetupService - checkIndexExist:', err);
       return { ok: false, resp: err.message };
     }
   };
@@ -47,7 +46,6 @@ export default class SetupService {
       const mappings            = await callWithRequest(_req, 'indices.getMapping', { index: INDEX_NAME });
       return { ok: true, resp: mappings };
     } catch (err) {
-      console.error('Reporting - SetupService - getMappings:', err);
       return { ok: false, resp: err.message };
     }
   };
@@ -95,7 +93,6 @@ export default class SetupService {
       });
       return { ok: true, resp: mappings };
     } catch (err) {
-      console.error('Reporting - SetupService - putMapping:', err);
       return { ok: false, resp: err.message };
     }
   };
@@ -103,15 +100,11 @@ export default class SetupService {
   //create the index and applying the mappings.
   createReportingIndex = async _req => {
     try {
-
       const { callWithRequest } = this.esDriver.getCluster('data');
       const mappings            = await callWithRequest(_req, 'indices.create', { index: INDEX_NAME });
-
       await this.putMapping(_req);
       return { ok: true, resp: mappings };
-
     } catch (err) {
-      console.error('Reporting - SetupService - createReportingIndex:', err);
       return { ok: false, resp: err.message };
     }
   };
@@ -125,7 +118,6 @@ export default class SetupService {
       }
       return { ok: true, resp: 'done' };
     } catch (err) {
-      console.error('Reporting - SetupService - setup:', err);
       return { ok: false, resp: err.message };
     }
   };

@@ -49,7 +49,6 @@ export class CsvItem extends React.Component {
     const url         = chrome.addBasePath('/api/reporting/download/' + id);
     const httpClient  = this.props.httpClient;
     httpClient.get(url).then(res => {
-        console.log('download is', res.data);
         const FileSaver = require('file-saver');
         const report    = new Blob([res.data.resp.report], { type: 'text/csv;charset=utf-8' });
         FileSaver.saveAs(report, res.data.resp.filename);

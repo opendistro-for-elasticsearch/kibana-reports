@@ -45,7 +45,6 @@ export default class RecentCsvService {
         },
       });
     } catch (err) {
-      console.error('Reporting - RecentCsvService - getAdvancedSettings:', err);
       return { ok: false, resp: err.message };
     }
   };
@@ -74,12 +73,8 @@ export default class RecentCsvService {
       const advancedSettings  = await this.getAdvancedSettings(_req);
       const dateFormat        = advancedSettings.hits.hits[0]._source.config.dateFormat;
       const format            = [];
-
       if(dateFormat) format.push(dateFormat);
       else format.push('MMM D, YYYY @ HH:mm:ss.SSS');
-      console.log('format',format);
-      //console.log('format.toString()',format.toString());
-
       for (const history of indexes.hits.hits) {
         histories.push({
           id        : history._id,
@@ -92,12 +87,8 @@ export default class RecentCsvService {
           username  : history._source.username,
         });
       }
-
       return { ok: true, resp: histories };
-
     } catch (err) {
-
-      console.error('Reporting - RecentCsvService - latestReports:', err);
       return { ok: false, resp: err.message };
     }
   };
@@ -107,7 +98,6 @@ export default class RecentCsvService {
       const recentsCsv = await this.latestReports(_req);
       return recentsCsv;
     } catch (err) {
-      console.error('Reporting - RecentCsvService - getRecentReports:', err);
       return { ok: false, resp: err.message };
     }
   };

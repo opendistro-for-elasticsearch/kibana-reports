@@ -51,7 +51,6 @@ export default class CsvGeneratorService {
         },
       });
     } catch (err) {
-      console.error('Reporting - GenerateService - getAdvancedSettings:', err);
       return { ok: false, resp: err.message };
     }
   };
@@ -77,7 +76,6 @@ export default class CsvGeneratorService {
       const document = await callWithRequest(_req, 'index', params);
       return document;
     } catch (err) {
-      console.error('Reporting - GenerateService - saveReport - Error from while saving csv to index:', err);
       return { ok: false, resp: err.message };
     }
   };
@@ -86,8 +84,6 @@ export default class CsvGeneratorService {
   updateCSV = async (_req, documentId, status, binary, message, username, file) => {
     try {
       const { callWithRequest } = this.esDriver.getCluster('data');
-      console.log('updating the csv in the  index');
-      //console.log('username in update is ', username);
       const date   = moment().format('DD-MM-YYYY HH:mm:ss');
       const params = {
         index: INDEX_NAME,
@@ -103,11 +99,9 @@ export default class CsvGeneratorService {
           username: username,
         },
       };
-      // console.log('params are ', params);
       const document = await callWithRequest(_req, 'index', params);
       return { ok: true, resp: document };
     } catch (err) {
-      console.error('Reporting - GenerateService - updateCSV - Error from while updating the csv to index:',err);
       return { ok: false, resp: err.message };
     }
   };
@@ -122,7 +116,6 @@ export default class CsvGeneratorService {
       });
       return savedsearchIdFromES;
     } catch (err) {
-      console.error('Reporting - GenerateService - getSavedSearchInfo  - Error while getting the savedSearch Infos from elasticsearch:',err);
       return { ok: false, resp: err.message };
     }
   };
@@ -137,7 +130,6 @@ export default class CsvGeneratorService {
       });
       return indexpatern;
     } catch (err) {
-      console.error('Reporting - GenerateService - getIndexPattern  - Error while getting the savedSearch Infos from elasticsearch:',err);
       return { ok: false, resp: err.message };
     }
   };
@@ -152,7 +144,6 @@ export default class CsvGeneratorService {
       });
       return fecthCountRes;
     } catch (err) {
-      console.error('Reporting - GenerateService - ESFetchCount - Error while counting the number of data in ElasticSearch ',err);
       return { ok: false, resp: err.message };
     }
   };
@@ -169,7 +160,6 @@ export default class CsvGeneratorService {
       });
       return fecthDataRes;
     } catch (err) {
-      console.error('Reporting - GenerateService  - ESFetchData - Error while Fetching the data from ElasticSearch ', err);
       return { ok: false, resp: err.message };
     }
   };
@@ -184,7 +174,6 @@ export default class CsvGeneratorService {
       });
       return fecthDataScrollRes;
     } catch (err) {
-      console.error('Reporting - GenerateService - ESFetchScroll - Error while Fetching the scroll data from ElasticSearch ',err);
       return { ok: false, resp: err.message };
     }
   };
@@ -199,7 +188,6 @@ export default class CsvGeneratorService {
       });
       return csvCountByuser;
     } catch (err) {
-      console.error('Reporting - GenerateService - countUserReports - Error while counting the number of reports by User ',err);
       return { ok: false, resp: err.message };
     }
   };
@@ -220,7 +208,6 @@ export default class CsvGeneratorService {
       });
       return docs;
     } catch (err) {
-      console.error('Reporting - GenerateService - getOldestReport - Error while Getting the oldest report from ElasticSearch ',err);
       return { ok: false, resp: err.message };
     }
   };
@@ -234,7 +221,6 @@ export default class CsvGeneratorService {
         id: doc_id,
       });
     } catch (err) {
-      console.error('Reporting - GenerateService -  deleteReport - Error while deleting the report from ElasticSearch ',err);
       return { ok: false, resp: err.message };
     }
   };
@@ -313,8 +299,6 @@ export default class CsvGeneratorService {
       }
     }
 
-    console.log('strColumns is', strColumns);
-
     //Get index name
     for (const item of savedSearchInfos._source.references) {
       if (item.name === JSON.parse(filters).indexRefName) {
@@ -331,7 +315,6 @@ export default class CsvGeneratorService {
             list_columns_date.push(item.name);
           }
         }
-        console.log('list_columns_date Date fields are :', list_columns_date);
 
         //building the ES query
 
@@ -385,31 +368,18 @@ export default class CsvGeneratorService {
           }
         }
 
-        //console.log('strColumns ', strColumns.toString(), 'header_search ', header_search);
-
-        // console.log('searchQuery', JSON.parse(filters).query);
-        // console.log('searchQueryquery', JSON.parse(filters).query.query);
-        // console.log('operator', this.containsOperator(JSON.parse(filters).query.query, ["AND", "OR"]));
-
         //search part
         const operator = this.containsOperator(JSON.parse(filters).query.query, ["AND", "OR"]);
         if (JSON.parse(filters).query.query) {
           if (operator === null) {
             const searchQuery  = JSON.parse(filters).query.query.split(':');
-            // console.log('searchQuery', searchQuery);
-            // console.log('searchQuery.length', searchQuery.length);
               if (searchQuery.length === 1){
                 requestBody.must(esb.multiMatchQuery([],searchQuery[0].trim()).type('best_fields'));
-                //console.log('reqBody stringify is', JSON.stringify(requestBody.toJSON()));
               }else if (searchQuery.length === 2){
-                //requestBody.filter(esb.multiMatchQuery(searchQuery[0]));
                 requestBody.must(esb.matchPhraseQuery(searchQuery[0].trim(),searchQuery[1].trim()));
-                //console.log('reqBody stringify is', JSON.stringify(requestBody.toJSON()));
               }
           }else {
             const searchQuery  = JSON.parse(filters).query.query.split(operator);
-            // console.log('searchQuery', searchQuery);
-            // console.log('searchQuery.length', searchQuery.length);
             switch (operator) {
               case 'OR':
                 let requestShould = [];
@@ -417,9 +387,7 @@ export default class CsvGeneratorService {
                   const splitSearch = query.split(':');
                   requestShould.push(esb.boolQuery().should(esb.matchQuery(splitSearch[0].trim(),splitSearch[1].trim())));
                 });
-                console.log('requestShould', esb.boolQuery().should(requestShould));
                 requestBody.filter(esb.boolQuery().should(requestShould));
-                console.log('requestShould', JSON.stringify(requestShould));
               break;
               case 'AND':
                 searchQuery.forEach(query => {
@@ -430,7 +398,7 @@ export default class CsvGeneratorService {
             }
           }
         }
-        //console.log('resIndexPattern.timeFieldName ', resIndexPattern.timeFieldName);
+
         if (resIndexPattern.timeFieldName && resIndexPattern.timeFieldName.length > 0) {
           header_search.push(resIndexPattern.timeFieldName);
           if (fields_exist) {
@@ -439,8 +407,6 @@ export default class CsvGeneratorService {
           requestBody.must(esb.rangeQuery(resIndexPattern.timeFieldName).format("epoch_millis").gte(time_range_gte).lte(time_range_lte));
         }
 
-        //console.log('requestBody.toJSON()',requestBody.toJSON());
-        //console.log('reqBodyCount.toJSON()',reqBodyCount.toJSON());
         let reqBodyCount = esb.requestBodySearch().query(requestBody);
         const resCount   = await this.esFetchCount(_req, resIndexPattern.title, reqBodyCount.toJSON()).catch(
           err => {
@@ -455,12 +421,8 @@ export default class CsvGeneratorService {
             );
           }
         );
-        //console.log('body in bodycount  is', body);
-        console.log('nb rows: ', resCount.count);
-        console.log('strColumns: ', strColumns);
 
         if (resCount.count > MAX_ROWS) {
-          console.log('generateCSV - csv size is too large');
           this.updateCSV(
             _req,
             documentId,
@@ -485,21 +447,13 @@ export default class CsvGeneratorService {
         if (fields_exist) {
           reqBody.source({ includes: strColumns });
         }
-        // console.log('reqBody.toJSON() is', reqBody.toJSON());
-        // console.log('reqBody stringify is', JSON.stringify(reqBody.toJSON()));
 
         const nb_countDiv     = resCount.count / 10000;
         const modulo_countDiv = resCount.count % 10000;
-        // console.log('nb_countDiv ', nb_countDiv);
-        // console.log('modulo_countDiv ', modulo_countDiv);
 
         //Fecth the data from ES
         const resData = await this.esFetchData(_req, resIndexPattern.title, reqBody.toJSON(),list_columns_date);
-        // console.log('resData.hits ', resData.hits.total.value);
-        // console.log('resIndexPattern.title ', resIndexPattern.title);
-        //check if limit size is reached
         if (resCount.count === 0) {
-          console.log('generateCSV - No Content.');
           this.updateCSV(
             _req,
             documentId,
@@ -562,20 +516,15 @@ export default class CsvGeneratorService {
             }
           }
         }
-
-        // console.log('dataset row count  is; ', dataset.length);
         const datasetSize = JSON.stringify(dataset).length;
-        //console.log('csvSeparator', csvSeparator);
-
         if(csvSeparator)
           delimiter.push(csvSeparator);
         else
           delimiter.push(',');
         const options      = { delimiter: { field:delimiter.toString() } , emptyFieldValue:EMPTY_FIELD_VALUE }
         converter.json2csvAsync(dataset, options).then(csv => {
-            const buf             = Buffer.from(JSON.stringify(csv)).toString('base64');
+            const buf         = Buffer.from(JSON.stringify(csv)).toString('base64');
             const csvSize     = JSON.stringify(csv).length;
-            console.log('dataset size is; ', csvSize);
             try {
               this.updateCSV(
                 _req,
@@ -596,15 +545,10 @@ export default class CsvGeneratorService {
                 username,
                 strFilename
               );
-              console.error(
-                'CSV Generator - CsvGeneratorService - json2csvAsync - Error while generating the csv',
-                err
-              );
               return { ok: false, resp: 'Error while updating the index ' + err };
             }
           })
           .catch(err => {
-            console.log(err);
             this.updateCSV(_req, documentId, 'failed', nullBinary, err, username, strFilename);
             return { ok: false, resp: 'Error while converting to csv ', err };
           });

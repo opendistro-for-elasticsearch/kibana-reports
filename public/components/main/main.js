@@ -143,7 +143,6 @@ export class Main extends React.Component {
     httpClient
       .get(chrome.addBasePath('/api/reporting/setup'))
       .then(res => {
-        //console.log('plugin setting up ', res.data);
         if (res.data.ok) {
           this.getRecentCsv();
         } else {
@@ -170,7 +169,6 @@ export class Main extends React.Component {
       .get(chrome.addBasePath('/api/reporting/reportingList'))
       .then(res => {
         this.setState({  recentCsv: res.data.resp });
-        console.log('recentCsv are ', this.state.recentCsv);
         if (this.state.recentCsv.length !== 0) {
           this.setState({ hideCsvItem: false });
         }
@@ -192,7 +190,6 @@ export class Main extends React.Component {
         const data = res.data.saved_objects;
         data.map(data => { this.state.options.push({ label: data.meta.title, id: data.id });});
         this.setState({ savedObjects: data });
-        // console.log('options in state are ', this.state.savedObjects);
       })
       .then(error => {
         if (error) {
@@ -280,7 +277,7 @@ export class Main extends React.Component {
     this.setup();
     const restapiinfo = JSON.parse(sessionStorage.getItem('restapiinfo'));
     const lastSubUrl = JSON.parse(localStorage.getItem('kibana.timepicker.timeHistory'));
-    console.log('lastSubUrl ', lastSubUrl);
+
     if (lastSubUrl) {
       this.setState({
         start: lastSubUrl[0].from,
@@ -288,7 +285,6 @@ export class Main extends React.Component {
       });
     }
     const backendroles    = restapiinfo.user;
-    console.log('backendroles ', this.props.reportingService.get());
     const requiredBackend = this.props.reportingService.get();
     if(requiredBackend){
       if (!backendroles.includes(requiredBackend)) {

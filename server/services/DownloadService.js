@@ -32,33 +32,23 @@ export default class DownloadService {
   getReport   = async _req => {
     const report_id = _req.params.report_id;
     try {
-
       const { callWithRequest } = this.esDriver.getCluster('data');
       const report              = await callWithRequest(_req, 'get', { index: INDEX_NAME, id: report_id });
       const binary              = report._source.binary;
       const json                = Buffer.from(binary, 'base64').toString('utf-8');
       const data                = { filename: report._source.file, report: JSON.parse(json) };
-
       return { ok: true, resp: data };
-
     } catch (err) {
-
-      console.error('Reporting - DownloadService - getReport:', err);
       return { ok: false, resp: err.message };
     }
   };
 
   download = async _req => {
     try {
-
       const recentsCsv = await this.getReport(_req);
       return { ok: true, resp: recentsCsv.resp };
-
     } catch (err) {
-
-      console.error('Reporting - DownloadService - download:', err);
       return { ok: false, resp: err.message };
-
     }
   };
 }
