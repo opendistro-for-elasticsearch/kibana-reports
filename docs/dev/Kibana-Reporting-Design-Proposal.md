@@ -25,7 +25,13 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 1. As a user, when I click ‘Export and Share’ I should be able to configure, save, export and share the report. 
     1. As a user, when I click ‘Export and Share’, the system should allow me to share the dashboard or saved search or visualizations that I am currently working on as a report.
         * Here is the matrix showing various panels and what kind of export option should be available.
-        ![](img/matrix.png)
+        
+        Kibana panel | PDF           | Hyperlink (HTML) | CSV/Excel
+        ------------ | ------------- | ------------- | -------------
+        Dashboards | Yes | Yes | No
+        Visualizations | Yes | Yes | No
+        Discover (saved search) | no | No | Yes
+
     1. As a user, I should be able to share the report that belongs to one of the three categories- alert based, one time and schedule based.
     1. As a user, I should be able to set/edit the report name.
     1. As a user, if I select the schedule based report option, I should be able to schedule frequency (hourly, daily, weekly, monthly), start and end date & time to share a report. 
