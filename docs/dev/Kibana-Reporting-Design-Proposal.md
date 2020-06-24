@@ -1,6 +1,8 @@
 # Kibana Reporting
 ### You don’t have to go a dashboard, we will bring dashboards to you.
 
+---
+
 ## 1. Overview
 
 ### 1.1 Motivation
