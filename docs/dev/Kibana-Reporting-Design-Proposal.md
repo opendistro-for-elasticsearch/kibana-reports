@@ -24,34 +24,34 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 1. As a user, I want to see a 'Share >' 'PDF' > 'Export & Share', 'Download' on the share menu for Dashboard and Visualization Tabs, and 'Share >' 'CSV' > 'Export & Share', 'Download' for the Discover tab.
 1. As a user, I should be able to export and share reports only if I have the permissions to do so. Else, an error should be thrown.
 1. As a user, when I click ‘Export and Share’ I should be able to configure, save, export and share the report. 
-    a) As a user, when I click ‘Export and Share’, the system should allow me to share the dashboard or saved search or visualizations that I am currently working on as a report.
-        * Here is the matrix showing various panels and what kind of export option should be available.
-        
+    - As a user, when I click ‘Export and Share’, the system should allow me to share the dashboard or saved search or visualizations that I am currently working on as a report.
+    
+        Here is the matrix showing various panels and what kind of export option should be available.        
         Kibana panel | PDF           | Hyperlink (HTML) | CSV/Excel
         ------------ | ------------- | ------------- | -------------
         Dashboards | Yes | Yes | No
         Visualizations | Yes | Yes | No
         Discover (saved search) | no | No | Yes
 
-    a) As a user, I should be able to share the report that belongs to one of the three categories- alert based, one time and schedule based.
-    a) As a user, I should be able to set/edit the report name.
-    a) As a user, if I select the schedule based report option, I should be able to schedule frequency (hourly, daily, weekly, monthly), start and end date & time to share a report. 
-    a) As a user, if I select the one time report option, I should be able to share a report
-    a) As a user, if I select the alert based report option, I should be able to select the alert so that the report gets triggered when the particular alert occurs.
-    a) As a user, I should be able to set the file format of report to be shared (pdf, png, dashboard link, csv, excel). 
-    a) As a user, I should be able to set the sharing option (download, email), and sharing coordinates (email address) so that I can share a report. 
-    a) As a user, I should be able to save the information and configuration entered and trigger sharing of the report.
-    a) As a user, when I click share, the report should show up as a list item in ‘My Reports’ for me under the ‘Shared Reports’ tab and for the end user under the ‘Received Reports’ tab
-    a) As a user, I should be able to select the cards (visualizations, data) to be shared 
-    a) As a user, I should be able to add header (255 characters), footer (255 characters) to the report.
-        * The header should show date, time and report name, along with sender and receiver’s names by default
+    - As a user, I should be able to share the report that belongs to one of the three categories- alert based, one time and schedule based.
+    - As a user, I should be able to set/edit the report name.
+    - As a user, if I select the schedule based report option, I should be able to schedule frequency (hourly, daily, weekly, monthly), start and end date & time to share a report. 
+    - As a user, if I select the one time report option, I should be able to share a report
+    - As a user, if I select the alert based report option, I should be able to select the alert so that the report gets triggered when the particular alert occurs.
+    - As a user, I should be able to set the file format of report to be shared (pdf, png, dashboard link, csv, excel). 
+    - As a user, I should be able to set the sharing option (download, email), and sharing coordinates (email address) so that I can share a report. 
+    - As a user, I should be able to save the information and configuration entered and trigger sharing of the report.
+    - As a user, when I click share, the report should show up as a list item in ‘My Reports’ for me under the ‘Shared Reports’ tab and for the end user under the ‘Received Reports’ tab
+    - As a user, I should be able to select the cards (visualizations, data) to be shared 
+    - As a user, I should be able to add header (255 characters), footer (255 characters) to the report.
+        - The header should show date, time and report name, along with sender and receiver’s names by default
 1. As a user, when I click ‘My Reports’, I should be able to view the list of current reports that I have generated/created and scheduled, and archived reports. As a user, I should be also be able to see the reports that I have sent and the reports that I have received.
-    1. For Shared Reports
+    - For Shared Reports
         1. As a user, I should see report name, frequency, save/share status, start date, end date, edit/unschedule/reactivate/archive options
         1. As a user, when I click a particular report in the list, I should be able to edit and save, share if not already shared, and unschedule or reactivate a schedule, and archive unscheduled or inactive reports, delete report, change the file format of the report, sharing coordinates, sharing options, end date. 
         1. As a user, when I click a particular report in the list and it belongs to the alert based reports category, I should be able to edit and save, change the report name, share if not already shared, choose another alert, stop/pause/resume a report, archive stopped reports, delete report, change the file format of the report, sharing coordinates, sharing options.
         1. As a user, I should be able to see a list of reports archived for the past 100 days.
-    1. For Received Reports
+    - For Received Reports
         1. As a user, I should see report name, frequency, status will always be ‘shared’, start date, end date, name and role of the person who shared the report
         1. As a user, when I click a particular report in the list, I should be able to view the report in a browser using a URL. 
         1. As a user, I should be able to archive reports. 
