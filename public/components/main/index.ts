@@ -15,3 +15,4 @@
 
 export { Main } from './main';
 export { RouterHome } from './router_home';
+export { ReportDetails } from './report_details';

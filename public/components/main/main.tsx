@@ -100,6 +100,19 @@ export class Main extends React.Component<RouterHomeProps> {
     httpClientGlobal = httpClient;
   }
 
+  getRowProps = (item: any) => {
+    const { id } = item;
+    return {
+      'data-test-subj': `row-${id}`,
+      className: 'customRowClass',
+      onClick: (e: any) => {
+        if (!$(e.target).is('button')) {
+          window.location.assign(`opendistro-kibana-reports#/report_details/${item.id}${this.props.history.location.search}`)
+        }
+      }
+    }
+  }
+
   render() {
     return (
       <EuiPage>
@@ -129,6 +142,7 @@ export class Main extends React.Component<RouterHomeProps> {
               sorting={true}
               selection={reports_list_selection_value}
               isSelectable={true}
+              rowProps={this.getRowProps}
               />
           </EuiPageContent>
           <EuiSpacer/>

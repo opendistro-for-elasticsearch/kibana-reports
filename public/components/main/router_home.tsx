@@ -50,7 +50,7 @@ export class RouterHome extends React.Component<RouterHomeProps, any> {
                 <EuiPageContentBody>
                   <Switch>
                     <Route
-                      path="/report_details/:id"
+                      path="/report_details/:eventId"
                       render={(props) => (
                         <ReportDetails title="Report Details" httpClient={httpClient} {...props} />
                       )}

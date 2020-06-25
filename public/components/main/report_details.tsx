@@ -17,14 +17,9 @@ import React, { useState } from 'react';
 
 import {
     EuiButtonEmpty,
-    EuiComboBox,
-    EuiDatePicker,
-    EuiFieldText,
-    EuiSelect,
     EuiFlexGroup,
     EuiFlexItem,
     EuiFormRow,
-    EuiButton,
     EuiPage,
     EuiPageHeader,
     EuiTitle,
@@ -34,20 +29,25 @@ import {
     EuiInMemoryTable,
     EuiHorizontalRule,
     EuiSpacer,
-    EuiSuggest,
-    EuiTextArea,
-    EuiEmptyPrompt,
-    EuiRadioGroup,
+    EuiDescriptionList,
+    EuiDescriptionListTitle,
+    EuiDescriptionListDescription,
   } from '@elastic/eui';
 
   interface RouterHomeProps {
     httpClient?: any,
   }
 
-  export class ReportDetails extends React.Component<RouterHomeProps> {
+  interface ReportDetailsState {
+    eventId: number
+  }
+
+  export class ReportDetails extends React.Component<RouterHomeProps, ReportDetailsState> {
     constructor(props) {
       super(props);
-      this.state = {};
+      this.state = {
+        eventId: this.props.match.params.eventId,
+      };
     }
 
     componentDidMount() {
@@ -64,6 +64,130 @@ import {
                   <h2>Report Details</h2>
                 </EuiTitle>
               </EuiPageHeader>
+              <EuiFlexGroup>
+                <EuiFlexItem>
+                  <EuiDescriptionList>
+                    <EuiDescriptionListTitle>
+                      Name
+                    </EuiDescriptionListTitle>
+                    <EuiDescriptionListDescription>
+                      Report Details Name
+                    </EuiDescriptionListDescription>
+                  </EuiDescriptionList>
+                </EuiFlexItem>
+                <EuiFlexItem>
+                  <EuiDescriptionList>
+                    <EuiDescriptionListTitle>
+                      Description
+                    </EuiDescriptionListTitle>
+                    <EuiDescriptionListDescription>
+                      This is the report description. It can be quite long. 
+                      A question we need to answer if we want to allow for wsywig editing of the description, and whether or not we need a Markdown editor, or how we handle that. 
+                    </EuiDescriptionListDescription>
+                  </EuiDescriptionList>
+                </EuiFlexItem>
+                <EuiFlexItem></EuiFlexItem>
+              </EuiFlexGroup>
+              <EuiFlexGroup>
+                <EuiFlexItem>
+                  <EuiDescriptionList>
+                    <EuiDescriptionListTitle>
+                      Source
+                    </EuiDescriptionListTitle>
+                    <EuiDescriptionListDescription>
+                      dashboard/dailysaves
+                    </EuiDescriptionListDescription>
+                  </EuiDescriptionList>
+                </EuiFlexItem>
+                <EuiFlexItem>
+                  <EuiDescriptionList>
+                    <EuiDescriptionListTitle>
+                      File 
+                    </EuiDescriptionListTitle>
+                    <EuiDescriptionListDescription>
+                      file_name_2020_06_21_e238asd83bfijek.pdf
+                    </EuiDescriptionListDescription>
+                  </EuiDescriptionList>
+                </EuiFlexItem>
+                <EuiFlexItem>
+                  <EuiDescriptionList>
+                    <EuiDescriptionListTitle>
+                      Created
+                    </EuiDescriptionListTitle>
+                    <EuiDescriptionListDescription>
+                      June 6, 2020 @ 17:00:00
+                    </EuiDescriptionListDescription>
+                  </EuiDescriptionList>
+                </EuiFlexItem>
+              </EuiFlexGroup>
+              <EuiSpacer/>
+              <EuiTitle>
+                <h2>Delivery</h2> 
+              </EuiTitle>
+              <EuiFlexGroup>
+                <EuiFlexItem>
+                  <EuiDescriptionList>
+                    <EuiDescriptionListTitle>
+                      Delivery Channel
+                    </EuiDescriptionListTitle>
+                    <EuiDescriptionListDescription>
+                      Email
+                    </EuiDescriptionListDescription>
+                  </EuiDescriptionList>
+                </EuiFlexItem>
+              </EuiFlexGroup>
+              <EuiFlexGroup>
+                <EuiFlexItem>
+                  <EuiDescriptionList>
+                    <EuiDescriptionListTitle>
+                      Recipients
+                    </EuiDescriptionListTitle>
+                    <EuiDescriptionListDescription>
+                      user1@email.com, usergroup@corporation.com
+                    </EuiDescriptionListDescription>
+                  </EuiDescriptionList>
+                </EuiFlexItem>
+              </EuiFlexGroup>
+              <EuiFlexGroup>
+                <EuiFlexItem>
+                  <EuiDescriptionList>
+                    <EuiDescriptionListTitle>
+                      Email Subject
+                    </EuiDescriptionListTitle>
+                    <EuiDescriptionListDescription>
+                      Daily Sales Report
+                    </EuiDescriptionListDescription>
+                  </EuiDescriptionList>                  
+                </EuiFlexItem>
+              </EuiFlexGroup>
+              <EuiFlexGroup>
+                <EuiFlexItem>
+                  <EuiDescriptionList>
+                    <EuiDescriptionListTitle>
+                      Email Body
+                    </EuiDescriptionListTitle>
+                    <EuiDescriptionListDescription>
+                      This is an example of a sentence explanation of what this this report might contain.
+                    </EuiDescriptionListDescription>
+                  </EuiDescriptionList>                
+                </EuiFlexItem>
+              </EuiFlexGroup>
+              <EuiSpacer/>
+              <EuiTitle>
+                <h2>Schedule</h2>
+              </EuiTitle>
+              <EuiFlexGroup>
+                <EuiFlexItem>
+                  <EuiDescriptionList>
+                    <EuiDescriptionListTitle>
+                      Request Time
+                    </EuiDescriptionListTitle>
+                    <EuiDescriptionListDescription>
+                      Daily, around 17:00 PST
+                    </EuiDescriptionListDescription>
+                  </EuiDescriptionList>
+                </EuiFlexItem>
+              </EuiFlexGroup>
             </EuiPageContent>
           </EuiPageBody>
         </EuiPage>
