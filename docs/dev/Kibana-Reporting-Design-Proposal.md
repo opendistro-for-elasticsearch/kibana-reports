@@ -35,25 +35,32 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 
 ### Reports
 1. As a user, I should be able to share the report that belongs to one of the three categories- alert based, and schedule based, and downloaded.
-1. As a user, I should be able to configure which users the report will be shared with
+1. As a user, I should be able to configure which users the report will be shared with 
 
 ### Report Configurations
 1. As a user, I should be configure sharing in the report configuration that belongs to one of the two categories- alert based, and schedule based.
 1. As a user, I should be able to set/edit the report name.
 1. As a user, if I select the Schedule based report option, I should be able to configure now, future time, or recurring.
 1. As a user, if I select Future time, I should be able to configure the date and time the report will be sent.
-1. As a user, if I select Recurring Scheduled based report, I should be able to schedule frequency (by interval, daily, weekly, monthly, or cron), start time, and end date to share a report. 
+1. As a user, if I select Recurring Scheduled based report, I should be able to schedule frequency (by interval [e.g. minutes, hours], daily, weekly, monthly, or cron), start time, and end date to share a report. 
 1. As a user, if I select the alert based report option, I should be able to select the alert a report gets triggered from when that particular alert occurs.
-1. As a user, I should be able to set the file format of report to be shared (pdf, png, csv, excel, dashboard link). 
+1. As a user, I should be able to attach the report file to the email.
+1. As a user, I should be able to insert a file URL refecence to the email body.
+1. As a user, I should be able to insert a report source URL reference to the email body.
+1. As a user, I should be able to set the file format of report to be shared (pdf, png, csv, excel, contextually). 
 1. As a user, I should be able to set a delivery channel (kibana reports, email, or email as attachment)
 1. As a user, if I set email as a delivery channel, I should be able to set recepients, email subject, and email body.
-1. As a user, I should be able to save the report configuration information and configuration entered to trigger sharing of the report.
-1. As a user, when I click share, the report should show up as a list item in the ‘Reports’ list for both me, and anyone i've shared the report with.
+1. As a user, I should be able to save the report configuration.
+1. As a user, when I click create, the report configuration should show up as a list item in the ‘Report configurations’ list.
+1. As a user, when a report configuration has been triggered via schedule or alert, I should be able to see an instance of the report in my "Reports" list, and any users I send the report to, will also see a report instance in their repective "Reports" list page.
+1. As a user, I should be able to select the cards (visualizations, data) to be shared.
+1. As a user, I should be able to add header (255? characters), footer (255? characters) to the report.
+1. As a user, I should see Report title and a sample paragraph in the header by Default.
+1. As a user, I should see date, time and report name in the footer by Default.
+1. As a user, I should be able to view a list showing all my sent and received reports in one filterable view.
+1. As a user, I should be able to filter my report list by sender, receiver and report type.
+1. As a user, I should be able to search my reports by report name.
 
-
-1. As a user, I should be able to select the cards (visualizations, data) to be shared 
-1. As a user, I should be able to add header (255 characters), footer (255 characters) to the report.
-    - The header should show date, time and report name, along with sender and receiver’s names by default
 1. As a user, when I click ‘My Reports’, I should be able to view the list of current reports that I have generated/created and scheduled, and archived reports. As a user, I should be also be able to see the reports that I have sent and the reports that I have received.
     - For Shared Reports
         1. As a user, I should see report name, frequency, save/share status, start date, end date, edit/unschedule/reactivate/archive options
