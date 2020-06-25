@@ -21,27 +21,36 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 ## 2. Requirements
 
 
-1. As a user, I want to see a 'Share >' 'PDF' > 'Export & Share', 'Download' on the share menu for Dashboard and Visualization Tabs, and 'Share >' 'CSV' > 'Export & Share', 'Download' for the Discover tab.
+1. As a user, I want to see a 'Share >' 'As a report' on the share menu, and a 'Download > ' 'PDF, CSV, PNG' contextually button in the  Dashboard, Visualizations, and Discover Tabs.
 1. As a user, I should be able to export and share reports only if I have the permissions to do so. Else, an error should be thrown.
-1. As a user, when I click ‘Export and Share’ I should be able to configure, save, export and share the report. 
-1. As a user, when I click ‘Export and Share’, the system should allow me to share the dashboard or saved search or visualizations that I am currently working on as a report.
+1. As a user, when I click ‘Share > As a report’ I should be able to configure, save, export and share the report.
+1. As a user, when I click ‘Share > As a report’, the system should allow me to share the dashboard or saved search or visualizations that I am currently working on as a report.
 
     Here is the matrix showing various panels and what kind of export option should be available.        
-    Kibana panel | PDF           | Hyperlink (HTML) | CSV/Excel
-    ------------ | ------------- | ------------- | -------------
-    Dashboards | Yes | Yes | No
-    Visualizations | Yes | Yes | No
-    Discover (saved search) | no | No | Yes
+    Kibana panel | PDF           | PNG           |Hyperlink (HTML) | CSV/Excel
+    ------------ | ------------- | ------------- | ------------- | -------------
+    Dashboards | Yes | Yes | Yes | No
+    Visualizations | Yes |  Yes |Yes | No
+    Discover (saved search) | No | No | Yes | Yes
 
-1. As a user, I should be able to share the report that belongs to one of the three categories- alert based, one time and schedule based.
+### Reports
+1. As a user, I should be able to share the report that belongs to one of the three categories- alert based, and schedule based, and downloaded.
+1. As a user, I should be able to configure which users the report will be shared with
+
+### Report Configurations
+1. As a user, I should be configure sharing in the report configuration that belongs to one of the two categories- alert based, and schedule based.
 1. As a user, I should be able to set/edit the report name.
-1. As a user, if I select the schedule based report option, I should be able to schedule frequency (hourly, daily, weekly, monthly), start and end date & time to share a report. 
-1. As a user, if I select the one time report option, I should be able to share a report
-1. As a user, if I select the alert based report option, I should be able to select the alert so that the report gets triggered when the particular alert occurs.
-1. As a user, I should be able to set the file format of report to be shared (pdf, png, dashboard link, csv, excel). 
-1. As a user, I should be able to set the sharing option (download, email), and sharing coordinates (email address) so that I can share a report. 
-1. As a user, I should be able to save the information and configuration entered and trigger sharing of the report.
-1. As a user, when I click share, the report should show up as a list item in ‘My Reports’ for me under the ‘Shared Reports’ tab and for the end user under the ‘Received Reports’ tab
+1. As a user, if I select the Schedule based report option, I should be able to configure now, future time, or recurring.
+1. As a user, if I select Future time, I should be able to configure the date and time the report will be sent.
+1. As a user, if I select Recurring Scheduled based report, I should be able to schedule frequency (by interval, daily, weekly, monthly, or cron), start time, and end date to share a report. 
+1. As a user, if I select the alert based report option, I should be able to select the alert a report gets triggered from when that particular alert occurs.
+1. As a user, I should be able to set the file format of report to be shared (pdf, png, csv, excel, dashboard link). 
+1. As a user, I should be able to set a delivery channel (kibana reports, email, or email as attachment)
+1. As a user, if I set email as a delivery channel, I should be able to set recepients, email subject, and email body.
+1. As a user, I should be able to save the report configuration information and configuration entered to trigger sharing of the report.
+1. As a user, when I click share, the report should show up as a list item in the ‘Reports’ list for both me, and anyone i've shared the report with.
+
+
 1. As a user, I should be able to select the cards (visualizations, data) to be shared 
 1. As a user, I should be able to add header (255 characters), footer (255 characters) to the report.
     - The header should show date, time and report name, along with sender and receiver’s names by default
