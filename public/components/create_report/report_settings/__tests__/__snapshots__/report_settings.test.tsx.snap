@@ -27,37 +27,43 @@ exports[`<ReportSettings /> panel render component 1`] = `
       >
         <div
           class="euiFormRow"
-          id="random-id-row"
+          id="random_html_id-row"
         >
-          <div>
+          <div
+            class="euiFormRow__labelWrapper"
+          >
             <label
-              class="euiFormLabel"
-              for="random-id"
+              class="euiFormLabel euiFormRow__label"
+              for="random_html_id"
             >
               Name
             </label>
           </div>
           <div
-            class="euiFormControlLayout"
+            class="euiFormRow__fieldWrapper"
           >
             <div
-              class="euiFormControlLayout__childrenWrapper"
+              class="euiFormControlLayout"
             >
-              <input
-                aria-describedby="random-id-help"
-                class="euiFieldText"
-                id="random-id"
-                placeholder="Report name"
-                type="text"
-                value=""
-              />
+              <div
+                class="euiFormControlLayout__childrenWrapper"
+              >
+                <input
+                  aria-describedby="random_html_id-help"
+                  class="euiFieldText"
+                  id="random_html_id"
+                  placeholder="Report name"
+                  type="text"
+                  value=""
+                />
+              </div>
             </div>
-          </div>
-          <div
-            class="euiFormHelpText euiFormRow__text"
-            id="random-id-help"
-          >
-            Specify a descriptive report name
+            <div
+              class="euiFormHelpText euiFormRow__text"
+              id="random_html_id-help"
+            >
+              Specify a descriptive report name
+            </div>
           </div>
         </div>
       </div>
@@ -71,29 +77,35 @@ exports[`<ReportSettings /> panel render component 1`] = `
       >
         <div
           class="euiFormRow"
-          id="random-id-row"
+          id="random_html_id-row"
         >
-          <div>
+          <div
+            class="euiFormRow__labelWrapper"
+          >
             <label
-              class="euiFormLabel"
-              for="random-id"
+              class="euiFormLabel euiFormRow__label"
+              for="random_html_id"
             >
               Dashboard
             </label>
           </div>
           <div
-            class="euiFormControlLayout"
+            class="euiFormRow__fieldWrapper"
           >
             <div
-              class="euiFormControlLayout__childrenWrapper"
+              class="euiFormControlLayout"
             >
-              <input
-                class="euiFieldText"
-                id="random-id"
-                placeholder="Start typing to display suggestions"
-                type="text"
-                value="testDashboardValue"
-              />
+              <div
+                class="euiFormControlLayout__childrenWrapper"
+              >
+                <input
+                  class="euiFieldText"
+                  id="random_html_id"
+                  placeholder="Start typing to display suggestions"
+                  type="text"
+                  value="testDashboardValue"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -103,23 +115,27 @@ exports[`<ReportSettings /> panel render component 1`] = `
       >
         <div
           class="euiFormRow euiFormRow--hasEmptyLabelSpace"
-          id="random-id-row"
+          id="random_html_id-row"
         >
-          <button
-            class="euiButton euiButton--primary"
-            id="random-id"
-            type="button"
+          <div
+            class="euiFormRow__fieldWrapper"
           >
-            <span
-              class="euiButton__content"
+            <button
+              class="euiButton euiButton--primary"
+              id="random_html_id"
+              type="button"
             >
               <span
-                class="euiButton__text"
+                class="euiButton__content"
               >
-                Browse
+                <span
+                  class="euiButton__text"
+                >
+                  Browse
+                </span>
               </span>
-            </span>
-          </button>
+            </button>
+          </div>
         </div>
       </div>
     </div>
