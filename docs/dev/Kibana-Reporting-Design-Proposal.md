@@ -98,10 +98,10 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 #### View report configuration details
 1. As a user, I should be able to view all my saved configuration settings.
 1. As a user, I should be able to edit, duplicate or delete a report configuration.
+    1. As a user, when I delete a report configuration, any schedule or alert based triggers will automatically stop.
 
 #### Edit report configuration
 1. As a user, I should be able to edit the report settings, triggers and delivery settings.
-1. As a user, I should be able to pause or resume a schedule or alert.
 1. As a user, I should be able to save my updated report configuration.
 
 #### View report details
