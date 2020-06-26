@@ -109,10 +109,12 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 1. As a user, I should be able to downlaod available report files (PDF, PNG, CSV, Excel, etc)
 1. As a user, I should be able to copy the permalink to a report source.
 
-#### Sharing an existing report
+##### Sharing or archiving an existing report
 1. As a report owner, I should be able to share or archive a report.
     1. As report owner, I should be able to add new email recepients, and new kibana recepients to an existing report.
     1. As a report owner, I sholud not be able to remove existing email or kibana recepients from an existing report.
+    1. As a report owner, I should receive a Kibana toast notification when a report has been delivered to new recepients.
+    1. As a report recepient, I should not get new notifications or emails when additional users have been added to an existing report.
 1. As a report recepient, I can only archive a report.
 
 
