@@ -75,6 +75,7 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
     1. As a user, if I select `future date`, I should be able to configure the date and time the report will be generated.
     1. As a user, if I select `recurring`, I should be able to configure a recurring schedule.
     1. As a user, if I select `custom cron`, I should be able to configure a cron-based schedule.
+    1. As a user, if I select `recurring` or `custom cron`, I should be able to configure an end date.
 1. As a user, when I select `Alert based`, I should be able to select the alert a report gets triggered from.
 
 ##### Delivery settings
