@@ -104,6 +104,7 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 1. As a user, I should be able to save my updated report configuration.
 
 #### View report details
+1. As a user, I should be able to see both created date, and last updated date.
 1. As a user, I should be able to share an existing report.
 1. As a user, I should be able to archive an existing report. (p2)
 1. As a user, I should be able to downlaod available report files (PDF, PNG, CSV, Excel, etc)
