@@ -41,11 +41,14 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 ### Reporting Landing Page
 #### Reports
 1. As a user, I should see Name, Type, Sender, Recepient(s), State, Source, Last updated, Download on the `Reports` list.
+1. As a user, I should be able to filter my reports list by sender, receiver, status, and type.
+1. As a user, I should be able to search my reports by report name.
 1. As a user, I should be able to view a report details page for any report on the list.
+1. As a user, I should see my reports ordered in reverse chronological order by default.
 1. As a user, I should be able to download the default file format, or select from a list of contextually appropriate file formats (pdf, png, csv, excel, etc) from the reports list.
 1. As a user, I should be able to see a list of reports for the past 100 days.
-1. As a user, I should be able to archive reports. (p1)
-1. As a user, I should be able to filter my reports list by status and type.
+1. As a user, archived reports should not be visible by default (the default filter should exclude archived reports) (p2)
+
 
 #### Report configurations
 1. As a user, I should see Name, Owner, Type, Status (active/disabled), Source, Last updated, Details on the `Report configurations` list.
@@ -53,64 +56,72 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 1. As a user, I should be able to 
 
 ### Create, View, Edit
-#### View report details
-1. As a user, I should be able to edit an existing report.
-1. As a user, I should be able to archive an existing report.
-TODO: 1. As a user, I should be able to see a list of reports archived for the past 100 days. NOTE: Reports will be stored as hyperlinks/urls and NOT as actual reports. If the data is available at the time when the url is clicked, report will be created and can be viewed in a browser and can be downloaded.
-
-#### Edit report details
-1. As a user, I should be able to add new email recepients, and new kibana recepients to an existing report.
-
-
 #### Create report configuration
+##### Report settings
 1. As a user, I should be able to set the report name.
 1. As a user, I should be able to set an optional report descritption.
 1. As a user, I should be able to select a report source type (Dashboard, Visualization, Saved Search)
 1. As a user, I should be able to select a specific source (Dashboard, Visualization, or Saved search, contextually).
 1. As a user, I should be able to select the default file format for my report, contextual to my selected source (PDF, PNG, CSV, Excel, etc)
-1. As a user, I should be able to add a Header and Footer to PDF and PNG reports.
+1. As a user, I should be able to add a `Header` and `Footer` to PDF and PNG reports.
+    1. As a user, I should see Report title and a sample paragraph in the `header` by Default.
+    1. As a user, I should see date, time and report name in the `footer` by Default.
 1. As a user, I should be able to select which charts/visualizations I can include in a PDF or PNG report. (p2)
+
+##### Report trigger
 1. As a user, I should be able to select a report trigger type that belongs to one of two categories: Schedule based, and Alert based.
-1. As a user, I should be able to select a request time of now, future date, recurring, or custom cron expression (similar to alerting).
-    - TODO: Include a table with all of the options for the above
-1. As a user, I should be able to configure which kibana recepients the report will be shared with.
-1. As a user, if I select the Schedule based report option, I should be able to configure now, future time, or recurring.
-    1. As a user, if I select Future time, I should be able to configure the date and time the report will be sent.
-    1. As a user, if I select Recurring Scheduled based report, I should be able to schedule frequency (by interval [e.g. minutes, hours], daily, weekly, monthly, or cron), start time, and end date to share a report. 
-1. As a user, if I select the alert based report option, I should be able to select the alert a report gets triggered from when that particular alert occurs.
-1. As a user, if I set email as a delivery channel, I should be able to set recepients, email subject, and email body.
-1. As a user, I should be able to attach the report file to the email.
+1. As a user, when I select `Schedule based`, I should be able to select a request time of now, future date, recurring, or custom cron expression (similar to alerting).
+    1. As a user, if I select `now`, I should be able to generate a report immediately after saving the report configuration.
+    1. As a user, if I select `future date`, I should be able to configure the date and time the report will be generated.
+    1. As a user, if I select `recurring`, I should be able to configure a recurring schedule.
+    1. As a user, if I select `custom cron`, I should be able to configure a cron-based schedule.
+1. As a user, when I select `Alert based`, I should be able to select the alert a report gets triggered from.
+
+##### Delivery settings
+1. As a user, I should be able to deliver a report to Kibana and/or Email recepients.
+1. As a user, when I set Kibana as a delivery channel, I should be able to select which Kibana users the report gets delivered to.
+1. As a user, when I set email as a delivery channel, I should be able to set recepients, email subject, and email body.
 1. As a user, I should be able to insert a file URL refecence to the email body.
-1. As a user, I should be able to insert a report source URL reference to the email body.
-1. As a user, I should be able to set the file format of report to be shared (pdf, png, csv, excel, contextually). 
-1. As a user, I should be able to set a delivery channel (kibana reports, email, or email as attachment)
-1. As a user, when I click create, the report configuration should show up as a list item in the ‘Report configurations’ list.
+1. As a user, I should be able to insert the report source URL reference to the email body.
+1. As a user, I should be able to attach the report file to an email.
+1. As a user, I should be able to set the file format of report attachment (pdf, png, csv, excel, contextually).
+
+#### Report creation
+1. As a user, when I create a report configuration, the configuration settings are saved and show up as a list item in the ‘Report configurations’ list.
 1. As a user, when a report configuration has been triggered via schedule or alert, I should be able to see an instance of the report in my "Reports" list, and any users I send the report to, will also see a report instance in their repective "Reports" list page.
-1. As a user, I should be able to save the report configuration.
-1. As a user, I should be able to select the cards (visualizations, data) to be shared.
-1. As a user, I should be able to add header (255? characters), footer (255? characters) to the report.
-1. As a user, I should see Report title and a sample paragraph in the header by Default.
-1. As a user, I should see date, time and report name in the footer by Default.
-1. As a user, I should be able to view a list showing all my sent and received reports in one filterable view.
-1. As a user, I should be able to filter my report list by sender, receiver and report type.
-1. As a user, I should be able to search my reports by report name.
-1. As a user, when I click `Reports`, I should be able to view a list of current reports that I have generated/created and scheduled, and archived reports. As a user, I should be also be able to see the reports that I have sent and the reports that I have received.
 1. As a user, when a report is created from a triggered configuration condition, I should receive a notification on all configured delivery channels (Email, chime, slack, etc)
 1. As a user, when a report is created from a triggered configuration condition, I should receive a kibana toast alert letting me know that the report is available.
 1. As a user, when a report fails due to an error, I should receive a kibana toast alert letting me know that the report failed.
 1. As a user, when a report fails due to an error, I should see the report with a failed status on the `Reports` list.
 
-#### For report configuration details
-1. As a user, I should be able to edit a report configuration.
-1. As a user, when I click a particular report in the list, I should be able to edit and save, share if not already shared, and unschedule or reactivate a schedule, and archive unscheduled or inactive reports, delete report, change the file format of the report, sharing coordinates, sharing options, end date. 
-1. As a user, when I click a particular report in the list and it belongs to the alert based reports category, I should be able to edit and save, change the report name, share if not already shared, choose another alert, stop/pause/resume a report, archive stopped reports, delete report, change the file format of the report, sharing coordinates, sharing options.
+#### View report configuration details
+1. As a user, I should be able to view all my saved configuration settings.
+1. As a user, I should be able to edit, duplicate or delete a report configuration.
+
+#### Edit report configuration
+1. As a user, I should be able to edit the report settings, triggers and delivery settings.
+1. As a user, I should be able to pause or resume a schedule or alert.
+1. As a user, I should be able to save my updated report configuration.
+
+#### View report details
+1. As a user, I should be able to share an existing report.
+1. As a user, I should be able to archive an existing report. (p2)
+1. As a user, I should be able to downlaod available report files (PDF, PNG, CSV, Excel, etc)
+1. As a user, I should be able to copy the permalink to a report source.
+
+#### Sharing an existing report
+1. As a report owner, I should be able to share or archive a report.
+    1. As report owner, I should be able to add new email recepients, and new kibana recepients to an existing report.
+    1. As a report owner, I sholud not be able to remove existing email or kibana recepients from an existing report.
+1. As a report recepient, I can only archive a report.
 
 
-### Functional 
+### Functional
 * The user should be able to create/modify reports both through the Kibana UI or programmatically through APIs.
 * Ability to schedule/trigger reports periodically (a cron based schedule) or at a given frequency continuously or within certain time range.
 * Ability on instantly create downloadable reports or deliver scheduled reports via external channels.
 * Ability to enable/disable report generation
+* Ability to generate download logs as part of fine-grained audit lgos.
 
 ### Non-functional
 
