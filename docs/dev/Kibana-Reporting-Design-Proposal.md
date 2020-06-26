@@ -33,27 +33,31 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
     Visualizations | Yes |  Yes |Yes | No
     Discover (saved search) | No | No | Yes | Yes
 
-### Reports list
+### In-context reports
+1. As a user, I can download a PDF, PNG, CSV, XLS file in-context from any available panel (e.g. Dashboards, visualizations, saved searches, etc).
+1. As a user, any time I download a report from any available panel (e.g. Dashboards, visualizations, saved searches, etc), a report will be auto-generated in the reports list.
+1. As a user, I can create a report configuration from the share menu in-context from any available panel (e.g. Dashboards, visualizations, saved searches, etc).
+
+### Reporting Landing Page
+#### Reports
 1. As a user, I should see Name, Type, Sender, Recepient(s), State, Source, Last updated, Download on the list.
 1. As a user, when I click a particular report name in the list, I should be able to view the report details.
 1. As a user, when I click the download button, i should be able to download the default format, or select from a list of contextually appropriate file formats (pdf, png, csv, excel, etc)
 1. As a user, I should be able to see a list of reports for the past 100 days.
 1. As a user, I should be able to archive reports. (p1)
 
-### For report details
+#### Report configurations
+1. As a user, I should see Name, Owner, Type, Status (active/disabled), Source, Last updated, Details.
+
+### Create, View, Edit
+### View report details
 1. As a user, I should be able to edit an existing report.
 1. As a user, I should be able to archive an existing report.
 TODO: 1. As a user, I should be able to see a list of reports archived for the past 100 days. NOTE: Reports will be stored as hyperlinks/urls and NOT as actual reports. If the data is available at the time when the url is clicked, report will be created and can be viewed in a browser and can be downloaded.
 
-### For edit report details
+### Edit report details
 1. As a user, I should be able to add new email recepients, and new kibana recepients to an existing report.
 
-
-### Report configurations list
-1. As a user, I should see Name, Owner, Type, Status (active/disabled), Source, Last updated, Details.
-
-### Reports
-1. As a user, any time I download a report from any available panel (e.g. Dashboards, visualizations, saved searches, etc), a report will be auto-generated in the reports list.
 
 ### Create report configuration
 1. As a user, I should be able to set the report name.
