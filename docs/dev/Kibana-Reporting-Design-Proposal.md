@@ -40,14 +40,17 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 
 ### Reporting Landing Page
 #### Reports
-1. As a user, I should see Name, Type, Sender, Recepient(s), State, Source, Last updated, Download on the list.
-1. As a user, when I click a particular report name in the list, I should be able to view the report details.
-1. As a user, when I click the download button, i should be able to download the default format, or select from a list of contextually appropriate file formats (pdf, png, csv, excel, etc)
+1. As a user, I should see Name, Type, Sender, Recepient(s), State, Source, Last updated, Download on the `Reports` list.
+1. As a user, I should be able to view a report details page for any report on the list.
+1. As a user, I should be able to download the default file format, or select from a list of contextually appropriate file formats (pdf, png, csv, excel, etc) from the reports list.
 1. As a user, I should be able to see a list of reports for the past 100 days.
 1. As a user, I should be able to archive reports. (p1)
+1. As a user, I should be able to filter my reports list by status and type.
 
 #### Report configurations
-1. As a user, I should see Name, Owner, Type, Status (active/disabled), Source, Last updated, Details.
+1. As a user, I should see Name, Owner, Type, Status (active/disabled), Source, Last updated, Details on the `Report configurations` list.
+1. As a user, I should be able to view, edit and delete a report configuration.
+1. As a user, I should be able to 
 
 ### Create, View, Edit
 #### View report details
