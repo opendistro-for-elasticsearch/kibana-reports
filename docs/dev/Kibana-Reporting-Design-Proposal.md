@@ -53,7 +53,7 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 #### Report configurations
 1. As a user, I should see Name, Type, Owner, Source, Last updated, Details, Status (active/disabled) on the `Report configurations` list.
 1. As a user, I should be able to view, edit and delete a report configuration.
-1. As a user, I should be able to 
+1. As a user, I should be able to enable/disable a report configuration
 
 ### Create, View, Edit
 #### Create report configuration
