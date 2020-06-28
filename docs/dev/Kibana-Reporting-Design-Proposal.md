@@ -40,7 +40,7 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 
 ### Reporting Landing Page
 #### Reports
-1. As a user, I should see Name, Type, Sender, Recepient(s), State, Source, Last updated, Download on the `Reports` list.
+1. As a user, I should see Name, Type, Sender, Recepient(s), Source, Last updated, State, Download on the `Reports` list.
 1. As a user, I should be able to filter my reports list by sender, receiver, status, and type.
 1. As a user, I should be able to search my reports by report name.
 1. As a user, I should be able to view a report details page for any report on the list.
@@ -51,7 +51,7 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 
 
 #### Report configurations
-1. As a user, I should see Name, Owner, Type, Status (active/disabled), Source, Last updated, Details on the `Report configurations` list.
+1. As a user, I should see Name, Type, Owner, Source, Last updated, Details, Status (active/disabled) on the `Report configurations` list.
 1. As a user, I should be able to view, edit and delete a report configuration.
 1. As a user, I should be able to 
 
@@ -69,14 +69,14 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 1. As a user, I should be able to select which charts/visualizations I can include in a PDF or PNG report. (p2)
 
 ##### Report trigger
-1. As a user, I should be able to select a report trigger type that belongs to one of two categories: Schedule based, and Alert based.
-1. As a user, when I select `Schedule based`, I should be able to select a request time of now, future date, recurring, or custom cron expression (similar to alerting).
+1. As a user, I should be able to select a report trigger type that belongs to one of two categories: `Schedule`, and `Alert`.
+1. As a user, when I select `Schedule`, I should be able to select a request time of now, future date, recurring, or custom cron expression (similar to alerting).
     1. As a user, if I select `now`, I should be able to generate a report immediately after saving the report configuration.
     1. As a user, if I select `future date`, I should be able to configure the date and time the report will be generated.
     1. As a user, if I select `recurring`, I should be able to configure a recurring schedule.
     1. As a user, if I select `custom cron`, I should be able to configure a cron-based schedule.
     1. As a user, if I select `recurring` or `custom cron`, I should be able to configure an end date.
-1. As a user, when I select `Alert based`, I should be able to select the alert a report gets triggered from.
+1. As a user, when I select `Alert`, I should be able to select the alert a report gets triggered from.
 
 ##### Delivery settings
 1. As a user, I should be able to deliver a report to Kibana and/or Email recepients.
