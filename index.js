@@ -45,6 +45,7 @@ export default function (kibana) {
     init(server, options) {
       //TODO: Create clusters (SQL and scheduler plugin in the future)
 
+      //TODO: change to use kibana logging when migrating to new platform
       const initializerContext = {
         logger: {
           get() {

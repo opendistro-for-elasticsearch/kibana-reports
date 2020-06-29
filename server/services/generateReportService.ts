@@ -22,7 +22,7 @@ import puppeteer from 'puppeteer';
 import { v1 as uuidv1 } from 'uuid';
 import { ServerResponse } from '../models/types';
 import { CLUSTER, FORMAT } from '../utils/constants';
-import { SearchResponse } from 'elasticsearch';
+import { SearchResponse, GetResponse } from 'elasticsearch';
 import { Readable } from 'stream';
 
 type ElasticsearchPlugin = Legacy.Plugins.elasticsearch.Plugin;
@@ -81,7 +81,7 @@ export default class GenerateReportService {
             .header('Content-length', stream.length)
             .header(
               'Content-Disposition',
-              `attachment; filename=${fileName}.${reportFormat}` //TODO: figure out the file name issue
+              `attachment; filename=${fileName}.${reportFormat}`
             )
         );
       } else if (reportFormat === FORMAT.pdf) {
@@ -91,7 +91,7 @@ export default class GenerateReportService {
           windowWidth,
           windowLength
         );
-        // TODO: save metadata into ES
+        // TODO: temporary, need to change after we figure out the correct date modeling
         const { callWithRequest } = this.esDriver.getCluster(CLUSTER.DATA);
         const params: RequestParams.Index = {
           index: 'report',
@@ -142,6 +142,7 @@ export default class GenerateReportService {
         'search',
         params
       );
+      // TODO: customize response according to client side needs
       return { ok: true, response: results };
     } catch (err) {
       console.error('Reporting - Report - Service', err);
@@ -156,11 +157,12 @@ export default class GenerateReportService {
     try {
       const { reportId } = req.params;
       const { callWithRequest } = this.esDriver.getCluster(CLUSTER.DATA);
-      const result = await callWithRequest(req, 'get', {
+      const result: GetResponse<any> = await callWithRequest(req, 'get', {
         index: 'report',
         type: '_doc',
         id: reportId,
       });
+      // TODO: customize response according to client side needs
       return { ok: true, response: result };
     } catch (err) {
       console.error('Reporting - Report - Service', err);
@@ -194,7 +196,7 @@ export const generatePDF = async (
     const scrollHeight = await page.evaluate(
       () => document.documentElement.scrollHeight
     );
-    console.log('Height: ' + scrollHeight);
+
     const buffer = await page.pdf({
       margin: 'none',
       width: windowWidth,
