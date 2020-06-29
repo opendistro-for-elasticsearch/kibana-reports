@@ -17,7 +17,8 @@
     "test:server": "plugin-helpers test:server",
     "test:browser": "plugin-helpers test:browser",
     "build": "plugin-helpers build",
-    "test:jest": "../../node_modules/.bin/jest --config ./test/jest.config.js"
+    "test:jest": "../../node_modules/.bin/jest --config ./test/jest.config.js",
+    "test": "jest --config ./test/jest.config.js"
   },
   "dependencies": {
     "@babel/core": "^7.10.2",
