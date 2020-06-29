@@ -64,7 +64,7 @@ export default class GenerateReportService {
           windowWidth,
           windowLength
         );
-        // TODO: save metadata into ES
+        // TODO: temporary, need to change after we figure out the correct date modeling
         const { callWithRequest } = this.esDriver.getCluster(CLUSTER.DATA);
         const params: RequestParams.Index = {
           index: 'report',
