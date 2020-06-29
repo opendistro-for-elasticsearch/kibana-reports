@@ -38,5 +38,3 @@ export enum FORMAT {
   pdf = 'pdf',
   png = 'png',
 }
-
-export const TMP_DIR = './tmp';

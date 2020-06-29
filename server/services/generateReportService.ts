@@ -19,12 +19,11 @@ import { Logger } from '../../../../src/core/server/logging';
 import { Server, Request, ResponseToolkit } from 'hapi';
 import { RequestParams } from '@elastic/elasticsearch';
 import puppeteer from 'puppeteer';
-import imagesToPdf from 'images-to-pdf';
-import fs from 'fs';
 import { v1 as uuidv1 } from 'uuid';
 import { ServerResponse } from '../models/types';
-import { CLUSTER, FORMAT, TMP_DIR } from '../utils/constants';
+import { CLUSTER, FORMAT } from '../utils/constants';
 import { SearchResponse } from 'elasticsearch';
+import { Readable } from 'stream';
 
 type ElasticsearchPlugin = Legacy.Plugins.elasticsearch.Plugin;
 
@@ -59,7 +58,7 @@ export default class GenerateReportService {
       };
 
       if (reportFormat === FORMAT.png) {
-        const { timeCreated, fileName } = await generatePNG(
+        const { timeCreated, stream, fileName } = await generatePNG(
           url,
           itemName,
           windowWidth,
@@ -73,17 +72,24 @@ export default class GenerateReportService {
         };
         await callWithRequest(req, 'index', params);
 
-        //@ts-ignore
-        return h.file(`${TMP_DIR}/${fileName}.${reportFormat}`, {
-          mode: 'attachment',
-        });
+        return (
+          h
+            .response(stream)
+            .type('image/png')
+            .header('Content-type', 'image/png')
+            //@ts-ignore
+            .header('Content-length', stream.length)
+            .header(
+              'Content-Disposition',
+              `attachment; filename=${fileName}.${reportFormat}` //TODO: figure out the file name issue
+            )
+        );
       } else if (reportFormat === FORMAT.pdf) {
-        const { timeCreated, fileName } = await generatePDF(
+        const { timeCreated, stream, fileName } = await generatePDF(
           url,
           itemName,
           windowWidth,
-          windowLength,
-          reportFormat
+          windowLength
         );
         // TODO: save metadata into ES
         const { callWithRequest } = this.esDriver.getCluster(CLUSTER.DATA);
@@ -93,10 +99,18 @@ export default class GenerateReportService {
         };
         await callWithRequest(req, 'index', params);
 
-        //@ts-ignore
-        return h.file(`${TMP_DIR}/${fileName}.${reportFormat}`, {
-          mode: 'attachment',
-        });
+        return (
+          h
+            .response(stream)
+            .type('application/pdf')
+            .header('Content-type', 'application/pdf')
+            //@ts-ignore
+            .header('Content-length', stream.length)
+            .header(
+              'Content-Disposition',
+              `attachment; filename=${fileName}.${reportFormat}`
+            )
+        );
       }
 
       return { message: 'no support for such format: ' + reportFormat };
@@ -104,12 +118,6 @@ export default class GenerateReportService {
       this.logger.info(`Reporting - Report - Service: ${err}`);
       return { message: err.message };
     }
-
-    // TODO: file clean-up
-    // fs.unlink(fileName + '.png', (err) => {
-    //   if (err) throw err;
-    //   console.log('path/file.txt was deleted');
-    // });
   };
 
   getReports = async (
@@ -165,22 +173,47 @@ export const generatePDF = async (
   url: string,
   itemName: string,
   windowWidth: number,
-  windowLength: number,
-  reportFormat: string
-): Promise<{ timeCreated: string; fileName: string }> => {
-  const { timeCreated, fileName } = await generatePNG(
-    url,
-    itemName,
-    windowWidth,
-    windowLength
-  );
+  windowLength: number
+): Promise<{ timeCreated: string; stream: Readable; fileName: string }> => {
   try {
-    //add png to pdf to avoid long page split
-    await imagesToPdf(
-      [`${TMP_DIR}/${fileName}.png`],
-      `${TMP_DIR}/${fileName}.${reportFormat}`
+    const browser = await puppeteer.launch({
+      headless: true,
+    });
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: 'networkidle0' });
+
+    await page.setViewport({
+      width: windowWidth,
+      height: windowLength,
+    });
+
+    const timeCreated = new Date().toISOString();
+    const fileName = getFileName(itemName, timeCreated);
+    // The scrollHeight value is equal to the minimum height the element would require in order to fit
+    // all the content in the viewport without using a vertical scrollbar
+    const scrollHeight = await page.evaluate(
+      () => document.documentElement.scrollHeight
     );
-    return { timeCreated, fileName };
+    console.log('Height: ' + scrollHeight);
+    const buffer = await page.pdf({
+      margin: 'none',
+      width: windowWidth,
+      height: scrollHeight + 'px',
+      printBackground: true,
+      pageRanges: '1',
+    });
+
+    const stream = new Readable({
+      read() {
+        this.push(buffer);
+        this.push(null);
+      },
+    });
+
+    //TODO: Add header and footer
+
+    await browser.close();
+    return { timeCreated, stream, fileName };
   } catch (error) {
     throw error;
   }
@@ -191,7 +224,7 @@ export const generatePNG = async (
   itemName: string,
   windowWidth: number,
   windowLength: number
-): Promise<{ timeCreated: string; fileName: string }> => {
+): Promise<{ timeCreated: string; stream: Readable; fileName: string }> => {
   try {
     const browser = await puppeteer.launch({
       headless: true,
@@ -210,20 +243,20 @@ export const generatePNG = async (
     const timeCreated = new Date().toISOString();
     const fileName = getFileName(itemName, timeCreated);
 
-    if (!fs.existsSync(TMP_DIR)) {
-      fs.mkdirSync(TMP_DIR);
-    }
-
-    await page.screenshot({
-      path: `${TMP_DIR}/${fileName}.png`,
+    const buffer = await page.screenshot({
       fullPage: true,
-      // Add encoding: "base64" if asked for data url
+    });
+    const stream = new Readable({
+      read() {
+        this.push(buffer);
+        this.push(null);
+      },
     });
 
     //TODO: Add header and footer
 
     await browser.close();
-    return { timeCreated, fileName };
+    return { timeCreated, stream, fileName };
   } catch (error) {
     throw error;
   }
