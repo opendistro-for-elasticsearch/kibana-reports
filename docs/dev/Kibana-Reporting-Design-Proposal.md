@@ -36,7 +36,7 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 ### In-context reports
 1. As a user, I can download a PDF, PNG, CSV, XLS file in-context from any available panel (e.g. Dashboards, visualizations, saved searches, etc).
 1. As a user, any time I download a report from any available panel (e.g. Dashboards, visualizations, saved searches, etc), a report will be auto-generated in the reports list.
-1. As a user, I can create a report configuration from the share menu in-context from any available panel (e.g. Dashboards, visualizations, saved searches, etc).
+1. As a user, I can create a report definition from the share menu of any available panel (e.g. Dashboards, visualizations, saved searches, etc).
 
 ### Reporting Landing Page
 #### Reports
@@ -50,13 +50,13 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 1. As a user, archived reports should not be visible by default (the default filter should exclude archived reports) (p2)
 
 
-#### Report configurations
-1. As a user, I should see Name, Type, Owner, Source, Last updated, Details, Status (active/disabled) on the `Report configurations` list.
-1. As a user, I should be able to view, edit and delete a report configuration.
-1. As a user, I should be able to enable/disable a report configuration
+#### Report definitions
+1. As a user, I should see Name, Type, Owner, Source, Last updated, Details, Status (active/disabled) on the `Report definitions` list.
+1. As a user, I should be able to view, edit and delete a report definition.
+1. As a user, I should be able to enable/disable a report definition
 
 ### Create, View, Edit
-#### Create report configuration
+#### Create report definition
 ##### Report settings
 1. As a user, I should be able to set the report name.
 1. As a user, I should be able to set an optional report descritption.
@@ -71,7 +71,7 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 ##### Report trigger
 1. As a user, I should be able to select a report trigger type that belongs to one of two categories: `Schedule`, and `Alert`.
 1. As a user, when I select `Schedule`, I should be able to select a request time of now, future date, recurring, or custom cron expression (similar to alerting).
-    1. As a user, if I select `now`, I should be able to generate a report immediately after saving the report configuration.
+    1. As a user, if I select `now`, I should be able to generate a report immediately after saving the report definition.
     1. As a user, if I select `future date`, I should be able to configure the date and time the report will be generated.
     1. As a user, if I select `recurring`, I should be able to configure a recurring schedule.
     1. As a user, if I select `custom cron`, I should be able to configure a cron-based schedule.
@@ -88,21 +88,21 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 1. As a user, I should be able to set the file format of report attachment (pdf, png, csv, excel, contextually).
 
 #### Report creation
-1. As a user, when I create a report configuration, the configuration settings are saved and show up as a list item in the ‘Report configurations’ list.
-1. As a user, when a report configuration has been triggered via schedule or alert, I should be able to see an instance of the report in my "Reports" list, and any users I send the report to, will also see a report instance in their repective "Reports" list page.
-1. As a user, when a report is created from a triggered configuration condition, I should receive a notification on all configured delivery channels (Email, chime, slack, etc)
-1. As a user, when a report is created from a triggered configuration condition, I should receive a kibana toast alert letting me know that the report is available.
+1. As a user, when I create a report definition, the definition settings are saved and show up as a list item in the ‘Report definitions’ list.
+1. As a user, when a report definition has been triggered via schedule or alert, I should be able to see an instance of the report in my "Reports" list, and any users I send the report to, will also see a report instance in their repective "Reports" list page.
+1. As a user, when a report is created from a triggered definition condition, I should receive a notification on all configured delivery channels (Email, chime, slack, etc)
+1. As a user, when a report is created from a triggered definition condition, I should receive a kibana toast alert letting me know that the report is available.
 1. As a user, when a report fails due to an error, I should receive a kibana toast alert letting me know that the report failed.
 1. As a user, when a report fails due to an error, I should see the report with a failed status on the `Reports` list.
 
-#### View report configuration details
-1. As a user, I should be able to view all my saved configuration settings.
-1. As a user, I should be able to edit, duplicate or delete a report configuration.
-    1. As a user, when I delete a report configuration, any schedule or alert based triggers will automatically stop.
+#### View report definition details
+1. As a user, I should be able to view all my saved definition settings.
+1. As a user, I should be able to edit, duplicate or delete a report definition.
+    1. As a user, when I delete a report definition, any schedule or alert based triggers will automatically stop.
 
-#### Edit report configuration
+#### Edit report definition
 1. As a user, I should be able to edit the report settings, triggers and delivery settings.
-1. As a user, I should be able to save my updated report configuration.
+1. As a user, I should be able to save my updated report definition.
 
 #### View report details
 1. As a user, I should be able to see both created date, and last updated date.
