@@ -45,7 +45,7 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 1. As a user, I should be able to search my reports by report name.
 1. As a user, I should be able to view a report details page for any report on the list.
 1. As a user, I should see my reports ordered in reverse chronological order by default.
-1. As a user, I should be able to download the default file format, or select from a list of contextually appropriate file formats (pdf, png, csv, excel, etc) from the reports list.
+1. As a user, I should be able to download the default file format from the reports list.
 1. As a user, I should be able to see a list of reports for the past 100 days.
 1. As a user, archived reports should not be visible by default (the default filter should exclude archived reports) (p2)
 
@@ -85,7 +85,7 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 1. As a user, I should be able to insert a file URL refecence to the email body.
 1. As a user, I should be able to insert the report source URL reference to the email body.
 1. As a user, I should be able to attach the report file to an email.
-1. As a user, I should be able to set the file format of report attachment (pdf, png, csv, excel, contextually).
+1. As a user, I should be able to set the file format of report attachment (pdf, png | csv, excel, depending on the source).
 
 #### Report creation
 1. As a user, when I create a report definition, the definition settings are saved and show up as a list item in the ‘Report definitions’ list.
