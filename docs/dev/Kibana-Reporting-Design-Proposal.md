@@ -125,7 +125,7 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 * Ability to schedule/trigger reports periodically (a cron based schedule) or at a given frequency continuously or within certain time range.
 * Ability on instantly create downloadable reports or deliver scheduled reports via external channels.
 * Ability to enable/disable report generation
-* Ability to generate download logs as part of fine-grained audit lgos.
+* Ability to generate download logs as part of fine-grained audit logs.
 
 ### Non-functional
 
