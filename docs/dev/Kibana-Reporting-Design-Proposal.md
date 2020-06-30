@@ -1,6 +1,6 @@
 # Kibana Reporting
 
-### *You don’t have to go a dashboard, we will bring dashboards to you. *
+### You don’t have to go to dashboard, we will bring dashboard to you.
 
 ## 1. Overview
 
@@ -89,12 +89,12 @@ We will provide user to generate two kind of reports :
 
 *Figure -2*
 
-### 3.2 When: (Schedule)
+### 3.2 When: (Schedule or Trigger)
 
 We should expose the APIs to generate reports on-demand (instantly) and to schedule periodically (cron like) or continuously with fixed intervals.  Any external or integrated scheduler/trigger will be a consumer of instant report generation API with a mandatory report delivery channel.
 
 
-### 3.3 Where: (Destination)
+### 3.3 Where: (Notification)
 
 Storing the reports  **TODO: why we don’t want to store reports, kibana detached mode, ; kibana locally on each node**
 
