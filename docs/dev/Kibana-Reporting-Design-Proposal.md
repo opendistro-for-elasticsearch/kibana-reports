@@ -91,9 +91,9 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 1. As a user, when I create a report definition, the definition settings are saved and show up as a list item in the ‘Report definitions’ list.
 1. As a user, when a report definition has been triggered via schedule or alert, I should be able to see an instance of the report in my "Reports" list, and any users I send the report to, will also see a report instance in their repective "Reports" list page.
 1. As a user, when a report is created from a triggered definition condition, I should receive a notification on all configured delivery channels (Email, chime, slack, etc)
-1. As a user, when a report is created from a triggered definition condition, I should receive a kibana toast alert letting me know that the report is available.
-1. As a user, when a report fails due to an error, I should receive a kibana toast alert letting me know that the report failed.
+1. As a user, when a new report is available I should see a notification status in the reporting icon in the sidebar
 1. As a user, when a report fails due to an error, I should see the report with a failed status on the `Reports` list.
+1. As a report definition owner, when a report fails to trigger due to an error, I should receive a kibana toast alert letting me know that the report failed.
 
 #### View report definition details
 1. As a user, I should be able to view all my saved definition settings.
