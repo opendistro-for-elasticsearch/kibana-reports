@@ -39,14 +39,14 @@ import {
   }
 
   interface ReportDetailsState {
-    eventId: number
+    reportId: number
   }
 
   export class ReportDetails extends React.Component<RouterHomeProps, ReportDetailsState> {
     constructor(props) {
       super(props);
       this.state = {
-        eventId: this.props.match.params.eventId,
+        reportId: this.props.match.params.reportId,
       };
     }
 
