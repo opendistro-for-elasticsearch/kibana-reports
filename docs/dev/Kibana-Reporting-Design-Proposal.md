@@ -1,6 +1,7 @@
 # Kibana Reporting
+### You don’t have to go a dashboard, we will bring dashboards to you.
 
-### You don’t have to go to dashboard, we will bring dashboard to you.
+---
 
 ## 1. Overview
 
@@ -20,43 +21,111 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 ## 2. Requirements
 
 
-* As a user, I want to install and enable Kibana reports as a plugin in Kibana plugin directory so that I can see a ‘Create Reports’ and ‘My Reports’ widgets/options on the menus for Dashboard, Visualization and Discover tab. If the installation is unsuccessful, an error should be thrown.
-* As a user, I should be able to export and share reports only if I have the permissions to do so. Else, an error should be thrown.
-* As a user, when I click ‘Export and Share’ I should be able to configure, save, export and share the report. 
-    * As a user, when I click ‘Export and Share’, the system should allow me to share the dashboard or saved search or visualizations that I am currently working on as a report.
-        * Here is the matrix showing various panels and what kind of export option should be available.
-        ![](img/matrix.png)
-    * As a user, I should be able to share the report that belongs to one of the three categories- alert based, one time and schedule based.
-    * As a user, I should be able to set/edit the report name.
-    * As a user, if I select the schedule based report option, I should be able to schedule frequency (hourly, daily, weekly, monthly), start and end date & time to share a report. 
-    * As a user, if I select the one time report option, I should be able to share a report
-    * As a user, if I select the alert based report option, I should be able to select the alert so that the report gets triggered when the particular alert occurs.
-    * As a user, I should be able to set the file format of report to be shared (pdf, png, dashboard link, csv, excel). 
-    * As a user, I should be able to set the sharing option (download, email), and sharing coordinates (email address) so that I can share a report. 
-    * As a user, I should be able to save the information and configuration entered and trigger sharing of the report.
-    * As a user, when I click share, the report should show up as a list item in ‘My Reports’ for me under the ‘Shared Reports’ tab and for the end user under the ‘Received Reports’ tab
-    * As a user, I should be able to select the cards (visualizations, data) to be shared 
-    * As a user, I should be able to add header (255 characters), footer (255 characters) to the report.
-        * The header should show date, time and report name, along with sender and receiver’s names by default
-* As a user, when I click ‘My Reports’, I should be able to view the list of current reports that I have generated/created and scheduled, and archived reports. As a user, I should be also be able to see the reports that I have sent and the reports that I have received.
-    * For Shared Reports
-        * As a user, I should see report name, frequency, save/share status, start date, end date, edit/unschedule/reactivate/archive options
-        * As a user, when I click a particular report in the list, I should be able to edit and save, share if not already shared, and unschedule or reactivate a schedule, and archive unscheduled or inactive reports, delete report, change the file format of the report, sharing coordinates, sharing options, end date. 
-        * As a user, when I click a particular report in the list and it belongs to the alert based reports category, I should be able to edit and save, change the report name, share if not already shared, choose another alert, stop/pause/resume a report, archive stopped reports, delete report, change the file format of the report, sharing coordinates, sharing options.
-        * As a user, I should be able to see a list of reports archived for the past 100 days.
-    * For Received Reports
-        * As a user, I should see report name, frequency, status will always be ‘shared’, start date, end date, name and role of the person who shared the report
-        * As a user, when I click a particular report in the list, I should be able to view the report in a browser using a URL. 
-        * As a user, I should be able to archive reports. 
-            * Delete option should not be there as it might lead to complications such as one wherein the user who receives the reports deletes them and says that they never received the reports
-        * As a user, I should be able to see a list of reports archived for the past 100 days. NOTE: Reports will be stored as hyperlinks/urls and NOT as actual reports. If the data is available at the time when the url is clicked, report will be created and can be viewed in a browser and can be downloaded.
+1. As a user, I want to see a 'Share >' 'As a report' on the share menu, and a 'Download > ' 'PDF, CSV, PNG' contextually button in the  Dashboard, Visualizations, and Discover Tabs.
+1. As a user, I should be able to export and share reports only if I have the permissions to do so. Else, an error should be thrown.
+1. As a user, when I click ‘Share > As a report’ I should be able to configure, save, export and share the report.
+1. As a user, when I click ‘Share > As a report’, the system should allow me to share the dashboard or saved search or visualizations that I am currently working on as a report.
 
-### Functional 
+    Here is the matrix showing various panels and what kind of export option should be available.        
+    Kibana panel | PDF           | PNG           |Hyperlink (HTML) | CSV/Excel
+    ------------ | ------------- | ------------- | ------------- | -------------
+    Dashboards | Yes | Yes | Yes | No
+    Visualizations | Yes |  Yes |Yes | No
+    Discover (saved search) | No | No | Yes | Yes
 
+### In-context reports
+1. As a user, I can download a PDF, PNG, CSV, XLS file in-context from any available panel (e.g. Dashboards, visualizations, saved searches, etc).
+1. As a user, any time I download a report from any available panel (e.g. Dashboards, visualizations, saved searches, etc), a report will be auto-generated in the reports list.
+1. As a user, I can create a report definition from the share menu of any available panel (e.g. Dashboards, visualizations, saved searches, etc).
+
+### Reporting Landing Page
+#### Reports
+1. As a user, I should see Name, Type, Sender, Recepient(s), Source, Last updated, State, Download on the `Reports` list.
+1. As a user, I should be able to filter my reports list by sender, receiver, status, and type.
+1. As a user, I should be able to search my reports by report name.
+1. As a user, I should be able to view a report details page for any report on the list.
+1. As a user, I should see my reports ordered in reverse chronological order by default.
+1. As a user, I should be able to download the default file format from the reports list.
+1. As a user, I should be able to see a list of reports for the past 100 days.
+1. As a user, archived reports should not be visible by default (the default filter should exclude archived reports) (p2)
+
+
+#### Report definitions
+1. As a user, I should see Name, Type, Owner, Source, Last updated, Details, Status (active/disabled) on the `Report definitions` list.
+1. As a user, I should be able to view, edit and delete a report definition.
+1. As a user, I should be able to enable/disable a report definition
+
+### Create, View, Edit
+#### Create report definition
+##### Report settings
+1. As a user, I should be able to set the report name.
+1. As a user, I should be able to set an optional report descritption.
+1. As a user, I should be able to select a report source type (Dashboard, Visualization, Saved Search)
+1. As a user, I should be able to select a specific source (Dashboard, Visualization, or Saved search, contextually).
+1. As a user, I should be able to select the default file format for my report, contextual to my selected source (PDF, PNG, CSV, Excel, etc)
+1. As a user, I should be able to add a `Header` and `Footer` to PDF and PNG reports.
+    1. As a user, I should see Report title and a sample paragraph in the `header` by Default.
+    1. As a user, I should see date, time and report name in the `footer` by Default.
+1. As a user, I should be able to select which charts/visualizations I can include in a PDF or PNG report. (p2)
+
+##### Report trigger
+1. As a user, I should be able to select a report trigger type that belongs to one of two categories: `Schedule`, and `Alert`.
+1. As a user, when I select `Schedule`, I should be able to select a request time of now, future date, recurring, or custom cron expression (similar to alerting).
+    1. As a user, if I select `now`, I should be able to generate a report immediately after saving the report definition.
+    1. As a user, if I select `future date`, I should be able to configure the date and time the report will be generated.
+    1. As a user, if I select `recurring`, I should be able to configure a recurring schedule.
+    1. As a user, if I select `custom cron`, I should be able to configure a cron-based schedule.
+    1. As a user, if I select `recurring` or `custom cron`, I should be able to configure an end date.
+1. As a user, when I select `Alert`, I should be able to select the alert a report gets triggered from.
+
+##### Delivery settings
+1. As a user, I should be able to deliver a report to Kibana and/or Email recepients.
+1. As a user, when I set Kibana as a delivery channel, I should be able to select which Kibana users the report gets delivered to.
+1. As a user, when I set email as a delivery channel, I should be able to set recepients, email subject, and email body.
+1. As a user, I should be able to insert a file URL refecence to the email body.
+1. As a user, I should be able to insert the report source URL reference to the email body.
+1. As a user, I should be able to attach the report file to an email.
+1. As a user, I should be able to set the file format of report attachment (pdf, png | csv, excel, depending on the source).
+
+#### Report creation
+1. As a user, when I create a report definition, the definition settings are saved and show up as a list item in the ‘Report definitions’ list.
+1. As a user, when a report definition has been triggered via schedule or alert, I should be able to see an instance of the report in my "Reports" list, and any users I send the report to, will also see a report instance in their repective "Reports" list page.
+1. As a user, when a report is created from a triggered definition condition, I should receive a notification on all configured delivery channels (Email, chime, slack, etc)
+1. As a user, when a new report is available I should see a notification status in the reporting icon in the sidebar
+1. As a user, when a report fails due to an error, I should see the report with a failed status on the `Reports` list.
+1. As a report definition owner, when a report fails to trigger due to an error, I should receive a kibana toast alert letting me know that the report failed.
+
+#### View report definition details
+1. As a user, I should be able to view all my saved definition settings.
+1. As a user, I should be able to edit, duplicate or delete a report definition.
+    1. As a user, when I delete a report definition, any schedule or alert based triggers will automatically stop.
+
+#### Edit report definition
+1. As a user, I should be able to edit the report settings, triggers and delivery settings.
+1. As a user, I should be able to save my updated report definition.
+
+#### View report details
+1. As a user, I should be able to see both created date, and last updated date.
+1. As a user, I should be able to share an existing report.
+1. As a user, I should be able to archive an existing report. (p2)
+1. As a user, I should be able to downlaod available report files (PDF, PNG, CSV, Excel, etc)
+1. As a user, I should be able to copy the permalink to a report source.
+
+##### Sharing or archiving an existing report
+1. As a report owner, I should be able to share or archive a report.
+    1. As report owner, I should be able to add new email recepients, and new kibana recepients to an existing report.
+    1. As a report owner, I sholud not be able to remove existing email or kibana recepients from an existing report.
+    1. As a report owner, I should receive a Kibana toast notification when a report has been delivered to new recepients.
+    1. As a report recepient, I should not get new notifications or emails when additional users have been added to an existing report.
+1. As a report recepient, I can only archive a report.
+
+
+### Functional
 * The user should be able to create/modify reports both through the Kibana UI or programmatically through APIs.
 * Ability to schedule/trigger reports periodically (a cron based schedule) or at a given frequency continuously or within certain time range.
 * Ability on instantly create downloadable reports or deliver scheduled reports via external channels.
 * Ability to enable/disable report generation
+* Ability to generate download logs as part of fine-grained audit logs.
 
 ### Non-functional
 
