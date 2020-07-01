@@ -46,7 +46,22 @@ const recurringDayOptions = [
   { value: 'Sunday', text: 'Sunday' },
 ];
 
-interface CreateReportState {
+// interface CreateReportState {
+//   const [reportSettingsDashboard, setReportSettingsDashboard] = useState('');
+//   const [deliveryEmailSubject, setDeliveryEmailSubject] = useState('');
+//   const [deliveryEmailBody, setDeliveryEmailBody] = useState('');
+//   const [scheduleRadioFutureDateSelected, setScheduleRadioFutureDateSelected] = useState(false);
+//   const [scheduleRadioRecurringSelected, setScheduleRadioRecurringSelected] = useState(false);
+//   const [scheduleUTCOffset, setScheduleUTCOffset] = useState(0);
+//   const [scheduleFutureDate, setScheduleFutureDate] = useState(moment());
+//   const [scheduleRecurringFrequency, setScheduleRecurringFrequency] = useState('Daily');
+//   const [scheduleRecurringUTCOffset, setScheduleRecurringUTCOffset] = useState(0);
+//   const [scheduleRecurringWeeklyDayOfWeek, setScheduleRecurringWeeklyDayOfWeek] = useState('Monday');
+//   const [scheduleRecurringStartDate, setScheduleRecurringStartDate] = useState(moment());
+//   const [scheduleRadioIdSelected, setScheduleRadioIdSelected] = useState(`${idPrefix}7`);
+// }
+
+export function CreateReport() {
   const [reportSettingsDashboard, setReportSettingsDashboard] = useState('');
   const [deliveryEmailSubject, setDeliveryEmailSubject] = useState('');
   const [deliveryEmailBody, setDeliveryEmailBody] = useState('');
@@ -59,25 +74,6 @@ interface CreateReportState {
   const [scheduleRecurringWeeklyDayOfWeek, setScheduleRecurringWeeklyDayOfWeek] = useState('Monday');
   const [scheduleRecurringStartDate, setScheduleRecurringStartDate] = useState(moment());
   const [scheduleRadioIdSelected, setScheduleRadioIdSelected] = useState(`${idPrefix}7`);
-}
-
-export function CreateReport() {
-  // const [reportSettingsDashboard, setReportSettingsDashboard] = useState('');
-  // const [deliveryEmailSubject, setDeliveryEmailSubject] = useState('');
-  // const [deliveryEmailBody, setDeliveryEmailBody] = useState('');
-  // const [scheduleRadioFutureDateSelected, setScheduleRadioFutureDateSelected] = useState(false);
-  // const [scheduleRadioRecurringSelected, setScheduleRadioRecurringSelected] = useState(false);
-  // const [scheduleUTCOffset, setScheduleUTCOffset] = useState(0);
-  // const [scheduleFutureDate, setScheduleFutureDate] = useState(moment());
-  // const [scheduleRecurringFrequency, setScheduleRecurringFrequency] = useState('Daily');
-  // const [scheduleRecurringUTCOffset, setScheduleRecurringUTCOffset] = useState(0);
-  // const [scheduleRecurringWeeklyDayOfWeek, setScheduleRecurringWeeklyDayOfWeek] = useState('Monday');
-  // const [scheduleRecurringStartDate, setScheduleRecurringStartDate] = useState(moment());
-  // const [scheduleRadioIdSelected, setScheduleRadioIdSelected] = useState(`${idPrefix}7`);
-
-  const reportState = useState<CreateReportState>({
-    
-  });
 
   const onChangeReportSettingsDashboard = (e) => {
     setReportSettingsDashboard(e.target.value);
