@@ -46,124 +46,29 @@ const recurringDayOptions = [
   { value: 'Sunday', text: 'Sunday' },
 ];
 
-// interface CreateReportState {
-//   const [reportSettingsDashboard, setReportSettingsDashboard] = useState('');
-//   const [deliveryEmailSubject, setDeliveryEmailSubject] = useState('');
-//   const [deliveryEmailBody, setDeliveryEmailBody] = useState('');
-//   const [scheduleRadioFutureDateSelected, setScheduleRadioFutureDateSelected] = useState(false);
-//   const [scheduleRadioRecurringSelected, setScheduleRadioRecurringSelected] = useState(false);
-//   const [scheduleUTCOffset, setScheduleUTCOffset] = useState(0);
-//   const [scheduleFutureDate, setScheduleFutureDate] = useState(moment());
-//   const [scheduleRecurringFrequency, setScheduleRecurringFrequency] = useState('Daily');
-//   const [scheduleRecurringUTCOffset, setScheduleRecurringUTCOffset] = useState(0);
-//   const [scheduleRecurringWeeklyDayOfWeek, setScheduleRecurringWeeklyDayOfWeek] = useState('Monday');
-//   const [scheduleRecurringStartDate, setScheduleRecurringStartDate] = useState(moment());
-//   const [scheduleRadioIdSelected, setScheduleRadioIdSelected] = useState(`${idPrefix}7`);
-// }
+const timezone_options = [
+  { value: -4, text: 'EDT -04:00' },
+  { value: -5, text: 'CDT -05:00' },
+  { value: -6, text: 'MDT -06:00' },
+  { value: -7, text: 'MST/PDT -07:00' },
+  { value: -8, text: 'AKDT -08:00' },
+  { value: -10, text: 'HST -10:00' }
+];
 
-export function CreateReport() {
-  const [reportSettingsDashboard, setReportSettingsDashboard] = useState('');
-  const [deliveryEmailSubject, setDeliveryEmailSubject] = useState('');
-  const [deliveryEmailBody, setDeliveryEmailBody] = useState('');
-  const [scheduleRadioFutureDateSelected, setScheduleRadioFutureDateSelected] = useState(false);
-  const [scheduleRadioRecurringSelected, setScheduleRadioRecurringSelected] = useState(false);
-  const [scheduleUTCOffset, setScheduleUTCOffset] = useState(0);
-  const [scheduleFutureDate, setScheduleFutureDate] = useState(moment());
+function ScheduleRecurringFrequency() {
   const [scheduleRecurringFrequency, setScheduleRecurringFrequency] = useState('Daily');
+  const [scheduleRecurringStartDate, setScheduleRecurringStartDate] = useState(moment());
   const [scheduleRecurringUTCOffset, setScheduleRecurringUTCOffset] = useState(0);
   const [scheduleRecurringWeeklyDayOfWeek, setScheduleRecurringWeeklyDayOfWeek] = useState('Monday');
-  const [scheduleRecurringStartDate, setScheduleRecurringStartDate] = useState(moment());
-  const [scheduleRadioIdSelected, setScheduleRadioIdSelected] = useState(`${idPrefix}7`);
 
-  const onChangeReportSettingsDashboard = (e) => {
-    setReportSettingsDashboard(e.target.value);
-  }
-
-  const onChangeDeliveryEmailSubject = (e) => {
-    setDeliveryEmailSubject(e.target.value);
-  }
-
-  const onChangeDeliveryEmailBody = (e) => {;
-    setDeliveryEmailBody(e.target.value);
-  }
-
-  const onChangeScheduleSettingsRadio = optionId => {
-    setScheduleRadioIdSelected(optionId);
-    if (optionId === `${idPrefix}7`) {
-      setScheduleRadioFutureDateSelected(false);
-      setScheduleRadioRecurringSelected(false);
-    }
-    else if (optionId === `${idPrefix}8`) {
-      setScheduleRadioFutureDateSelected(true);
-      setScheduleRadioRecurringSelected(false);    
-    }
-    else if (optionId === `${idPrefix}9`) {
-      setScheduleRadioFutureDateSelected(false);
-      setScheduleRadioRecurringSelected(true);
-    }
-  };
-
-  const ScheduleRadio = () => {
-    const radios = [
-      {
-        id: `${idPrefix}7`,
-        label: 'Now',
-      },
-      {
-        id: `${idPrefix}8`,
-        label: 'Future Date',
-      },
-      {
-        id: `${idPrefix}9`,
-        label: 'Recurring',
-      },
-    ];
-    return (
-      <EuiRadioGroup
-        options={radios}
-        idSelected={scheduleRadioIdSelected}
-        onChange={onChangeScheduleSettingsRadio}
-        name="scheduleRadioGroup"
-      />
-    );
-  };
-  
-  const timezone_options = [
-    { value: -4, text: 'EDT -04:00' },
-    { value: -5, text: 'CDT -05:00' },
-    { value: -6, text: 'MDT -06:00' },
-    { value: -7, text: 'MST/PDT -07:00' },
-    { value: -8, text: 'AKDT -08:00' },
-    { value: -10, text: 'HST -10:00' }
+  const options = [
+    { value: 'Daily', text: 'Daily' },
+    { value: 'Weekly', text: 'Weekly' },
+    { value: 'Monthly', text: 'Monthly' },
   ];
 
-  const ScheduleFutureDatePicker = () => {  
-    const handleChangeScheduleDate = date => {
-      setScheduleFutureDate(date);
-    };
-
-    const onSelectOffsetChange = e => {
-      setScheduleUTCOffset(parseInt(e.target.value, 10));
-    };
-
-    return (
-      <div>
-        <EuiFormRow label="Time select on">
-          <EuiDatePicker
-            showTimeSelect
-            selected={scheduleFutureDate}
-            onChange={handleChangeScheduleDate}
-          />
-        </EuiFormRow>
-        <EuiFormRow label="UTC offset">
-          <EuiSelect
-            options={timezone_options}
-            value={scheduleUTCOffset}
-            onChange={onSelectOffsetChange}
-          />
-        </EuiFormRow>
-      </div>
-    );
+  const onChangeScheduleRecurringFrequency = e => {
+    setScheduleRecurringFrequency(e.target.value);
   }
 
   const ScheduleRecurringDailyInput = () => {
@@ -236,43 +141,125 @@ export function CreateReport() {
     );
   }
 
-  const ScheduleRecurringFrequency = () => {
-    const options = [
-      { value: 'Daily', text: 'Daily' },
-      { value: 'Weekly', text: 'Weekly' },
-      { value: 'Monthly', text: 'Monthly' },
-    ];
-
-    const onChangeScheduleRecurringFrequency = e => {
-      setScheduleRecurringFrequency(e.target.value);
-    }
-
-    let frequency = null;
-    switch(scheduleRecurringFrequency) {
-      case 'Daily':
-        frequency=<ScheduleRecurringDailyInput/>
-        break;
-      case 'Weekly':
-        frequency=<ScheduleRecurringWeeklyInput/>
-        break;
-      case 'Monthly':
-        frequency=<ScheduleRecurringMonthlyInput/>
-        break;
-    }
-
-    return (
-      <div>
-        <EuiFormRow label="Frequency">
-          <EuiSelect
-            options={options}
-            value={scheduleRecurringFrequency}
-            onChange={onChangeScheduleRecurringFrequency}
-          />
-        </EuiFormRow>
-        {frequency}
-      </div>
-    );
+  let frequency = null;
+  switch(scheduleRecurringFrequency) {
+    case 'Daily':
+      frequency=<ScheduleRecurringDailyInput/>
+      break;
+    case 'Weekly':
+      frequency=<ScheduleRecurringWeeklyInput/>
+      break;
+    case 'Monthly':
+      frequency=<ScheduleRecurringMonthlyInput/>
+      break;
   }
+
+  return (
+    <div>
+      <EuiFormRow label="Frequency">
+        <EuiSelect
+          options={options}
+          value={scheduleRecurringFrequency}
+          onChange={onChangeScheduleRecurringFrequency}
+        />
+      </EuiFormRow>
+      {frequency}
+    </div>
+  );
+}
+
+function ScheduleFutureDatePicker() {  
+  const [scheduleFutureDate, setScheduleFutureDate] = useState(moment());
+  const [scheduleUTCOffset, setScheduleUTCOffset] = useState(0);
+
+  const handleChangeScheduleDate = date => {
+    setScheduleFutureDate(date);
+  };
+
+  const onSelectOffsetChange = e => {
+    setScheduleUTCOffset(parseInt(e.target.value, 10));
+  };
+
+  return (
+    <div>
+      <EuiFormRow label="Time select on">
+        <EuiDatePicker
+          showTimeSelect
+          selected={scheduleFutureDate}
+          onChange={handleChangeScheduleDate}
+        />
+      </EuiFormRow>
+      <EuiFormRow label="UTC offset">
+        <EuiSelect
+          options={timezone_options}
+          value={scheduleUTCOffset}
+          onChange={onSelectOffsetChange}
+        />
+      </EuiFormRow>
+    </div>
+  );
+}
+
+export function CreateReport() {
+  const [reportSettingsDashboard, setReportSettingsDashboard] = useState('');
+  const [deliveryEmailSubject, setDeliveryEmailSubject] = useState('');
+  const [deliveryEmailBody, setDeliveryEmailBody] = useState('');
+  const [scheduleRadioFutureDateSelected, setScheduleRadioFutureDateSelected] = useState(false);
+  const [scheduleRadioRecurringSelected, setScheduleRadioRecurringSelected] = useState(false);
+  const [scheduleRadioIdSelected, setScheduleRadioIdSelected] = useState(`${idPrefix}7`);
+
+  const onChangeReportSettingsDashboard = (e) => {
+    setReportSettingsDashboard(e.target.value);
+  }
+
+  const onChangeDeliveryEmailSubject = (e) => {
+    setDeliveryEmailSubject(e.target.value);
+  }
+
+  const onChangeDeliveryEmailBody = (e) => {;
+    setDeliveryEmailBody(e.target.value);
+  }
+
+  const onChangeScheduleSettingsRadio = optionId => {
+    setScheduleRadioIdSelected(optionId);
+    if (optionId === `${idPrefix}7`) {
+      setScheduleRadioFutureDateSelected(false);
+      setScheduleRadioRecurringSelected(false);
+    }
+    else if (optionId === `${idPrefix}8`) {
+      setScheduleRadioFutureDateSelected(true);
+      setScheduleRadioRecurringSelected(false);    
+    }
+    else if (optionId === `${idPrefix}9`) {
+      setScheduleRadioFutureDateSelected(false);
+      setScheduleRadioRecurringSelected(true);
+    }
+  };
+
+  const ScheduleRadio = () => {
+    const radios = [
+      {
+        id: `${idPrefix}7`,
+        label: 'Now',
+      },
+      {
+        id: `${idPrefix}8`,
+        label: 'Future Date',
+      },
+      {
+        id: `${idPrefix}9`,
+        label: 'Recurring',
+      },
+    ];
+    return (
+      <EuiRadioGroup
+        options={radios}
+        idSelected={scheduleRadioIdSelected}
+        onChange={onChangeScheduleSettingsRadio}
+        name="scheduleRadioGroup"
+      />
+    );
+  };
 
   const scheduleFutureDateCalendar = scheduleRadioFutureDateSelected
     ? <ScheduleFutureDatePicker/> 
