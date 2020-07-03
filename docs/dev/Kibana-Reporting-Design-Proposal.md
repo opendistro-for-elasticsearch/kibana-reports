@@ -50,7 +50,34 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
         * As a user, I should be able to archive reports. 
             * Delete option should not be there as it might lead to complications such as one wherein the user who receives the reports deletes them and says that they never received the reports
         * As a user, I should be able to see a list of reports archived for the past 100 days. NOTE: Reports will be stored as hyperlinks/urls and NOT as actual reports. If the data is available at the time when the url is clicked, report will be created and can be viewed in a browser and can be downloaded.
-
+    * For Saved Search CSV Report
+        * As a user, I should be able to find my saved search through an autocomplete input, in order to find my saved search quickly.
+        * As a user, I should be able to choose time range for my csv data generation. This time range should be by default the same value of previous chosen time range from other tabs
+        * As a user, when I click on ‘Generate’ button, reporting plugin should launch the csv generation
+        * As a user, I should have the list of my generated csv files
+            * As a user, I want to see the name of the user who generated the file in the generated csv files list
+            * As a user, I want to see the name of my csv file in the generated csv files list
+            * As a user, I want to see the status of my csv file in the generated csv files list
+            * As a user, I want to see the message of my csv file generation status in the generated csv files list
+            * As a user, I want to see the date when my csv file was generated in the generated csv files list
+        * As a user, my csv generation should be asynchronous and not have to wait until my csv generation is done, that means that I can navigate to other tabs during my csv is generate in backend.
+            * As a user, my work in progress csv file should have pending status on my generated csv files list.
+            * As a user, I should be able to launch several csv files generation simultaneously
+            * As a user, I should be blocked by reporting plugin, if I attempt to generate too many csv files in the same time that might flood backend
+        * As a user, I should get Kibana notification when an event is trigger by the reporting module such as:
+            * CSV is generated
+            * An error occurred
+            * CSV generation is launched
+            * CSV is uploaded successfully 
+        * As a user, I should be able to set/edit the csv name
+        * As a user, I should know why my csv files generation failed
+            * No content
+            * No rights
+            * Internal errors
+        * As a user, ‘Download’ button and ‘Generate’ button should be disable if at least one requirement is not fulfill.
+        * As a user, I should be able to delete any csv file from the generated csv files list
+        * As a user, when I click on ‘Download’ button, I should get my csv file from browser upload module
+        
 ### Functional 
 
 * The user should be able to create/modify reports both through the Kibana UI or programmatically through APIs.
