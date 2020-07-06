@@ -25,7 +25,7 @@ import {
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { Main } from './main';
 import { CreateReport } from '../create_report/create_report';
-import { ReportDetails } from './report_details';
+import { ReportDetails } from './report_details/report_details';
 
 interface RouterHomeProps {
   httpClient?: any,

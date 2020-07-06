@@ -75,7 +75,7 @@ const emptyMessageScheduledReports = (
 
 const error = "Error: Unable to load table";
 
-export class Main extends React.Component<RouterHomeProps> {
+export class Main extends React.Component<RouterHomeProps, any> {
   constructor(props: any) {
     super(props);
     this.state = {
