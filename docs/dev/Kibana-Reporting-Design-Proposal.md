@@ -37,6 +37,7 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 1. As a user, I can download a PDF, PNG, CSV, XLS file in-context from any available panel (e.g. Dashboards, visualizations, saved searches, etc).
 1. As a user, any time I download a report from any available panel (e.g. Dashboards, visualizations, saved searches, etc), a report will be auto-generated in the reports list.
 1. As a user, I can create a report definition from the share menu of any available panel (e.g. Dashboards, visualizations, saved searches, etc).
+1. As a user, I can download a report in-context only if my search, visualizations, dashboards is saved.
 
 ### Reporting Landing Page
 #### Reports
@@ -55,13 +56,24 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 1. As a user, I should be able to view, edit and delete a report definition.
 1. As a user, I should be able to enable/disable a report definition
 
+
+#### Search module
+1. As a user, I should be able to find any saved search, visualization, dashboard through a search module in Reporting Landing Page, and download it.
+1. As a user, I should specify the Type and the Name in the Search module.
+1. As a user, I should fill the Type in a Select Input suggesting Saved Search, Visualization, Dashboard.
+1. As a user, I should fill the Name in an Autocomplete Input.
+1. As a user, I should be able to get report source data from a specific time range that I choose in a time range picker. Time range picker value should be persistent between tabs.
+1. As a user, I can trigger the download pop up by clicking on `Download` button.
+1. As a user, `Download` button should be unavalaible until a search, visualization or dashboard is found.
+
 ### Create, View, Edit
 #### Create report definition
 ##### Report settings
 1. As a user, I should be able to set the report name.
-1. As a user, I should be able to set an optional report descritption.
+1. As a user, I should be able to set an optional report description.
 1. As a user, I should be able to select a report source type (Dashboard, Visualization, Saved Search)
 1. As a user, I should be able to select a specific source (Dashboard, Visualization, or Saved search, contextually).
+1. As a user, I should be able to select time range for my report data.
 1. As a user, I should be able to select the default file format for my report, contextual to my selected source (PDF, PNG, CSV, Excel, etc)
 1. As a user, I should be able to add a `Header` and `Footer` to PDF and PNG reports.
     1. As a user, I should see Report title and a sample paragraph in the `header` by Default.
@@ -94,6 +106,7 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 1. As a user, when a new report is available I should see a notification status in the reporting icon in the sidebar
 1. As a user, when a report fails due to an error, I should see the report with a failed status on the `Reports` list.
 1. As a report definition owner, when a report fails to trigger due to an error, I should receive a kibana toast alert letting me know that the report failed.
+1. As a report definition owner, when a report fails to trigger due to an error, I should receive the root cause of the error origin (no content, internal error, no permission etc..)
 
 #### View report definition details
 1. As a user, I should be able to view all my saved definition settings.
@@ -132,6 +145,7 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 * In the absence of missing subsystems such as a Elasticsearch report scheduler plugin, the scheduling UI should be hidden or present the user with correct messaging (for example limited functionality)
 * The service should be reliable -  we should be able to generate a report in an acceptable time frame or else abort.
 * **Security** - a user should not be allowed to create reports of resources they don’t have access to. For example, if a user should not be able to generate report of dashboard with index-pattern they do not have read permissions to.
+* **Security** - permissions should be manage through security plugin
 
 
 
