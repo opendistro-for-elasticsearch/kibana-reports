@@ -143,7 +143,7 @@ export default class GenerateReportService {
         params
       );
       // TODO: customize response according to client side needs
-      return { ok: true, response: results };
+      return { ok: true, response: results.hits };
     } catch (err) {
       console.error('Reporting - Report - Service', err);
       return { ok: false, error: err.message };

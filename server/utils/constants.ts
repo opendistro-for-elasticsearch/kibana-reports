@@ -17,7 +17,7 @@ export const BASE_API_PATH = '/api/reporting';
 export const NODE_API = Object.freeze({
   GENERATE_REPORT: `${BASE_API_PATH}/generateReport`,
   GET_REPORTS: `${BASE_API_PATH}/reports`,
-  GET_REPORT: `${BASE_API_PATH}/reports/{reportId}`,
+  GET_REPORT_BY_ID: `${BASE_API_PATH}/reports/{reportId}`,
   // TODO: SCHEDULE_REPORT: `${BASE_API_PATH}/scheduleReport`,
 });
 

@@ -39,6 +39,9 @@ export default function (server: Server, services: NodeServices) {
           windowLength: Joi.number().positive().integer(),
         }),
       },
+      timeout: {
+        socket: 30000,
+      },
     },
   });
 
@@ -59,7 +62,7 @@ export default function (server: Server, services: NodeServices) {
   });
 
   server.route({
-    path: NODE_API.GET_REPORT,
+    path: NODE_API.GET_REPORT_BY_ID,
     method: REQUEST.GET,
     handler: generateReportService.getReport,
     options: {
