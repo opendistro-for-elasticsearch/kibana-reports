@@ -1,12 +1,12 @@
 # Kibana Reporting
 
-### *You don’t have to go a dashboard, we will bring dashboards to you. *
+### *You don’t have to go to a dashboard, we will bring dashboards to you. *
 
 ## 1. Overview
 
 ### 1.1 Motivation
 
-The ability to generate reports from dashboards and views on Kibana is a highly requested feature .
+The ability to generate reports from dashboards and views in Kibana is a highly requested feature.
 This plugin will introduce the ability to generate reports, as well as enable the user to customize them, receive them on a schedule or monitor, and have the reports received on external channels such as email, Slack and Chime. 
 
 - https://discuss.opendistrocommunity.dev/t/reporting-module/153
