@@ -31,20 +31,30 @@ import {
   EuiHorizontalRule,
   EuiSpacer,
   // @ts-ignore
-  EuiEmptyPrompt
+  EuiEmptyPrompt,
 } from '@elastic/eui';
-import {reports_list_columns, reports_list_users, reports_list_search, reports_list_selection_value} from './reports_table'
-import {scheduled_report_columns, scheduled_reports} from './scheduled_reports_table'
+import {
+  reports_list_columns,
+  reports_list_users,
+  reports_list_search,
+  reports_list_selection_value,
+} from './reports_table';
+import {
+  scheduled_report_columns,
+  scheduled_reports,
+} from './scheduled_reports_table';
 
-let httpClientGlobal: { post: (arg0: string, arg1: string) => Promise<any>; };
+let httpClientGlobal: { post: (arg0: string, arg1: string) => Promise<any> };
 
 function fetchDownloadApi(url: string) {
-    console.log("fetch download api")
-    var data = {
-      url: url
-    }
-     httpClientGlobal.post('../api/reporting/download', JSON.stringify(data)).then((resp) => {
-      console.log(resp)
+  console.log('fetch download api');
+  var data = {
+    url: url,
+  };
+  httpClientGlobal
+    .post('../api/reporting/download', JSON.stringify(data))
+    .then((resp) => {
+      console.log(resp);
     });
 }
 
@@ -53,37 +63,33 @@ const emptyMessageReports = (
     title={<h3>You Have No Reports</h3>}
     titleSize="xs"
     body="Create a report from a dashboard or template"
-    actions={
-      <EuiButton fill>Create report</EuiButton>
-    }
+    actions={<EuiButton fill>Create report</EuiButton>}
   />
-)
+);
 
 interface RouterHomeProps {
-  httpClient?: any
+  httpClient?: any;
 }
 
 const emptyMessageScheduledReports = (
   <div>
     <h3>You have no scheduled reports</h3>
-    <p>
-      Create a new schedule to get started
-    </p>
+    <p>Create a new schedule to get started</p>
     <EuiButton fill>Create schedule</EuiButton>
   </div>
-)
+);
 
-const error = "Error: Unable to load table";
+const error = 'Error: Unable to load table';
 
 export class Main extends React.Component<RouterHomeProps, any> {
   constructor(props: any) {
     super(props);
     this.state = {
       dashboardList: [],
-      selectedDashboard: "",
-      selectedScheduleFrequency: "",
-      selectedDashboardForSchedule: "",
-      schedulerEmailAddress: "",
+      selectedDashboard: '',
+      selectedScheduleFrequency: '',
+      selectedDashboardForSchedule: '',
+      schedulerEmailAddress: '',
       scheduledReportFileName: [],
       pagination: this.pagination,
       renderCreateReport: false,
@@ -107,17 +113,19 @@ export class Main extends React.Component<RouterHomeProps, any> {
       className: 'customRowClass',
       onClick: (e: any) => {
         if (!$(e.target).is('button')) {
-          window.location.assign(`opendistro-kibana-reports#/report_details/${item.id}${this.props.history.location.search}`)
+          window.location.assign(
+            `opendistro-kibana-reports#/report_details/${item.id}${this.props.history.location.search}`
+          );
         }
-      }
-    }
-  }
+      },
+    };
+  };
 
   render() {
     return (
       <EuiPage>
         <EuiPageBody>
-          <EuiPageContent panelPaddingSize={"l"}>
+          <EuiPageContent panelPaddingSize={'l'}>
             <EuiFlexGroup justifyContent="spaceEvenly">
               <EuiFlexItem>
                 <EuiTitle>
@@ -125,12 +133,10 @@ export class Main extends React.Component<RouterHomeProps, any> {
                 </EuiTitle>
               </EuiFlexItem>
               <EuiFlexItem component="span" grow={false}>
-                <EuiButton size="m">
-                  Delete
-                </EuiButton>  
-              </EuiFlexItem>  
+                <EuiButton size="m">Delete</EuiButton>
+              </EuiFlexItem>
             </EuiFlexGroup>
-            <EuiHorizontalRule/>
+            <EuiHorizontalRule />
             <EuiInMemoryTable
               items={reports_list_users}
               itemId="id"
@@ -143,10 +149,10 @@ export class Main extends React.Component<RouterHomeProps, any> {
               selection={reports_list_selection_value}
               isSelectable={true}
               rowProps={this.getRowProps}
-              />
+            />
           </EuiPageContent>
-          <EuiSpacer/>
-          <EuiPageContent panelPaddingSize={"l"}>
+          <EuiSpacer />
+          <EuiPageContent panelPaddingSize={'l'}>
             <EuiFlexGroup justifyContent="spaceEvenly">
               <EuiFlexItem>
                 <EuiTitle>
@@ -154,25 +160,23 @@ export class Main extends React.Component<RouterHomeProps, any> {
                 </EuiTitle>
               </EuiFlexItem>
               <EuiFlexItem component="span" grow={false}>
-                <EuiButton size="m">
-                  Delete
-                </EuiButton>  
-              </EuiFlexItem>  
+                <EuiButton size="m">Delete</EuiButton>
+              </EuiFlexItem>
               <EuiFlexItem component="span" grow={false}>
-                <EuiButton size="m">
-                  Edit
-                </EuiButton>  
-              </EuiFlexItem>              
+                <EuiButton size="m">Edit</EuiButton>
+              </EuiFlexItem>
               <EuiFlexItem component="span" grow={false}>
-                <EuiButton 
+                <EuiButton
                   fill={true}
-                  onClick={() => {window.location.assign('opendistro-kibana-reports#/create')}}
+                  onClick={() => {
+                    window.location.assign('opendistro-kibana-reports#/create');
+                  }}
                 >
                   Create
                 </EuiButton>
-              </EuiFlexItem>          
+              </EuiFlexItem>
             </EuiFlexGroup>
-            <EuiHorizontalRule/>
+            <EuiHorizontalRule />
             <EuiInMemoryTable
               items={scheduled_reports}
               itemId="id"

@@ -19,9 +19,7 @@ import { ShareModal } from '../share_modal/share_modal';
 
 describe('<ShareModal /> panel', () => {
   test('render component', () => {
-    const { container } = render(
-      <ShareModal/>
-    );
+    const { container } = render(<ShareModal />);
     expect(container.firstChild).toMatchSnapshot();
   });
-})
+});

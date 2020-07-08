@@ -20,9 +20,9 @@ import { ShareEmailModal } from '../share_modal/share_email_modal';
 describe('<ShareEmailModal /> panel', () => {
   test('render component', () => {
     const { container } = render(
-      // todo: replace mock data emails 
-      <ShareEmailModal/>
+      // todo: replace mock data emails
+      <ShareEmailModal />
     );
     expect(container.firstChild).toMatchSnapshot();
   });
-})
+});

@@ -35,99 +35,111 @@ import {
   EuiSwitchEvent,
   EuiSwitch,
   EuiLink,
-  EuiForm
+  EuiForm,
 } from '@elastic/eui';
 
-  // todo: replace with recipients from ES index
-  const email_recipient_options = [
-    {
-      label: 'davidcui@amazon.com'
-    },
-    {
-      label: 'szhongna@amazon.com'
-    },
-    {
-      label: 'kvngar@amazon.com'
+// todo: replace with recipients from ES index
+const email_recipient_options = [
+  {
+    label: 'davidcui@amazon.com',
+  },
+  {
+    label: 'szhongna@amazon.com',
+  },
+  {
+    label: 'kvngar@amazon.com',
+  },
+];
+
+export function ShareEmailModal() {
+  const [
+    selectedOptionsEmailRecipients,
+    setSelectedEmailRecipients,
+  ] = useState([email_recipient_options[0], email_recipient_options[1]]);
+  const [emailSubjectValue, setEmailSubjectValue] = useState('');
+  const [emailBodyValue, setEmailBodyValue] = useState('');
+  const [switchChecked, setSwitchChecked] = useState(false);
+
+  const onChangeEmailRecipients = (selectedOptions) => {
+    setSelectedEmailRecipients(selectedOptions);
+  };
+
+  const onChangeEmailSubject = (e: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
+    setEmailSubjectValue(e.target.value);
+  };
+
+  const onChangeEmailBody = (e) => {
+    setEmailBodyValue(e.target.value);
+  };
+
+  const onChangeAttachmentSwitch = (e) => {
+    setSwitchChecked(e.target.checked);
+  };
+
+  const onCreateOptionEmailRecipients = (
+    searchValue,
+    flattenedOptions = []
+  ) => {
+    const normalizedSearchValue = searchValue.trim().toLowerCase();
+
+    if (!normalizedSearchValue) {
+      return;
     }
-  ]
 
-  export function ShareEmailModal() {
-    const [selectedOptionsEmailRecipients, setSelectedEmailRecipients] = useState([email_recipient_options[0], email_recipient_options[1]]);
-    const [emailSubjectValue, setEmailSubjectValue] = useState('');
-    const [emailBodyValue, setEmailBodyValue] = useState('');
-    const [switchChecked, setSwitchChecked] = useState(false);
-
-    const onChangeEmailRecipients = selectedOptions => {
-      setSelectedEmailRecipients(selectedOptions);
-    }
-
-    const onChangeEmailSubject = (e: { target: { value: React.SetStateAction<string>; }; }) => {
-      setEmailSubjectValue(e.target.value);
+    const newOption = {
+      label: searchValue,
     };
 
-    const onChangeEmailBody = e => {
-      setEmailBodyValue(e.target.value);
+    // Create the option if it doesn't exist.
+    if (
+      flattenedOptions.findIndex(
+        (option) => option.label.trim().toLowerCase() === normalizedSearchValue
+      ) === -1
+    ) {
+      email_recipient_options.push(newOption);
     }
 
-    const onChangeAttachmentSwitch = e => {
-      setSwitchChecked(e.target.checked);
-    }
+    setSelectedEmailRecipients([...selectedOptionsEmailRecipients, newOption]);
+  };
 
-    const onCreateOptionEmailRecipients = (searchValue, flattenedOptions = []) => {
-      const normalizedSearchValue = searchValue.trim().toLowerCase();
-  
-      if (!normalizedSearchValue) {
-        return;
-      }
-  
-      const newOption = {
-        label: searchValue,
-      };
-  
-      // Create the option if it doesn't exist.
-      if (
-        flattenedOptions.findIndex(
-          option => option.label.trim().toLowerCase() === normalizedSearchValue
-        ) === -1
-      ) {
-        email_recipient_options.push(newOption);
-      }
-
-      setSelectedEmailRecipients([...selectedOptionsEmailRecipients, newOption]);
-    }
-
-    return (
-      <div>
-        <EuiForm component="form">
-        <EuiFormRow label="Add email recipients" helpText="Select or add recipients">
+  return (
+    <div>
+      <EuiForm component="form">
+        <EuiFormRow
+          label="Add email recipients"
+          helpText="Select or add recipients"
+        >
           <EuiComboBox
             options={email_recipient_options}
             onCreateOption={onCreateOptionEmailRecipients}
-            onChange={e => onChangeEmailRecipients(e)}
+            onChange={(e) => onChangeEmailRecipients(e)}
             selectedOptions={selectedOptionsEmailRecipients}
           />
         </EuiFormRow>
-        <EuiSpacer size={"s"}/>
+        <EuiSpacer size={'s'} />
         <EuiFormRow label="Email subject">
           <EuiFieldText
             value={emailSubjectValue}
-            onChange={e => onChangeEmailSubject(e)}
+            onChange={(e) => onChangeEmailSubject(e)}
           />
         </EuiFormRow>
-        
-        <EuiFormRow 
+
+        <EuiFormRow
           label="Email body"
           fullWidth={true}
           labelAppend={
             <EuiText size="xs">
               <EuiLink>Insert placeholder</EuiLink>
             </EuiText>
-          }>
-            <EuiTextArea 
-              fullWidth={true}
-              value={emailBodyValue}
-              onChange={e => onChangeEmailBody(e)}
-            />
+          }
+        >
+          <EuiTextArea
+            fullWidth={true}
+            value={emailBodyValue}
+            onChange={(e) => onChangeEmailBody(e)}
+          />
         </EuiFormRow>
         <EuiCheckbox
           id={'attachment_as_switch_checkbox'}
@@ -135,8 +147,8 @@ import {
           checked={switchChecked}
           onChange={onChangeAttachmentSwitch}
         />
-        <EuiSpacer/>
-        </EuiForm>
-      </div>
-    );
-  }
+        <EuiSpacer />
+      </EuiForm>
+    </div>
+  );
+}

@@ -31,109 +31,124 @@ import {
   EuiFieldText,
   EuiTextArea,
   EuiSwitchEvent,
-  EuiSwitch
+  EuiSwitch,
 } from '@elastic/eui';
-import { ShareEmailModal } from './share_email_modal'
-  // todo: replace with recipients from ES index
-  const kibana_recipient_options = [
-    {
-      label: 'David'
-    },
-    {
-      label: 'Zhongnan'
-    },
-    {
-      label: 'Kevin'
+import { ShareEmailModal } from './share_email_modal';
+// todo: replace with recipients from ES index
+const kibana_recipient_options = [
+  {
+    label: 'David',
+  },
+  {
+    label: 'Zhongnan',
+  },
+  {
+    label: 'Kevin',
+  },
+];
+
+export function ShareModal(props) {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [
+    selectedOptionsKibanaRecipients,
+    setSelectedKibanaRecipients,
+  ] = useState([kibana_recipient_options[0], kibana_recipient_options[1]]);
+  const [emailChecked, setEmailChecked] = useState(false);
+
+  const closeModal = () => setIsModalVisible(false);
+  const showModal = () => setIsModalVisible(true);
+
+  const onChangeKibanaRecipients = (selectedOptions) => {
+    setSelectedKibanaRecipients(selectedOptions);
+  };
+
+  const onChangeEmailCheckbox = (e) => {
+    setEmailChecked(e.target.checked);
+  };
+
+  const onCreateOptionKibanaRecipients = (
+    searchValue,
+    flattenedOptions = []
+  ) => {
+    const normalizedSearchValue = searchValue.trim().toLowerCase();
+
+    if (!normalizedSearchValue) {
+      return;
     }
-  ]  
 
-  export function ShareModal(props) {
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [selectedOptionsKibanaRecipients, setSelectedKibanaRecipients] = useState([kibana_recipient_options[0], kibana_recipient_options[1]]);
-    const [emailChecked, setEmailChecked] = useState(false);
-
-    const closeModal = () => setIsModalVisible(false);
-    const showModal = () => setIsModalVisible(true);
-
-    const onChangeKibanaRecipients = selectedOptions => {
-      setSelectedKibanaRecipients(selectedOptions);
+    const newOption = {
+      label: searchValue,
     };
 
-    const onChangeEmailCheckbox = e => {
-      setEmailChecked(e.target.checked);
-    };
-  
-    const onCreateOptionKibanaRecipients = (searchValue, flattenedOptions = []) => {
-      const normalizedSearchValue = searchValue.trim().toLowerCase();
-  
-      if (!normalizedSearchValue) {
-        return;
-      }
-  
-      const newOption = {
-        label: searchValue,
-      };
-  
-      // Create the option if it doesn't exist.
-      if (
-        flattenedOptions.findIndex(
-          option => option.label.trim().toLowerCase() === normalizedSearchValue
-        ) === -1
-      ) {
-        kibana_recipient_options.push(newOption);
-      }
-      // Select the option.
-      setSelectedKibanaRecipients([...selectedOptionsKibanaRecipients, newOption]);
-    };
+    // Create the option if it doesn't exist.
+    if (
+      flattenedOptions.findIndex(
+        (option) => option.label.trim().toLowerCase() === normalizedSearchValue
+      ) === -1
+    ) {
+      kibana_recipient_options.push(newOption);
+    }
+    // Select the option.
+    setSelectedKibanaRecipients([
+      ...selectedOptionsKibanaRecipients,
+      newOption,
+    ]);
+  };
 
-    const showShareEmail = emailChecked ? <ShareEmailModal/> : null;
+  const showShareEmail = emailChecked ? <ShareEmailModal /> : null;
 
-    let modal;
-    if (isModalVisible) {
-      modal = (
-        <EuiOverlayMask>
-          <EuiModal onClose={closeModal}>
-            <EuiModalHeader>
-              <EuiModalHeaderTitle>Share</EuiModalHeaderTitle>
-            </EuiModalHeader>
-            <EuiModalBody>
-              <EuiText>
-                Send to new Kibana or email recipients. Existing recipients will not be notified
-              </EuiText>
-              <EuiSpacer/>
-              <EuiFormRow label="Add kibana recipients" helpText="Select or add users">
-                <EuiComboBox
-                  options={kibana_recipient_options}
-                  selectedOptions={selectedOptionsKibanaRecipients}
-                  onChange={onChangeKibanaRecipients}
-                  onCreateOption={onCreateOptionKibanaRecipients}
-                />
-              </EuiFormRow>
-              <EuiCheckbox
-                id={'report_details_share_email_checkbox'}
-                label="Email"
-                checked={emailChecked}
-                onChange={onChangeEmailCheckbox}
+  let modal;
+  if (isModalVisible) {
+    modal = (
+      <EuiOverlayMask>
+        <EuiModal onClose={closeModal}>
+          <EuiModalHeader>
+            <EuiModalHeaderTitle>Share</EuiModalHeaderTitle>
+          </EuiModalHeader>
+          <EuiModalBody>
+            <EuiText>
+              Send to new Kibana or email recipients. Existing recipients will
+              not be notified
+            </EuiText>
+            <EuiSpacer />
+            <EuiFormRow
+              label="Add kibana recipients"
+              helpText="Select or add users"
+            >
+              <EuiComboBox
+                options={kibana_recipient_options}
+                selectedOptions={selectedOptionsKibanaRecipients}
+                onChange={onChangeKibanaRecipients}
+                onCreateOption={onCreateOptionKibanaRecipients}
               />
-              <EuiSpacer size="m"/>
-              {showShareEmail}
-            </EuiModalBody>
-            <EuiModalFooter>
-              <EuiButtonEmpty onClick={closeModal}>Cancel</EuiButtonEmpty>
-              <EuiButton onClick={closeModal} fill>
-                Send
-              </EuiButton>
-            </EuiModalFooter>
-          </EuiModal>
-        </EuiOverlayMask>
-      );
-    }
-    return (
-        <div>
-          <EuiText size="xs">
-            <h2><a onClick={showModal}>Share</a></h2>
-            <div>{modal}</div>
-          </EuiText>
-        </div>
-    )
+            </EuiFormRow>
+            <EuiCheckbox
+              id={'report_details_share_email_checkbox'}
+              label="Email"
+              checked={emailChecked}
+              onChange={onChangeEmailCheckbox}
+            />
+            <EuiSpacer size="m" />
+            {showShareEmail}
+          </EuiModalBody>
+          <EuiModalFooter>
+            <EuiButtonEmpty onClick={closeModal}>Cancel</EuiButtonEmpty>
+            <EuiButton onClick={closeModal} fill>
+              Send
+            </EuiButton>
+          </EuiModalFooter>
+        </EuiModal>
+      </EuiOverlayMask>
+    );
   }
+  return (
+    <div>
+      <EuiText size="xs">
+        <h2>
+          <a onClick={showModal}>Share</a>
+        </h2>
+        <div>{modal}</div>
+      </EuiText>
+    </div>
+  );
+}
