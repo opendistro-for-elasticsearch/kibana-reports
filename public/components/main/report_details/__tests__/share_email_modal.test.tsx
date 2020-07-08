@@ -13,6 +13,16 @@
  * permissions and limitations under the License.
  */
 
-export { Main } from './main';
-export { RouterHome } from './router_home';
-export { ReportDetails } from './report_details';
+import React from 'react';
+import { render } from '@testing-library/react';
+import { ShareEmailModal } from '../share_modal/share_email_modal';
+
+describe('<ShareEmailModal /> panel', () => {
+  test('render component', () => {
+    const { container } = render(
+      // todo: replace mock data emails
+      <ShareEmailModal />
+    );
+    expect(container.firstChild).toMatchSnapshot();
+  });
+});

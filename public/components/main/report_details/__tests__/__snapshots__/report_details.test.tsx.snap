@@ -1,0 +1,585 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ReportDetails /> panel render component 1`] = `
+<div
+  class="euiPage"
+>
+  <main
+    class="euiPageBody"
+  >
+    <h1
+      class="euiTitle euiTitle--large"
+    >
+      Report details
+    </h1>
+    <div
+      class="euiSpacer euiSpacer--m"
+    />
+    <div
+      class="euiPanel euiPanel--paddingLarge euiPageContent"
+    >
+      <div
+        class="euiPageHeader euiPageHeader--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <div
+            class="euiPageHeaderSection"
+          >
+            <h1
+              class="euiTitle euiTitle--medium"
+            >
+              Daily Sales Report-232o2jsf28492h3rjskfbwjk23
+            </h1>
+          </div>
+        </div>
+        <div
+          class="euiFlexGroup euiFlexGroup--gutterExtraSmall euiFlexGroup--alignItemsFlexEnd euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+        >
+          <div
+            class="euiFlexItem"
+          />
+          <div
+            class="euiFlexItem"
+          />
+          <div
+            class="euiFlexItem"
+          />
+          <div
+            class="euiFlexItem"
+          />
+          <div
+            class="euiFlexItem"
+          />
+          <div
+            class="euiFlexItem"
+          >
+            <div
+              class="euiText euiText--extraSmall"
+            >
+              <h2>
+                <a
+                  href="#"
+                >
+                  Archive
+                </a>
+              </h2>
+              <div />
+            </div>
+          </div>
+          <div
+            class="euiFlexItem"
+          >
+            <div>
+              <div
+                class="euiText euiText--extraSmall"
+              >
+                <h2>
+                  <a>
+                    Share
+                  </a>
+                </h2>
+                <div />
+              </div>
+            </div>
+          </div>
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <button
+              class="euiButton euiButton--primary euiButton--fill"
+              type="button"
+            >
+              <span
+                class="euiButton__content"
+              >
+                <span
+                  class="euiButton__text"
+                >
+                  Download
+                </span>
+              </span>
+            </button>
+          </div>
+          <div
+            class="euiFlexItem"
+          />
+          <div
+            class="euiFlexItem"
+          />
+        </div>
+      </div>
+      <hr
+        class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
+      />
+      <h2
+        class="euiTitle euiTitle--medium"
+      >
+        Report Settings
+      </h2>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Name
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              Daily Sales Report-232o2jsf28492h3rjskfbwjk23
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Description
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              Report Description Here
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Created
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              Mon Apr 20 2020 20:32:12 GMT-0700 (Pacific Daylight Time)
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Last updated
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              Mon Apr 20 2020 20:32:12 GMT-0700 (Pacific Daylight Time)
+            </dd>
+          </dl>
+        </div>
+      </div>
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Source type
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              Download
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Source
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              dashboard/daily_sales
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Default file format
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              PDF
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            />
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+      </div>
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Report header
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              --
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Report footer
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              --
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            />
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            />
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <h2
+        class="euiTitle euiTitle--medium"
+      >
+        Report Trigger
+      </h2>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Report type
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              Schedule
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Schedule type
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              Now
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Schedule details
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              --
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Alert details
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              --
+            </dd>
+          </dl>
+        </div>
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <h2
+        class="euiTitle euiTitle--medium"
+      >
+        Delivery Settings
+      </h2>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Channel
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              Kibana Reports
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Kibana recipients
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              admin
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Email recipients
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              --
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Email subject
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              --
+            </dd>
+          </dl>
+        </div>
+      </div>
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Email body
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              --
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Include report as attachment
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              False
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            />
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            />
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+`;

@@ -13,6 +13,13 @@
  * permissions and limitations under the License.
  */
 
-export { Main } from './main';
-export { RouterHome } from './router_home';
-export { ReportDetails } from './report_details';
+import React from 'react';
+import { render } from '@testing-library/react';
+import { ShareModal } from '../share_modal/share_modal';
+
+describe('<ShareModal /> panel', () => {
+  test('render component', () => {
+    const { container } = render(<ShareModal />);
+    expect(container.firstChild).toMatchSnapshot();
+  });
+});

@@ -25,10 +25,10 @@ import {
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { Main } from './main';
 import { CreateReport } from '../create_report/create_report';
-import { ReportDetails } from './report_details';
+import { ReportDetails } from './report_details/report_details';
 
 interface RouterHomeProps {
-  httpClient?: any,
+  httpClient?: any;
 }
 
 export class RouterHome extends React.Component<RouterHomeProps, any> {
@@ -43,34 +43,46 @@ export class RouterHome extends React.Component<RouterHomeProps, any> {
       <Router basename={'/opendistro-kibana-reports'}>
         <EuiPage>
           <EuiPageBody>
-              <EuiPageContent>
-                <EuiPageContentHeader>
-                  <EuiPageContentHeaderSection></EuiPageContentHeaderSection>
-                </EuiPageContentHeader>
-                <EuiPageContentBody>
-                  <Switch>
-                    <Route
-                      path="/report_details/:id"
-                      render={(props) => (
-                        <ReportDetails title="Report Details" httpClient={httpClient} {...props} />
-                      )}
-                    />
-                    <Route
-                      path="/create"
-                      render={(props) => (
-                        <CreateReport title="Create Report" httpClient={httpClient} {...props} />
-                      )}
-                    />
-                    <Route
-                      path="/"
-                      render={(props) => (
-                        <Main title="Reporting Homepage" httpClient={httpClient} {...props} />
-                      )}
-                    />
-                  </Switch>
-                </EuiPageContentBody>
-              </EuiPageContent>
-            </EuiPageBody>
+            <EuiPageContent>
+              <EuiPageContentHeader>
+                <EuiPageContentHeaderSection></EuiPageContentHeaderSection>
+              </EuiPageContentHeader>
+              <EuiPageContentBody>
+                <Switch>
+                  <Route
+                    path="/report_details/:reportId"
+                    render={(props) => (
+                      <ReportDetails
+                        title="Report Details"
+                        httpClient={httpClient}
+                        {...props}
+                      />
+                    )}
+                  />
+                  <Route
+                    path="/create"
+                    render={(props) => (
+                      <CreateReport
+                        title="Create Report"
+                        httpClient={httpClient}
+                        {...props}
+                      />
+                    )}
+                  />
+                  <Route
+                    path="/"
+                    render={(props) => (
+                      <Main
+                        title="Reporting Homepage"
+                        httpClient={httpClient}
+                        {...props}
+                      />
+                    )}
+                  />
+                </Switch>
+              </EuiPageContentBody>
+            </EuiPageContent>
+          </EuiPageBody>
         </EuiPage>
       </Router>
     );
