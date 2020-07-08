@@ -201,6 +201,7 @@ function ScheduleFutureDatePicker() {
 }
 
 export function CreateReport() {
+  // todo: simplify useState
   const [reportSettingsDashboard, setReportSettingsDashboard] = useState('');
   const [deliveryEmailSubject, setDeliveryEmailSubject] = useState('');
   const [deliveryEmailBody, setDeliveryEmailBody] = useState('');
