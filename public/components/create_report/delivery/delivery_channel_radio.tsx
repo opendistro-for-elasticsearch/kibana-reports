@@ -51,9 +51,6 @@ const DeliveryChannelRadio = () => {
         idSelected={radioIdSelected}
         onChange={handleChangeDeliveryChannel}
         name="deliveryChannelRadioGroup"
-        legend={{
-          children: <span>This is a legend for a radio group</span>,
-        }}
       />
   );
 };
