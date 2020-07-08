@@ -10,8 +10,11 @@ exports[`<ReportDetails /> panel render component 1`] = `
     <h1
       class="euiTitle euiTitle--large"
     >
-      Report Details
+      Report details
     </h1>
+    <div
+      class="euiSpacer euiSpacer--m"
+    />
     <div
       class="euiPanel euiPanel--paddingLarge euiPageContent"
     >
@@ -62,21 +65,23 @@ exports[`<ReportDetails /> panel render component 1`] = `
                   Archive
                 </a>
               </h2>
+              <div />
             </div>
           </div>
           <div
             class="euiFlexItem"
           >
-            <div
-              class="euiText euiText--extraSmall"
-            >
-              <h2>
-                <a
-                  href="#"
-                >
-                  Share
-                </a>
-              </h2>
+            <div>
+              <div
+                class="euiText euiText--extraSmall"
+              >
+                <h2>
+                  <a>
+                    Share
+                  </a>
+                </h2>
+                <div />
+              </div>
             </div>
           </div>
           <div

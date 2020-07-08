@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
     EuiFlexGroup,
     EuiFlexItem,
@@ -30,12 +30,16 @@ import {
     EuiPageHeaderSection,
     EuiButton,
     EuiText,
+    EuiOverlayMask,
+    EuiModal,
+    EuiModalHeader,
+    EuiModalHeaderTitle,
+    EuiModalBody,
+    EuiModalFooter,
+    EuiButtonEmpty,
+    EuiSwitch,
   } from '@elastic/eui';
-import { RouteComponentProps } from 'react-router-dom';
-import { IHttpService } from 'angular';
-import { time } from 'd3';
-import { Timestamp } from 'rxjs';
-import { create } from 'lodash';
+import { ShareModal } from './share_modal/share_modal'
 
   interface ReportDetailsRouteProps {
     reportId: string,
@@ -81,6 +85,7 @@ import { create } from 'lodash';
       </EuiFlexItem>
     );
   }
+
   const created_date = new Date("April 20, 2020 20:32:12");
 
   const reportDetailsMockMetadata = {
@@ -105,7 +110,6 @@ import { create } from 'lodash';
     report_as_attachment: false
   }
 
-
   export function ReportDetails(props: ReportDetailsRouteProps) {
     const reportId = props.reportId;
     // todo: replace values with values from props.reportDetailsMetadata
@@ -116,8 +120,9 @@ import { create } from 'lodash';
       <EuiPage>
         <EuiPageBody>
           <EuiTitle size='l'>
-            <h1>Report Details</h1>
+            <h1>Report details</h1>
           </EuiTitle>
+          <EuiSpacer size="m"/>
           <EuiPageContent panelPaddingSize={"l"}>
             <EuiPageHeader>
               <EuiFlexItem>
@@ -136,12 +141,11 @@ import { create } from 'lodash';
                 <EuiFlexItem>
                   <EuiText size="xs">
                     <h2><a href="#">Archive</a></h2>
+                    <div></div>
                   </EuiText>
                 </EuiFlexItem>
                 <EuiFlexItem>
-                  <EuiText size="xs">
-                    <h2><a href="#">Share</a></h2>
-                  </EuiText>
+                  <ShareModal/>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
                   <EuiButton fill={true}>
