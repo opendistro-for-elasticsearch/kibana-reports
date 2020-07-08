@@ -31,9 +31,45 @@ export default function (server: Server, services: NodeServices) {
         payload: Joi.object({
           url: Joi.string().uri().required(),
           itemName: Joi.string().required(),
+          source: Joi.string()
+            .valid('dashboard', 'visualization', 'saved search')
+            .required(),
           reportFormat: Joi.string().valid('png', 'pdf').required(),
           windowWidth: Joi.number().positive().integer(),
           windowLength: Joi.number().positive().integer(),
+        }),
+      },
+      timeout: {
+        socket: 30000,
+      },
+    },
+  });
+
+  server.route({
+    path: NODE_API.GET_REPORTS,
+    method: REQUEST.GET,
+    handler: generateReportService.getReports,
+    options: {
+      // input validation
+      validate: {
+        query: Joi.object({
+          size: Joi.string(),
+          sortField: Joi.string(),
+          sortDirection: Joi.string(),
+        }),
+      },
+    },
+  });
+
+  server.route({
+    path: NODE_API.GET_REPORT_BY_ID,
+    method: REQUEST.GET,
+    handler: generateReportService.getReport,
+    options: {
+      // input validation
+      validate: {
+        params: Joi.object({
+          reportId: Joi.string().required(),
         }),
       },
     },
