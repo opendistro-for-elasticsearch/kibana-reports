@@ -14,7 +14,6 @@
  */
 
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
 import {
   EuiFlexGroup,
   EuiFlexItem,
@@ -33,51 +32,16 @@ import {
   // @ts-ignore
   EuiEmptyPrompt,
 } from '@elastic/eui';
-import {
-  reports_list_columns,
-  reports_list_users,
-  reports_list_search,
-  reports_list_selection_value,
-} from './reports_table';
-import {
-  scheduled_report_columns,
-  scheduled_reports,
-} from './scheduled_reports_table';
+import { reports_list_users } from './reports_table';
+import { report_definitions } from './report_definitions_table';
+import { ReportsTable } from './reports_table';
+import { ReportDefinitions } from './report_definitions_table';
 
 let httpClientGlobal: { post: (arg0: string, arg1: string) => Promise<any> };
-
-function fetchDownloadApi(url: string) {
-  console.log('fetch download api');
-  var data = {
-    url: url,
-  };
-  httpClientGlobal
-    .post('../api/reporting/download', JSON.stringify(data))
-    .then((resp) => {
-      console.log(resp);
-    });
-}
-
-const emptyMessageReports = (
-  <EuiEmptyPrompt
-    title={<h3>You Have No Reports</h3>}
-    titleSize="xs"
-    body="Create a report from a dashboard or template"
-    actions={<EuiButton fill>Create report</EuiButton>}
-  />
-);
 
 interface RouterHomeProps {
   httpClient?: any;
 }
-
-const emptyMessageScheduledReports = (
-  <div>
-    <h3>You have no scheduled reports</h3>
-    <p>Create a new schedule to get started</p>
-    <EuiButton fill>Create schedule</EuiButton>
-  </div>
-);
 
 const error = 'Error: Unable to load table';
 
@@ -133,22 +97,13 @@ export class Main extends React.Component<RouterHomeProps, any> {
                 </EuiTitle>
               </EuiFlexItem>
               <EuiFlexItem component="span" grow={false}>
-                <EuiButton size="m">Delete</EuiButton>
+                <EuiButton size="m">Refresh</EuiButton>
               </EuiFlexItem>
             </EuiFlexGroup>
             <EuiHorizontalRule />
-            <EuiInMemoryTable
-              items={reports_list_users}
-              itemId="id"
-              loading={false}
-              message={emptyMessageReports}
-              columns={reports_list_columns}
-              search={reports_list_search}
+            <ReportsTable
+              getRowProps={this.getRowProps}
               pagination={this.pagination}
-              sorting={true}
-              selection={reports_list_selection_value}
-              isSelectable={true}
-              rowProps={this.getRowProps}
             />
           </EuiPageContent>
           <EuiSpacer />
@@ -156,7 +111,7 @@ export class Main extends React.Component<RouterHomeProps, any> {
             <EuiFlexGroup justifyContent="spaceEvenly">
               <EuiFlexItem>
                 <EuiTitle>
-                  <h2>Scheduled Reports ({scheduled_reports.length})</h2>
+                  <h2>Report definitions ({report_definitions.length})</h2>
                 </EuiTitle>
               </EuiFlexItem>
               <EuiFlexItem component="span" grow={false}>
@@ -177,18 +132,7 @@ export class Main extends React.Component<RouterHomeProps, any> {
               </EuiFlexItem>
             </EuiFlexGroup>
             <EuiHorizontalRule />
-            <EuiInMemoryTable
-              items={scheduled_reports}
-              itemId="id"
-              loading={false}
-              message={emptyMessageScheduledReports}
-              columns={scheduled_report_columns}
-              search={reports_list_search} // todo: change?
-              pagination={this.pagination}
-              sorting={true}
-              selection={reports_list_selection_value} // todo: change?
-              isSelectable={true}
-            />
+            <ReportDefinitions pagination={this.pagination} />
           </EuiPageContent>
         </EuiPageBody>
       </EuiPage>
