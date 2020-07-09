@@ -20,13 +20,11 @@ import {
   ResponseError,
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
-import { Readable } from 'stream';
-import puppeteer from 'puppeteer';
-import { v1 as uuidv1 } from 'uuid';
 import { FORMAT } from '../utils/constants';
 import { RequestParams } from '@elastic/elasticsearch';
+import { generatePDF, generatePNG } from './utils/reportHelper';
 
-export function defineRoutes(router: IRouter) {
+export default function (router: IRouter) {
   // Download visual report
   router.post(
     {
@@ -77,7 +75,14 @@ export function defineRoutes(router: IRouter) {
             windowWidth,
             windowLength
           );
-          // TODO: temporary, need to change after we figure out the correct date modeling
+          /**
+           * TODO: temporary, need to change after we figure out the correct date modeling
+           * https://github.com/elastic/kibana/blob/master/src/core/MIGRATION.md#use-scoped-services
+           * from the migration plan of kibana new platform, the usage says to get access to Elasticsearch data by
+           * await context.core.elasticsearch.adminClient.callAsInternalUser('ping');
+           * However, that doesn't work for now
+           */
+
           const params: RequestParams.Index = {
             index: 'report',
             body: { url, itemName, source, reportFormat, timeCreated },
@@ -225,103 +230,6 @@ export function defineRoutes(router: IRouter) {
       }
     }
   );
-}
-
-export const generatePNG = async (
-  url: string,
-  itemName: string,
-  windowWidth: number,
-  windowLength: number
-): Promise<{ timeCreated: string; stream: Readable; fileName: string }> => {
-  try {
-    const browser = await puppeteer.launch({
-      headless: true,
-    });
-    const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'networkidle0' });
-
-    await page.setViewport({
-      width: windowWidth,
-      height: windowLength,
-    });
-
-    // TODO: this element is for Dashboard page, need to think about addition params to select html element with source(Visualization, Dashboard)
-    // const ele = await page.$('div[class="react-grid-layout dshLayout--viewing"]')
-
-    const timeCreated = new Date().toISOString();
-    const fileName = getFileName(itemName, timeCreated);
-
-    const buffer = await page.screenshot({
-      fullPage: true,
-    });
-    const stream = new Readable({
-      read() {
-        this.push(buffer);
-        this.push(null);
-      },
-    });
-
-    //TODO: Add header and footer, phase 2
-
-    await browser.close();
-    return { timeCreated, stream, fileName };
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const generatePDF = async (
-  url: string,
-  itemName: string,
-  windowWidth: number,
-  windowLength: number
-): Promise<{ timeCreated: string; stream: Readable; fileName: string }> => {
-  try {
-    const browser = await puppeteer.launch({
-      headless: true,
-    });
-    const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'networkidle0' });
-
-    await page.setViewport({
-      width: windowWidth,
-      height: windowLength,
-    });
-
-    const timeCreated = new Date().toISOString();
-    const fileName = getFileName(itemName, timeCreated);
-    // The scrollHeight value is equal to the minimum height the element would require in order to fit
-    // all the content in the viewport without using a vertical scrollbar
-    const scrollHeight = await page.evaluate(
-      () => document.documentElement.scrollHeight
-    );
-
-    const buffer = await page.pdf({
-      margin: 'none',
-      width: windowWidth,
-      height: scrollHeight + 'px',
-      printBackground: true,
-      pageRanges: '1',
-    });
-
-    const stream = new Readable({
-      read() {
-        this.push(buffer);
-        this.push(null);
-      },
-    });
-
-    //TODO: Add header and footer, phase 2
-
-    await browser.close();
-    return { timeCreated, stream, fileName };
-  } catch (error) {
-    throw error;
-  }
-};
-
-function getFileName(itemName: string, timeCreated: string): string {
-  return `${itemName}_${timeCreated}_${uuidv1()}`;
 }
 
 function parseEsErrorResponse(error: any) {
