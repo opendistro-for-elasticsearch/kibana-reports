@@ -251,16 +251,6 @@ export function ReportsTable(props) {
 
   return (
     <div>
-      <EuiFlexGroup>
-        <EuiFlexItem grow={false}>
-          {/* <EuiCheckbox
-            id="filter_checkbox"
-            label="Filter"
-            checked={filters}
-            onChange={() => setFilters(!filters)}
-          /> */}
-        </EuiFlexItem>
-      </EuiFlexGroup>
       <EuiInMemoryTable
         items={reports_list_users}
         itemId="id"
