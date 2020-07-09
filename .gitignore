@@ -7,3 +7,5 @@ yarn-error.log
 /coverage/
 .DS_Store
 .history/
+target
+.eslintcache
