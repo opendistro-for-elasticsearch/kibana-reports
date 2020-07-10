@@ -53,6 +53,11 @@ export class OpendistroKibanaReportsPlugin
     this.logger.debug('opendistro_kibana_reports: Setup');
     const router = core.http.createRouter();
 
+    // TODO: create Elasticsearch client that aware of reporting-scheduler API endpoints
+    // const esDriver: IClusterClient = core.elasticsearch.legacy.createClient("reporting-scheduler", {
+    //   plugins: [reportingSchedulerPlugin],
+    // });
+
     // Register server side APIs
     registerReportRoutes(router);
 
