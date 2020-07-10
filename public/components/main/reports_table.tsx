@@ -28,6 +28,7 @@ import {
   EuiFlexItem,
   EuiCheckbox,
 } from '@elastic/eui';
+import { reports_list_users } from './test_data';
 
 export const reports_list_columns = [
   {
@@ -58,7 +59,7 @@ export const reports_list_columns = [
     field: 'reportSource',
     name: 'Source',
     render: (username: string) => (
-      <EuiLink href={`https://github.com/${username}`} target="_blank">
+      <EuiLink href={'#'} target="_blank">
         {username}
       </EuiLink>
     ),
@@ -81,49 +82,6 @@ export const reports_list_columns = [
     render: (download: any) => {
       return <EuiButtonIcon iconType="download" />;
     },
-  },
-];
-
-export const reports_list_users = [
-  {
-    id: 1,
-    reportName: 'Daily Sales Report, April 21',
-    type: 'Schedule',
-    sender: 'davidcui',
-    recipients: ['szhongna', 'jadhanir', 'kvngar'],
-    reportSource: 'dashboard/daily_saves',
-    lastUpdated: new Date('April 21 2020 10:21:313'),
-    state: 'Created',
-  },
-  {
-    id: 2,
-    reportName: 'Daily Sales Report, April 22',
-    type: 'Schedule',
-    sender: 'davidcui',
-    recipients: ['szhongna', 'jadhanir', 'kvngar'],
-    reportSource: 'dashboard/daily_saves',
-    lastUpdated: new Date('April 22 2020 10:21:313'),
-    state: 'Created',
-  },
-  {
-    id: 3,
-    reportName: 'Daily Sales Report, April 23',
-    type: 'Schedule',
-    sender: 'davidcui',
-    recipients: ['szhongna', 'jadhanir', 'kvngar'],
-    reportSource: 'dashboard/daily_saves',
-    lastUpdated: new Date('April 23 2020 10:21:313'),
-    state: 'Created',
-  },
-  {
-    id: 4,
-    reportName: 'Web logs traffic July 7',
-    type: 'Schedule',
-    sender: 'jadhanir',
-    recipients: ['szhongna', 'davidcui'],
-    reportSource: 'dashboard/web_logs',
-    lastUpdated: new Date('July 7 2020 10:21:313'),
-    state: 'Created',
   },
 ];
 

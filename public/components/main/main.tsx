@@ -32,8 +32,7 @@ import {
   // @ts-ignore
   EuiEmptyPrompt,
 } from '@elastic/eui';
-import { reports_list_users } from './reports_table';
-import { report_definitions } from './report_definitions_table';
+import { reports_list_users, report_definitions } from './test_data';
 import { ReportsTable } from './reports_table';
 import { ReportDefinitions } from './report_definitions_table';
 

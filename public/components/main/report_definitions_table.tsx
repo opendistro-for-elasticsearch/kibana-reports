@@ -21,6 +21,7 @@ import {
   EuiEmptyPrompt,
   EuiText,
 } from '@elastic/eui';
+import { report_definitions } from './test_data';
 
 export const scheduled_report_columns = [
   {
@@ -45,7 +46,7 @@ export const scheduled_report_columns = [
     field: 'source',
     name: 'Source',
     render: (username: string) => (
-      <EuiLink href={`https://github.com/${username}`} target="_blank">
+      <EuiLink href={'#'} target="_blank">
         {username}
       </EuiLink>
     ),
@@ -66,18 +67,6 @@ export const scheduled_report_columns = [
     name: 'Status',
     sortable: true,
     truncateText: false,
-  },
-];
-
-export const report_definitions = [
-  {
-    reportName: 'Daily Sales Report',
-    type: 'Schedule',
-    owner: 'davidcui',
-    source: 'dashboard/daily_saves',
-    lastUpdated: new Date('April 20 2020 19:32:102'),
-    details: 'Daily at 17:00:00.000 starting April 1, 2020',
-    status: 'Active',
   },
 ];
 
@@ -110,10 +99,10 @@ const empty_message_report_definitions = (
 
 const report_definitions_search = {
   box: {
-    incremental: true
+    incremental: true,
   },
-  filters: []
-}
+  filters: [],
+};
 
 export function ReportDefinitions(props) {
   const { pagination } = props;
@@ -125,7 +114,7 @@ export function ReportDefinitions(props) {
         loading={false}
         message={empty_message_report_definitions}
         columns={scheduled_report_columns}
-        search={report_definitions_search} 
+        search={report_definitions_search}
         pagination={pagination}
         sorting={true}
         isSelectable={true}
