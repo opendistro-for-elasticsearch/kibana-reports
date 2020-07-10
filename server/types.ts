@@ -13,6 +13,7 @@
  * permissions and limitations under the License.
  */
 
-export type ServerResponse<T> =
-  | { ok: false; error: string }
-  | { ok: true; response: T };
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface OpendistroKibanaReportsPluginSetup {}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface OpendistroKibanaReportsPluginStart {}

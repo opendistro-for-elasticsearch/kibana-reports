@@ -13,6 +13,20 @@
  * permissions and limitations under the License.
  */
 
-import GenerateReportService from './generateReportService';
+import {
+  PluginInitializerContext,
+  PluginConfigDescriptor,
+} from '../../../src/core/server';
+import { OpendistroKibanaReportsPlugin } from './plugin';
 
-export { GenerateReportService };
+//  This exports static code and TypeScript types,
+//  as well as, Kibana Platform `plugin()` initializer.
+
+export function plugin(initializerContext: PluginInitializerContext) {
+  return new OpendistroKibanaReportsPlugin(initializerContext);
+}
+
+export {
+  OpendistroKibanaReportsPluginSetup,
+  OpendistroKibanaReportsPluginStart,
+} from './types';

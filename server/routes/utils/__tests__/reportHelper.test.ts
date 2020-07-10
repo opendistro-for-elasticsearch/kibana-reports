@@ -14,7 +14,7 @@
  */
 
 import 'regenerator-runtime/runtime';
-import { generatePDF, generatePNG } from '../services/generateReportService';
+import { generatePDF, generatePNG } from '../reportHelper';
 
 describe('test generate report', () => {
   test('generate PNG successfully', async () => {

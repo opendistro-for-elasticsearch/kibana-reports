@@ -1,11 +1,11 @@
 {
-  "name": "opendistro-kibana-reports",
+  "name": "opendistro_kibana_reports",
   "version": "0.0.1",
   "description": "Kibana Reporting Plugin",
   "license": "Apache-2.0",
-  "main": "index.js",
+  "main": "index.ts",
   "kibana": {
-    "version": "7.8.0",
+    "version": "8.0.0",
     "templateVersion": "1.0.0"
   },
   "scripts": {
@@ -23,7 +23,6 @@
   "dependencies": {
     "@babel/core": "^7.10.2",
     "@elastic/eui": "^26.0.0",
-    "@hapi/joi": "15.1.1",
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^10.2.1",
     "@types/jest": "^26.0.0",
