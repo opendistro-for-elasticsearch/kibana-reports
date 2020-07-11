@@ -4,5 +4,5 @@
   "kibanaVersion": "8.0.0",
   "requiredPlugins": ["navigation"],
   "server": true,
-  "ui": false
+  "ui": true
 }
