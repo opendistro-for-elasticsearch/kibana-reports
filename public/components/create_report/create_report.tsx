@@ -274,8 +274,9 @@ export function CreateReport() {
     <EuiPage>
       <EuiPageBody>
         <EuiTitle>
-          <h1>Create Report</h1>
+          <h1>Create report definition</h1>
         </EuiTitle>
+        <EuiSpacer/>
         <ReportSettings
           reportSettingsDashboard={reportSettingsDashboard}
           onChangeReportSettingsDashboard={onChangeReportSettingsDashboard}
