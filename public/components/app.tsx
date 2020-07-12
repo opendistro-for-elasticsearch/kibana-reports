@@ -15,7 +15,7 @@
 
 import React from 'react';
 import { FormattedMessage, I18nProvider } from '@kbn/i18n/react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 
 import {
   EuiButton,
@@ -54,7 +54,7 @@ export const OpendistroKibanaReportsApp = ({
 }: OpendistroKibanaReportsAppDeps) => {
   // Render the application DOM.
   return (
-    <Router basename={basename}>
+    <Router basename={'/' + basename}>
       <I18nProvider>
         <>
           <EuiPage restrictWidth="2000px">

@@ -77,7 +77,7 @@ export class Main extends React.Component<RouterHomeProps, any> {
       onClick: (e: any) => {
         if (!$(e.target).is('button')) {
           window.location.assign(
-            `opendistro_kibana_reports/report_details/${item.id}${this.props.history.location.search}`
+            `opendistro_kibana_reports#/report_details/${item.id}${this.props.history.location.search}`
           );
         }
       },
@@ -123,7 +123,7 @@ export class Main extends React.Component<RouterHomeProps, any> {
                 <EuiButton
                   fill={true}
                   onClick={() => {
-                    window.location.assign('opendistro_kibana_reports/create');
+                    window.location.assign('opendistro_kibana_reports#/create');
                   }}
                 >
                   Create
