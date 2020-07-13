@@ -47,13 +47,6 @@ exports[`<Main /> panel render component 1`] = `
         class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
       />
       <div>
-        <div
-          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
-        >
-          <div
-            class="euiFlexItem euiFlexItem--flexGrowZero"
-          />
-        </div>
         <div>
           <div
             class="euiFlexGroup euiFlexGroup--gutterMedium euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive euiFlexGroup--wrap"
@@ -623,7 +616,7 @@ exports[`<Main /> panel render component 1`] = `
                       >
                         <a
                           class="euiLink euiLink--primary"
-                          href="https://github.com/dashboard/web_logs"
+                          href="#"
                           rel="noopener noreferrer"
                           target="_blank"
                         >
@@ -787,7 +780,7 @@ exports[`<Main /> panel render component 1`] = `
                       >
                         <a
                           class="euiLink euiLink--primary"
-                          href="https://github.com/dashboard/daily_saves"
+                          href="#"
                           rel="noopener noreferrer"
                           target="_blank"
                         >
@@ -951,7 +944,7 @@ exports[`<Main /> panel render component 1`] = `
                       >
                         <a
                           class="euiLink euiLink--primary"
-                          href="https://github.com/dashboard/daily_saves"
+                          href="#"
                           rel="noopener noreferrer"
                           target="_blank"
                         >
@@ -1115,7 +1108,7 @@ exports[`<Main /> panel render component 1`] = `
                       >
                         <a
                           class="euiLink euiLink--primary"
-                          href="https://github.com/dashboard/daily_saves"
+                          href="#"
                           rel="noopener noreferrer"
                           target="_blank"
                         >
@@ -1407,7 +1400,7 @@ exports[`<Main /> panel render component 1`] = `
                   class="euiFormControlLayout__childrenWrapper"
                 >
                   <input
-                    aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
+                    aria-label="This is a search bar. As you type, the results lower in the page will automatically filter."
                     class="euiFieldSearch euiFieldSearch--fullWidth"
                     placeholder="Search..."
                     type="search"
@@ -1433,6 +1426,13 @@ exports[`<Main /> panel render component 1`] = `
                   </div>
                 </div>
               </div>
+            </div>
+            <div
+              class="euiFlexItem euiFlexItem--flexGrowZero euiSearchBar__filtersHolder"
+            >
+              <div
+                class="euiFilterGroup"
+              />
             </div>
           </div>
           <div
@@ -1747,7 +1747,7 @@ exports[`<Main /> panel render component 1`] = `
                       >
                         <a
                           class="euiLink euiLink--primary"
-                          href="https://github.com/dashboard/daily_saves"
+                          href="#"
                           rel="noopener noreferrer"
                           target="_blank"
                         >

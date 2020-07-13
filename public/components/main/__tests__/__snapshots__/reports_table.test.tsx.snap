@@ -2,13 +2,6 @@
 
 exports[`<ReportsTable /> panel render component 1`] = `
 <div>
-  <div
-    class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
-  >
-    <div
-      class="euiFlexItem euiFlexItem--flexGrowZero"
-    />
-  </div>
   <div>
     <div
       class="euiFlexGroup euiFlexGroup--gutterMedium euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive euiFlexGroup--wrap"
@@ -575,7 +568,7 @@ exports[`<ReportsTable /> panel render component 1`] = `
                 >
                   <a
                     class="euiLink euiLink--primary"
-                    href="https://github.com/dashboard/web_logs"
+                    href="#"
                     rel="noopener noreferrer"
                     target="_blank"
                   >
@@ -736,7 +729,7 @@ exports[`<ReportsTable /> panel render component 1`] = `
                 >
                   <a
                     class="euiLink euiLink--primary"
-                    href="https://github.com/dashboard/daily_saves"
+                    href="#"
                     rel="noopener noreferrer"
                     target="_blank"
                   >
@@ -897,7 +890,7 @@ exports[`<ReportsTable /> panel render component 1`] = `
                 >
                   <a
                     class="euiLink euiLink--primary"
-                    href="https://github.com/dashboard/daily_saves"
+                    href="#"
                     rel="noopener noreferrer"
                     target="_blank"
                   >
@@ -1058,7 +1051,7 @@ exports[`<ReportsTable /> panel render component 1`] = `
                 >
                   <a
                     class="euiLink euiLink--primary"
-                    href="https://github.com/dashboard/daily_saves"
+                    href="#"
                     rel="noopener noreferrer"
                     target="_blank"
                   >

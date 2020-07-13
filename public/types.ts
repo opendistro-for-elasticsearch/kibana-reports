@@ -13,5 +13,13 @@
  * permissions and limitations under the License.
  */
 
-export { Main } from './main';
-export { ReportDetails } from './report_details/report_details';
+import { NavigationPublicPluginStart } from '../../../src/plugins/navigation/public';
+
+export interface OpendistroKibanaReportsPluginSetup {}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface OpendistroKibanaReportsPluginStart {}
+
+export interface AppPluginStartDependencies {
+  navigation: NavigationPublicPluginStart;
+}

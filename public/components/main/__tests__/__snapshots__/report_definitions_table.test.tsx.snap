@@ -16,7 +16,7 @@ exports[`<ReportDefinitions /> panel render component 1`] = `
             class="euiFormControlLayout__childrenWrapper"
           >
             <input
-              aria-label="This is a search bar. After typing your query, hit enter to filter the results lower in the page."
+              aria-label="This is a search bar. As you type, the results lower in the page will automatically filter."
               class="euiFieldSearch euiFieldSearch--fullWidth"
               placeholder="Search..."
               type="search"
@@ -42,6 +42,13 @@ exports[`<ReportDefinitions /> panel render component 1`] = `
             </div>
           </div>
         </div>
+      </div>
+      <div
+        class="euiFlexItem euiFlexItem--flexGrowZero euiSearchBar__filtersHolder"
+      >
+        <div
+          class="euiFilterGroup"
+        />
       </div>
     </div>
     <div
@@ -356,7 +363,7 @@ exports[`<ReportDefinitions /> panel render component 1`] = `
                 >
                   <a
                     class="euiLink euiLink--primary"
-                    href="https://github.com/dashboard/daily_saves"
+                    href="#"
                     rel="noopener noreferrer"
                     target="_blank"
                   >
