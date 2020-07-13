@@ -415,7 +415,7 @@ export function ReportTrigger() {
       </EuiPageHeader>
       <EuiHorizontalRule />
       <EuiPageContentBody>
-        <EuiFormRow label="Report type">
+        <EuiFormRow label="Trigger type">
           <EuiRadioGroup
             options={report_type_options}
             idSelected={reportTriggerType}

@@ -30,7 +30,7 @@ exports[`<ReportTrigger /> panel render component 1`] = `
           class="euiFormLabel euiFormRow__label"
           for="random_html_id"
         >
-          Report type
+          Trigger type
         </label>
       </div>
       <div
