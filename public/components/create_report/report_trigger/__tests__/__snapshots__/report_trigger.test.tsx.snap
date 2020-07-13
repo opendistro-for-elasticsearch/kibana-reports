@@ -1,0 +1,201 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ReportTrigger /> panel render component 1`] = `
+<div
+  class="euiPanel euiPanel--paddingLarge euiPageContent"
+>
+  <div
+    class="euiPageHeader euiPageHeader--responsive"
+  >
+    <h2
+      class="euiTitle euiTitle--medium"
+    >
+      Report trigger
+    </h2>
+  </div>
+  <hr
+    class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
+  />
+  <div
+    class="euiPageContentBody"
+  >
+    <div
+      class="euiFormRow"
+      id="random_html_id-row"
+    >
+      <div
+        class="euiFormRow__labelWrapper"
+      >
+        <label
+          class="euiFormLabel euiFormRow__label"
+          for="random_html_id"
+        >
+          Report type
+        </label>
+      </div>
+      <div
+        class="euiFormRow__fieldWrapper"
+      >
+        <div
+          id="random_html_id"
+        >
+          <div
+            class="euiRadio euiRadioGroup__item"
+          >
+            <input
+              checked=""
+              class="euiRadio__input"
+              id="schedule_option"
+              type="radio"
+              value=""
+            />
+            <div
+              class="euiRadio__circle"
+            />
+            <label
+              class="euiRadio__label"
+              for="schedule_option"
+            >
+              Schedule based
+            </label>
+          </div>
+          <div
+            class="euiRadio euiRadioGroup__item"
+          >
+            <input
+              class="euiRadio__input"
+              id="alert_option"
+              type="radio"
+              value=""
+            />
+            <div
+              class="euiRadio__circle"
+            />
+            <label
+              class="euiRadio__label"
+              for="alert_option"
+            >
+              Alert based
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="euiSpacer euiSpacer--l"
+    />
+    <div>
+      <div
+        class="euiFormRow"
+        id="random_html_id-row"
+      >
+        <div
+          class="euiFormRow__labelWrapper"
+        >
+          <label
+            class="euiFormLabel euiFormRow__label"
+            for="random_html_id"
+          >
+            Request time
+          </label>
+        </div>
+        <div
+          class="euiFormRow__fieldWrapper"
+        >
+          <div
+            aria-describedby="random_html_id-help"
+            id="random_html_id"
+          >
+            <div
+              class="euiRadio euiRadioGroup__item"
+            >
+              <input
+                checked=""
+                class="euiRadio__input"
+                id="now_option"
+                type="radio"
+                value=""
+              />
+              <div
+                class="euiRadio__circle"
+              />
+              <label
+                class="euiRadio__label"
+                for="now_option"
+              >
+                Now
+              </label>
+            </div>
+            <div
+              class="euiRadio euiRadioGroup__item"
+            >
+              <input
+                class="euiRadio__input"
+                id="future_date_option"
+                type="radio"
+                value=""
+              />
+              <div
+                class="euiRadio__circle"
+              />
+              <label
+                class="euiRadio__label"
+                for="future_date_option"
+              >
+                Future date
+              </label>
+            </div>
+            <div
+              class="euiRadio euiRadioGroup__item"
+            >
+              <input
+                class="euiRadio__input"
+                id="recurring_option"
+                type="radio"
+                value=""
+              />
+              <div
+                class="euiRadio__circle"
+              />
+              <label
+                class="euiRadio__label"
+                for="recurring_option"
+              >
+                Recurring
+              </label>
+            </div>
+            <div
+              class="euiRadio euiRadioGroup__item"
+            >
+              <input
+                class="euiRadio__input"
+                id="cron_based_option"
+                type="radio"
+                value=""
+              />
+              <div
+                class="euiRadio__circle"
+              />
+              <label
+                class="euiRadio__label"
+                for="cron_based_option"
+              >
+                Cron based
+              </label>
+            </div>
+          </div>
+          <div
+            class="euiFormHelpText euiFormRow__text"
+            id="random_html_id-help"
+          >
+            Define delivery schedule and frequency
+          </div>
+        </div>
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+    </div>
+  </div>
+</div>
+`;

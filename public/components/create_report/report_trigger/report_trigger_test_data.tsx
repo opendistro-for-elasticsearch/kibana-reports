@@ -13,14 +13,28 @@
  * permissions and limitations under the License.
  */
 
-import React from 'react';
-import { render } from '@testing-library/react';
-import { ReportSettings } from '../report_settings';
+export const available_monitor_options = [
+  {
+    value: 'monitor_1',
+    text: 'Monitor 1',
+  },
+  {
+    value: 'monitor_2',
+    text: 'Monitor 2',
+  },
+];
 
-describe('<ReportSettings /> panel', () => {
-  test('render component', () => {
-    const { container } = render(<ReportSettings />);
-
-    expect(container.firstChild).toMatchSnapshot();
-  });
-});
+export const available_trigger_options = [
+  {
+    value: 'trigger_1',
+    text: 'Trigger 1',
+  },
+  {
+    value: 'trigger_2',
+    text: 'Trigger 2',
+  },
+  {
+    value: 'trigger_3',
+    text: 'Trigger 3',
+  },
+];

@@ -13,14 +13,10 @@
  * permissions and limitations under the License.
  */
 
-import React from 'react';
-import { render } from '@testing-library/react';
-import { ReportSettings } from '../report_settings';
-
-describe('<ReportSettings /> panel', () => {
-  test('render component', () => {
-    const { container } = render(<ReportSettings />);
-
-    expect(container.firstChild).toMatchSnapshot();
-  });
-});
+export const email_recipient_options = [
+  { label: 'admin (self)' },
+  { label: 'davidcui' },
+  { label: 'szhongna' },
+  { label: 'jadhanir' },
+  { label: 'kvngar' },
+];

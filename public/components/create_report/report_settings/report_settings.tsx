@@ -26,185 +26,172 @@ import {
   EuiPageContentBody,
   EuiHorizontalRule,
   EuiText,
-  EuiSpacer, EuiRadioGroup, EuiSelect, EuiDatePickerRange, EuiDatePicker, EuiForm, EuiCheckbox
+  EuiSpacer,
+  EuiRadioGroup,
+  EuiSelect,
+  EuiDatePickerRange,
+  EuiDatePicker,
+  EuiForm,
+  EuiCheckbox,
+  EuiSuperDatePicker,
 } from '@elastic/eui';
 import moment from 'moment';
+import {
+  report_source_visualization_options,
+  report_source_dashboard_options,
+  report_source_saved_search_options,
+} from './report_settings_test_data';
+import {
+  report_source_radios,
+  pdf_png_file_format_options,
+  saved_search_format_options,
+} from './report_settings_constants';
+import dateMath from '@elastic/datemath';
 
-const report_source_radios = [
-  {
-    id: 'dashboard_report_source',
-    label: 'Dashboard'
-  },
-  {
-    id: 'visualization_report_source',
-    label: 'Visualization'
-  },
-  {
-    id: 'saved_search_report_source',
-    label: 'Saved query'
+function TimeRangeSelect() {
+  const [recentlyUsedRanges, setRecentlyUsedRanges] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [start, setStart] = useState('now-30m');
+  const [end, setEnd] = useState('now');
+  const [isPaused, setIsPaused] = useState(true);
+  const [refreshInterval, setRefreshInterval] = useState();
+
+  const onTimeChange = ({ start, end }) => {
+    const recentlyUsedRange = recentlyUsedRanges.filter((recentlyUsedRange) => {
+      const isDuplicate =
+        recentlyUsedRange.start === start && recentlyUsedRange.end === end;
+      return !isDuplicate;
+    });
+    recentlyUsedRange.unshift({ start, end });
+    setStart(start);
+    setEnd(end);
+    setRecentlyUsedRanges(
+      recentlyUsedRange.length > 10
+        ? recentlyUsedRange.slice(0, 9)
+        : recentlyUsedRange
+    );
+    setIsLoading(true);
+    startLoading();
+  };
+
+  const onRefresh = ({ start, end, refreshInterval }) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, 100);
+    }).then(() => {
+      console.log(start, end, refreshInterval);
+    });
+  };
+
+  const startLoading = () => {
+    setTimeout(stopLoading, 1000);
+  };
+
+  const stopLoading = () => {
+    setIsLoading(false);
+  };
+
+  const onRefreshChange = ({ isPaused, refreshInterval }) => {
+    setIsPaused(isPaused);
+    setRefreshInterval(refreshInterval);
+  };
+
+  const startMoment = dateMath.parse(start);
+  // dateMath.parse is inconsistent with unparsable strings.
+  // Sometimes undefined is returned, other times an invalid moment is returned
+  if (!startMoment || !startMoment.isValid()) {
+    throw new Error('Unable to parse start string');
   }
-]
 
-const report_source_dashboard_options = [
-  {
-    value: 'daily saves',
-    text: 'Daily saves'
-  },
-  {
-    value: 'web logs',
-    text: 'Web logs'
-  },
-  {
-    value: 'flight traffic',
-    text: 'Flight traffic'
+  // Pass roundUp when parsing end string
+  const endMoment = dateMath.parse(end, { roundUp: true });
+  if (!endMoment || !endMoment.isValid() || endMoment > moment()) {
+    throw new Error('Unable to parse end string');
   }
-]
 
-const report_source_visualization_options = [
-  {
-    value: 'vis 1',
-    text: 'Vis 1'
-  },
-  {
-    value: 'vis 2',
-    text: 'Vis 2'
-  },
-  {
-    value: 'vis 3',
-    text: 'Vis 3'
-  }
-]
+  return (
+    <div>
+      <EuiFormRow
+        label="Time range"
+        helpText="Time range is relative to the report creation date on the report trigger"
+      >
+        <EuiSuperDatePicker
+          isLoading={isLoading}
+          start={start}
+          end={end}
+          onTimeChange={onTimeChange}
+          onRefresh={onRefresh}
+          isPaused={isPaused}
+          refreshInterval={refreshInterval}
+          onRefreshChange={onRefreshChange}
+          recentlyUsedRanges={recentlyUsedRanges}
+          commonlyUsedRanges={[]}
+        />
+      </EuiFormRow>
+    </div>
+  );
+}
 
-const report_source_saved_search_options = [
-  {
-    value: 'saved search 1',
-    text: 'Saved search 1'
-  },
-  {
-    value: 'saved search 2',
-    text: 'Saved search 2'
-  }
-]
-
-const pdf_png_file_format_options = [
-  {
-    id: 'pdf_format',
-    label: 'PDF'
-  },
-  {
-    id: 'png_format',
-    label: 'PNG'
-  }
-]
-
-const saved_search_format_options = [
-  {
-    id: 'csv_format',
-    label: 'CSV'
-  },
-  {
-    id: 'xls_format',
-    label: 'XLS'
-  }
-]
-
-export function ReportSettings(props) {
-  
-  // const { reportSettingsDashboard, onChangeReportSettingsDashboard } = props;
-
+export function ReportSettings() {
   const [reportName, setReportName] = useState('');
   const [reportDescription, setReportDescription] = useState('');
-  const [reportSourceId, setReportSourceId] = useState('dashboard_report_source');
-  const [dashboardSourceSelect, setDashboardSourceSelect] = useState(report_source_dashboard_options[0].value);
-  const [visualizationSourceSelect, setVisualizationSourceSelect] = useState(report_source_visualization_options[0].value);
-  const [savedSearchSourceSelect, setSavedSearchSourceSelect] = useState(report_source_saved_search_options[0].value);
-  const [timeRangeStartTime, setTimeRangeStartTime] = useState(moment());
-  const [timeRangeEndTime, setTimeRangeEndTime] = useState(moment());
+  const [reportSourceId, setReportSourceId] = useState(
+    'dashboard_report_source'
+  );
+  const [dashboardSourceSelect, setDashboardSourceSelect] = useState(
+    report_source_dashboard_options[0].value
+  );
+  const [visualizationSourceSelect, setVisualizationSourceSelect] = useState(
+    report_source_visualization_options[0].value
+  );
+  const [savedSearchSourceSelect, setSavedSearchSourceSelect] = useState(
+    report_source_saved_search_options[0].value
+  );
   const [fileFormat, setFileFormat] = useState('pdf_format');
-  const [savedSearchFileFormat, setSavedSearchFileFormat] = useState('csv_format');
+  const [savedSearchFileFormat, setSavedSearchFileFormat] = useState(
+    'csv_format'
+  );
   const [includeHeader, setIncludeHeader] = useState(false);
   const [includeFooter, setIncludeFooter] = useState(false);
 
-  const onChangeReportName =e => {
+  const onChangeReportName = (e) => {
     setReportName(e.target.value);
-  }
+  };
 
-  const onChangeReportDescription = e => {
+  const onChangeReportDescription = (e) => {
     setReportDescription(e.target.value);
-  }
+  };
 
-  const onChangeReportSource = e => {
+  const onChangeReportSource = (e) => {
     setReportSourceId(e);
-  }
+  };
 
-  const onChangeDashboardSelect = e => {
+  const onChangeDashboardSelect = (e) => {
     setDashboardSourceSelect(e.target.value);
-  }
+  };
 
-  const onChangeVisualizationSelect = e => {
+  const onChangeVisualizationSelect = (e) => {
     setVisualizationSourceSelect(e.target.value);
-  }
+  };
 
-  const onChangeSavedSearchSelect = e => {
+  const onChangeSavedSearchSelect = (e) => {
     setSavedSearchSourceSelect(e.target.value);
-  }
+  };
 
-  const onChangeStartTime = e => {
-    setTimeRangeStartTime(e);
-  }
-
-  const onChangeEndTime = e => {
-    setTimeRangeEndTime(e);
-  }
-
-  const onChangeFileFormat = e => {
+  const onChangeFileFormat = (e) => {
     setFileFormat(e);
-  }
+  };
 
-  const onChangeSavedSearchFileFormat = e => {
+  const onChangeSavedSearchFileFormat = (e) => {
     setSavedSearchFileFormat(e);
-  }
+  };
 
-  const onChangeIncludeHeader = e => {
+  const onChangeIncludeHeader = (e) => {
     setIncludeHeader(e.target.checked);
-  }
+  };
 
-  const onChangeIncludeFooter = e => {
+  const onChangeIncludeFooter = (e) => {
     setIncludeFooter(e.target.checked);
-  }
-
-  const TimeRangeSelect = () => {
-    return (
-      <div>
-        <EuiFormRow label="Time range" helpText="Time range is relative to the report creation date on the report trigger">
-          <EuiDatePickerRange
-            startDateControl={
-              <EuiDatePicker
-                selected={timeRangeStartTime}
-                onChange={onChangeStartTime}
-                startDate={timeRangeStartTime}
-                endDate={timeRangeEndTime}
-                isInvalid={timeRangeStartTime > timeRangeEndTime}
-                aria-label="Start date"
-                showTimeSelect
-              />
-            }
-            endDateControl={
-              <EuiDatePicker
-                selected={timeRangeEndTime}
-                onChange={onChangeEndTime}
-                startDate={timeRangeStartTime}
-                endDate={timeRangeEndTime}
-                isInvalid={timeRangeStartTime > timeRangeEndTime}
-                aria-label="End date"
-                showTimeSelect
-              />
-            }
-          />
-        </EuiFormRow>
-      </div>
-    )
-  }
+  };
 
   const PDFandPNGFileFormats = () => {
     return (
@@ -216,14 +203,14 @@ export function ReportSettings(props) {
             onChange={onChangeFileFormat}
           />
         </EuiFormRow>
-        <EuiSpacer/>
+        <EuiSpacer />
         <EuiCheckbox
           id="include-header-checkbox"
           label="Include header"
           checked={includeHeader}
           onChange={onChangeIncludeHeader}
         />
-        <EuiSpacer/>
+        <EuiSpacer />
         <EuiCheckbox
           id="include-footer-checkbox"
           label="Include footer"
@@ -231,8 +218,8 @@ export function ReportSettings(props) {
           onChange={onChangeIncludeFooter}
         />
       </div>
-    )
-  }
+    );
+  };
 
   const ReportSourceDashboard = () => {
     return (
@@ -245,13 +232,13 @@ export function ReportSettings(props) {
             onChange={onChangeDashboardSelect}
           />
         </EuiFormRow>
-        <EuiSpacer/>
-        <TimeRangeSelect/>
-        <EuiSpacer/>
-        <PDFandPNGFileFormats/>
+        <EuiSpacer />
+        <TimeRangeSelect />
+        <EuiSpacer />
+        <PDFandPNGFileFormats />
       </div>
-    )
-  }
+    );
+  };
 
   const ReportSourceVisualization = () => {
     return (
@@ -264,13 +251,13 @@ export function ReportSettings(props) {
             onChange={onChangeVisualizationSelect}
           />
         </EuiFormRow>
-        <EuiSpacer/>
-        <TimeRangeSelect/>
-        <EuiSpacer/>
-        <PDFandPNGFileFormats/>
+        <EuiSpacer />
+        <TimeRangeSelect />
+        <EuiSpacer />
+        <PDFandPNGFileFormats />
       </div>
-    )
-  }
+    );
+  };
 
   const ReportSourceSavedSearch = () => {
     return (
@@ -283,9 +270,9 @@ export function ReportSettings(props) {
             onChange={onChangeSavedSearchSelect}
           />
         </EuiFormRow>
-        <EuiSpacer/>
-        <TimeRangeSelect/>
-        <EuiSpacer/>
+        <EuiSpacer />
+        <TimeRangeSelect />
+        <EuiSpacer />
         <EuiFormRow label="File format">
           <EuiRadioGroup
             options={saved_search_format_options}
@@ -294,33 +281,39 @@ export function ReportSettings(props) {
           />
         </EuiFormRow>
       </div>
-    )
-  }
+    );
+  };
 
-  const display_dashboard_select = (reportSourceId === 'dashboard_report_source')
-    ? <ReportSourceDashboard/>
-    : null;
+  const display_dashboard_select =
+    reportSourceId === 'dashboard_report_source' ? (
+      <ReportSourceDashboard />
+    ) : null;
 
-  const display_visualization_select = (reportSourceId === 'visualization_report_source')
-    ? <ReportSourceVisualization/>
-    : null;
+  const display_visualization_select =
+    reportSourceId === 'visualization_report_source' ? (
+      <ReportSourceVisualization />
+    ) : null;
 
-  const display_saved_search_select = (reportSourceId === 'saved_search_report_source')
-    ? <ReportSourceSavedSearch/>
-    : null;
+  const display_saved_search_select =
+    reportSourceId === 'saved_search_report_source' ? (
+      <ReportSourceSavedSearch />
+    ) : null;
 
-  return(
-    <EuiPageContent panelPaddingSize={"l"}>
+  return (
+    <EuiPageContent panelPaddingSize={'l'}>
       <EuiPageHeader>
         <EuiTitle>
-            <h2>Report Settings</h2>
+          <h2>Report Settings</h2>
         </EuiTitle>
       </EuiPageHeader>
-      <EuiHorizontalRule/>
+      <EuiHorizontalRule />
       <EuiPageContentBody>
         <EuiFlexGroup>
           <EuiFlexItem>
-            <EuiFormRow label="Name" helpText="Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space)">
+            <EuiFormRow
+              label="Name"
+              helpText="Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space)"
+            >
               <EuiFieldText
                 placeholder="Report name"
                 value={reportName}
@@ -340,19 +333,22 @@ export function ReportSettings(props) {
             </EuiFormRow>
           </EuiFlexItem>
         </EuiFlexGroup>
-        <EuiSpacer/>
-        <EuiFormRow label="Report source" helpText="Where is the report generated from">
+        <EuiSpacer />
+        <EuiFormRow
+          label="Report source"
+          helpText="Where is the report generated from"
+        >
           <EuiRadioGroup
             options={report_source_radios}
             idSelected={reportSourceId}
             onChange={onChangeReportSource}
           />
         </EuiFormRow>
-        <EuiSpacer/>
+        <EuiSpacer />
         {display_dashboard_select}
         {display_visualization_select}
         {display_saved_search_select}
-        <EuiSpacer/>
+        <EuiSpacer />
       </EuiPageContentBody>
     </EuiPageContent>
   );
