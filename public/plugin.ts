@@ -53,16 +53,7 @@ export class OpendistroKibanaReportsPlugin
     });
 
     // Return methods that should be available to other plugins
-    return {
-      getGreeting() {
-        return i18n.translate('opendistroKibanaReports.greetingText', {
-          defaultMessage: 'Hello from {name}!',
-          values: {
-            name: PLUGIN_NAME,
-          },
-        });
-      },
-    };
+    return {};
   }
 
   public start(core: CoreStart): OpendistroKibanaReportsPluginStart {
