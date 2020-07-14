@@ -33,7 +33,7 @@ import {
   EuiDatePicker,
   EuiForm,
   EuiCheckbox,
-  EuiSuperDatePicker,
+  EuiSuperDatePicker, EuiTextArea
 } from '@elastic/eui';
 import moment from 'moment';
 import {
@@ -152,6 +152,8 @@ export function ReportSettings() {
   );
   const [includeHeader, setIncludeHeader] = useState(false);
   const [includeFooter, setIncludeFooter] = useState(false);
+  const [header, setHeader] = useState('');
+  const [footer, setFooter] = useState('');
 
   const onChangeReportName = (e) => {
     setReportName(e.target.value);
@@ -193,6 +195,56 @@ export function ReportSettings() {
     setIncludeFooter(e.target.checked);
   };
 
+  const onChangeHeader = (e) => {
+    setHeader(e.target.value);
+  }
+
+  const onChangeFooter = (e) => {
+    setFooter(e.target.value);
+  }
+
+  const HeaderAndFooter = () => {
+    const show_header = (includeHeader)
+      ? (
+        <EuiTextArea
+          placeholder="Header text"
+          value={header}
+          onChange={onChangeHeader}
+        />
+      )
+      : null;
+
+    const show_footer = (includeFooter)
+      ? (
+        <EuiTextArea
+          placeholder="Footer text"
+          value={footer}
+          onChange={onChangeFooter}
+        />
+      )
+      : null;
+
+    return (
+      <div>
+        <EuiCheckbox
+          id="include-header-checkbox"
+          label="Include header"
+          checked={includeHeader}
+          onChange={onChangeIncludeHeader}
+        />
+        {show_header}
+        <EuiSpacer />
+        <EuiCheckbox
+          id="include-footer-checkbox"
+          label="Include footer"
+          checked={includeFooter}
+          onChange={onChangeIncludeFooter}
+        />
+        {show_footer}
+      </div>
+    )
+  }
+
   const PDFandPNGFileFormats = () => {
     return (
       <div>
@@ -204,19 +256,7 @@ export function ReportSettings() {
           />
         </EuiFormRow>
         <EuiSpacer />
-        <EuiCheckbox
-          id="include-header-checkbox"
-          label="Include header"
-          checked={includeHeader}
-          onChange={onChangeIncludeHeader}
-        />
-        <EuiSpacer />
-        <EuiCheckbox
-          id="include-footer-checkbox"
-          label="Include footer"
-          checked={includeFooter}
-          onChange={onChangeIncludeFooter}
-        />
+        <HeaderAndFooter/>
       </div>
     );
   };

@@ -485,44 +485,46 @@ exports[`<ReportSettings /> panel render component 1`] = `
         <div
           class="euiSpacer euiSpacer--l"
         />
-        <div
-          class="euiCheckbox"
-        >
-          <input
-            class="euiCheckbox__input"
-            id="include-header-checkbox"
-            type="checkbox"
+        <div>
+          <div
+            class="euiCheckbox"
+          >
+            <input
+              class="euiCheckbox__input"
+              id="include-header-checkbox"
+              type="checkbox"
+            />
+            <div
+              class="euiCheckbox__square"
+            />
+            <label
+              class="euiCheckbox__label"
+              for="include-header-checkbox"
+            >
+              Include header
+            </label>
+          </div>
+          <div
+            class="euiSpacer euiSpacer--l"
           />
           <div
-            class="euiCheckbox__square"
-          />
-          <label
-            class="euiCheckbox__label"
-            for="include-header-checkbox"
+            class="euiCheckbox"
           >
-            Include header
-          </label>
-        </div>
-        <div
-          class="euiSpacer euiSpacer--l"
-        />
-        <div
-          class="euiCheckbox"
-        >
-          <input
-            class="euiCheckbox__input"
-            id="include-footer-checkbox"
-            type="checkbox"
-          />
-          <div
-            class="euiCheckbox__square"
-          />
-          <label
-            class="euiCheckbox__label"
-            for="include-footer-checkbox"
-          >
-            Include footer
-          </label>
+            <input
+              class="euiCheckbox__input"
+              id="include-footer-checkbox"
+              type="checkbox"
+            />
+            <div
+              class="euiCheckbox__square"
+            />
+            <label
+              class="euiCheckbox__label"
+              for="include-footer-checkbox"
+            >
+              Include footer
+            </label>
+          </div>
         </div>
       </div>
     </div>
