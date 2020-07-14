@@ -32,9 +32,9 @@ import {
   EuiListGroup,
 } from '@elastic/eui';
 import { DeliveryRecipientsBox } from './delivery_recipients_box';
-import { email_recipient_options } from './delivery_constants';
+import { EMAIL_RECIPIENT_OPTIONS } from './delivery_constants';
 
-const insert_placeholder_options = [
+const INSERT_PLACEHOLDER_OPTIONS = [
   {
     label: 'Report details URL',
     href: '#',
@@ -63,7 +63,7 @@ const insert_placeholder_options = [
 
 export function ReportDelivery() {
   const [emailCheckbox, setEmailCheckbox] = useState(false);
-  const [emailRecipients, setEmailRecipients] = useState();
+  const [emailRecipients, setEmailRecipients] = useState([]);
   const [emailSubject, setEmailSubject] = useState('');
   const [emailBody, setEmailBody] = useState('');
   const [includeReportAsAttachment, setIncludeReportAsAttachment] = useState(
@@ -71,7 +71,9 @@ export function ReportDelivery() {
   );
   const [insertPlaceholder, setInsertPlaceholder] = useState(false);
 
-  const onChangeEmailCheckbox = (e) => {
+  const onChangeEmailCheckbox = (e: {
+    target: { checked: React.SetStateAction<boolean> };
+  }) => {
     setEmailCheckbox(e.target.checked);
   };
 
@@ -91,8 +93,9 @@ export function ReportDelivery() {
     setIncludeReportAsAttachment(e.target.checked);
   };
 
-  const onInsertPlaceholderClick = () =>
+  const onInsertPlaceholderClick = () => {
     setInsertPlaceholder((insertPlaceholder) => !insertPlaceholder);
+  };
   const closeInsertPlaceholder = () => setInsertPlaceholder(false);
 
   const onCreateEmailRecipient = (searchValue, flattenedOptions = []) => {
@@ -112,7 +115,7 @@ export function ReportDelivery() {
         (option) => option.label.trim().toLowerCase() === normalizedSearchValue
       ) === -1
     ) {
-      email_recipient_options.push(newOption);
+      EMAIL_RECIPIENT_OPTIONS.push(newOption);
     }
 
     // Select the option.
@@ -133,7 +136,7 @@ export function ReportDelivery() {
           isOpen={insertPlaceholder}
           closePopover={closeInsertPlaceholder}
         >
-          <EuiListGroup listItems={insert_placeholder_options} />
+          <EuiListGroup listItems={INSERT_PLACEHOLDER_OPTIONS} />
         </EuiPopover>
       </div>
     );
@@ -147,8 +150,8 @@ export function ReportDelivery() {
           helpText="Select or add recipients"
         >
           <EuiComboBox
-            placeholder={'add users here'}
-            options={email_recipient_options}
+            placeholder={'Add users here'}
+            options={EMAIL_RECIPIENT_OPTIONS}
             selectedOptions={emailRecipients}
             onChange={onChangeEmailRecipients}
             onCreateOption={onCreateEmailRecipient}
@@ -185,7 +188,7 @@ export function ReportDelivery() {
     );
   };
 
-  const email_delivery = emailCheckbox ? <EmailDelivery /> : null;
+  const emailDelivery = emailCheckbox ? <EmailDelivery /> : null;
 
   return (
     <EuiPageContent panelPaddingSize={'l'}>
@@ -207,7 +210,7 @@ export function ReportDelivery() {
           onChange={onChangeEmailCheckbox}
         />
         <EuiSpacer />
-        {email_delivery}
+        {emailDelivery}
       </EuiPageContentBody>
     </EuiPageContent>
   );

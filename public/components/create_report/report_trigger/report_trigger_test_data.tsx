@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-export const available_monitor_options = [
+export const AVAILABLE_MONITOR_OPTIONS = [
   {
     value: 'monitor_1',
     text: 'Monitor 1',
@@ -24,7 +24,7 @@ export const available_monitor_options = [
   },
 ];
 
-export const available_trigger_options = [
+export const AVAILABLE_TRIGGER_OPTIONS = [
   {
     value: 'trigger_1',
     text: 'Trigger 1',

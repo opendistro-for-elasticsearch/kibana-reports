@@ -13,43 +13,43 @@
  * permissions and limitations under the License.
  */
 
-export const report_type_options = [
+export const REPORT_TYPE_OPTIONS = [
   {
-    id: 'schedule_option',
+    id: 'scheduleOption',
     label: 'Schedule based',
   },
   {
-    id: 'alert_option',
+    id: 'alertOption',
     label: 'Alert based',
   },
 ];
 
-export const schedule_request_time_options = [
+export const SCHEDULE_REQUEST_TIME_OPTIONS = [
   {
-    id: 'now_option',
+    id: 'nowOption',
     label: 'Now',
   },
   {
-    id: 'future_date_option',
+    id: 'futureDateOption',
     label: 'Future date',
   },
   {
-    id: 'recurring_option',
+    id: 'recurringOption',
     label: 'Recurring',
   },
   {
-    id: 'cron_based_option',
+    id: 'cronBasedOption',
     label: 'Cron based',
   },
 ];
 
-export const schedule_recurring_options = [
+export const SCHEDULE_RECURRING_OPTIONS = [
   {
     value: 'daily',
     text: 'Daily',
   },
   {
-    value: 'by_interval',
+    value: 'byInterval',
     text: 'By interval',
   },
   {
@@ -62,7 +62,7 @@ export const schedule_recurring_options = [
   },
 ];
 
-export const interval_time_periods = [
+export const INTERVAL_TIME_PERIODS = [
   {
     value: 'minutes',
     text: 'Minutes',
@@ -73,38 +73,38 @@ export const interval_time_periods = [
   },
 ];
 
-export const weekly_checkbox_options = [
+export const WEEKLY_CHECKBOX_OPTIONS = [
   {
-    id: 'mon_checkbox',
+    id: 'monCheckbox',
     label: 'Mon',
   },
   {
-    id: 'tue_checkbox',
+    id: 'tueCheckbox',
     label: 'Tue',
   },
   {
-    id: 'wed_checkbox',
+    id: 'wedCheckbox',
     label: 'Wed',
   },
   {
-    id: 'thu_checkbox',
+    id: 'thuCheckbox',
     label: 'Thu',
   },
   {
-    id: 'fri_checkbox',
+    id: 'friCheckbox',
     label: 'Fri',
   },
   {
-    id: 'sat_checkbox',
+    id: 'satCheckbox',
     label: 'Sat',
   },
   {
-    id: 'sun_checkbox',
+    id: 'sunCheckbox',
     label: 'Sun',
   },
 ];
 
-export const monthly_on_the_options = [
+export const MONTHLY_ON_THE_OPTIONS = [
   {
     value: 'day',
     text: 'Day',
@@ -131,7 +131,7 @@ export const monthly_on_the_options = [
   },
 ];
 
-export const monthly_day_select_options = [
+export const MONTHLY_DAY_SELECT_OPTIONS = [
   {
     value: 'day',
     text: 'Day',
@@ -141,7 +141,7 @@ export const monthly_day_select_options = [
     text: 'Weekday',
   },
   {
-    value: 'weekend_day',
+    value: 'weekendDay',
     text: 'Weekend day',
   },
   {

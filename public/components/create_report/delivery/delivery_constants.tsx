@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-export const email_recipient_options = [
+export const EMAIL_RECIPIENT_OPTIONS = [
   { label: 'admin (self)' },
   { label: 'davidcui' },
   { label: 'szhongna' },

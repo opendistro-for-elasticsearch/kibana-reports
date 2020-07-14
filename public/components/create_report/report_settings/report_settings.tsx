@@ -29,24 +29,38 @@ import {
   EuiSpacer,
   EuiRadioGroup,
   EuiSelect,
-  EuiDatePickerRange,
-  EuiDatePicker,
-  EuiForm,
   EuiCheckbox,
-  EuiSuperDatePicker, EuiTextArea
+  EuiSuperDatePicker,
+  EuiTextArea,
 } from '@elastic/eui';
 import moment from 'moment';
 import {
-  report_source_visualization_options,
-  report_source_dashboard_options,
-  report_source_saved_search_options,
+  REPORT_SOURCE_VISUALIZATION_OPTIONS,
+  REPORT_SOURCE_DASHBOARD_OPTIONS,
+  REPORT_SOURCE_SAVED_SEARCH_OPTIONS,
 } from './report_settings_test_data';
 import {
-  report_source_radios,
-  pdf_png_file_format_options,
-  saved_search_format_options,
+  REPORT_SOURCE_RADIOS,
+  PDF_PNG_FILE_FORMAT_OPTIONS,
+  SAVED_SEARCH_FORMAT_OPTIONS,
 } from './report_settings_constants';
 import dateMath from '@elastic/datemath';
+
+const isValidTimeRange = (timeRangeMoment, limit) => {
+  if (limit === 'start') {
+    if (!timeRangeMoment || !timeRangeMoment.isValid()) {
+      throw new Error('Unable to parse start string');
+    }
+  } else if (limit === 'end') {
+    if (
+      !timeRangeMoment ||
+      !timeRangeMoment.isValid() ||
+      timeRangeMoment > moment()
+    ) {
+      throw new Error('Unable to parse end string');
+    }
+  }
+};
 
 function TimeRangeSelect() {
   const [recentlyUsedRanges, setRecentlyUsedRanges] = useState([]);
@@ -95,18 +109,8 @@ function TimeRangeSelect() {
     setRefreshInterval(refreshInterval);
   };
 
-  const startMoment = dateMath.parse(start);
-  // dateMath.parse is inconsistent with unparsable strings.
-  // Sometimes undefined is returned, other times an invalid moment is returned
-  if (!startMoment || !startMoment.isValid()) {
-    throw new Error('Unable to parse start string');
-  }
-
-  // Pass roundUp when parsing end string
-  const endMoment = dateMath.parse(end, { roundUp: true });
-  if (!endMoment || !endMoment.isValid() || endMoment > moment()) {
-    throw new Error('Unable to parse end string');
-  }
+  isValidTimeRange(dateMath.parse(start), 'start');
+  isValidTimeRange(dateMath.parse(end, { roundUp: true }), 'end');
 
   return (
     <div>
@@ -134,21 +138,19 @@ function TimeRangeSelect() {
 export function ReportSettings() {
   const [reportName, setReportName] = useState('');
   const [reportDescription, setReportDescription] = useState('');
-  const [reportSourceId, setReportSourceId] = useState(
-    'dashboard_report_source'
-  );
+  const [reportSourceId, setReportSourceId] = useState('dashboardReportSource');
   const [dashboardSourceSelect, setDashboardSourceSelect] = useState(
-    report_source_dashboard_options[0].value
+    REPORT_SOURCE_DASHBOARD_OPTIONS[0].value
   );
   const [visualizationSourceSelect, setVisualizationSourceSelect] = useState(
-    report_source_visualization_options[0].value
+    REPORT_SOURCE_VISUALIZATION_OPTIONS[0].value
   );
   const [savedSearchSourceSelect, setSavedSearchSourceSelect] = useState(
-    report_source_saved_search_options[0].value
+    REPORT_SOURCE_SAVED_SEARCH_OPTIONS[0].value
   );
-  const [fileFormat, setFileFormat] = useState('pdf_format');
+  const [fileFormat, setFileFormat] = useState('pdfFormat');
   const [savedSearchFileFormat, setSavedSearchFileFormat] = useState(
-    'csv_format'
+    'csvFormat'
   );
   const [includeHeader, setIncludeHeader] = useState(false);
   const [includeFooter, setIncludeFooter] = useState(false);
@@ -197,66 +199,62 @@ export function ReportSettings() {
 
   const onChangeHeader = (e) => {
     setHeader(e.target.value);
-  }
+  };
 
   const onChangeFooter = (e) => {
     setFooter(e.target.value);
-  }
+  };
 
   const HeaderAndFooter = () => {
-    const show_header = (includeHeader)
-      ? (
-        <EuiTextArea
-          placeholder="Header text"
-          value={header}
-          onChange={onChangeHeader}
-        />
-      )
-      : null;
+    const showHeader = includeHeader ? (
+      <EuiTextArea
+        placeholder="Header text"
+        value={header}
+        onChange={onChangeHeader}
+      />
+    ) : null;
 
-    const show_footer = (includeFooter)
-      ? (
-        <EuiTextArea
-          placeholder="Footer text"
-          value={footer}
-          onChange={onChangeFooter}
-        />
-      )
-      : null;
+    const showFooter = includeFooter ? (
+      <EuiTextArea
+        placeholder="Footer text"
+        value={footer}
+        onChange={onChangeFooter}
+      />
+    ) : null;
 
     return (
       <div>
         <EuiCheckbox
-          id="include-header-checkbox"
+          id="includeHeaderCheckbox"
           label="Include header"
           checked={includeHeader}
           onChange={onChangeIncludeHeader}
         />
-        {show_header}
+        {showHeader}
         <EuiSpacer />
         <EuiCheckbox
-          id="include-footer-checkbox"
+          id="includeFooterCheckbox"
           label="Include footer"
           checked={includeFooter}
           onChange={onChangeIncludeFooter}
         />
-        {show_footer}
+        {showFooter}
       </div>
-    )
-  }
+    );
+  };
 
   const PDFandPNGFileFormats = () => {
     return (
       <div>
         <EuiFormRow label="File format">
           <EuiRadioGroup
-            options={pdf_png_file_format_options}
+            options={PDF_PNG_FILE_FORMAT_OPTIONS}
             idSelected={fileFormat}
             onChange={onChangeFileFormat}
           />
         </EuiFormRow>
         <EuiSpacer />
-        <HeaderAndFooter/>
+        <HeaderAndFooter />
       </div>
     );
   };
@@ -267,7 +265,7 @@ export function ReportSettings() {
         <EuiFormRow label="Select dashboard">
           <EuiSelect
             id="reportSourceDashboardSelect"
-            options={report_source_dashboard_options}
+            options={REPORT_SOURCE_DASHBOARD_OPTIONS}
             value={dashboardSourceSelect}
             onChange={onChangeDashboardSelect}
           />
@@ -286,7 +284,7 @@ export function ReportSettings() {
         <EuiFormRow label="Select visualization">
           <EuiSelect
             id="reportSourceVisualizationSelect"
-            options={report_source_visualization_options}
+            options={REPORT_SOURCE_VISUALIZATION_OPTIONS}
             value={visualizationSourceSelect}
             onChange={onChangeVisualizationSelect}
           />
@@ -305,7 +303,7 @@ export function ReportSettings() {
         <EuiFormRow label="Select saved search">
           <EuiSelect
             id="reportSourceSavedSearchSelect"
-            options={report_source_saved_search_options}
+            options={REPORT_SOURCE_SAVED_SEARCH_OPTIONS}
             value={savedSearchSourceSelect}
             onChange={onChangeSavedSearchSelect}
           />
@@ -315,7 +313,7 @@ export function ReportSettings() {
         <EuiSpacer />
         <EuiFormRow label="File format">
           <EuiRadioGroup
-            options={saved_search_format_options}
+            options={SAVED_SEARCH_FORMAT_OPTIONS}
             idSelected={savedSearchFileFormat}
             onChange={onChangeSavedSearchFileFormat}
           />
@@ -324,18 +322,18 @@ export function ReportSettings() {
     );
   };
 
-  const display_dashboard_select =
-    reportSourceId === 'dashboard_report_source' ? (
+  const displayDashboardSelect =
+    reportSourceId === 'dashboardReportSource' ? (
       <ReportSourceDashboard />
     ) : null;
 
-  const display_visualization_select =
-    reportSourceId === 'visualization_report_source' ? (
+  const displayVisualizationSelect =
+    reportSourceId === 'visualizationReportSource' ? (
       <ReportSourceVisualization />
     ) : null;
 
-  const display_saved_search_select =
-    reportSourceId === 'saved_search_report_source' ? (
+  const displaySavedSearchSelect =
+    reportSourceId === 'savedSearchReportSource' ? (
       <ReportSourceSavedSearch />
     ) : null;
 
@@ -379,15 +377,15 @@ export function ReportSettings() {
           helpText="Where is the report generated from"
         >
           <EuiRadioGroup
-            options={report_source_radios}
+            options={REPORT_SOURCE_RADIOS}
             idSelected={reportSourceId}
             onChange={onChangeReportSource}
           />
         </EuiFormRow>
         <EuiSpacer />
-        {display_dashboard_select}
-        {display_visualization_select}
-        {display_saved_search_select}
+        {displayDashboardSelect}
+        {displayVisualizationSelect}
+        {displaySavedSearchSelect}
         <EuiSpacer />
       </EuiPageContentBody>
     </EuiPageContent>

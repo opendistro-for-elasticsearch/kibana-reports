@@ -28,7 +28,7 @@ import { ReportSettings } from './report_settings/report_settings';
 import { ReportDelivery } from './delivery/delivery';
 import { ReportTrigger } from './report_trigger/report_trigger';
 
-export const timezone_options = [
+export const TIMEZONE_OPTIONS = [
   { value: -4, text: 'EDT -04:00' },
   { value: -5, text: 'CDT -05:00' },
   { value: -6, text: 'MDT -06:00' },

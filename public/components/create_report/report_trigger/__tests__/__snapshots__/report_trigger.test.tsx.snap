@@ -45,7 +45,7 @@ exports[`<ReportTrigger /> panel render component 1`] = `
             <input
               checked=""
               class="euiRadio__input"
-              id="schedule_option"
+              id="scheduleOption"
               type="radio"
               value=""
             />
@@ -54,7 +54,7 @@ exports[`<ReportTrigger /> panel render component 1`] = `
             />
             <label
               class="euiRadio__label"
-              for="schedule_option"
+              for="scheduleOption"
             >
               Schedule based
             </label>
@@ -64,7 +64,7 @@ exports[`<ReportTrigger /> panel render component 1`] = `
           >
             <input
               class="euiRadio__input"
-              id="alert_option"
+              id="alertOption"
               type="radio"
               value=""
             />
@@ -73,7 +73,7 @@ exports[`<ReportTrigger /> panel render component 1`] = `
             />
             <label
               class="euiRadio__label"
-              for="alert_option"
+              for="alertOption"
             >
               Alert based
             </label>
@@ -112,7 +112,7 @@ exports[`<ReportTrigger /> panel render component 1`] = `
               <input
                 checked=""
                 class="euiRadio__input"
-                id="now_option"
+                id="nowOption"
                 type="radio"
                 value=""
               />
@@ -121,7 +121,7 @@ exports[`<ReportTrigger /> panel render component 1`] = `
               />
               <label
                 class="euiRadio__label"
-                for="now_option"
+                for="nowOption"
               >
                 Now
               </label>
@@ -131,7 +131,7 @@ exports[`<ReportTrigger /> panel render component 1`] = `
             >
               <input
                 class="euiRadio__input"
-                id="future_date_option"
+                id="futureDateOption"
                 type="radio"
                 value=""
               />
@@ -140,7 +140,7 @@ exports[`<ReportTrigger /> panel render component 1`] = `
               />
               <label
                 class="euiRadio__label"
-                for="future_date_option"
+                for="futureDateOption"
               >
                 Future date
               </label>
@@ -150,7 +150,7 @@ exports[`<ReportTrigger /> panel render component 1`] = `
             >
               <input
                 class="euiRadio__input"
-                id="recurring_option"
+                id="recurringOption"
                 type="radio"
                 value=""
               />
@@ -159,7 +159,7 @@ exports[`<ReportTrigger /> panel render component 1`] = `
               />
               <label
                 class="euiRadio__label"
-                for="recurring_option"
+                for="recurringOption"
               >
                 Recurring
               </label>
@@ -169,7 +169,7 @@ exports[`<ReportTrigger /> panel render component 1`] = `
             >
               <input
                 class="euiRadio__input"
-                id="cron_based_option"
+                id="cronBasedOption"
                 type="radio"
                 value=""
               />
@@ -178,7 +178,7 @@ exports[`<ReportTrigger /> panel render component 1`] = `
               />
               <label
                 class="euiRadio__label"
-                for="cron_based_option"
+                for="cronBasedOption"
               >
                 Cron based
               </label>

@@ -148,7 +148,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
             <input
               checked=""
               class="euiRadio__input"
-              id="dashboard_report_source"
+              id="dashboardReportSource"
               type="radio"
               value=""
             />
@@ -157,7 +157,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
             />
             <label
               class="euiRadio__label"
-              for="dashboard_report_source"
+              for="dashboardReportSource"
             >
               Dashboard
             </label>
@@ -167,7 +167,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
           >
             <input
               class="euiRadio__input"
-              id="visualization_report_source"
+              id="visualizationReportSource"
               type="radio"
               value=""
             />
@@ -176,7 +176,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
             />
             <label
               class="euiRadio__label"
-              for="visualization_report_source"
+              for="visualizationReportSource"
             >
               Visualization
             </label>
@@ -186,7 +186,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
           >
             <input
               class="euiRadio__input"
-              id="saved_search_report_source"
+              id="savedSearchReportSource"
               type="radio"
               value=""
             />
@@ -195,7 +195,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
             />
             <label
               class="euiRadio__label"
-              for="saved_search_report_source"
+              for="savedSearchReportSource"
             >
               Saved search
             </label>
@@ -241,17 +241,17 @@ exports[`<ReportSettings /> panel render component 1`] = `
                 id="random_html_id"
               >
                 <option
-                  value="daily saves"
+                  value="dailySaves"
                 >
                   Daily saves
                 </option>
                 <option
-                  value="web logs"
+                  value="webLogs"
                 >
                   Web logs
                 </option>
                 <option
-                  value="flight traffic"
+                  value="flightTraffic"
                 >
                   Flight traffic
                 </option>
@@ -446,7 +446,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
                 <input
                   checked=""
                   class="euiRadio__input"
-                  id="pdf_format"
+                  id="pdfFormat"
                   type="radio"
                   value=""
                 />
@@ -455,7 +455,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
                 />
                 <label
                   class="euiRadio__label"
-                  for="pdf_format"
+                  for="pdfFormat"
                 >
                   PDF
                 </label>
@@ -465,7 +465,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
               >
                 <input
                   class="euiRadio__input"
-                  id="png_format"
+                  id="pngFormat"
                   type="radio"
                   value=""
                 />
@@ -474,7 +474,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
                 />
                 <label
                   class="euiRadio__label"
-                  for="png_format"
+                  for="pngFormat"
                 >
                   PNG
                 </label>
@@ -491,7 +491,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
           >
             <input
               class="euiCheckbox__input"
-              id="include-header-checkbox"
+              id="includeHeaderCheckbox"
               type="checkbox"
             />
             <div
@@ -499,7 +499,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
             />
             <label
               class="euiCheckbox__label"
-              for="include-header-checkbox"
+              for="includeHeaderCheckbox"
             >
               Include header
             </label>
@@ -512,7 +512,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
           >
             <input
               class="euiCheckbox__input"
-              id="include-footer-checkbox"
+              id="includeFooterCheckbox"
               type="checkbox"
             />
             <div
@@ -520,7 +520,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
             />
             <label
               class="euiCheckbox__label"
-              for="include-footer-checkbox"
+              for="includeFooterCheckbox"
             >
               Include footer
             </label>

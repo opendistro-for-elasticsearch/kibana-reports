@@ -13,43 +13,43 @@
  * permissions and limitations under the License.
  */
 
-export const report_source_dashboard_options = [
+export const REPORT_SOURCE_DASHBOARD_OPTIONS = [
   {
-    value: 'daily saves',
+    value: 'dailySaves',
     text: 'Daily saves',
   },
   {
-    value: 'web logs',
+    value: 'webLogs',
     text: 'Web logs',
   },
   {
-    value: 'flight traffic',
+    value: 'flightTraffic',
     text: 'Flight traffic',
   },
 ];
 
-export const report_source_visualization_options = [
+export const REPORT_SOURCE_VISUALIZATION_OPTIONS = [
   {
-    value: 'vis 1',
+    value: 'vis_1',
     text: 'Vis 1',
   },
   {
-    value: 'vis 2',
+    value: 'vis_2',
     text: 'Vis 2',
   },
   {
-    value: 'vis 3',
+    value: 'vis_3',
     text: 'Vis 3',
   },
 ];
 
-export const report_source_saved_search_options = [
+export const REPORT_SOURCE_SAVED_SEARCH_OPTIONS = [
   {
-    value: 'saved search 1',
+    value: 'savedSearch_1',
     text: 'Saved search 1',
   },
   {
-    value: 'saved search 2',
+    value: 'savedSearch_2',
     text: 'Saved search 2',
   },
 ];

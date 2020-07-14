@@ -35,27 +35,25 @@ import {
   EuiButton,
 } from '@elastic/eui';
 import moment from 'moment';
-import { timezone_options } from '../create_report';
+import { TIMEZONE_OPTIONS } from '../create_report';
 import {
-  available_monitor_options,
-  available_trigger_options,
+  AVAILABLE_MONITOR_OPTIONS,
+  AVAILABLE_TRIGGER_OPTIONS,
 } from './report_trigger_test_data';
 import {
-  report_type_options,
-  schedule_request_time_options,
-  schedule_recurring_options,
-  interval_time_periods,
-  weekly_checkbox_options,
-  monthly_on_the_options,
-  monthly_day_select_options,
+  REPORT_TYPE_OPTIONS,
+  SCHEDULE_REQUEST_TIME_OPTIONS,
+  SCHEDULE_RECURRING_OPTIONS,
+  INTERVAL_TIME_PERIODS,
+  WEEKLY_CHECKBOX_OPTIONS,
+  MONTHLY_ON_THE_OPTIONS,
+  MONTHLY_DAY_SELECT_OPTIONS,
 } from './report_trigger_constants';
 
 export function ReportTrigger() {
-  const [reportTriggerType, setReportTriggerTypes] = useState(
-    'schedule_option'
-  );
-  const [scheduleRequestTime, setScheduleRequestTime] = useState('now_option');
-  const [timezone, setTimezone] = useState(timezone_options[0].value);
+  const [reportTriggerType, setReportTriggerTypes] = useState('scheduleOption');
+  const [scheduleRequestTime, setScheduleRequestTime] = useState('nowOption');
+  const [timezone, setTimezone] = useState(TIMEZONE_OPTIONS[0].value);
   const [futureDateTimeSelect, setFutureDateTimeSelect] = useState(moment());
   const [scheduleRecurringFrequency, setScheduleRecurringFrequency] = useState(
     'daily'
@@ -63,21 +61,21 @@ export function ReportTrigger() {
   const [recurringDailyTime, setRecurringDailyTime] = useState(moment());
   const [intervalText, setIntervalText] = useState('');
   const [intervalTimePeriod, setIntervalTimePeriod] = useState(
-    interval_time_periods[0].value
+    INTERVAL_TIME_PERIODS[0].value
   );
   const [weeklyCheckbox, setWeeklyCheckbox] = useState({
-    ['mon_checkbox']: true,
+    ['monCheckbox']: true,
   });
   const [monthlySelect, setMonthlySelect] = useState(
-    monthly_on_the_options[0].value
+    MONTHLY_ON_THE_OPTIONS[0].value
   );
   const [monthlyDayNumber, setMonthlyDayNumber] = useState('');
   const [monthlyDaySelect, setMonthlyDaySelect] = useState(
-    monthly_day_select_options[0].value
+    MONTHLY_DAY_SELECT_OPTIONS[0].value
   );
   const [cronExpression, setCronExpression] = useState('');
-  const [monitor, setMonitor] = useState(available_monitor_options[0].value);
-  const [trigger, setTrigger] = useState(available_trigger_options[0].value);
+  const [monitor, setMonitor] = useState(AVAILABLE_MONITOR_OPTIONS[0].value);
+  const [trigger, setTrigger] = useState(AVAILABLE_TRIGGER_OPTIONS[0].value);
 
   const onChangeReportTriggerType = (e) => {
     setReportTriggerTypes(e);
@@ -151,7 +149,7 @@ export function ReportTrigger() {
         <EuiFormRow label="Timezone">
           <EuiSelect
             id="setTimezone"
-            options={timezone_options}
+            options={TIMEZONE_OPTIONS}
             value={timezone}
             onChange={onChangeTimezone}
           />
@@ -210,7 +208,7 @@ export function ReportTrigger() {
             <EuiFormRow>
               <EuiSelect
                 id="intervalTimeUnit"
-                options={interval_time_periods}
+                options={INTERVAL_TIME_PERIODS}
                 value={intervalTimePeriod}
                 onChange={onChangeIntervalTimePeriod}
               />
@@ -226,7 +224,7 @@ export function ReportTrigger() {
       <div>
         <EuiFormRow label="Every">
           <EuiCheckboxGroup
-            options={weekly_checkbox_options}
+            options={WEEKLY_CHECKBOX_OPTIONS}
             idToSelectedMap={weeklyCheckbox}
             onChange={onChangeWeeklyCheckbox}
           />
@@ -254,7 +252,7 @@ export function ReportTrigger() {
         <div>
           <EuiSelect
             id="monthlySelect"
-            options={monthly_day_select_options}
+            options={MONTHLY_DAY_SELECT_OPTIONS}
             value={monthlyDaySelect}
             onChange={onChangeMonthlyDaySelect}
           />
@@ -268,7 +266,7 @@ export function ReportTrigger() {
             <EuiFlexItem grow={false}>
               <EuiSelect
                 id="monthlySelect"
-                options={monthly_on_the_options}
+                options={MONTHLY_ON_THE_OPTIONS}
                 value={monthlySelect}
                 onChange={onChangeMonthlySelect}
               />
@@ -306,7 +304,7 @@ export function ReportTrigger() {
       scheduleRecurringFrequency === 'daily' ? <RequestTime /> : null;
 
     const display_interval =
-      scheduleRecurringFrequency === 'by_interval' ? (
+      scheduleRecurringFrequency === 'byInterval' ? (
         <RecurringInterval />
       ) : null;
 
@@ -321,7 +319,7 @@ export function ReportTrigger() {
         <EuiFormRow label="Frequency">
           <EuiSelect
             id="recurringFrequencySelect"
-            options={schedule_recurring_options}
+            options={SCHEDULE_RECURRING_OPTIONS}
             value={scheduleRecurringFrequency}
             onChange={onChangeScheduleRecurringFrequency}
           />
@@ -337,17 +335,17 @@ export function ReportTrigger() {
 
   const ScheduleTrigger = () => {
     const display_future_date =
-      scheduleRequestTime === 'future_date_option' ? (
+      scheduleRequestTime === 'futureDateOption' ? (
         <ScheduleTriggerFutureDate />
       ) : null;
 
     const display_recurring =
-      scheduleRequestTime === 'recurring_option' ? (
+      scheduleRequestTime === 'recurringOption' ? (
         <ScheduleTriggerRecurring />
       ) : null;
 
     const display_cron =
-      scheduleRequestTime === 'cron_based_option' ? <CronExpression /> : null;
+      scheduleRequestTime === 'cronBasedOption' ? <CronExpression /> : null;
 
     return (
       <div>
@@ -356,7 +354,7 @@ export function ReportTrigger() {
           helpText="Define delivery schedule and frequency"
         >
           <EuiRadioGroup
-            options={schedule_request_time_options}
+            options={SCHEDULE_REQUEST_TIME_OPTIONS}
             idSelected={scheduleRequestTime}
             onChange={onChangeScheduleRequestTime}
           />
@@ -377,7 +375,7 @@ export function ReportTrigger() {
             <EuiFormRow label="Available monitors">
               <EuiSelect
                 id="selectAlertMonitor"
-                options={available_monitor_options}
+                options={AVAILABLE_MONITOR_OPTIONS}
                 value={monitor}
                 onChange={onChangeMonitor}
               />
@@ -387,7 +385,7 @@ export function ReportTrigger() {
             <EuiFormRow label="Available triggers">
               <EuiSelect
                 id="selectAlertTrigger"
-                options={available_trigger_options}
+                options={AVAILABLE_TRIGGER_OPTIONS}
                 value={trigger}
                 onChange={onChangeTrigger}
               />
@@ -402,9 +400,9 @@ export function ReportTrigger() {
   };
 
   const schedule =
-    reportTriggerType === 'schedule_option' ? <ScheduleTrigger /> : null;
+    reportTriggerType === 'scheduleOption' ? <ScheduleTrigger /> : null;
 
-  const alert = reportTriggerType === 'alert_option' ? <AlertTrigger /> : null;
+  const alert = reportTriggerType === 'alertOption' ? <AlertTrigger /> : null;
 
   return (
     <EuiPageContent panelPaddingSize={'l'}>
@@ -417,7 +415,7 @@ export function ReportTrigger() {
       <EuiPageContentBody>
         <EuiFormRow label="Trigger type">
           <EuiRadioGroup
-            options={report_type_options}
+            options={REPORT_TYPE_OPTIONS}
             idSelected={reportTriggerType}
             onChange={onChangeReportTriggerType}
           />

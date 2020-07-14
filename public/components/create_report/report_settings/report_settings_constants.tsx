@@ -13,39 +13,39 @@
  * permissions and limitations under the License.
  */
 
-export const report_source_radios = [
+export const REPORT_SOURCE_RADIOS = [
   {
-    id: 'dashboard_report_source',
+    id: 'dashboardReportSource',
     label: 'Dashboard',
   },
   {
-    id: 'visualization_report_source',
+    id: 'visualizationReportSource',
     label: 'Visualization',
   },
   {
-    id: 'saved_search_report_source',
+    id: 'savedSearchReportSource',
     label: 'Saved search',
   },
 ];
 
-export const pdf_png_file_format_options = [
+export const PDF_PNG_FILE_FORMAT_OPTIONS = [
   {
-    id: 'pdf_format',
+    id: 'pdfFormat',
     label: 'PDF',
   },
   {
-    id: 'png_format',
+    id: 'pngFormat',
     label: 'PNG',
   },
 ];
 
-export const saved_search_format_options = [
+export const SAVED_SEARCH_FORMAT_OPTIONS = [
   {
-    id: 'csv_format',
+    id: 'csvFormat',
     label: 'CSV',
   },
   {
-    id: 'xls_format',
+    id: 'xlsFormat',
     label: 'XLS',
   },
 ];
