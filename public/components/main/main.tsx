@@ -69,7 +69,7 @@ export class Main extends React.Component<RouterHomeProps, any> {
     httpClientGlobal = httpClient;
   }
 
-  getRowProps = (item: any) => {
+  getReportsRowProps = (item: any) => {
     const { id } = item;
     return {
       'data-test-subj': `row-${id}`,
@@ -78,6 +78,21 @@ export class Main extends React.Component<RouterHomeProps, any> {
         if (!$(e.target).is('button')) {
           window.location.assign(
             `opendistro_kibana_reports#/report_details/${item.id}${this.props.history.location.search}`
+          );
+        }
+      },
+    };
+  };
+
+  getReportDefinitionsRowProps = (item: any) => {
+    const { id } = item;
+    return {
+      'data-test-subj': `row-${id}`,
+      className: 'customRowClass',
+      onClick: (e: any) => {
+        if (!$(e.target).is('button')) {
+          window.location.assign(
+            `opendistro_kibana_reports#/report_definition_details/${item.id}${this.props.history.location.search}`
           );
         }
       },
@@ -101,7 +116,7 @@ export class Main extends React.Component<RouterHomeProps, any> {
             </EuiFlexGroup>
             <EuiHorizontalRule />
             <ReportsTable
-              getRowProps={this.getRowProps}
+              getRowProps={this.getReportsRowProps}
               pagination={this.pagination}
             />
           </EuiPageContent>
@@ -112,12 +127,6 @@ export class Main extends React.Component<RouterHomeProps, any> {
                 <EuiTitle>
                   <h2>Report definitions ({report_definitions.length})</h2>
                 </EuiTitle>
-              </EuiFlexItem>
-              <EuiFlexItem component="span" grow={false}>
-                <EuiButton size="m">Delete</EuiButton>
-              </EuiFlexItem>
-              <EuiFlexItem component="span" grow={false}>
-                <EuiButton size="m">Edit</EuiButton>
               </EuiFlexItem>
               <EuiFlexItem component="span" grow={false}>
                 <EuiButton
@@ -131,7 +140,10 @@ export class Main extends React.Component<RouterHomeProps, any> {
               </EuiFlexItem>
             </EuiFlexGroup>
             <EuiHorizontalRule />
-            <ReportDefinitions pagination={this.pagination} />
+            <ReportDefinitions
+              pagination={this.pagination}
+              getRowProps={this.getReportDefinitionsRowProps}
+            />
           </EuiPageContent>
         </EuiPageBody>
       </EuiPage>

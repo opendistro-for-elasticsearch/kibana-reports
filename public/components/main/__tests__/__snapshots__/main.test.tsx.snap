@@ -1331,42 +1331,6 @@ exports[`<Main /> panel render component 1`] = `
           class="euiFlexItem euiFlexItem--flexGrowZero"
         >
           <button
-            class="euiButton euiButton--primary"
-            type="button"
-          >
-            <span
-              class="euiButton__content"
-            >
-              <span
-                class="euiButton__text"
-              >
-                Delete
-              </span>
-            </span>
-          </button>
-        </span>
-        <span
-          class="euiFlexItem euiFlexItem--flexGrowZero"
-        >
-          <button
-            class="euiButton euiButton--primary"
-            type="button"
-          >
-            <span
-              class="euiButton__content"
-            >
-              <span
-                class="euiButton__text"
-              >
-                Edit
-              </span>
-            </span>
-          </button>
-        </span>
-        <span
-          class="euiFlexItem euiFlexItem--flexGrowZero"
-        >
-          <button
             class="euiButton euiButton--primary euiButton--fill"
             type="button"
           >
@@ -1678,7 +1642,10 @@ exports[`<Main /> panel render component 1`] = `
                 </thead>
                 <tbody>
                   <tr
-                    class="euiTableRow euiTableRow-isSelectable"
+                    class="euiTableRow customRowClass euiTableRow-isSelectable euiTableRow-isClickable"
+                    data-test-subj="row-undefined"
+                    role="button"
+                    tabindex="0"
                   >
                     <td
                       class="euiTableRowCell"
