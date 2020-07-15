@@ -105,7 +105,7 @@ const report_definitions_search = {
 };
 
 export function ReportDefinitions(props) {
-  const { pagination } = props;
+  const { pagination, getRowProps } = props;
   return (
     <div>
       <EuiInMemoryTable
@@ -118,6 +118,7 @@ export function ReportDefinitions(props) {
         pagination={pagination}
         sorting={true}
         isSelectable={true}
+        rowProps={getRowProps}
       />
     </div>
   );

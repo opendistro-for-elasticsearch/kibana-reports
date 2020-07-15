@@ -38,6 +38,7 @@ import { PLUGIN_ID, PLUGIN_NAME } from '../../common';
 import { CreateReport } from './create_report/create_report';
 import { Main } from './main/main';
 import { ReportDetails } from './main/report_details/report_details';
+import { ReportDefinitionDetails } from './main/report_definition_details/report_definition_details';
 
 interface OpendistroKibanaReportsAppDeps {
   basename: string;
@@ -70,6 +71,16 @@ export const OpendistroKibanaReportsApp = ({
                       render={(props) => (
                         <ReportDetails
                           title="Report Details"
+                          httpClient={http}
+                          {...props}
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/report_definition_details/:reportDefinitionId"
+                      render={(props) => (
+                        <ReportDefinitionDetails
+                          title="Report Definition Details"
                           httpClient={http}
                           {...props}
                         />
