@@ -54,7 +54,7 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 1. As a user, I should see Name, Type, Owner, Source, Last updated, Details, Status (active/disabled) on the `Report definitions` list.
 1. As a user, I should be able to view, edit and delete a report definition.
 1. As a user, I should be able to enable/disable a report definition
-1. As a user, I should be able to export and import one or more report definitions as xml via APIs
+1. As a user, I should be able to export and import one or more report definitions (as xml or some other format) via APIs
 
 ### Create, View, Edit
 #### Create report definition
