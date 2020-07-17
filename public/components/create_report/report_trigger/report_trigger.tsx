@@ -59,7 +59,6 @@ export function ReportTrigger() {
     'daily'
   );
   const [recurringDailyTime, setRecurringDailyTime] = useState(moment());
-  const [intervalText, setIntervalText] = useState('');
   const [intervalTimePeriod, setIntervalTimePeriod] = useState(
     INTERVAL_TIME_PERIODS[0].value
   );
@@ -103,12 +102,6 @@ export function ReportTrigger() {
 
   const handleRecurringDailyTime = (e: React.SetStateAction<moment.Moment>) => {
     setRecurringDailyTime(e);
-  };
-
-  const handleIntervalText = (e: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    setIntervalText(e.target.value);
   };
 
   const handleIntervalTimePeriod = (e: {
@@ -202,6 +195,13 @@ export function ReportTrigger() {
   };
 
   const RecurringInterval = () => {
+    const [intervalText, setIntervalText] = useState('');
+
+    const handleIntervalText = (e: {
+      target: { value: React.SetStateAction<string> };
+    }) => {
+      setIntervalText(e.target.value);
+    };
     return (
       <EuiFormRow label="Every">
         <EuiFlexGroup>
