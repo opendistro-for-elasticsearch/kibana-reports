@@ -46,7 +46,10 @@ import {
 } from './report_settings_constants';
 import dateMath from '@elastic/datemath';
 
-const isValidTimeRange = (timeRangeMoment, limit) => {
+const isValidTimeRange = (
+  timeRangeMoment: number | moment.Moment,
+  limit: string
+) => {
   if (limit === 'start') {
     if (!timeRangeMoment || !timeRangeMoment.isValid()) {
       throw new Error('Unable to parse start string');
@@ -154,63 +157,82 @@ export function ReportSettings() {
   );
   const [includeHeader, setIncludeHeader] = useState(false);
   const [includeFooter, setIncludeFooter] = useState(false);
-  const [header, setHeader] = useState('');
-  const [footer, setFooter] = useState('');
 
-  const onChangeReportName = (e) => {
+  const handleReportName = (e: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
     setReportName(e.target.value);
   };
 
-  const onChangeReportDescription = (e) => {
+  const handleReportDescription = (e: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
     setReportDescription(e.target.value);
   };
 
-  const onChangeReportSource = (e) => {
+  const handleReportSource = (e: React.SetStateAction<string>) => {
     setReportSourceId(e);
   };
 
-  const onChangeDashboardSelect = (e) => {
+  const handleDashboardSelect = (e: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
     setDashboardSourceSelect(e.target.value);
   };
 
-  const onChangeVisualizationSelect = (e) => {
+  const handleVisualizationSelect = (e: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
     setVisualizationSourceSelect(e.target.value);
   };
 
-  const onChangeSavedSearchSelect = (e) => {
+  const handleSavedSearchSelect = (e: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
     setSavedSearchSourceSelect(e.target.value);
   };
 
-  const onChangeFileFormat = (e) => {
+  const handleFileFormat = (e: React.SetStateAction<string>) => {
     setFileFormat(e);
   };
 
-  const onChangeSavedSearchFileFormat = (e) => {
+  const handleSavedSearchFileFormat = (e: React.SetStateAction<string>) => {
     setSavedSearchFileFormat(e);
   };
 
-  const onChangeIncludeHeader = (e) => {
+  const handleIncludeHeader = (e: {
+    target: { checked: React.SetStateAction<boolean> };
+  }) => {
     setIncludeHeader(e.target.checked);
   };
 
-  const onChangeIncludeFooter = (e) => {
+  const handleIncludeFooter = (e: {
+    target: { checked: React.SetStateAction<boolean> };
+  }) => {
     setIncludeFooter(e.target.checked);
   };
 
-  const onChangeHeader = (e) => {
-    setHeader(e.target.value);
-  };
-
-  const onChangeFooter = (e) => {
-    setFooter(e.target.value);
-  };
-
   const HeaderAndFooter = () => {
+    const [header, setHeader] = useState('');
+    const [footer, setFooter] = useState('');
+
+    const handleHeader = (e: {
+      target: { value: React.SetStateAction<string> };
+    }) => {
+      setHeader(e.target.value);
+    };
+
+    const handleFooter = (e: {
+      target: { value: React.SetStateAction<string> };
+    }) => {
+      setFooter(e.target.value);
+    };
+
     const showHeader = includeHeader ? (
       <EuiTextArea
         placeholder="Header text"
         value={header}
-        onChange={onChangeHeader}
+        onChange={handleHeader}
       />
     ) : null;
 
@@ -218,7 +240,7 @@ export function ReportSettings() {
       <EuiTextArea
         placeholder="Footer text"
         value={footer}
-        onChange={onChangeFooter}
+        onChange={handleFooter}
       />
     ) : null;
 
@@ -228,7 +250,7 @@ export function ReportSettings() {
           id="includeHeaderCheckbox"
           label="Include header"
           checked={includeHeader}
-          onChange={onChangeIncludeHeader}
+          onChange={handleIncludeHeader}
         />
         {showHeader}
         <EuiSpacer />
@@ -236,7 +258,7 @@ export function ReportSettings() {
           id="includeFooterCheckbox"
           label="Include footer"
           checked={includeFooter}
-          onChange={onChangeIncludeFooter}
+          onChange={handleIncludeFooter}
         />
         {showFooter}
       </div>
@@ -250,7 +272,7 @@ export function ReportSettings() {
           <EuiRadioGroup
             options={PDF_PNG_FILE_FORMAT_OPTIONS}
             idSelected={fileFormat}
-            onChange={onChangeFileFormat}
+            onChange={handleFileFormat}
           />
         </EuiFormRow>
         <EuiSpacer />
@@ -267,7 +289,7 @@ export function ReportSettings() {
             id="reportSourceDashboardSelect"
             options={REPORT_SOURCE_DASHBOARD_OPTIONS}
             value={dashboardSourceSelect}
-            onChange={onChangeDashboardSelect}
+            onChange={handleDashboardSelect}
           />
         </EuiFormRow>
         <EuiSpacer />
@@ -286,7 +308,7 @@ export function ReportSettings() {
             id="reportSourceVisualizationSelect"
             options={REPORT_SOURCE_VISUALIZATION_OPTIONS}
             value={visualizationSourceSelect}
-            onChange={onChangeVisualizationSelect}
+            onChange={handleVisualizationSelect}
           />
         </EuiFormRow>
         <EuiSpacer />
@@ -305,7 +327,7 @@ export function ReportSettings() {
             id="reportSourceSavedSearchSelect"
             options={REPORT_SOURCE_SAVED_SEARCH_OPTIONS}
             value={savedSearchSourceSelect}
-            onChange={onChangeSavedSearchSelect}
+            onChange={handleSavedSearchSelect}
           />
         </EuiFormRow>
         <EuiSpacer />
@@ -315,7 +337,7 @@ export function ReportSettings() {
           <EuiRadioGroup
             options={SAVED_SEARCH_FORMAT_OPTIONS}
             idSelected={savedSearchFileFormat}
-            onChange={onChangeSavedSearchFileFormat}
+            onChange={handleSavedSearchFileFormat}
           />
         </EuiFormRow>
       </div>
@@ -355,7 +377,7 @@ export function ReportSettings() {
               <EuiFieldText
                 placeholder="Report name"
                 value={reportName}
-                onChange={onChangeReportName}
+                onChange={handleReportName}
               />
             </EuiFormRow>
           </EuiFlexItem>
@@ -366,7 +388,7 @@ export function ReportSettings() {
               <EuiFieldText
                 placeholder="Describe this report"
                 value={reportDescription}
-                onChange={onChangeReportDescription}
+                onChange={handleReportDescription}
               />
             </EuiFormRow>
           </EuiFlexItem>
@@ -379,7 +401,7 @@ export function ReportSettings() {
           <EuiRadioGroup
             options={REPORT_SOURCE_RADIOS}
             idSelected={reportSourceId}
-            onChange={onChangeReportSource}
+            onChange={handleReportSource}
           />
         </EuiFormRow>
         <EuiSpacer />

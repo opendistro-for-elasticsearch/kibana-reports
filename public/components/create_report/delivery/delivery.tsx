@@ -64,41 +64,36 @@ const INSERT_PLACEHOLDER_OPTIONS = [
 export function ReportDelivery() {
   const [emailCheckbox, setEmailCheckbox] = useState(false);
   const [emailRecipients, setEmailRecipients] = useState([]);
-  const [emailSubject, setEmailSubject] = useState('');
-  const [emailBody, setEmailBody] = useState('');
   const [includeReportAsAttachment, setIncludeReportAsAttachment] = useState(
     false
   );
   const [insertPlaceholder, setInsertPlaceholder] = useState(false);
 
-  const onChangeEmailCheckbox = (e: {
+  const handleEmailCheckbox = (e: {
     target: { checked: React.SetStateAction<boolean> };
   }) => {
     setEmailCheckbox(e.target.checked);
   };
 
-  const onChangeEmailRecipients = (e) => {
+  const handleEmailRecipients = (e: React.SetStateAction<any[]>) => {
     setEmailRecipients(e);
   };
 
-  const onChangeEmailSubject = (e) => {
-    setEmailSubject(e.target.value);
-  };
-
-  const onChangeEmailBody = (e) => {
-    setEmailBody(e.target.value);
-  };
-
-  const onChangeIncludeReportAsAttachment = (e) => {
+  const handleIncludeReportAsAttachment = (e: {
+    target: { checked: React.SetStateAction<boolean> };
+  }) => {
     setIncludeReportAsAttachment(e.target.checked);
   };
 
-  const onInsertPlaceholderClick = () => {
+  const handleInsertPlaceholderClick = () => {
     setInsertPlaceholder((insertPlaceholder) => !insertPlaceholder);
   };
   const closeInsertPlaceholder = () => setInsertPlaceholder(false);
 
-  const onCreateEmailRecipient = (searchValue, flattenedOptions = []) => {
+  const handleCreateEmailRecipient = (
+    searchValue: string,
+    flattenedOptions = []
+  ) => {
     const normalizedSearchValue = searchValue.trim().toLowerCase();
 
     if (!normalizedSearchValue) {
@@ -124,7 +119,9 @@ export function ReportDelivery() {
 
   const placeholderInsert = (
     <EuiText size="xs">
-      <EuiLink onClick={onInsertPlaceholderClick}>Insert placeholder</EuiLink>
+      <EuiLink onClick={handleInsertPlaceholderClick}>
+        Insert placeholder
+      </EuiLink>
     </EuiText>
   );
 
@@ -143,6 +140,21 @@ export function ReportDelivery() {
   };
 
   const EmailDelivery = () => {
+    const [emailSubject, setEmailSubject] = useState('');
+    const [emailBody, setEmailBody] = useState('');
+
+    const handleEmailSubject = (e: {
+      target: { value: React.SetStateAction<string> };
+    }) => {
+      setEmailSubject(e.target.value);
+    };
+
+    const handleEmailBody = (e: {
+      target: { value: React.SetStateAction<string> };
+    }) => {
+      setEmailBody(e.target.value);
+    };
+
     return (
       <div>
         <EuiFormRow
@@ -153,8 +165,8 @@ export function ReportDelivery() {
             placeholder={'Add users here'}
             options={EMAIL_RECIPIENT_OPTIONS}
             selectedOptions={emailRecipients}
-            onChange={onChangeEmailRecipients}
-            onCreateOption={onCreateEmailRecipient}
+            onChange={handleEmailRecipients}
+            onCreateOption={handleCreateEmailRecipient}
           />
         </EuiFormRow>
         <EuiSpacer />
@@ -162,7 +174,7 @@ export function ReportDelivery() {
           <EuiFieldText
             placeholder="Subject line"
             value={emailSubject}
-            onChange={onChangeEmailSubject}
+            onChange={handleEmailSubject}
           />
         </EuiFormRow>
         <EuiSpacer />
@@ -174,7 +186,7 @@ export function ReportDelivery() {
             fullWidth={true}
             placeholder="Body content"
             value={emailBody}
-            onChange={onChangeEmailBody}
+            onChange={handleEmailBody}
           />
         </EuiFormRow>
         <EuiSpacer size="xs" />
@@ -182,7 +194,7 @@ export function ReportDelivery() {
           id="includeReportAsAttachment"
           label="Include report as attachment"
           checked={includeReportAsAttachment}
-          onChange={onChangeIncludeReportAsAttachment}
+          onChange={handleIncludeReportAsAttachment}
         />
       </div>
     );
@@ -207,7 +219,7 @@ export function ReportDelivery() {
           id="emailCheckboxDelivery"
           label="Email"
           checked={emailCheckbox}
-          onChange={onChangeEmailCheckbox}
+          onChange={handleEmailCheckbox}
         />
         <EuiSpacer />
         {emailDelivery}
