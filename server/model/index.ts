@@ -14,7 +14,7 @@ const visual_report_params = schema.object({
   reportFormat: schema.oneOf([schema.literal('pdf'), schema.literal('png')]),
 });
 
-const schedule = schema.object({
+export const scheduleSchema = schema.object({
   schedule_type: schema.oneOf([
     schema.literal('Now'),
     schema.literal('Future Date'),
@@ -24,7 +24,7 @@ const schedule = schema.object({
   schedule: schema.any(),
 });
 
-const interval = schema.object({
+export const interval = schema.object({
   interval: schema.object({
     period: schema.number(),
     // Refer to job scheduler SPI https://github.com/opendistro-for-elasticsearch/job-scheduler/blob/b333469c183a15ddbf496a690300cc9e34d937fb/spi/src/main/java/com/amazon/opendistroforelasticsearch/jobscheduler/spi/schedule/IntervalSchedule.java
@@ -37,14 +37,14 @@ const interval = schema.object({
   }),
 });
 
-const cron = schema.object({
+export const cron = schema.object({
   corn: schema.object({
     expression: schema.string(),
     time_zone: schema.string(),
   }),
 });
 
-const email = schema.object({
+export const email = schema.object({
   subject: schema.string(),
   body: schema.string(),
   has_attachment: schema.boolean({ defaultValue: true }),
@@ -88,7 +88,7 @@ export const reportSchema = schema.object({
         schema.siblingRef('trigger_type'),
         'Alert',
         schema.any(), // TODO: add alerting schema here once we finished the design for alerting integration
-        schedule
+        scheduleSchema
       ),
     })
   ),

@@ -39,6 +39,7 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      // input validation
       try {
         reportSchema.validate(request.body);
       } catch (error) {
@@ -46,27 +47,6 @@ export default function (router: IRouter) {
       }
 
       try {
-        // const {
-        //   url,
-        //   itemName,
-        //   source,
-        //   reportFormat,
-        //   windowWidth,
-        //   windowLength,
-        // } = request.body as {
-        //   url: string;
-        //   itemName: string;
-        //   source: string;
-        //   reportFormat: string;
-        //   windowWidth?: number;
-        //   windowLength?: number;
-        // };
-
-        // const {
-        //   report
-        // } = request.body as {
-        //   report: ReportSchemaType
-        // };
         let report = request.body;
         const report_params = report.report_params;
 
@@ -263,9 +243,7 @@ export default function (router: IRouter) {
             id: request.params.reportId,
           }
         );
-        return response.ok({
-          body: esResp,
-        });
+        return response.ok();
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
