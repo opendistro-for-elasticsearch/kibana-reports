@@ -72,7 +72,7 @@ export const reportSchema = schema.object({
   report_source: schema.oneOf([
     schema.literal('Dashboard'),
     schema.literal('Visualization'),
-    schema.literal('Saved Search'),
+    schema.literal('Saved search'),
   ]),
   report_type: schema.oneOf([
     schema.literal('Download'),
@@ -82,7 +82,7 @@ export const reportSchema = schema.object({
   description: schema.string(),
   report_params: schema.conditional(
     schema.siblingRef('report_source'),
-    'Saved Search',
+    'Saved search',
     dataReportSchema,
     visualReportSchema
   ),

@@ -49,14 +49,14 @@ export default function (router: IRouter) {
 
       try {
         let report = request.body;
-        const report_params = report.report_params;
+        const reportParams = report.report_params;
 
-        if (report_params.report_format === FORMAT.png) {
+        if (reportParams.report_format === FORMAT.png) {
           const { timeCreated, stream, fileName } = await generatePNG(
-            report_params.url,
+            reportParams.url,
             report.report_name,
-            report_params.window_width,
-            report_params.window_height
+            reportParams.window_width,
+            reportParams.window_height
           );
           /**
            * TODO: temporary, need to change after we figure out the correct date modeling
@@ -84,15 +84,15 @@ export default function (router: IRouter) {
             body: stream,
             headers: {
               'content-type': 'image/png',
-              'content-disposition': `attachment; filename=${fileName}.${report_params.report_format}`,
+              'content-disposition': `attachment; filename=${fileName}.${reportParams.report_format}`,
             },
           });
-        } else if (report_params.report_format === FORMAT.pdf) {
+        } else if (reportParams.report_format === FORMAT.pdf) {
           const { timeCreated, stream, fileName } = await generatePDF(
-            report_params.url,
+            reportParams.url,
             report.report_name,
-            report_params.window_width,
-            report_params.windowLength
+            reportParams.window_width,
+            reportParams.windowLength
           );
 
           report = {
@@ -114,14 +114,14 @@ export default function (router: IRouter) {
             body: stream,
             headers: {
               'content-type': 'application/pdf',
-              'content-disposition': `attachment; filename=${fileName}.${report_params.report_format}`,
+              'content-disposition': `attachment; filename=${fileName}.${reportParams.report_format}`,
             },
           });
         }
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
-          `Fail to download visual reports: ${error}`
+          `Failed to download visual reports: ${error}`
         );
 
         return response.custom({
@@ -174,7 +174,7 @@ export default function (router: IRouter) {
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
-          `Fail to get reports details: ${error}`
+          `Failed to get reports details: ${error}`
         );
         return response.custom({
           statusCode: error.statusCode,
@@ -213,7 +213,7 @@ export default function (router: IRouter) {
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
-          `Fail to get single report details: ${error}`
+          `Failed to get single report details: ${error}`
         );
         return response.custom({
           statusCode: error.statusCode,
@@ -250,7 +250,7 @@ export default function (router: IRouter) {
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
-          `Fail to delete report: ${error}`
+          `Failed to delete report: ${error}`
         );
         return response.custom({
           statusCode: error.statusCode,

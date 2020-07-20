@@ -89,7 +89,7 @@ export default function (router: IRouter) {
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
-          `Fail to create report definition: ${error}`
+          `Failed to create report definition: ${error}`
         );
 
         return response.custom({
@@ -157,7 +157,7 @@ export default function (router: IRouter) {
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
-          `Fail to update report definition: ${error}`
+          `Failed to update report definition: ${error}`
         );
 
         return response.custom({
@@ -210,7 +210,7 @@ export default function (router: IRouter) {
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
-          `Fail to get report definition details: ${error}`
+          `Failed to get report definition details: ${error}`
         );
         return response.custom({
           statusCode: error.statusCode,
@@ -249,7 +249,7 @@ export default function (router: IRouter) {
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
-          `Fail to get single report details: ${error}`
+          `Failed to get single report details: ${error}`
         );
         return response.custom({
           statusCode: error.statusCode,
@@ -286,7 +286,7 @@ export default function (router: IRouter) {
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
-          `Fail to delete report definition: ${error}`
+          `Failed to delete report definition: ${error}`
         );
         return response.custom({
           statusCode: error.statusCode,
@@ -302,12 +302,12 @@ function validateReportDefinition(reportDefinition: any) {
 
   const delivery = reportDefinition.delivery;
   const trigger = reportDefinition.trigger;
-  const delivery_params = delivery.delivery_params;
-  const trigger_params = trigger.trigger_params;
+  const deliveryParams = delivery.delivery_params;
+  const triggerParams = trigger.trigger_params;
 
   switch (delivery.channel) {
     case DELIVERY_CHANNEL.email:
-      emailSchema.validate(delivery_params);
+      emailSchema.validate(deliveryParams);
       break;
     //TODO: Add logic for the following
     case DELIVERY_CHANNEL.slack:
@@ -319,10 +319,10 @@ function validateReportDefinition(reportDefinition: any) {
   }
   // TODO: add alert
   if (trigger.trigger_type === 'Schedule') {
-    scheduleSchema.validate(trigger_params);
+    scheduleSchema.validate(triggerParams);
 
-    const schedule = trigger_params.schedule;
-    switch (trigger_params.schedule_type) {
+    const schedule = triggerParams.schedule;
+    switch (triggerParams.schedule_type) {
       case SCHEDULE_TYPE.recurring:
         intervalSchema.validate(schedule);
         break;
