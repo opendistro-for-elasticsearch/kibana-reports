@@ -35,10 +35,11 @@ import { CoreStart } from '../../../../src/core/public';
 import { NavigationPublicPluginStart } from '../../../../src/plugins/navigation/public';
 
 import { PLUGIN_ID, PLUGIN_NAME } from '../../common';
-import { CreateReport } from './create_report/create_report';
+import { CreateReport } from './report_definitions/create/create_report_definition';
 import { Main } from './main/main';
 import { ReportDetails } from './main/report_details/report_details';
 import { ReportDefinitionDetails } from './main/report_definition_details/report_definition_details';
+import { EditReportDefinition } from './report_definitions/edit/edit_report_definition';
 
 interface OpendistroKibanaReportsAppDeps {
   basename: string;
@@ -91,6 +92,16 @@ export const OpendistroKibanaReportsApp = ({
                       render={(props) => (
                         <CreateReport
                           title="Create Report"
+                          httpClient={http}
+                          {...props}
+                        />
+                      )}
+                    />
+                    <Route
+                      path="/edit"
+                      render={(props) => (
+                        <EditReportDefinition
+                          title="Edit Report Definition"
                           httpClient={http}
                           {...props}
                         />

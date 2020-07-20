@@ -24,9 +24,9 @@ import {
   EuiPageBody,
   EuiSpacer,
 } from '@elastic/eui';
-import { ReportSettings } from './report_settings/report_settings';
-import { ReportDelivery } from './delivery/delivery';
-import { ReportTrigger } from './report_trigger/report_trigger';
+import { ReportSettings } from '../report_settings';
+import { ReportDelivery } from '../delivery';
+import { ReportTrigger } from '../report_trigger';
 
 export const TIMEZONE_OPTIONS = [
   { value: -4, text: 'EDT -04:00' },
