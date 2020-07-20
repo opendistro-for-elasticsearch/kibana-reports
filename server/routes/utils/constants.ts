@@ -32,12 +32,12 @@ export enum DELIVERY_CHANNEL {
   email = 'Email',
   slack = 'Slack',
   chime = 'Chime',
-  kibana = 'Kibana User',
+  kibana = 'Kibana user',
 }
 
 export enum SCHEDULE_TYPE {
   recurring = 'Recurring',
   now = 'Now',
-  future = 'Future Date',
-  cron = 'Cron Based',
+  future = 'Future date',
+  cron = 'Cron based',
 }
