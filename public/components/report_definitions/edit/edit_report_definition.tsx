@@ -31,32 +31,32 @@ import { ReportTrigger } from '../report_trigger';
 export function EditReportDefinition() {
   return (
     <EuiPage>
-    <EuiPageBody>
-      <EuiTitle>
-        <h1>Edit report definition</h1>
-      </EuiTitle>
-      <EuiSpacer />
-      <ReportSettings />
-      <EuiSpacer />
-      <ReportTrigger />
-      <EuiSpacer />
-      <ReportDelivery />
-      <EuiSpacer />
-      <EuiFlexGroup justifyContent="flexEnd">
-        <EuiFlexItem grow={false}>
-          <EuiButtonEmpty
-            onClick={() => {
-              window.location.assign('opendistro_kibana_reports#/');
-            }}
-          >
-            Cancel
-          </EuiButtonEmpty>
-        </EuiFlexItem>
-        <EuiFlexItem grow={false}>
-          <EuiButton fill>Save Changes</EuiButton>
-        </EuiFlexItem>
-      </EuiFlexGroup>
-    </EuiPageBody>
-  </EuiPage>
+      <EuiPageBody>
+        <EuiTitle>
+          <h1>Edit report definition</h1>
+        </EuiTitle>
+        <EuiSpacer />
+        <ReportSettings />
+        <EuiSpacer />
+        <ReportTrigger />
+        <EuiSpacer />
+        <ReportDelivery />
+        <EuiSpacer />
+        <EuiFlexGroup justifyContent="flexEnd">
+          <EuiFlexItem grow={false}>
+            <EuiButtonEmpty
+              onClick={() => {
+                window.location.assign('opendistro_kibana_reports#/');
+              }}
+            >
+              Cancel
+            </EuiButtonEmpty>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <EuiButton fill>Save Changes</EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiPageBody>
+    </EuiPage>
   );
 }

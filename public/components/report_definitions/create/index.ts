@@ -13,4 +13,4 @@
  * permissions and limitations under the License.
  */
 
-export { CreateReport } from './create_report_definition'
+export { CreateReport } from './create_report_definition';
