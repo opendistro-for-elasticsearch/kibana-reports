@@ -35,7 +35,7 @@ export const generatePNG = async (
     });
 
     // TODO: this element is for Dashboard page, need to think about addition params to select html element with source(Visualization, Dashboard)
-    // const ele = await page.$('div[class="react-grid-layout dshLayout--viewing"]')
+    // const ele = await page.$('div[class=""]')
 
     const timeCreated = new Date().toISOString();
     const fileName = getFileName(itemName, timeCreated);

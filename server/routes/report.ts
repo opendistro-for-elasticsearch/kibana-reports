@@ -20,10 +20,11 @@ import {
   ResponseError,
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
-import { FORMAT } from '../utils/constants';
+import { FORMAT, REPORT_STATE } from './utils/constants';
 import { RequestParams } from '@elastic/elasticsearch';
 import { generatePDF, generatePNG } from './utils/reportHelper';
 import { reportSchema } from '../model';
+import { parseEsErrorResponse } from './utils/helpers';
 
 export default function (router: IRouter) {
   // Download visual report
@@ -67,6 +68,7 @@ export default function (router: IRouter) {
           report = {
             ...report,
             time_created: timeCreated,
+            state: REPORT_STATE.created,
           };
 
           const params: RequestParams.Index = {
@@ -92,10 +94,11 @@ export default function (router: IRouter) {
             report_params.windowWidth,
             report_params.windowLength
           );
-          // TODO: temporary, need to change after we figure out the correct date modeling
+
           report = {
             ...report,
             time_created: timeCreated,
+            REPORT_STATE: REPORT_STATE.created,
           };
 
           const params: RequestParams.Index = {
@@ -205,7 +208,7 @@ export default function (router: IRouter) {
           }
         );
         return response.ok({
-          body: esResp,
+          body: esResp._source,
         });
       } catch (error) {
         //@ts-ignore
@@ -256,16 +259,4 @@ export default function (router: IRouter) {
       }
     }
   );
-}
-
-function parseEsErrorResponse(error: any) {
-  if (error.response) {
-    try {
-      const esErrorResponse = JSON.parse(error.response);
-      return esErrorResponse.reason || error.response;
-    } catch (parsingError) {
-      return error.response;
-    }
-  }
-  return error.message;
 }

@@ -13,28 +13,31 @@
  * permissions and limitations under the License.
  */
 
-export const BASE_API_PATH = '/api/reporting';
-export const NODE_API = Object.freeze({
-  GENERATE_REPORT: `${BASE_API_PATH}/generateReport`,
-  GET_REPORTS: `${BASE_API_PATH}/reports`,
-  GET_REPORT_BY_ID: `${BASE_API_PATH}/reports/{reportId}`,
-  // TODO: SCHEDULE_REPORT: `${BASE_API_PATH}/scheduleReport`,
-});
-
-export const REQUEST = Object.freeze({
-  PUT: 'PUT',
-  DELETE: 'DELETE',
-  GET: 'GET',
-  POST: 'POST',
-  HEAD: 'HEAD',
-});
-
-export enum CLUSTER {
-  ADMIN = 'admin',
-  DATA = 'data',
-}
-
 export enum FORMAT {
   pdf = 'pdf',
   png = 'png',
+}
+
+export enum REPORT_STATE {
+  created = 'Created',
+  error = 'Error',
+}
+
+export enum REPORT_DEF_STATUS {
+  active = 'Active',
+  disabled = 'Disabled',
+}
+
+export enum DELIVERY_CHANNEL {
+  email = 'Email',
+  slack = 'Slack',
+  chime = 'Chime',
+  kibana = 'Kibana User',
+}
+
+export enum SCHEDULE_TYPE {
+  recurring = 'Recurring',
+  now = 'Now',
+  future = 'Future Date',
+  cron = 'Cron Based',
 }

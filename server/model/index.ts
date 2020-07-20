@@ -1,4 +1,19 @@
-import { schema, TypeOf } from '@kbn/config-schema';
+/*
+ * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+
+import { schema } from '@kbn/config-schema';
 
 // TODO: needs update when we integrate csv feature
 const data_report_params = schema.object({
@@ -33,7 +48,8 @@ export const interval = schema.object({
       schema.literal('HOURS'),
       schema.literal('DAYS'),
     ]),
-    start_time: schema.number(), // timeStamp
+    // timeStamp
+    start_time: schema.number(),
   }),
 });
 
@@ -57,6 +73,11 @@ export const reportSchema = schema.object({
     schema.literal('Dashboard'),
     schema.literal('Visualization'),
     schema.literal('Saved Search'),
+  ]),
+  report_type: schema.oneOf([
+    schema.literal('Download'),
+    schema.literal('Alert'),
+    schema.literal('Schedule'),
   ]),
   description: schema.string(),
   report_params: schema.conditional(
@@ -87,11 +108,10 @@ export const reportSchema = schema.object({
       trigger_params: schema.conditional(
         schema.siblingRef('trigger_type'),
         'Alert',
-        schema.any(), // TODO: add alerting schema here once we finished the design for alerting integration
+        // TODO: add alerting schema here once we finished the design for alerting integration
+        schema.any(),
         scheduleSchema
       ),
     })
   ),
 });
-
-// export type ReportSchemaType = TypeOf<typeof reportSchema>;

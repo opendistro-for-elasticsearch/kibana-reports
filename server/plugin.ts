@@ -26,7 +26,7 @@ import {
   OpendistroKibanaReportsPluginStart,
 } from './types';
 import registerReportRoutes from './routes/report';
-import registerReportConfigRoutes from './routes/reportConfig';
+import registerReportDefinitionRoutes from './routes/reportDefinition';
 
 export interface ReportsPluginRequestContext {
   logger: Logger;
@@ -61,7 +61,7 @@ export class OpendistroKibanaReportsPlugin
 
     // Register server side APIs
     registerReportRoutes(router);
-    registerReportConfigRoutes(router);
+    registerReportDefinitionRoutes(router);
 
     // put logger into route handler context, so that we don't need to pass through parameters
     core.http.registerRouteHandlerContext(

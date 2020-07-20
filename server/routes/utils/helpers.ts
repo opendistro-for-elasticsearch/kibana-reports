@@ -13,17 +13,14 @@
  * permissions and limitations under the License.
  */
 
-import { PluginInitializerContext } from '../../../src/core/server';
-import { OpendistroKibanaReportsPlugin } from './plugin';
-
-//  This exports static code and TypeScript types,
-//  as well as, Kibana Platform `plugin()` initializer.
-
-export function plugin(initializerContext: PluginInitializerContext) {
-  return new OpendistroKibanaReportsPlugin(initializerContext);
+export function parseEsErrorResponse(error: any) {
+  if (error.response) {
+    try {
+      const esErrorResponse = JSON.parse(error.response);
+      return esErrorResponse.reason || error.response;
+    } catch (parsingError) {
+      return error.response;
+    }
+  }
+  return error.message;
 }
-
-export {
-  OpendistroKibanaReportsPluginSetup,
-  OpendistroKibanaReportsPluginStart,
-} from './types';
