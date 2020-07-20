@@ -13,14 +13,39 @@
  * permissions and limitations under the License.
  */
 
-import React from 'react';
-import { render } from '@testing-library/react';
-import { ReportSettings } from '../report_settings';
+export const REPORT_SOURCE_RADIOS = [
+  {
+    id: 'dashboardReportSource',
+    label: 'Dashboard',
+  },
+  {
+    id: 'visualizationReportSource',
+    label: 'Visualization',
+  },
+  {
+    id: 'savedSearchReportSource',
+    label: 'Saved search',
+  },
+];
 
-describe('<ReportSettings /> panel', () => {
-  test('render component', () => {
-    const { container } = render(<ReportSettings />);
+export const PDF_PNG_FILE_FORMAT_OPTIONS = [
+  {
+    id: 'pdfFormat',
+    label: 'PDF',
+  },
+  {
+    id: 'pngFormat',
+    label: 'PNG',
+  },
+];
 
-    expect(container.firstChild).toMatchSnapshot();
-  });
-});
+export const SAVED_SEARCH_FORMAT_OPTIONS = [
+  {
+    id: 'csvFormat',
+    label: 'CSV',
+  },
+  {
+    id: 'xlsFormat',
+    label: 'XLS',
+  },
+];

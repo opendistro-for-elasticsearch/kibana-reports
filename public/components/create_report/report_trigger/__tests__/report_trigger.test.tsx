@@ -15,11 +15,11 @@
 
 import React from 'react';
 import { render } from '@testing-library/react';
-import { ReportSettings } from '../report_settings';
+import { ReportTrigger } from '../report_trigger';
 
-describe('<ReportSettings /> panel', () => {
+describe('<ReportTrigger /> panel', () => {
   test('render component', () => {
-    const { container } = render(<ReportSettings />);
+    const { container } = render(<ReportTrigger />);
 
     expect(container.firstChild).toMatchSnapshot();
   });

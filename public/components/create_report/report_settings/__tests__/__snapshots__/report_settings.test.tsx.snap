@@ -62,7 +62,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
               class="euiFormHelpText euiFormRow__text"
               id="random_html_id-help"
             >
-              Specify a descriptive report name
+              Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space)
             </div>
           </div>
         </div>
@@ -86,7 +86,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
               class="euiFormLabel euiFormRow__label"
               for="random_html_id"
             >
-              Dashboard
+              Description
             </label>
           </div>
           <div
@@ -99,46 +99,438 @@ exports[`<ReportSettings /> panel render component 1`] = `
                 class="euiFormControlLayout__childrenWrapper"
               >
                 <input
+                  aria-describedby="random_html_id-help"
                   class="euiFieldText"
                   id="random_html_id"
-                  placeholder="Start typing to display suggestions"
+                  placeholder="Describe this report"
                   type="text"
-                  value="testDashboardValue"
+                  value=""
                 />
+              </div>
+            </div>
+            <div
+              class="euiFormHelpText euiFormRow__text"
+              id="random_html_id-help"
+            >
+              Optional
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="euiSpacer euiSpacer--l"
+    />
+    <div
+      class="euiFormRow"
+      id="random_html_id-row"
+    >
+      <div
+        class="euiFormRow__labelWrapper"
+      >
+        <label
+          class="euiFormLabel euiFormRow__label"
+          for="random_html_id"
+        >
+          Report source
+        </label>
+      </div>
+      <div
+        class="euiFormRow__fieldWrapper"
+      >
+        <div
+          aria-describedby="random_html_id-help"
+          id="random_html_id"
+        >
+          <div
+            class="euiRadio euiRadioGroup__item"
+          >
+            <input
+              checked=""
+              class="euiRadio__input"
+              id="dashboardReportSource"
+              type="radio"
+              value=""
+            />
+            <div
+              class="euiRadio__circle"
+            />
+            <label
+              class="euiRadio__label"
+              for="dashboardReportSource"
+            >
+              Dashboard
+            </label>
+          </div>
+          <div
+            class="euiRadio euiRadioGroup__item"
+          >
+            <input
+              class="euiRadio__input"
+              id="visualizationReportSource"
+              type="radio"
+              value=""
+            />
+            <div
+              class="euiRadio__circle"
+            />
+            <label
+              class="euiRadio__label"
+              for="visualizationReportSource"
+            >
+              Visualization
+            </label>
+          </div>
+          <div
+            class="euiRadio euiRadioGroup__item"
+          >
+            <input
+              class="euiRadio__input"
+              id="savedSearchReportSource"
+              type="radio"
+              value=""
+            />
+            <div
+              class="euiRadio__circle"
+            />
+            <label
+              class="euiRadio__label"
+              for="savedSearchReportSource"
+            >
+              Saved search
+            </label>
+          </div>
+        </div>
+        <div
+          class="euiFormHelpText euiFormRow__text"
+          id="random_html_id-help"
+        >
+          Where is the report generated from
+        </div>
+      </div>
+    </div>
+    <div
+      class="euiSpacer euiSpacer--l"
+    />
+    <div>
+      <div
+        class="euiFormRow"
+        id="random_html_id-row"
+      >
+        <div
+          class="euiFormRow__labelWrapper"
+        >
+          <label
+            class="euiFormLabel euiFormRow__label"
+            for="random_html_id"
+          >
+            Select dashboard
+          </label>
+        </div>
+        <div
+          class="euiFormRow__fieldWrapper"
+        >
+          <div
+            class="euiFormControlLayout"
+          >
+            <div
+              class="euiFormControlLayout__childrenWrapper"
+            >
+              <select
+                class="euiSelect"
+                id="random_html_id"
+              >
+                <option
+                  value="dailySaves"
+                >
+                  Daily saves
+                </option>
+                <option
+                  value="webLogs"
+                >
+                  Web logs
+                </option>
+                <option
+                  value="flightTraffic"
+                >
+                  Flight traffic
+                </option>
+              </select>
+              <div
+                class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
+              >
+                <span
+                  class="euiFormControlLayoutCustomIcon"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="euiIcon euiIcon--medium euiIcon-isLoading euiFormControlLayoutCustomIcon__icon"
+                    focusable="false"
+                    height="16"
+                    role="img"
+                    viewBox="0 0 16 16"
+                    width="16"
+                    xmlns="http://www.w3.org/2000/svg"
+                  />
+                </span>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div
-        class="euiFlexItem euiFlexItem--flexGrowZero"
-      >
+        class="euiSpacer euiSpacer--l"
+      />
+      <div>
         <div
-          class="euiFormRow euiFormRow--hasEmptyLabelSpace"
+          class="euiFormRow"
           id="random_html_id-row"
         >
           <div
+            class="euiFormRow__labelWrapper"
+          >
+            <label
+              class="euiFormLabel euiFormRow__label"
+              for="random_html_id"
+            >
+              Time range
+            </label>
+          </div>
+          <div
             class="euiFormRow__fieldWrapper"
           >
-            <button
-              class="euiButton euiButton--primary"
-              id="random_html_id"
-              type="button"
+            <div
+              class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper"
             >
-              <span
-                class="euiButton__content"
+              <div
+                class="euiFlexItem"
+              >
+                <div
+                  class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
+                >
+                  <div
+                    class="euiPopover euiPopover--anchorDownLeft"
+                    id="QuickSelectPopover"
+                  >
+                    <div
+                      class="euiPopover__anchor euiQuickSelectPopover__anchor"
+                    >
+                      <button
+                        aria-label="Date quick select"
+                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--iconRight euiFormControlLayout__prepend"
+                        data-test-subj="superDatePickerToggleQuickMenuButton"
+                        type="button"
+                      >
+                        <span
+                          class="euiButtonEmpty__content"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonEmpty__icon"
+                            focusable="false"
+                            height="16"
+                            role="img"
+                            viewBox="0 0 16 16"
+                            width="16"
+                            xmlns="http://www.w3.org/2000/svg"
+                          />
+                          <span
+                            class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              class="euiIcon euiIcon--medium euiIcon-isLoading"
+                              focusable="false"
+                              height="16"
+                              role="img"
+                              viewBox="0 0 16 16"
+                              width="16"
+                              xmlns="http://www.w3.org/2000/svg"
+                            />
+                          </span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="euiFormControlLayout__childrenWrapper"
+                  >
+                    <div
+                      class="euiDatePickerRange euiDatePickerRange--inGroup"
+                    >
+                      <button
+                        class="euiSuperDatePicker__prettyFormat"
+                        data-test-subj="superDatePickerShowDatesButton"
+                      >
+                        Last 30 minutes
+                        <span
+                          class="euiSuperDatePicker__prettyFormatLink"
+                        >
+                          Show dates
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="euiFlexItem euiFlexItem--flexGrowZero"
               >
                 <span
-                  class="euiButton__text"
+                  class="euiToolTipAnchor"
                 >
-                  Browse
+                  <button
+                    class="euiButton euiButton--primary euiSuperUpdateButton euiButton--fill"
+                    data-test-subj="superDatePickerApplyTimeButton"
+                    type="button"
+                  >
+                    <span
+                      class="euiButton__content"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="euiIcon euiIcon--medium euiIcon-isLoading euiButton__icon"
+                        focusable="false"
+                        height="16"
+                        role="img"
+                        viewBox="0 0 16 16"
+                        width="16"
+                        xmlns="http://www.w3.org/2000/svg"
+                      />
+                      <span
+                        class="euiButton__text euiSuperUpdateButton__text"
+                      >
+                        Refresh
+                      </span>
+                    </span>
+                  </button>
                 </span>
-              </span>
-            </button>
+              </div>
+            </div>
+            <div
+              class="euiFormHelpText euiFormRow__text"
+              id="random_html_id-help"
+            >
+              Time range is relative to the report creation date on the report trigger
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div>
+        <div
+          class="euiFormRow"
+          id="random_html_id-row"
+        >
+          <div
+            class="euiFormRow__labelWrapper"
+          >
+            <label
+              class="euiFormLabel euiFormRow__label"
+              for="random_html_id"
+            >
+              File format
+            </label>
+          </div>
+          <div
+            class="euiFormRow__fieldWrapper"
+          >
+            <div
+              id="random_html_id"
+            >
+              <div
+                class="euiRadio euiRadioGroup__item"
+              >
+                <input
+                  checked=""
+                  class="euiRadio__input"
+                  id="pdfFormat"
+                  type="radio"
+                  value=""
+                />
+                <div
+                  class="euiRadio__circle"
+                />
+                <label
+                  class="euiRadio__label"
+                  for="pdfFormat"
+                >
+                  PDF
+                </label>
+              </div>
+              <div
+                class="euiRadio euiRadioGroup__item"
+              >
+                <input
+                  class="euiRadio__input"
+                  id="pngFormat"
+                  type="radio"
+                  value=""
+                />
+                <div
+                  class="euiRadio__circle"
+                />
+                <label
+                  class="euiRadio__label"
+                  for="pngFormat"
+                >
+                  PNG
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="euiSpacer euiSpacer--l"
+        />
+        <div>
+          <div
+            class="euiCheckbox"
+          >
+            <input
+              class="euiCheckbox__input"
+              id="includeHeaderCheckbox"
+              type="checkbox"
+            />
+            <div
+              class="euiCheckbox__square"
+            />
+            <label
+              class="euiCheckbox__label"
+              for="includeHeaderCheckbox"
+            >
+              Include header
+            </label>
+          </div>
+          <div
+            class="euiSpacer euiSpacer--l"
+          />
+          <div
+            class="euiCheckbox"
+          >
+            <input
+              class="euiCheckbox__input"
+              id="includeFooterCheckbox"
+              type="checkbox"
+            />
+            <div
+              class="euiCheckbox__square"
+            />
+            <label
+              class="euiCheckbox__label"
+              for="includeFooterCheckbox"
+            >
+              Include footer
+            </label>
           </div>
         </div>
       </div>
     </div>
+    <div
+      class="euiSpacer euiSpacer--l"
+    />
   </div>
 </div>
 `;
