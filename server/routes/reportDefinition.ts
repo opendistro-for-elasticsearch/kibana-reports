@@ -21,7 +21,13 @@ import {
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
-import { reportSchema, email, scheduleSchema, interval, cron } from '../model';
+import {
+  reportSchema,
+  emailSchema,
+  scheduleSchema,
+  intervalSchema,
+  cronSchema,
+} from '../model';
 import { parseEsErrorResponse } from './utils/helpers';
 import {
   REPORT_DEF_STATUS,
@@ -301,7 +307,7 @@ function validateReportDefinition(reportDefinition: any) {
 
   switch (delivery.channel) {
     case DELIVERY_CHANNEL.email:
-      email.validate(delivery_params);
+      emailSchema.validate(delivery_params);
       break;
     //TODO: Add logic for the following
     case DELIVERY_CHANNEL.slack:
@@ -318,10 +324,10 @@ function validateReportDefinition(reportDefinition: any) {
     const schedule = trigger_params.schedule;
     switch (trigger_params.schedule_type) {
       case SCHEDULE_TYPE.recurring:
-        interval.validate(schedule);
+        intervalSchema.validate(schedule);
         break;
       case SCHEDULE_TYPE.cron:
-        cron.validate(schedule);
+        cronSchema.validate(schedule);
         break;
       case SCHEDULE_TYPE.now:
         //TODO:

@@ -16,17 +16,17 @@
 import { schema } from '@kbn/config-schema';
 
 // TODO: needs update when we integrate csv feature
-const data_report_params = schema.object({
+const dataReportSchema = schema.object({
   saved_search_id: schema.string(),
   time_range: schema.string(),
-  reportFormat: schema.oneOf([schema.literal('csv'), schema.literal('xlsx')]),
+  report_format: schema.oneOf([schema.literal('csv'), schema.literal('xlsx')]),
 });
 
-const visual_report_params = schema.object({
+const visualReportSchema = schema.object({
   url: schema.uri(),
-  windowWidth: schema.number({ defaultValue: 1200 }),
-  windowLength: schema.number({ defaultValue: 800 }),
-  reportFormat: schema.oneOf([schema.literal('pdf'), schema.literal('png')]),
+  window_width: schema.number({ defaultValue: 1200 }),
+  window_height: schema.number({ defaultValue: 800 }),
+  report_format: schema.oneOf([schema.literal('pdf'), schema.literal('png')]),
 });
 
 export const scheduleSchema = schema.object({
@@ -39,7 +39,7 @@ export const scheduleSchema = schema.object({
   schedule: schema.any(),
 });
 
-export const interval = schema.object({
+export const intervalSchema = schema.object({
   interval: schema.object({
     period: schema.number(),
     // Refer to job scheduler SPI https://github.com/opendistro-for-elasticsearch/job-scheduler/blob/b333469c183a15ddbf496a690300cc9e34d937fb/spi/src/main/java/com/amazon/opendistroforelasticsearch/jobscheduler/spi/schedule/IntervalSchedule.java
@@ -53,14 +53,14 @@ export const interval = schema.object({
   }),
 });
 
-export const cron = schema.object({
+export const cronSchema = schema.object({
   corn: schema.object({
     expression: schema.string(),
     time_zone: schema.string(),
   }),
 });
 
-export const email = schema.object({
+export const emailSchema = schema.object({
   subject: schema.string(),
   body: schema.string(),
   has_attachment: schema.boolean({ defaultValue: true }),
@@ -83,8 +83,8 @@ export const reportSchema = schema.object({
   report_params: schema.conditional(
     schema.siblingRef('report_source'),
     'Saved Search',
-    data_report_params,
-    visual_report_params
+    dataReportSchema,
+    visualReportSchema
   ),
 
   delivery: schema.maybe(
@@ -95,7 +95,8 @@ export const reportSchema = schema.object({
         schema.literal('Chime'),
         schema.literal('Kibana User'),
       ]),
-      delivery_params: schema.any(), //TODO: no validation on delivery settings for now, because @kbn/config-schema has no support for more than 2 conditions
+      //TODO: no validation on delivery settings for now, because @kbn/config-schema has no support for more than 2 conditions
+      delivery_params: schema.any(),
     })
   ),
 

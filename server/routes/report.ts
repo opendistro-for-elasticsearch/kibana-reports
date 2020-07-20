@@ -51,12 +51,12 @@ export default function (router: IRouter) {
         let report = request.body;
         const report_params = report.report_params;
 
-        if (report_params.reportFormat === FORMAT.png) {
+        if (report_params.report_format === FORMAT.png) {
           const { timeCreated, stream, fileName } = await generatePNG(
             report_params.url,
             report.report_name,
-            report_params.windowWidth,
-            report_params.windowLength
+            report_params.window_width,
+            report_params.window_height
           );
           /**
            * TODO: temporary, need to change after we figure out the correct date modeling
@@ -84,21 +84,21 @@ export default function (router: IRouter) {
             body: stream,
             headers: {
               'content-type': 'image/png',
-              'content-disposition': `attachment; filename=${fileName}.${report_params.reportFormat}`,
+              'content-disposition': `attachment; filename=${fileName}.${report_params.report_format}`,
             },
           });
-        } else if (report_params.reportFormat === FORMAT.pdf) {
+        } else if (report_params.report_format === FORMAT.pdf) {
           const { timeCreated, stream, fileName } = await generatePDF(
             report_params.url,
             report.report_name,
-            report_params.windowWidth,
+            report_params.window_width,
             report_params.windowLength
           );
 
           report = {
             ...report,
             time_created: timeCreated,
-            REPORT_STATE: REPORT_STATE.created,
+            state: REPORT_STATE.created,
           };
 
           const params: RequestParams.Index = {
@@ -114,7 +114,7 @@ export default function (router: IRouter) {
             body: stream,
             headers: {
               'content-type': 'application/pdf',
-              'content-disposition': `attachment; filename=${fileName}.${report_params.reportFormat}`,
+              'content-disposition': `attachment; filename=${fileName}.${report_params.report_format}`,
             },
           });
         }
