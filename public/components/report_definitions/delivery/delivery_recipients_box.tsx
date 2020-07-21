@@ -20,30 +20,33 @@ const DeliveryRecipientsBox = () => {
   const options = [];
   const [selectedOptions, setSelected] = useState([]);
 
-  const onChangeDeliveryRecipients = selectedOptions => {
+  const onChangeDeliveryRecipients = (selectedOptions) => {
     setSelected(selectedOptions);
   };
 
-  const onCreateDeliveryRecipientOption = (searchValue, flattenedOptions = []) => {
+  const onCreateDeliveryRecipientOption = (
+    searchValue,
+    flattenedOptions = []
+  ) => {
     const normalizedSearchValue = searchValue.trim().toLowerCase();
-  
+
     if (!normalizedSearchValue) {
       return;
     }
-  
+
     const newOption = {
       label: searchValue,
     };
-  
+
     // Create the option if it doesn't exist.
     if (
       flattenedOptions.findIndex(
-      option => option.label.trim().toLowerCase() === normalizedSearchValue
+        (option) => option.label.trim().toLowerCase() === normalizedSearchValue
       ) === -1
     ) {
       options.push(newOption);
     }
-  
+
     // Select the option.
     setSelected([...selectedOptions, newOption]);
   };

@@ -132,7 +132,14 @@ export function ReportDefinitionDetails(
                 </EuiText>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
-                <EuiButton fill={true}>Edit</EuiButton>
+                <EuiButton 
+                  fill={true}
+                  onClick={() => {
+                    window.location.assign('opendistro_kibana_reports#/edit');
+                  }}
+                >
+                  Edit
+                </EuiButton>
               </EuiFlexItem>
               <EuiFlexItem></EuiFlexItem>
               <EuiFlexItem></EuiFlexItem>

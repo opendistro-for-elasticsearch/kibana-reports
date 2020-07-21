@@ -35,7 +35,7 @@ import {
   EuiButton,
 } from '@elastic/eui';
 import moment, { Moment } from 'moment';
-import { TIMEZONE_OPTIONS } from '../create_report';
+import { TIMEZONE_OPTIONS } from '../create/create_report_definition';
 import {
   AVAILABLE_MONITOR_OPTIONS,
   AVAILABLE_TRIGGER_OPTIONS,
