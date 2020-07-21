@@ -13,17 +13,11 @@
  * permissions and limitations under the License.
  */
 
-import { PluginInitializerContext } from '../../../src/core/server';
-import { OpendistroKibanaReportsPlugin } from './plugin';
+import registerReportRoute from './report';
+import registerReportDefinitionRoute from './reportDefinition';
+import { IRouter } from '../../../../src/core/server';
 
-//  This exports static code and TypeScript types,
-//  as well as, Kibana Platform `plugin()` initializer.
-
-export function plugin(initializerContext: PluginInitializerContext) {
-  return new OpendistroKibanaReportsPlugin(initializerContext);
+export default function (router: IRouter) {
+  registerReportRoute(router);
+  registerReportDefinitionRoute(router);
 }
-
-export {
-  OpendistroKibanaReportsPluginSetup,
-  OpendistroKibanaReportsPluginStart,
-} from './types';

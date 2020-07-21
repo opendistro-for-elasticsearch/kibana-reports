@@ -20,9 +20,11 @@ import {
   ResponseError,
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
-import { FORMAT } from '../utils/constants';
+import { FORMAT, REPORT_STATE } from './utils/constants';
 import { RequestParams } from '@elastic/elasticsearch';
 import { generatePDF, generatePNG } from './utils/reportHelper';
+import { reportSchema } from '../model';
+import { parseEsErrorResponse } from './utils/helpers';
 
 export default function (router: IRouter) {
   // Download visual report
@@ -30,20 +32,7 @@ export default function (router: IRouter) {
     {
       path: `${API_PREFIX}/generateReport`,
       validate: {
-        body: schema.object({
-          url: schema.uri(),
-          itemName: schema.string(),
-          source: schema.oneOf([
-            schema.literal('Dashboard'),
-            schema.literal('Visualization'),
-          ]),
-          reportFormat: schema.oneOf([
-            schema.literal('pdf'),
-            schema.literal('png'),
-          ]),
-          windowWidth: schema.number({ defaultValue: 1200 }),
-          windowLength: schema.number({ defaultValue: 800 }),
-        }),
+        body: schema.any(),
       },
     },
     async (
@@ -51,29 +40,23 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      // input validation
       try {
-        const {
-          url,
-          itemName,
-          source,
-          reportFormat,
-          windowWidth,
-          windowLength,
-        } = request.body as {
-          url: string;
-          itemName: string;
-          source: string;
-          reportFormat: string;
-          windowWidth?: number;
-          windowLength?: number;
-        };
+        reportSchema.validate(request.body);
+      } catch (error) {
+        return response.badRequest({ body: error });
+      }
 
-        if (reportFormat === FORMAT.png) {
+      try {
+        let report = request.body;
+        const reportParams = report.report_params;
+
+        if (reportParams.report_format === FORMAT.png) {
           const { timeCreated, stream, fileName } = await generatePNG(
-            url,
-            itemName,
-            windowWidth,
-            windowLength
+            reportParams.url,
+            report.report_name,
+            reportParams.window_width,
+            reportParams.window_height
           );
           /**
            * TODO: temporary, need to change after we figure out the correct date modeling
@@ -82,10 +65,15 @@ export default function (router: IRouter) {
            * await context.core.elasticsearch.adminClient.callAsInternalUser('ping');
            * However, that doesn't work for now
            */
+          report = {
+            ...report,
+            time_created: timeCreated,
+            state: REPORT_STATE.created,
+          };
 
           const params: RequestParams.Index = {
             index: 'report',
-            body: { url, itemName, source, reportFormat, timeCreated },
+            body: report,
           };
           await context.core.elasticsearch.legacy.client.callAsInternalUser(
             'index',
@@ -96,20 +84,26 @@ export default function (router: IRouter) {
             body: stream,
             headers: {
               'content-type': 'image/png',
-              'content-disposition': `attachment; filename=${fileName}.${reportFormat}`,
+              'content-disposition': `attachment; filename=${fileName}.${reportParams.report_format}`,
             },
           });
-        } else if (reportFormat === FORMAT.pdf) {
+        } else if (reportParams.report_format === FORMAT.pdf) {
           const { timeCreated, stream, fileName } = await generatePDF(
-            url,
-            itemName,
-            windowWidth,
-            windowLength
+            reportParams.url,
+            report.report_name,
+            reportParams.window_width,
+            reportParams.windowLength
           );
-          // TODO: temporary, need to change after we figure out the correct date modeling
+
+          report = {
+            ...report,
+            time_created: timeCreated,
+            state: REPORT_STATE.created,
+          };
+
           const params: RequestParams.Index = {
             index: 'report',
-            body: { url, itemName, source, reportFormat, timeCreated },
+            body: report,
           };
           await context.core.elasticsearch.legacy.client.callAsInternalUser(
             'index',
@@ -120,14 +114,14 @@ export default function (router: IRouter) {
             body: stream,
             headers: {
               'content-type': 'application/pdf',
-              'content-disposition': `attachment; filename=${fileName}.${reportFormat}`,
+              'content-disposition': `attachment; filename=${fileName}.${reportParams.report_format}`,
             },
           });
         }
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
-          `Fail to download visual reports: ${error}`
+          `Failed to download visual reports: ${error}`
         );
 
         return response.custom({
@@ -180,7 +174,7 @@ export default function (router: IRouter) {
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
-          `Fail to get reports details: ${error}`
+          `Failed to get reports details: ${error}`
         );
         return response.custom({
           statusCode: error.statusCode,
@@ -214,14 +208,12 @@ export default function (router: IRouter) {
           }
         );
         return response.ok({
-          body: {
-            data: esResp,
-          },
+          body: esResp._source,
         });
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
-          `Fail to get single report details: ${error}`
+          `Failed to get single report details: ${error}`
         );
         return response.custom({
           statusCode: error.statusCode,
@@ -230,16 +222,41 @@ export default function (router: IRouter) {
       }
     }
   );
-}
 
-function parseEsErrorResponse(error: any) {
-  if (error.response) {
-    try {
-      const esErrorResponse = JSON.parse(error.response);
-      return esErrorResponse.reason || error.response;
-    } catch (parsingError) {
-      return error.response;
+  // Delete single report by id
+  router.delete(
+    {
+      path: `${API_PREFIX}/reports/{reportId}`,
+      validate: {
+        params: schema.object({
+          reportId: schema.string(),
+        }),
+      },
+    },
+    async (
+      context,
+      request,
+      response
+    ): Promise<IKibanaResponse<any | ResponseError>> => {
+      try {
+        const esResp = await context.core.elasticsearch.legacy.client.callAsInternalUser(
+          'delete',
+          {
+            index: 'report',
+            id: request.params.reportId,
+          }
+        );
+        return response.ok();
+      } catch (error) {
+        //@ts-ignore
+        context.reporting_plugin.logger.error(
+          `Failed to delete report: ${error}`
+        );
+        return response.custom({
+          statusCode: error.statusCode,
+          body: parseEsErrorResponse(error),
+        });
+      }
     }
-  }
-  return error.message;
+  );
 }

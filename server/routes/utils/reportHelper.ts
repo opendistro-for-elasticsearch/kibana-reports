@@ -20,7 +20,7 @@ export const generatePNG = async (
   url: string,
   itemName: string,
   windowWidth: number,
-  windowLength: number
+  windowHeight: number
 ): Promise<{ timeCreated: string; stream: Readable; fileName: string }> => {
   try {
     const browser = await puppeteer.launch({
@@ -31,11 +31,11 @@ export const generatePNG = async (
 
     await page.setViewport({
       width: windowWidth,
-      height: windowLength,
+      height: windowHeight,
     });
 
     // TODO: this element is for Dashboard page, need to think about addition params to select html element with source(Visualization, Dashboard)
-    // const ele = await page.$('div[class="react-grid-layout dshLayout--viewing"]')
+    // const ele = await page.$('div[class=""]')
 
     const timeCreated = new Date().toISOString();
     const fileName = getFileName(itemName, timeCreated);
@@ -63,7 +63,7 @@ export const generatePDF = async (
   url: string,
   itemName: string,
   windowWidth: number,
-  windowLength: number
+  windowHeight: number
 ): Promise<{ timeCreated: string; stream: Readable; fileName: string }> => {
   try {
     const browser = await puppeteer.launch({
@@ -74,7 +74,7 @@ export const generatePDF = async (
 
     await page.setViewport({
       width: windowWidth,
-      height: windowLength,
+      height: windowHeight,
     });
 
     const timeCreated = new Date().toISOString();

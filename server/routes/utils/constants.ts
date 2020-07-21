@@ -13,17 +13,31 @@
  * permissions and limitations under the License.
  */
 
-import { PluginInitializerContext } from '../../../src/core/server';
-import { OpendistroKibanaReportsPlugin } from './plugin';
-
-//  This exports static code and TypeScript types,
-//  as well as, Kibana Platform `plugin()` initializer.
-
-export function plugin(initializerContext: PluginInitializerContext) {
-  return new OpendistroKibanaReportsPlugin(initializerContext);
+export enum FORMAT {
+  pdf = 'pdf',
+  png = 'png',
 }
 
-export {
-  OpendistroKibanaReportsPluginSetup,
-  OpendistroKibanaReportsPluginStart,
-} from './types';
+export enum REPORT_STATE {
+  created = 'Created',
+  error = 'Error',
+}
+
+export enum REPORT_DEF_STATUS {
+  active = 'Active',
+  disabled = 'Disabled',
+}
+
+export enum DELIVERY_CHANNEL {
+  email = 'Email',
+  slack = 'Slack',
+  chime = 'Chime',
+  kibana = 'Kibana user',
+}
+
+export enum SCHEDULE_TYPE {
+  recurring = 'Recurring',
+  now = 'Now',
+  future = 'Future date',
+  cron = 'Cron based',
+}
