@@ -51,38 +51,32 @@ import {
 } from './report_trigger_constants';
 
 let trigger_params = {
-  "schedule_type": "",
-  "schedule": {
-    // "interval": {
-    //   "period": "7",
-    //   "unit": "DAYS",
-    //   "start_time": "1553112384",
-    // }
-  },
+  schedule_type: '',
+  schedule: {},
 };
 
 let trigger_schema = {
-  "trigger_type": "",
-  "trigger_params": {}
+  trigger_type: '',
+  trigger_params: {},
 };
 
 let temp_trigger_params = {
-    "interval": {
-    "period": "7",
-    "unit": "DAYS",
-    "start_time": "1553112384",
-  }
-}
+  interval: {
+    period: '7',
+    unit: 'DAYS',
+    start_time: '1553112384',
+  },
+};
 
 export function ReportTrigger(props) {
   const { createReportDefinitionRequest } = props;
 
   const [reportTriggerType, setReportTriggerTypes] = useState('scheduleOption');
-  trigger_schema["trigger_type"] = "Schedule";
+  trigger_schema['trigger_type'] = 'Schedule';
 
   const [scheduleRequestTime, setScheduleRequestTime] = useState('nowOption');
-  trigger_params["schedule_type"] = "Now";
-  createReportDefinitionRequest["report_type"] = "Download";
+  trigger_params['schedule_type'] = 'Now';
+  createReportDefinitionRequest['report_type'] = 'Download';
 
   const [timezone, setTimezone] = useState(TIMEZONE_OPTIONS[0].value);
   const [futureDateTimeSelect, setFutureDateTimeSelect] = useState(moment());
@@ -108,27 +102,23 @@ export function ReportTrigger(props) {
   const handleReportTriggerType = (e: React.SetStateAction<string>) => {
     setReportTriggerTypes(e);
     if (e === 'scheduleOption') {
-      trigger_schema["trigger_type"] = "Schedule";
-    }
-    else if (e === 'alertOption') {
-      trigger_schema["trigger_type"] = "Alert";
+      trigger_schema['trigger_type'] = 'Schedule';
+    } else if (e === 'alertOption') {
+      trigger_schema['trigger_type'] = 'Alert';
     }
   };
 
   const handleScheduleRequestTime = (e: React.SetStateAction<string>) => {
     setScheduleRequestTime(e);
     if (e === 'nowOption') {
-      trigger_params["schedule_type"] = "Now";
-      createReportDefinitionRequest["report_type"] = "Download";
-    }
-    else if (e === 'futureDateOption') {
-      trigger_params["schedule_type"] = "Future date";
-    }
-    else if (e === 'recurringOption') {
-      trigger_params["schedule_type"] = "Recurring";
-    }
-    else if (e === 'cronBasedOption') {
-      trigger_params["schedule_type"] = "Cron";
+      trigger_params['schedule_type'] = 'Now';
+      createReportDefinitionRequest['report_type'] = 'Download';
+    } else if (e === 'futureDateOption') {
+      trigger_params['schedule_type'] = 'Future date';
+    } else if (e === 'recurringOption') {
+      trigger_params['schedule_type'] = 'Recurring';
+    } else if (e === 'cronBasedOption') {
+      trigger_params['schedule_type'] = 'Cron';
     }
   };
 
@@ -479,9 +469,9 @@ export function ReportTrigger(props) {
   const alert = reportTriggerType === 'alertOption' ? <AlertTrigger /> : null;
 
   // TODO: Change schema so these values are not required depending on trigger type
-  trigger_params["schedule"] = temp_trigger_params;
-  trigger_schema["trigger_params"] = trigger_params;
-  createReportDefinitionRequest["trigger"] = trigger_schema;
+  trigger_params['schedule'] = temp_trigger_params;
+  trigger_schema['trigger_params'] = trigger_params;
+  createReportDefinitionRequest['trigger'] = trigger_schema;
 
   return (
     <EuiPageContent panelPaddingSize={'l'}>

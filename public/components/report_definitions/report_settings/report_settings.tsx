@@ -144,11 +144,9 @@ export function ReportSettings(props) {
   const [reportName, setReportName] = useState('');
   const [reportDescription, setReportDescription] = useState('');
   const [reportSourceId, setReportSourceId] = useState('dashboardReportSource');
-  createReportDefinitionRequest["report_source"] = "Dashboard";
+  createReportDefinitionRequest['report_source'] = 'Dashboard';
 
-  const [dashboardSourceSelect, setDashboardSourceSelect] = useState(
-    ''
-  );
+  const [dashboardSourceSelect, setDashboardSourceSelect] = useState('');
 
   const [visualizationSourceSelect, setVisualizationSourceSelect] = useState(
     REPORT_SOURCE_VISUALIZATION_OPTIONS[0].value
@@ -157,7 +155,7 @@ export function ReportSettings(props) {
     REPORT_SOURCE_SAVED_SEARCH_OPTIONS[0].value
   );
   const [fileFormat, setFileFormat] = useState('pdfFormat');
-  createReportDefinitionRequest["report_params"]["report_format"] = "pdf";
+  createReportDefinitionRequest['report_params']['report_format'] = 'pdf';
 
   const [savedSearchFileFormat, setSavedSearchFileFormat] = useState(
     'csvFormat'
@@ -169,23 +167,22 @@ export function ReportSettings(props) {
     target: { value: React.SetStateAction<string> };
   }) => {
     setReportName(e.target.value);
-    createReportDefinitionRequest["report_name"] = e.target.value.toString();
+    createReportDefinitionRequest['report_name'] = e.target.value.toString();
   };
 
   const handleReportDescription = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
     setReportDescription(e.target.value);
-    createReportDefinitionRequest["description"] = e.target.value.toString();
+    createReportDefinitionRequest['description'] = e.target.value.toString();
   };
 
   const handleReportSource = (e: React.SetStateAction<string>) => {
     setReportSourceId(e);
     if (e === 'dashboardReportSource') {
-      createReportDefinitionRequest["report_source"] = "Dashboard";
-    }
-    else if (e === 'visualizationReportSource') {
-      createReportDefinitionRequest["report_source"] = "Visualization";
+      createReportDefinitionRequest['report_source'] = 'Dashboard';
+    } else if (e === 'visualizationReportSource') {
+      createReportDefinitionRequest['report_source'] = 'Visualization';
     }
   };
 
@@ -193,7 +190,8 @@ export function ReportSettings(props) {
     target: { value: React.SetStateAction<string> };
   }) => {
     setDashboardSourceSelect(e.target.value);
-    createReportDefinitionRequest["report_params"]["url"] = "http://localhost:5601/app/dashboards#/view/" + e.target.value;
+    createReportDefinitionRequest['report_params']['url'] =
+      'http://localhost:5601/app/dashboards#/view/' + e.target.value;
   };
 
   const handleVisualizationSelect = (e: {
@@ -211,10 +209,9 @@ export function ReportSettings(props) {
   const handleFileFormat = (e: React.SetStateAction<string>) => {
     setFileFormat(e);
     if (e === 'pdfFormat') {
-      createReportDefinitionRequest["report_params"]["report_format"] = "pdf";
-    }
-    else if (e === 'pngFormat') {
-      createReportDefinitionRequest["report_params"]["report_format"] = "png";
+      createReportDefinitionRequest['report_params']['report_format'] = 'pdf';
+    } else if (e === 'pngFormat') {
+      createReportDefinitionRequest['report_params']['report_format'] = 'png';
     }
   };
 

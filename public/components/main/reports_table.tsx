@@ -26,7 +26,6 @@ import {
 } from '@elastic/eui';
 import { reports_list_users } from './test_data';
 
-
 const reports_status_options = [
   'Created',
   'Error',
@@ -56,27 +55,32 @@ const emptyMessageReports = (
 );
 
 export function ReportsTable(props) {
-  const { getRowProps, pagination, generateReport, reports_table_items } = props;
+  const {
+    getRowProps,
+    pagination,
+    generateReport,
+    reports_table_items,
+  } = props;
 
   const [sortField, setSortField] = useState('lastUpdated');
   const [sortDirection, setSortDirection] = useState('des');
 
   const updateMetadata = (url: any) => {
-    console.log("url is", url);
+    console.log('url is', url);
     const onDemandDownloadMetadata = {
-      "report_name": url["reportName"],
-      "report_source": url["reportSource"],
-      "report_type": "Download",
-      "description": "On-demand download of report " + url["reportName"],
-      "report_params": {
-        "url": url["url"],
-        "window_width": 1440,
-        "window_height": 2560,
-        "report_format": "pdf" // current default format
-      }
-    }
+      report_name: url['reportName'],
+      report_source: url['reportSource'],
+      report_type: 'Download',
+      description: 'On-demand download of report ' + url['reportName'],
+      report_params: {
+        url: url['url'],
+        window_width: 1440,
+        window_height: 2560,
+        report_format: 'pdf', // current default format
+      },
+    };
     return onDemandDownloadMetadata;
-  }
+  };
 
   const reports_list_columns = [
     {
@@ -128,9 +132,9 @@ export function ReportsTable(props) {
           description: 'Generates the report',
           type: 'icon',
           icon: 'download',
-          onClick: (url: any) => generateReport(updateMetadata(url))
-        }
-      ]
+          onClick: (url: any) => generateReport(updateMetadata(url)),
+        },
+      ],
     },
   ];
 

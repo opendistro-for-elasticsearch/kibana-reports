@@ -22,21 +22,20 @@ describe('<ReportsTable /> panel', () => {
   test('render component', () => {
     let reports_table_items = [
       {
-        id: "1",
-        reportName: "test report table item",
-        type: "Test type",
-        sender: "N/A",
-        recipients: "N/A",
-        reportSource: "Test report source",
-        lastUpdated:"test updated time",
-        state: "Created",
-        url: "Test url"
-      }
-    ]
+        id: '1',
+        reportName: 'test report table item',
+        type: 'Test type',
+        sender: 'N/A',
+        recipients: 'N/A',
+        reportSource: 'Test report source',
+        lastUpdated: 'test updated time',
+        state: 'Created',
+        url: 'Test url',
+      },
+    ];
     const { container } = render(
-    <ReportsTable 
-      reports_table_items={reports_table_items}
-    />);
+      <ReportsTable reports_table_items={reports_table_items} />
+    );
     expect(container.firstChild).toMatchSnapshot();
   });
 });

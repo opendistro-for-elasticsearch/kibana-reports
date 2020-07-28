@@ -28,12 +28,12 @@ export const generatePNG = async (
     });
     const page = await browser.newPage();
     await page.setDefaultNavigationTimeout(0);
-    await page.goto(url, { waitUntil: 'networkidle0'});
+    await page.goto(url, { waitUntil: 'networkidle0' });
 
     await page.setViewport({
       width: windowWidth,
       height: windowHeight,
-      deviceScaleFactor: 1
+      deviceScaleFactor: 1,
     });
 
     // TODO: this element is for Dashboard page, need to think about addition params to select html element with source(Visualization, Dashboard)
@@ -73,12 +73,12 @@ export const generatePDF = async (
       headless: true,
     });
     const page = await browser.newPage();
-    
+
     await page.setDefaultNavigationTimeout(0);
     await page.setViewport({
       width: windowWidth,
       height: windowHeight,
-      deviceScaleFactor: 1
+      deviceScaleFactor: 1,
     });
 
     await page.goto(url, { waitUntil: 'networkidle0' });
@@ -106,7 +106,7 @@ export const generatePDF = async (
         this.push(null);
       },
     });
-    
+
     //TODO: Add header and footer, phase 2
 
     await browser.close();

@@ -20,23 +20,24 @@ import { ReportDelivery } from '../delivery';
 describe('<ReportDelivery /> panel', () => {
   test('render component', () => {
     let createReportDefinitionRequest = {
-      "report_name": "",
-      "report_source": "",
-      "report_type": "",
-      "description": "",
-      "report_params": {
-        "url": ``,
-        "report_format": "",
-        "window_width": 1560,
-        "window_height": 2560,
+      report_name: '',
+      report_source: '',
+      report_type: '',
+      description: '',
+      report_params: {
+        url: ``,
+        report_format: '',
+        window_width: 1560,
+        window_height: 2560,
       },
-      "delivery": {},
-      "trigger": {},
+      delivery: {},
+      trigger: {},
     };
     const { container } = render(
-    <ReportDelivery 
-      createReportDefinitionRequest={createReportDefinitionRequest}
-    />);
+      <ReportDelivery
+        createReportDefinitionRequest={createReportDefinitionRequest}
+      />
+    );
 
     expect(container.firstChild).toMatchSnapshot();
   });

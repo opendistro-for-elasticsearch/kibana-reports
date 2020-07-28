@@ -22,19 +22,20 @@ describe('<ReportDefinitions /> panel', () => {
   test('render component', () => {
     let report_definitions_table_content = [
       {
-        reportName: "test report name",
-        type: "Download",
-        owner: "davidcui",
-        source: "Dashboard",
-        lastUpdated: "test updated time",
-        details: "",
-        status: "Created"
-      }
-    ]
+        reportName: 'test report name',
+        type: 'Download',
+        owner: 'davidcui',
+        source: 'Dashboard',
+        lastUpdated: 'test updated time',
+        details: '',
+        status: 'Created',
+      },
+    ];
     const { container } = render(
-    <ReportDefinitions 
-      report_definitions_table_content={report_definitions_table_content}
-    />);
+      <ReportDefinitions
+        report_definitions_table_content={report_definitions_table_content}
+      />
+    );
     expect(container.firstChild).toMatchSnapshot();
   });
 });

@@ -16,36 +16,37 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { ReportSettings } from '../report_settings';
-import "babel-polyfill";
+import 'babel-polyfill';
 
 describe('<ReportSettings /> panel', () => {
   test('render component', () => {
     let createReportDefinitionRequest = {
-      "report_name": "",
-      "report_source": "",
-      "report_type": "",
-      "description": "",
-      "report_params": {
-        "url": ``,
-        "report_format": "",
-        "window_width": 1560,
-        "window_height": 2560,
+      report_name: '',
+      report_source: '',
+      report_type: '',
+      description: '',
+      report_params: {
+        url: ``,
+        report_format: '',
+        window_width: 1560,
+        window_height: 2560,
       },
-      "delivery": {},
-      "trigger": {},
+      delivery: {},
+      trigger: {},
     };
 
     let dashboardOptions = [
       {
-        "value": "test_value",
-        "text": "test text for snapshot dashboard"
-      }
-    ]
+        value: 'test_value',
+        text: 'test text for snapshot dashboard',
+      },
+    ];
     const { container } = render(
-    <ReportSettings 
-      createReportDefinitionRequest={createReportDefinitionRequest}
-      dashboardOptions={dashboardOptions}
-    />);
+      <ReportSettings
+        createReportDefinitionRequest={createReportDefinitionRequest}
+        dashboardOptions={dashboardOptions}
+      />
+    );
 
     expect(container.firstChild).toMatchSnapshot();
   });

@@ -62,10 +62,10 @@ const INSERT_PLACEHOLDER_OPTIONS = [
 ];
 
 let delivery_params = {
-  "subject": "",
-  "body": "",
-  "has_attachment": false,
-  "recipients": ["array"]
+  subject: '',
+  body: '',
+  has_attachment: false,
+  recipients: ['array'],
 };
 
 export function ReportDelivery(props) {
@@ -79,13 +79,13 @@ export function ReportDelivery(props) {
 
   // TODO: make these fields not required for Create report definition request so no need for filler values
   let delivery = {
-    "channel": "Kibana User",
-    "delivery_params": {
-      "subject": "test subject",
-      "body": "test body",
-      "has_attachment": true,
-      "recipients": ["test_entry@test.com"]
-    }
+    channel: 'Kibana User',
+    delivery_params: {
+      subject: 'test subject',
+      body: 'test body',
+      has_attachment: true,
+      recipients: ['test_entry@test.com'],
+    },
   };
 
   const handleEmailCheckbox = (e: {
@@ -93,14 +93,14 @@ export function ReportDelivery(props) {
   }) => {
     setEmailCheckbox(e.target.checked);
     if (e.target.checked) {
-      delivery["channel"] = "Email";
+      delivery['channel'] = 'Email';
     }
-    delivery["delivery_params"] = delivery_params;
+    delivery['delivery_params'] = delivery_params;
   };
 
   const handleEmailRecipients = (e: React.SetStateAction<any[]>) => {
     setEmailRecipients(e);
-    delivery_params["recipients"].push(e.toString());
+    delivery_params['recipients'].push(e.toString());
   };
 
   const handleIncludeReportAsAttachment = (e: {
@@ -108,7 +108,7 @@ export function ReportDelivery(props) {
   }) => {
     setIncludeReportAsAttachment(e.target.checked);
     if (e.target.checked) {
-      delivery_params["has_attachment"] = includeReportAsAttachment;
+      delivery_params['has_attachment'] = includeReportAsAttachment;
     }
   };
 
@@ -174,14 +174,14 @@ export function ReportDelivery(props) {
       target: { value: React.SetStateAction<string> };
     }) => {
       setEmailSubject(e.target.value);
-      delivery_params["subject"] = e.target.value.toString();
+      delivery_params['subject'] = e.target.value.toString();
     };
 
     const handleEmailBody = (e: {
       target: { value: React.SetStateAction<string> };
     }) => {
       setEmailBody(e.target.value);
-      delivery_params["body"] = e.target.value.toString();
+      delivery_params['body'] = e.target.value.toString();
     };
 
     return (
@@ -231,7 +231,7 @@ export function ReportDelivery(props) {
 
   const emailDelivery = emailCheckbox ? <EmailDelivery /> : null;
 
-  createReportDefinitionRequest["delivery"] = delivery;
+  createReportDefinitionRequest['delivery'] = delivery;
 
   return (
     <EuiPageContent panelPaddingSize={'l'}>
