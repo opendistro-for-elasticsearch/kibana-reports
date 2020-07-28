@@ -241,19 +241,9 @@ exports[`<ReportSettings /> panel render component 1`] = `
                 id="random_html_id"
               >
                 <option
-                  value="dailySaves"
+                  value="test_value"
                 >
-                  Daily saves
-                </option>
-                <option
-                  value="webLogs"
-                >
-                  Web logs
-                </option>
-                <option
-                  value="flightTraffic"
-                >
-                  Flight traffic
+                  test text for snapshot dashboard
                 </option>
               </select>
               <div

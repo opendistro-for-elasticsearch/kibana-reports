@@ -92,7 +92,7 @@ export default function (router: IRouter) {
             reportParams.url,
             report.report_name,
             reportParams.window_width,
-            reportParams.windowLength
+            reportParams.window_height
           );
 
           report = {

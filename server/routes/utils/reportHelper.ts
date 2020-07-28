@@ -27,11 +27,13 @@ export const generatePNG = async (
       headless: true,
     });
     const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'networkidle0' });
+    await page.setDefaultNavigationTimeout(0);
+    await page.goto(url, { waitUntil: 'networkidle0'});
 
     await page.setViewport({
       width: windowWidth,
       height: windowHeight,
+      deviceScaleFactor: 1
     });
 
     // TODO: this element is for Dashboard page, need to think about addition params to select html element with source(Visualization, Dashboard)
@@ -43,6 +45,7 @@ export const generatePNG = async (
     const buffer = await page.screenshot({
       fullPage: true,
     });
+
     const stream = new Readable({
       read() {
         this.push(buffer);
@@ -53,7 +56,7 @@ export const generatePNG = async (
     //TODO: Add header and footer, phase 2
 
     await browser.close();
-    return { timeCreated, stream, fileName };
+    return { timeCreated, stream: buffer.toString('base64'), fileName };
   } catch (error) {
     throw error;
   }
@@ -70,15 +73,18 @@ export const generatePDF = async (
       headless: true,
     });
     const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'networkidle0' });
-
+    
+    await page.setDefaultNavigationTimeout(0);
     await page.setViewport({
       width: windowWidth,
       height: windowHeight,
+      deviceScaleFactor: 1
     });
 
+    await page.goto(url, { waitUntil: 'networkidle0' });
+
     const timeCreated = new Date().toISOString();
-    const fileName = getFileName(itemName, timeCreated);
+    const fileName = getFileName(itemName, timeCreated) + '.pdf';
     // The scrollHeight value is equal to the minimum height the element would require in order to fit
     // all the content in the viewport without using a vertical scrollbar
     const scrollHeight = await page.evaluate(
@@ -86,10 +92,11 @@ export const generatePDF = async (
     );
 
     const buffer = await page.pdf({
+      path: fileName,
       margin: 'none',
       width: windowWidth,
       height: scrollHeight + 'px',
-      printBackground: true,
+      printBackground: false,
       pageRanges: '1',
     });
 
@@ -99,11 +106,11 @@ export const generatePDF = async (
         this.push(null);
       },
     });
-
+    
     //TODO: Add header and footer, phase 2
 
     await browser.close();
-    return { timeCreated, stream, fileName };
+    return { timeCreated, stream: buffer.toString('base64'), fileName };
   } catch (error) {
     throw error;
   }

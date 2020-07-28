@@ -19,7 +19,24 @@ import { ReportTrigger } from '../report_trigger';
 
 describe('<ReportTrigger /> panel', () => {
   test('render component', () => {
-    const { container } = render(<ReportTrigger />);
+    let createReportDefinitionRequest = {
+      "report_name": "",
+      "report_source": "",
+      "report_type": "",
+      "description": "",
+      "report_params": {
+        "url": ``,
+        "report_format": "",
+        "window_width": 1560,
+        "window_height": 2560,
+      },
+      "delivery": {},
+      "trigger": {},
+    };
+    const { container } = render(
+    <ReportTrigger 
+      createReportDefinitionRequest={createReportDefinitionRequest}
+    />);
 
     expect(container.firstChild).toMatchSnapshot();
   });

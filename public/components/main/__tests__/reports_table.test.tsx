@@ -16,10 +16,27 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { ReportsTable } from '../reports_table';
+import moment from 'moment';
 
 describe('<ReportsTable /> panel', () => {
   test('render component', () => {
-    const { container } = render(<ReportsTable />);
+    let reports_table_items = [
+      {
+        id: "1",
+        reportName: "test report table item",
+        type: "Test type",
+        sender: "N/A",
+        recipients: "N/A",
+        reportSource: "Test report source",
+        lastUpdated:"test updated time",
+        state: "Created",
+        url: "Test url"
+      }
+    ]
+    const { container } = render(
+    <ReportsTable 
+      reports_table_items={reports_table_items}
+    />);
     expect(container.firstChild).toMatchSnapshot();
   });
 });

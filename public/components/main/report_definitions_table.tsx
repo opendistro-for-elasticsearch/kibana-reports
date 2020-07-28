@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   EuiLink,
   EuiInMemoryTable,
@@ -21,9 +21,9 @@ import {
   EuiEmptyPrompt,
   EuiText,
 } from '@elastic/eui';
-import { report_definitions } from './test_data';
+import { savedObjectsMigrationConfig } from '../../../../../src/core/server/saved_objects';
 
-export const scheduled_report_columns = [
+export const report_definitions_columns = [
   {
     field: 'reportName',
     name: 'Name',
@@ -105,18 +105,29 @@ const report_definitions_search = {
 };
 
 export function ReportDefinitions(props) {
-  const { pagination, getRowProps } = props;
+  const { pagination, getRowProps, report_definitions_table_content } = props;
+
+  const [sortField, setSortField] = useState('lastUpdated');
+  const [sortDirection, setSortDirection] = useState('des');
+
+  const sorting = {
+    sort: {
+      field: sortField,
+      direction: sortDirection,
+    },
+  };
+
   return (
     <div>
       <EuiInMemoryTable
-        items={report_definitions}
+        items={report_definitions_table_content}
         itemId="id"
         loading={false}
         message={empty_message_report_definitions}
-        columns={scheduled_report_columns}
+        columns={report_definitions_columns}
         search={report_definitions_search}
         pagination={pagination}
-        sorting={true}
+        sorting={sorting}
         isSelectable={true}
         rowProps={getRowProps}
       />

@@ -16,10 +16,25 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { ReportDefinitions } from '../report_definitions_table';
+import moment from 'moment';
 
 describe('<ReportDefinitions /> panel', () => {
   test('render component', () => {
-    const { container } = render(<ReportDefinitions />);
+    let report_definitions_table_content = [
+      {
+        reportName: "test report name",
+        type: "Download",
+        owner: "davidcui",
+        source: "Dashboard",
+        lastUpdated: "test updated time",
+        details: "",
+        status: "Created"
+      }
+    ]
+    const { container } = render(
+    <ReportDefinitions 
+      report_definitions_table_content={report_definitions_table_content}
+    />);
     expect(container.firstChild).toMatchSnapshot();
   });
 });
