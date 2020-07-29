@@ -50,7 +50,7 @@ export const getSelectedFields = async (columns) => {
 
 //Build the ES query from the meta data
 export const buildQuery = (report) => {
-	const requestBody = esb.boolQuery();
+	let requestBody = esb.boolQuery();
 	const filters = report._source.filters;
 	for (let item of JSON.parse(filters).filter) {
 		if (item.meta.disabled === false) {
@@ -128,11 +128,7 @@ export const buildQuery = (report) => {
 	}
 
 	//Add the Sort to the query
-	const reqBody = esb
-		.requestBodySearch()
-		.query(requestBody)
-		.version(true)
-		.size(10000);
+	let reqBody = esb.requestBodySearch().query(requestBody).version(true);
 
 	if (report._source.sorting.length > 0) {
 		if (report._source.sorting.length === 1)
