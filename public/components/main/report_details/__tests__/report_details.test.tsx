@@ -16,6 +16,9 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { ReportDetails } from '../report_details';
+import propsMock from '../../../../../test/propsMock';
+import httpClientMock from '../../../../../test/httpMockClient';
+import 'babel-polyfill';
 
 describe('<ReportDetails /> panel', () => {
   const created_date = new Date('April 20, 2020 20:32:12');
@@ -44,13 +47,25 @@ describe('<ReportDetails /> panel', () => {
     report_as_attachment: false,
   };
 
-  test('render component', () => {
-    const { container } = render(
+  const params = { reportId: "1"};
+  const match = {
+    params: {
+      reportId: "1"
+    }
+  }
+
+  test('render component', async (done) => {
+    const { container } = await render(
       <ReportDetails
-        reportId={'1'}
-        reportDetailsMetadata={reportDetailsMockMetadata}
+        // reportId={propsMock.match["params"]["reportId"]}
+        // reportDetailsMetadata={reportDetailsMockMetadata}
+        httpClient={httpClientMock}
+        props={propsMock}
+        match={match}
       />
+
     );
-    expect(container.firstChild).toMatchSnapshot();
+    await expect(container.firstChild).toMatchSnapshot();
+    done();
   });
 });

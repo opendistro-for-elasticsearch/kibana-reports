@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   EuiFlexGroup,
   EuiFlexItem,
@@ -35,6 +35,7 @@ import { ShareModal } from './share_modal/share_modal';
 
 interface ReportDetailsRouteProps {
   reportId: string;
+  httpClient: any;
   reportDetailsMetadata: {
     report_name: string;
     description: string;
@@ -75,36 +76,52 @@ export const ReportDetailsComponent = (props) => {
   );
 };
 
-const created_date = new Date('April 20, 2020 20:32:12');
-
-const reportDetailsMockMetadata = {
-  report_name: 'Daily Sales Report-232o2jsf28492h3rjskfbwjk23',
-  description: 'Report Description Here',
-  created: created_date.toString(),
-  last_updated: created_date.toString(),
-  source_type: 'Download',
-  source: 'dashboard/daily_sales',
-  default_file_format: 'PDF',
-  report_header: '--',
-  report_footer: '--',
-  report_type: 'Schedule',
-  schedule_type: 'Now',
-  schedule_details: '--',
-  alert_details: '--',
-  channel: 'Kibana Reports',
-  kibana_recipients: 'admin',
-  email_recipients: '--',
-  email_subject: '--',
-  email_body: '--',
-  report_as_attachment: false,
-};
-
-export function ReportDetails(props: ReportDetailsRouteProps) {
-  const reportId = props.reportId;
+export function ReportDetails(props) {
+  const [reportDetails, setReportDetails] = useState({});
+  const reportId = props.match["params"]["reportId"];
   // todo: replace values with values from props.reportDetailsMetadata
-  const reportDetailsMetadata = reportDetailsMockMetadata;
 
-  const includeReportAsAttachmentString = reportDetailsMetadata.report_as_attachment
+  const handleReportDetails = (e) => {
+    setReportDetails(e);
+  }
+
+  const getReportDetailsData = (data) => {
+    let reportDetails = {
+      report_name: data["report_name"],
+      description: data["description"],
+      created: data["time_created"],
+      last_updated: "--",
+      source_type: data["report_type"],
+      source: data["source_type"],
+      default_file_format: data["report_params"]["report_format"],
+      report_header: '--',
+      report_footer: '--',
+      report_type: data["report_type"],
+      schedule_type: '--',
+      schedule_details: '--',
+      alert_details: '--',
+      channel: '--',
+      kibana_recipients: '--',
+      email_recipients: '--',
+      email_subject: '--',
+      email_body: '--',
+      report_as_attachment: false
+    }
+    return reportDetails;
+  }
+
+  useEffect(() => {
+    const { httpClient } = props;
+    httpClient.get('../api/reporting/reports/' + reportId)
+      .then((response) => {
+        handleReportDetails(getReportDetailsData(response));
+      })
+      .catch((error) => {
+        console.log("Error when fetching report details: ", error);
+      })
+  }, []);
+
+  const includeReportAsAttachmentString = reportDetails["report_as_attachment"]
     ? 'True'
     : 'False';
   return (
@@ -119,7 +136,7 @@ export function ReportDetails(props: ReportDetailsRouteProps) {
             <EuiFlexItem>
               <EuiPageHeaderSection>
                 <EuiTitle>
-                  <h2>{reportDetailsMetadata.report_name}</h2>
+                  <h2>{reportDetails["report_name"]}</h2>
                 </EuiTitle>
               </EuiPageHeaderSection>
             </EuiFlexItem>
@@ -159,35 +176,35 @@ export function ReportDetails(props: ReportDetailsRouteProps) {
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Name'}
-              reportDetailsComponentContent={reportDetailsMetadata.report_name}
+              reportDetailsComponentContent={reportDetails["report_name"]}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Description'}
-              reportDetailsComponentContent={reportDetailsMetadata.description}
+              reportDetailsComponentContent={reportDetails["description"]}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Created'}
-              reportDetailsComponentContent={reportDetailsMetadata.created}
+              reportDetailsComponentContent={reportDetails["created"]}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Last updated'}
-              reportDetailsComponentContent={reportDetailsMetadata.last_updated}
+              reportDetailsComponentContent={reportDetails["last_updated"]}
             />
           </EuiFlexGroup>
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Source type'}
-              reportDetailsComponentContent={reportDetailsMetadata.source_type}
+              reportDetailsComponentContent={reportDetails["source_type"]}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Source'}
-              reportDetailsComponentContent={reportDetailsMetadata.source}
+              reportDetailsComponentContent={reportDetails["source"]}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Default file format'}
               reportDetailsComponentContent={
-                reportDetailsMetadata.default_file_format
+                reportDetails["default_file_format"]
               }
             />
             <ReportDetailsComponent />
@@ -197,13 +214,13 @@ export function ReportDetails(props: ReportDetailsRouteProps) {
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report header'}
               reportDetailsComponentContent={
-                reportDetailsMetadata.report_header
+                reportDetails["report_header"]
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report footer'}
               reportDetailsComponentContent={
-                reportDetailsMetadata.report_footer
+                reportDetails["report_footer"]
               }
             />
             <ReportDetailsComponent />
@@ -217,24 +234,24 @@ export function ReportDetails(props: ReportDetailsRouteProps) {
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report type'}
-              reportDetailsComponentContent={reportDetailsMetadata.report_type}
+              reportDetailsComponentContent={reportDetails["report_type"]}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Schedule type'}
               reportDetailsComponentContent={
-                reportDetailsMetadata.schedule_type
+                reportDetails["schedule_type"]
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Schedule details'}
               reportDetailsComponentContent={
-                reportDetailsMetadata.schedule_details
+                reportDetails["schedule_details"]
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Alert details'}
               reportDetailsComponentContent={
-                reportDetailsMetadata.alert_details
+                reportDetails["alert_details"]
               }
             />
           </EuiFlexGroup>
@@ -246,24 +263,24 @@ export function ReportDetails(props: ReportDetailsRouteProps) {
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Channel'}
-              reportDetailsComponentContent={reportDetailsMetadata.channel}
+              reportDetailsComponentContent={reportDetails["channel"]}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Kibana recipients'}
               reportDetailsComponentContent={
-                reportDetailsMetadata.kibana_recipients
+                reportDetails["kibana_recipients"]
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email recipients'}
               reportDetailsComponentContent={
-                reportDetailsMetadata.email_recipients
+                reportDetails["email_recipients"]
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email subject'}
               reportDetailsComponentContent={
-                reportDetailsMetadata.email_subject
+                reportDetails["email_subject"]
               }
             />
           </EuiFlexGroup>
@@ -271,7 +288,7 @@ export function ReportDetails(props: ReportDetailsRouteProps) {
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email body'}
-              reportDetailsComponentContent={reportDetailsMetadata.email_body}
+              reportDetailsComponentContent={reportDetails["email_body"]}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Include report as attachment'}
