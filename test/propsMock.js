@@ -21,16 +21,4 @@
    }
  };
 
-//  const matchMock = {
-//    params: {reportId: "1"}
-//  }
-//  propsMock.match = jest.fn(() => ({
-//   params: {
-//     reportId: "1"
-//   }
-//  }));
-// propsMock.match = matchMock;
-
-
-// propsMock.params = jest.fn();
  export default propsMock;
