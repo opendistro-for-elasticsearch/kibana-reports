@@ -47,7 +47,6 @@ describe('<ReportDetails /> panel', () => {
     report_as_attachment: false,
   };
 
-  const params = { reportId: "1"};
   const match = {
     params: {
       reportId: "1"
@@ -57,8 +56,6 @@ describe('<ReportDetails /> panel', () => {
   test('render component', async (done) => {
     const { container } = await render(
       <ReportDetails
-        // reportId={propsMock.match["params"]["reportId"]}
-        // reportDetailsMetadata={reportDetailsMockMetadata}
         httpClient={httpClientMock}
         props={propsMock}
         match={match}
