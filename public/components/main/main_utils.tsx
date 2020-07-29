@@ -45,7 +45,7 @@ export const addReportsTableContent = (data) => {
   let reports_table_items = [];
   for (index = 0; index < data.length; ++index) {
     let reports_table_entry = {
-      id: nextId(),
+      id: data[index]["_id"],
       reportName: data[index]['_source']['report_name'],
       type: data[index]['_source']['report_type'],
       sender: 'N/A',
