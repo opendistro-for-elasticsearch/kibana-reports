@@ -13,8 +13,6 @@
  * permissions and limitations under the License.
  */
 
-import nextId from 'react-id-generator';
-
 export const extractFilename = (headers: any) => {
   let headersArray = [];
   for (let header of headers) {
@@ -65,6 +63,7 @@ export const addReportDefinitionsTableContent = (data: any) => {
   let reports_definitions_table_items = [];
   for (index = 0; index < data.length; ++index) {
     let reports_definition_table_entry = {
+      id: data[index]["_id"],
       reportName: data[index]['_source']['report_name'],
       type: data[index]['_source']['report_type'],
       owner: 'davidcui',
