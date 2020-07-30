@@ -1,0 +1,72 @@
+buildscript {
+    ext {
+        es_group = "org.elasticsearch"
+        es_version = '7.8.0'
+    }
+
+    repositories {
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+        jcenter()
+    }
+
+    dependencies {
+        classpath "${es_group}.gradle:build-tools:${es_version}"
+    }
+}
+
+plugins {
+    id 'nebula.ospackage' version "8.3.0"
+    id 'java-library'
+}
+
+apply plugin: 'elasticsearch.esplugin'
+apply plugin: 'elasticsearch.testclusters'
+
+esplugin {
+    name 'opendistro-job-scheduler-sample-extension'
+    description 'Sample plugin that extends OpenDistro JobSchedulerPlugin'
+    classname 'com.amazon.opendistroforelasticsearch.jobscheduler.sampleextension.SampleExtensionPlugin'
+    extendedPlugins = ['opendistro-job-scheduler']
+}
+
+ext {
+    projectSubstitutions = [:]
+    licenseFile = rootProject.file('LICENSE.txt')
+    noticeFile = rootProject.file('NOTICE.txt')
+}
+
+dependencies {
+    compile "org.elasticsearch:elasticsearch:${es_version}"
+    compileOnly "com.amazon.opendistroforelasticsearch:opendistro-job-scheduler-spi:1.9.0.0"
+}
+
+licenseHeaders.enabled = false
+validateNebulaPom.enabled = false
+testingConventions.enabled = false;
+
+integTest.dependsOn(rootProject.assemble)
+integTestRunner {
+    systemProperty 'tests.security.manager', 'false'
+}
+testClusters.integTest {
+    testDistribution = 'OSS'
+    // need to install job-scheduler first, need to assemble job-scheduler first
+    plugin(fileTree("src/test/resources/job-scheduler").getSingleFile())
+}
+
+// As of ES 7.7 the sample-extension-plugin is being added to the list of plugins for the testCluster during build before
+// the job-scheduler plugin is causing build failures.
+// The job-scheduler zip is added explicitly above but the sample-extension-plugin is added implicitly at some time during evaluation.
+// Will need to do a deep dive to find out exactly what task adds the sample-extension-plugin and add job-scheduler there but a temporary hack is to
+// reorder the plugins list after evaluation but prior to task execution when the plugins are installed.
+afterEvaluate {
+    testClusters.integTest.nodes.each { node ->
+        def plugins = node.plugins
+        def firstPlugin = plugins.get(0)
+        if (firstPlugin.provider == project.bundlePlugin.archiveFile) {
+            plugins.remove(0)
+            plugins.add(firstPlugin)
+        }
+    }
+}
