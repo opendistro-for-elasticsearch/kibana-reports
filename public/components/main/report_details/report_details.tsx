@@ -33,32 +33,6 @@ import {
 } from '@elastic/eui';
 import { ShareModal } from './share_modal/share_modal';
 
-interface ReportDetailsRouteProps {
-  reportId: string;
-  httpClient: any;
-  reportDetailsMetadata: {
-    report_name: string;
-    description: string;
-    created: string;
-    last_updated: string;
-    source_type: string;
-    source: string;
-    default_file_format: string;
-    report_header: string;
-    report_footer: string;
-    report_type: string;
-    schedule_type: string;
-    schedule_details: string;
-    alert_details: string;
-    channel: string;
-    kibana_recipients: string;
-    email_recipients: string;
-    email_subject: string;
-    email_body: string;
-    report_as_attachment: boolean;
-  };
-}
-
 export const ReportDetailsComponent = (props) => {
   const { reportDetailsComponentTitle, reportDetailsComponentContent } = props;
 
