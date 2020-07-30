@@ -75,7 +75,7 @@ export default function (router: IRouter) {
             index: 'report',
             body: report,
           };
-          await context.core.elasticsearch.legacy.client.callAsInternalUser(
+          await context.core.elasticsearch.adminClient.callAsInternalUser(
             'index',
             params
           );
@@ -92,7 +92,7 @@ export default function (router: IRouter) {
             reportParams.url,
             report.report_name,
             reportParams.window_width,
-            reportParams.windowLength
+            reportParams.window_height
           );
 
           report = {
@@ -105,7 +105,7 @@ export default function (router: IRouter) {
             index: 'report',
             body: report,
           };
-          await context.core.elasticsearch.legacy.client.callAsInternalUser(
+          await context.core.elasticsearch.adminClient.callAsInternalUser(
             'index',
             params
           );
@@ -161,7 +161,7 @@ export default function (router: IRouter) {
         sort: `${sortField}:${sortDirection}`,
       };
       try {
-        const esResp = await context.core.elasticsearch.legacy.client.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
           'search',
           params
         );
@@ -200,7 +200,7 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
-        const esResp = await context.core.elasticsearch.legacy.client.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
           'get',
           {
             index: 'report',
@@ -239,7 +239,7 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
-        const esResp = await context.core.elasticsearch.legacy.client.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
           'delete',
           {
             index: 'report',
