@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-package com.amazon.opendistroforelasticsearch.jobscheduler.smapleextension;
+package com.amazon.opendistroforelasticsearch.reportsscheduler;
 
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
@@ -42,6 +42,6 @@ public class SampleExtensionPluginIT extends ESIntegTestCase {
         Assert.assertTrue(pluginInfos.stream().anyMatch(pluginInfo -> pluginInfo.getName()
                 .equals("opendistro-job-scheduler")));
         Assert.assertTrue(pluginInfos.stream().anyMatch(pluginInfo -> pluginInfo.getName()
-                .equals("opendistro-job-scheduler-sample-extension")));
+                .equals("opendistro-reports-scheduler")));
     }
 }
