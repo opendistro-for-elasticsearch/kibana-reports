@@ -25,6 +25,7 @@ export const generatePNG = async (
   try {
     const browser = await puppeteer.launch({
       headless: true,
+      // pipe: true
     });
     const page = await browser.newPage();
     await page.setDefaultNavigationTimeout(0);
@@ -33,7 +34,6 @@ export const generatePNG = async (
     await page.setViewport({
       width: windowWidth,
       height: windowHeight,
-      deviceScaleFactor: 1,
     });
 
     // TODO: this element is for Dashboard page, need to think about addition params to select html element with source(Visualization, Dashboard)
@@ -78,7 +78,6 @@ export const generatePDF = async (
     await page.setViewport({
       width: windowWidth,
       height: windowHeight,
-      deviceScaleFactor: 1,
     });
 
     await page.goto(url, { waitUntil: 'networkidle0' });
@@ -96,7 +95,7 @@ export const generatePDF = async (
       margin: 'none',
       width: windowWidth,
       height: scrollHeight + 'px',
-      printBackground: false,
+      printBackground: true,
       pageRanges: '1',
     });
 

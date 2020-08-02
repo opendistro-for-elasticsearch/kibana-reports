@@ -173,3 +173,15 @@ export const MONTHLY_DAY_SELECT_OPTIONS = [
     text: 'Saturday',
   },
 ];
+
+export const SCHEDULE_OPTION_MAP = {
+  nowOption: 'Now',
+  futureDateOption: 'Future date',
+  recurringOption: 'Recurring',
+  cronBasedOption: 'Cron',
+};
+
+export const TRIGGER_OPTION_MAP = {
+  scheduleOption: 'Schedule',
+  alertOption: 'Alert',
+};

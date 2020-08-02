@@ -51,6 +51,7 @@ import {
   addReportsTableContent,
   addReportDefinitionsTableContent,
   getReportSettingDashboardOptions,
+  removeDuplicatePdfFileFormat,
 } from './main_utils';
 
 interface RouterHomeProps {
@@ -112,57 +113,54 @@ export class Main extends React.Component<RouterHomeProps, any> {
   }
 
   readStreamToFile = async (stream: string) => {
-    var link = document.createElement('a');
-    var fileFormatPrefix = getFileFormatPrefix(
+    let link = document.createElement('a');
+    let fileFormatPrefix = getFileFormatPrefix(
       this.state.generateReportFileFormat
     );
-    var url = fileFormatPrefix + stream;
-    if (typeof link.download == 'string') {
-      if (fileFormatPrefix.includes('pdf')) {
-        link.download = this.state.generateReportFilename.substring(
-          0,
-          this.state.generateReportFilename.length - 4
-        );
-      } else {
-        link.download = this.state.generateReportFilename;
-      }
-      link.href = url;
-      document.body.appendChild(link);
-      link.click();
-      await this.updateReportsTableContent();
-      document.body.removeChild(link);
-    } else {
+    console.log('fileformat prefix is', fileFormatPrefix);
+    let url = fileFormatPrefix + stream;
+    if (typeof link.download !== 'string') {
       window.open(url, '_blank');
+      return;
     }
+    link.download = this.state.generateReportFilename;
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+    await this.updateReportsTableContent();
+    document.body.removeChild(link);
   };
 
   generateReport = async (metadata) => {
+    const { httpClient } = this.props;
     this.setState({
       showGenerateReportLoadingToast: true,
     });
-    const retVal = fetch('../api/reporting/generateReport', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'kbn-xsrf': 'reporting',
-      },
-      body: JSON.stringify(metadata),
-    })
-      .then(async (resp) => {
+    httpClient
+      .post('../api/reporting/generateReport', {
+        body: JSON.stringify(metadata),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(async (response) => {
+        const fileFormat = extractFileFormat(response['filename']);
+        const fileName = extractFilename(response['filename']);
         this.setState({
-          generateReportFilename: extractFilename(resp.headers),
+          generateReportFilename: fileName,
+          generateReportFileFormat: fileFormat,
         });
-        this.setState({
-          generateReportFileFormat: extractFileFormat(resp.headers),
-        });
-        this.readStreamToFile(await resp.text());
+        this.readStreamToFile(await response['data']);
         this.setState({
           showGenerateReportLoadingToast: false,
         });
-        return resp;
+        return response;
       })
       .catch((error) => {
-        console.log('printing error: ', error);
+        console.log('error on generating report:', error);
+        this.setState({
+          showGenerateReportLoadingToast: false,
+        });
       });
   };
 
@@ -186,6 +184,7 @@ export class Main extends React.Component<RouterHomeProps, any> {
     httpClient
       .get('../api/reporting/reports')
       .then((response) => {
+        console.log('get reports response is', response);
         this.setState({
           reportsTableContent: addReportsTableContent(response.data),
         });
@@ -208,25 +207,11 @@ export class Main extends React.Component<RouterHomeProps, any> {
       .catch((error) => {
         console.log('error when fetching all report definitions: ', error);
       });
-
-    // get all kibana dashboards
-    httpClient
-      .get('../api/reporting/getDashboards')
-      .then((response) => {
-        this.setState({
-          reportSourceDashboardOptions: getReportSettingDashboardOptions(
-            response['hits']['hits']
-          ),
-        });
-      })
-      .catch((error) => {
-        console.log('error when fetching all dashboards ', error);
-      });
   }
 
-  refreshReportsTable = () => {
+  refreshReportsTable = async () => {
     const { httpClient } = this.props;
-    httpClient
+    await httpClient
       .get('../api/reporting/reports')
       .then((response) => {
         this.setState({
@@ -239,9 +224,9 @@ export class Main extends React.Component<RouterHomeProps, any> {
       });
   };
 
-  refreshReportsDefinitionsTable = () => {
+  refreshReportsDefinitionsTable = async () => {
     const { httpClient } = this.props;
-    httpClient
+    await httpClient
       .get('../api/reporting/reportDefinitions')
       .then((response) => {
         this.setState({

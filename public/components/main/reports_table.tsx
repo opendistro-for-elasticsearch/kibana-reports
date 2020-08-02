@@ -66,7 +66,6 @@ export function ReportsTable(props) {
   const [sortDirection, setSortDirection] = useState('des');
 
   const updateMetadata = (url: any) => {
-    console.log('url is', url);
     const onDemandDownloadMetadata = {
       report_name: url['reportName'],
       report_source: url['reportSource'],

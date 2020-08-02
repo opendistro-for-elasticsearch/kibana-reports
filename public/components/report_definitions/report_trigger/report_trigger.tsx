@@ -48,6 +48,8 @@ import {
   WEEKLY_CHECKBOX_OPTIONS,
   MONTHLY_ON_THE_OPTIONS,
   MONTHLY_DAY_SELECT_OPTIONS,
+  SCHEDULE_OPTION_MAP,
+  TRIGGER_OPTION_MAP,
 } from './report_trigger_constants';
 
 let trigger_params = {
@@ -101,24 +103,14 @@ export function ReportTrigger(props) {
 
   const handleReportTriggerType = (e: React.SetStateAction<string>) => {
     setReportTriggerTypes(e);
-    if (e === 'scheduleOption') {
-      trigger_schema['trigger_type'] = 'Schedule';
-    } else if (e === 'alertOption') {
-      trigger_schema['trigger_type'] = 'Alert';
-    }
+    trigger_schema['trigger_type'] = TRIGGER_OPTION_MAP[e];
   };
 
   const handleScheduleRequestTime = (e: React.SetStateAction<string>) => {
     setScheduleRequestTime(e);
+    trigger_params['schedule_type'] = SCHEDULE_OPTION_MAP[e];
     if (e === 'nowOption') {
-      trigger_params['schedule_type'] = 'Now';
       createReportDefinitionRequest['report_type'] = 'Download';
-    } else if (e === 'futureDateOption') {
-      trigger_params['schedule_type'] = 'Future date';
-    } else if (e === 'recurringOption') {
-      trigger_params['schedule_type'] = 'Recurring';
-    } else if (e === 'cronBasedOption') {
-      trigger_params['schedule_type'] = 'Cron';
     }
   };
 

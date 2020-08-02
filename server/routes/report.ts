@@ -81,10 +81,9 @@ export default function (router: IRouter) {
           );
 
           return response.ok({
-            body: stream,
-            headers: {
-              'content-type': 'image/png',
-              'content-disposition': `attachment; filename=${fileName}.${reportParams.report_format}`,
+            body: {
+              data: stream,
+              filename: `${fileName}.${reportParams.report_format}`,
             },
           });
         } else if (reportParams.report_format === FORMAT.pdf) {
@@ -111,10 +110,9 @@ export default function (router: IRouter) {
           );
 
           return response.ok({
-            body: stream,
-            headers: {
-              'content-type': 'application/pdf',
-              'content-disposition': `attachment; filename=${fileName}.${reportParams.report_format}`,
+            body: {
+              data: stream,
+              filename: `${fileName}.${reportParams.report_format}`,
             },
           });
         }

@@ -13,24 +13,12 @@
  * permissions and limitations under the License.
  */
 
-export const extractFilename = (headers: any) => {
-  let headersArray = [];
-  for (let header of headers) {
-    console.log('header is', header);
-    headersArray.push(header);
-  }
-  let filename = headersArray[2][1];
-  filename = filename.replace('attachment; filename=', '');
-  return filename;
+export const extractFilename = (filename: string) => {
+  return filename.substring(0, filename.length - 4);
 };
 
-export const extractFileFormat = (headers) => {
-  let headersArray = [];
-  for (let header of headers) {
-    headersArray.push(header);
-  }
-  let fileFormat = headersArray[4][1];
-  return fileFormat;
+export const extractFileFormat = (filename: string) => {
+  return filename.substring(filename.length - 3, filename.length);
 };
 
 export const getFileFormatPrefix = (fileFormat: string) => {
@@ -43,7 +31,7 @@ export const addReportsTableContent = (data) => {
   let reports_table_items = [];
   for (index = 0; index < data.length; ++index) {
     let reports_table_entry = {
-      id: data[index]["_id"],
+      id: data[index]['_id'],
       reportName: data[index]['_source']['report_name'],
       type: data[index]['_source']['report_type'],
       sender: 'N/A',
@@ -63,7 +51,7 @@ export const addReportDefinitionsTableContent = (data: any) => {
   let reports_definitions_table_items = [];
   for (index = 0; index < data.length; ++index) {
     let reports_definition_table_entry = {
-      id: data[index]["_id"],
+      id: data[index]['_id'],
       reportName: data[index]['_source']['report_name'],
       type: data[index]['_source']['report_type'],
       owner: 'davidcui',
@@ -89,4 +77,8 @@ export const getReportSettingDashboardOptions = (data) => {
     dashboard_options.push(entry);
   }
   return dashboard_options;
+};
+
+export const removeDuplicatePdfFileFormat = (filename) => {
+  return filename.substring(0, filename.length - 4);
 };
