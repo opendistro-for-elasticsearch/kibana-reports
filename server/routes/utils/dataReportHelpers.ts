@@ -49,7 +49,8 @@ export const getSelectedFields = async (columns) => {
 };
 
 //Build the ES query from the meta data
-export const buildQuery = (report) => {
+// is_count is set to 1 if we building the count query but 0 if we building the fetch data query
+export const buildQuery = (report, is_count) => {
 	let requestBody = esb.boolQuery();
 	const filters = report._source.filters;
 	for (let item of JSON.parse(filters).filter) {
@@ -125,6 +126,9 @@ export const buildQuery = (report) => {
 				.gte(report._source.start)
 				.lte(report._source.end)
 		);
+	}
+	if (is_count) {
+		return esb.requestBodySearch().query(requestBody);
 	}
 
 	//Add the Sort to the query
