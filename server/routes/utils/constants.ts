@@ -43,6 +43,5 @@ export enum SCHEDULE_TYPE {
 }
 
 export enum DATA_REPORT_CONFIG {
-	maxRows = 150000,
 	excelDateFormat = 'MM/DD/YYYY h:mm:ss a',
 }
