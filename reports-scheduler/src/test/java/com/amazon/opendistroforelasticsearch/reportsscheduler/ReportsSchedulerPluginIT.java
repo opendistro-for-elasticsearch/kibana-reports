@@ -27,7 +27,7 @@ import org.junit.Assert;
 
 import java.util.List;
 
-public class SampleExtensionPluginIT extends ESIntegTestCase {
+public class ReportsSchedulerPluginIT extends ESIntegTestCase {
 
     public void testPluginsAreInstalled() {
         ClusterHealthRequest request = new ClusterHealthRequest();

@@ -19,6 +19,11 @@ import com.amazon.opendistroforelasticsearch.jobscheduler.spi.JobSchedulerExtens
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobParser;
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobRunner;
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.ScheduleParser;
+import com.amazon.opendistroforelasticsearch.reportsscheduler.job.ReportsSchedulerJobRunner;
+import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobConstant;
+import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobParameter;
+import com.amazon.opendistroforelasticsearch.reportsscheduler.rest.ReportsSchedulerRestHandler;
+import com.amazon.opendistroforelasticsearch.sample.SampleExtensionRestHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.client.Client;
@@ -58,10 +63,10 @@ import java.util.function.Supplier;
  * endpoint using {@link SampleExtensionRestHandler}.
  *
  */
-public class SampleExtensionPlugin extends Plugin implements ActionPlugin, JobSchedulerExtension {
-    private static final Logger log = LogManager.getLogger(SampleExtensionPlugin.class);
+public class ReportsSchedulerPlugin extends Plugin implements ActionPlugin, JobSchedulerExtension {
+    private static final Logger log = LogManager.getLogger(ReportsSchedulerPlugin.class);
 
-    static final String JOB_INDEX_NAME = ".scheduler_sample_extension";
+    public static final String JOB_INDEX_NAME = ".reports_scheduler";
 
     @Override
     public Collection<Object> createComponents(Client client, ClusterService clusterService, ThreadPool threadPool,
@@ -70,16 +75,17 @@ public class SampleExtensionPlugin extends Plugin implements ActionPlugin, JobSc
                                                NodeEnvironment nodeEnvironment, NamedWriteableRegistry namedWriteableRegistry,
                                                IndexNameExpressionResolver indexNameExpressionResolver,
                                                Supplier<RepositoriesService> repositoriesServiceSupplier) {
-        SampleJobRunner jobRunner = SampleJobRunner.getJobRunnerInstance();
+        ReportsSchedulerJobRunner jobRunner = ReportsSchedulerJobRunner.getJobRunnerInstance();
         jobRunner.setClusterService(clusterService);
         jobRunner.setThreadPool(threadPool);
+        jobRunner.setClient(client);
 
         return Collections.emptyList();
     }
 
     @Override
     public String getJobType() {
-        return "scheduler_sample_extension";
+        return "reports-scheduler";
     }
 
     @Override
@@ -89,41 +95,41 @@ public class SampleExtensionPlugin extends Plugin implements ActionPlugin, JobSc
 
     @Override
     public ScheduledJobRunner getJobRunner() {
-        return SampleJobRunner.getJobRunnerInstance();
+        return ReportsSchedulerJobRunner.getJobRunnerInstance();
     }
 
     @Override
     public ScheduledJobParser getJobParser() {
         return (parser, id, jobDocVersion) -> {
-            SampleJobParameter jobParameter = new SampleJobParameter();
+            JobParameter jobParameter = new JobParameter();
             XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.nextToken(), parser::getTokenLocation);
 
             while (!parser.nextToken().equals(XContentParser.Token.END_OBJECT)) {
                 String fieldName = parser.currentName();
                 parser.nextToken();
                 switch (fieldName) {
-                    case SampleJobParameter.NAME_FIELD:
+                    case JobConstant.NAME_FIELD:
                         jobParameter.setJobName(parser.text());
                         break;
-                    case SampleJobParameter.ENABLED_FILED:
+                    case JobConstant.ENABLED_FILED:
                         jobParameter.setEnabled(parser.booleanValue());
                         break;
-                    case SampleJobParameter.ENABLED_TIME_FILED:
+                    case JobConstant.ENABLED_TIME_FILED:
                         jobParameter.setEnabledTime(parseInstantValue(parser));
                         break;
-                    case SampleJobParameter.LAST_UPDATE_TIME_FIELD:
+                    case JobConstant.LAST_UPDATE_TIME_FIELD:
                         jobParameter.setLastUpdateTime(parseInstantValue(parser));
                         break;
-                    case SampleJobParameter.SCHEDULE_FIELD:
+                    case JobConstant.SCHEDULE_FIELD:
                         jobParameter.setSchedule(ScheduleParser.parse(parser));
                         break;
-                    case SampleJobParameter.INDEX_NAME_FIELD:
-                        jobParameter.setIndexToWatch(parser.text());
+                    case JobConstant.REPORT_DEFINITION_ID:
+                        jobParameter.setReportDefinitionId(parser.text());
                         break;
-                    case SampleJobParameter.LOCK_DURATION_SECONDS:
+                    case JobConstant.LOCK_DURATION_SECONDS:
                         jobParameter.setLockDurationSeconds(parser.longValue());
                         break;
-                    case SampleJobParameter.JITTER:
+                    case JobConstant.JITTER:
                         jobParameter.setJitter(parser.doubleValue());
                         break;
                     default: XContentParserUtils.throwUnknownToken(parser.currentToken(), parser.getTokenLocation());
@@ -148,6 +154,6 @@ public class SampleExtensionPlugin extends Plugin implements ActionPlugin, JobSc
     public List<RestHandler> getRestHandlers(Settings settings, RestController restController, ClusterSettings clusterSettings,
                                       IndexScopedSettings indexScopedSettings, SettingsFilter settingsFilter,
                                       IndexNameExpressionResolver indexNameExpressionResolver, Supplier<DiscoveryNodes> nodesInCluster) {
-        return Collections.singletonList(new SampleExtensionRestHandler());
+        return Collections.singletonList(new ReportsSchedulerRestHandler());
     }
 }

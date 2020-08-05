@@ -18,6 +18,7 @@ buildscript {
 plugins {
     id 'nebula.ospackage' version "8.3.0"
     id 'java-library'
+    id "io.freefair.lombok" version "5.0.0"
 }
 
 apply plugin: 'elasticsearch.esplugin'
@@ -25,8 +26,8 @@ apply plugin: 'elasticsearch.testclusters'
 
 esplugin {
     name 'opendistro-reports-scheduler'
-    description 'opendistro-reports-scheduler'
-    classname 'com.amazon.opendistroforelasticsearch.reportsscheduler.SampleExtensionPlugin'
+    description 'Scheduler for ODFE Kibana Reports Plugin'
+    classname 'com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin'
     extendedPlugins = ['opendistro-job-scheduler']
 }
 

@@ -13,7 +13,7 @@
  *   permissions and limitations under the License.
  */
 
-package com.amazon.opendistroforelasticsearch.reportsscheduler;
+package com.amazon.opendistroforelasticsearch.sample;
 
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.IntervalSchedule;
 import org.elasticsearch.action.ActionListener;
