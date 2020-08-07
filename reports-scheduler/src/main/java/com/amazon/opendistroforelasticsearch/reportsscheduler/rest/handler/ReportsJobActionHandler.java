@@ -74,10 +74,10 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
 
         log.info("original queue size(before findFirstLock): " + searchHitsQueue.size());
 
-        findFirstAvaliableJob(searchHitsQueue);
+        findFirstAvailableJob(searchHitsQueue);
     }
 
-    private void findFirstAvaliableJob(Queue<SearchHit> searchHitsQueue) {
+    private void findFirstAvailableJob(Queue<SearchHit> searchHitsQueue) {
         SearchHit hit = searchHitsQueue.poll();
         log.info("queue size after poll: " + searchHitsQueue.size());
 
@@ -91,7 +91,7 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
             lockService.acquireLock(jobParameter, ctx, ActionListener.wrap(
                     lock -> {
                         if (lock == null) {
-                            findFirstAvaliableJob(searchHitsQueue);
+                            findFirstAvailableJob(searchHitsQueue);
                         } else {
                             log.info("send job data(report_definition_id) to reporting core for execution");
 
