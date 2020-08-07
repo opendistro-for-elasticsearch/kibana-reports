@@ -40,6 +40,7 @@ ext {
 dependencies {
     compile "org.elasticsearch:elasticsearch:${es_version}"
     compileOnly "com.amazon.opendistroforelasticsearch:opendistro-job-scheduler-spi:1.9.0.0"
+    compile group: 'com.google.guava', name: 'guava', version:'15.0'
 }
 
 licenseHeaders.enabled = false

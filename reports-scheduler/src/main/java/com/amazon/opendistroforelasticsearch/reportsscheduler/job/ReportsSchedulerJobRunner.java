@@ -21,21 +21,16 @@ import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobRunner
 import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobParameter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.ActionListener;
-import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.action.update.UpdateRequest;
-import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.Client;
 
 import org.elasticsearch.cluster.service.ClusterService;
 import org.elasticsearch.plugins.Plugin;
-import org.elasticsearch.rest.RestStatus;
-import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 import org.elasticsearch.threadpool.ThreadPool;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,7 +51,7 @@ import java.util.Map;
 public class ReportsSchedulerJobRunner implements ScheduledJobRunner {
 
     private static final Logger log = LogManager.getLogger(ScheduledJobRunner.class);
-    private static final String JOB_QUEUE_INDEX_NAME = ".reports_scheduler_job_queue";
+    public static final String JOB_QUEUE_INDEX_NAME = ".reports_scheduler_job_queue";
 
     private static ReportsSchedulerJobRunner INSTANCE;
 
@@ -113,107 +108,72 @@ public class ReportsSchedulerJobRunner implements ScheduledJobRunner {
             JobParameter parameter = (JobParameter) jobParameter;
             String reportDefId = parameter.getReportDefinitionId();
 
-
+            // compose json
             Map<String, Object> jsonMap = new HashMap<>();
-            jsonMap.put("to_be_executed", true);
+            jsonMap.put("report_definition_id", reportDefId);
+            jsonMap.put("enqueue_time", Instant.now().toEpochMilli());
 
+            IndexRequest indexRequest = new IndexRequest()
+                    .index(JOB_QUEUE_INDEX_NAME)
+                    .id(reportDefId) //TODO: think about using job id from jobParameter
+                    .source(jsonMap);
 
-
-            //TODO: Save to a new index with report_definition_id and a status of to_be_executed: true/false
-            // Once Kibana pulls this index and find this document, it will create/deliver report and update this
-            // document field "to_be_executed: false"
-
-            //TODO: may need to first search for document, if it exists, we only update the to_be_executed field to true
-            // If not, we may consider adding a is_locked: false field to initialize
-
-
-            UpdateRequest request = new UpdateRequest(JOB_QUEUE_INDEX_NAME, reportDefId)
-                    .doc(jsonMap);
-
-
-            client.update(request, new ActionListener<UpdateResponse>() {
+            client.index(indexRequest, new ActionListener<IndexResponse>() {
                 @Override
-                public void onResponse(UpdateResponse updateResponse) {
-                    log.info("Existing job triggered and pushed to queue, waiting to be picked up by Kibana");
+                public void onResponse(IndexResponse indexResponse) {
+                    log.info("Scheduled job triggered and push to queue, waiting to be picked up by Reporting Core");
                 }
 
                 @Override
                 public void onFailure(Exception e) {
-                    if (e instanceof ElasticsearchException) {
-                        if (((ElasticsearchException) e).status() == RestStatus.NOT_FOUND) {
-                            jsonMap.put("report_definition_id", reportDefId);
-                            jsonMap.put("is_locked", false);
-                            IndexRequest indexRequest = new IndexRequest()
-                                    .index(JOB_QUEUE_INDEX_NAME)
-                                    .id(reportDefId)
-                                    .source(jsonMap);
-
-                            client.index(indexRequest, new ActionListener<IndexResponse>() {
-                                @Override
-                                public void onResponse(IndexResponse indexResponse) {
-                                    log.info("New job created and push to queue, waiting to be picked up by Kibana"); // TODO: better log message
-                                }
-
-                                @Override
-                                public void onFailure(Exception e) {
-                                    log.error(e.toString());
-                                }
-                            });
-                        } else {
-                            log.error(e.toString());
-                        }
-                    } else {
-                        log.error(e.toString());
-                    }
+                    log.error(e.toString());
                 }
             });
 
-//            IndexResponse response = client.prepareIndex("twitter", "_doc", "1")
-//                    .setSource(jsonBuilder()
-//                            .startObject()
-//                            .field("user", "kimchy")
-//                            .field("postDate", new Date())
-//                            .field("message", "trying out Elasticsearch")
-//                            .endObject()
-//                    )
-//                    .get();
+            //TODO: Save to a new index with report_definition_id
 
 
-
-
-//            if (jobParameter.getLockDurationSeconds() != null) {
-//                lockService.acquireLock(jobParameter, context, ActionListener.wrap(
-//                        lock -> {
-//                            if (lock == null) {
-//                                return;
-//                            }
+//            UpdateRequest request = new UpdateRequest(JOB_QUEUE_INDEX_NAME, reportDefId)
+//                    .doc(jsonMap);
 //
-//                            SampleJobParameter parameter = (SampleJobParameter) jobParameter;
-//                            StringBuilder msg = new StringBuilder();
-//                            msg.append("Watching index ").append(parameter.getIndexToWatch()).append("\n");
 //
-//                            List<ShardRouting> shardRoutingList = this.clusterService.state()
-//                                    .routingTable().allShards(parameter.getIndexToWatch());
-//                            for(ShardRouting shardRouting : shardRoutingList) {
-//                                msg.append(shardRouting.shardId().getId()).append("\t").append(shardRouting.currentNodeId()).append("\t")
-//                                        .append(shardRouting.active() ? "active" : "inactive").append("\n");
-//                            }
-//                            log.info(msg.toString());
+//            client.update(request, new ActionListener<UpdateResponse>() {
+//                @Override
+//                public void onResponse(UpdateResponse updateResponse) {
+//                    log.info("Existing job triggered and pushed to queue, waiting to be picked up by Kibana");
+//                }
 //
-//                            lockService.release(lock, ActionListener.wrap(
-//                                    released -> {
-//                                        log.info("Released lock for job {}", jobParameter.getName());
-//                                    },
-//                                    exception -> {
-//                                        throw new IllegalStateException("Failed to release lock.");
-//                                    }
-//                            ));
-//                        },
-//                        exception -> {
-//                            throw new IllegalStateException("Failed to acquire lock.");
+//                @Override
+//                public void onFailure(Exception e) {
+//                    if (e instanceof ElasticsearchException) {
+//                        if (((ElasticsearchException) e).status() == RestStatus.NOT_FOUND) {
+//                            jsonMap.put("report_definition_id", reportDefId);
+//                            jsonMap.put("is_locked", false);
+//                            IndexRequest indexRequest = new IndexRequest()
+//                                    .index(JOB_QUEUE_INDEX_NAME)
+//                                    .id(reportDefId)
+//                                    .source(jsonMap);
+//
+//                            client.index(indexRequest, new ActionListener<IndexResponse>() {
+//                                @Override
+//                                public void onResponse(IndexResponse indexResponse) {
+//                                    log.info("New job created and push to queue, waiting to be picked up by Kibana"); // TODO: better log message
+//                                }
+//
+//                                @Override
+//                                public void onFailure(Exception e) {
+//                                    log.error(e.toString());
+//                                }
+//                            });
+//                        } else {
+//                            log.error(e.toString());
 //                        }
-//                ));
-//            }
+//                    } else {
+//                        log.error(e.toString());
+//                    }
+//                }
+//            });
+
         };
 
         threadPool.generic().submit(runnable);

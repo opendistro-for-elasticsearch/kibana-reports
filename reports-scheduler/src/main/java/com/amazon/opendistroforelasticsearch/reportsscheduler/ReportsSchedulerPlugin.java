@@ -22,8 +22,10 @@ import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.ScheduleP
 import com.amazon.opendistroforelasticsearch.reportsscheduler.job.ReportsSchedulerJobRunner;
 import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobConstant;
 import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobParameter;
-import com.amazon.opendistroforelasticsearch.reportsscheduler.rest.ReportsSchedulerRestHandler;
+import com.amazon.opendistroforelasticsearch.reportsscheduler.rest.RestReportsJobAction;
+import com.amazon.opendistroforelasticsearch.reportsscheduler.rest.RestReportsScheduleAction;
 import com.amazon.opendistroforelasticsearch.sample.SampleExtensionRestHandler;
+import com.google.common.collect.ImmutableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.client.Client;
@@ -65,7 +67,7 @@ import java.util.function.Supplier;
  */
 public class ReportsSchedulerPlugin extends Plugin implements ActionPlugin, JobSchedulerExtension {
     private static final Logger log = LogManager.getLogger(ReportsSchedulerPlugin.class);
-
+    private ClusterService clusterService;
     public static final String JOB_INDEX_NAME = ".reports_scheduler";
 
     @Override
@@ -79,6 +81,7 @@ public class ReportsSchedulerPlugin extends Plugin implements ActionPlugin, JobS
         jobRunner.setClusterService(clusterService);
         jobRunner.setThreadPool(threadPool);
         jobRunner.setClient(client);
+        this.clusterService = clusterService;
 
         return Collections.emptyList();
     }
@@ -154,6 +157,6 @@ public class ReportsSchedulerPlugin extends Plugin implements ActionPlugin, JobS
     public List<RestHandler> getRestHandlers(Settings settings, RestController restController, ClusterSettings clusterSettings,
                                       IndexScopedSettings indexScopedSettings, SettingsFilter settingsFilter,
                                       IndexNameExpressionResolver indexNameExpressionResolver, Supplier<DiscoveryNodes> nodesInCluster) {
-        return Collections.singletonList(new ReportsSchedulerRestHandler());
+        return ImmutableList.of(new RestReportsScheduleAction(settings), new RestReportsJobAction(settings, clusterService));
     }
 }
