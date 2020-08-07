@@ -26,7 +26,12 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Queue;
 
 public class ReportsJobActionHandler extends AbstractActionHandler {
     private final LockService lockService;
@@ -38,7 +43,7 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
      *
      * @param client         ES node client that executes actions on the local node
      * @param channel        ES channel used to construct bytes / builder based outputs, and send responses
-     * @param clusterService to be added
+     * @param clusterService ES cluster service
      */
     public ReportsJobActionHandler(NodeClient client, RestChannel channel, ClusterService clusterService) {
         super(client, channel);
@@ -47,13 +52,12 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
 
 
     public void getJob() {
-        // get all jobs from queue_index
-        // return 404 if no jobs in the queue, or the queue doesn't exist at all
+        // get all jobs from job_queue index
         SearchRequest searchRequest = new SearchRequest(ReportsSchedulerJobRunner.JOB_QUEUE_INDEX_NAME);
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders.matchAllQuery());
 
-        // sort the document
+        // sort the document by enqueued time
         searchSourceBuilder.sort(new FieldSortBuilder("enqueue_time").order(SortOrder.DESC));
         searchRequest.source(searchSourceBuilder);
         client.search(searchRequest, ActionListener.wrap(response -> onSearchJobResponse(response), exception -> onFailure(exception)));
@@ -62,35 +66,47 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
     private void onSearchJobResponse(SearchResponse response) {
         SearchHits hits = response.getHits();
         SearchHit[] searchHits = hits.getHits();
+        List<SearchHit> searchHitslist = Arrays.asList(searchHits);
+        // randomize the jobs from job_queue index, for possible faster job retrieval from reporting core
+        Collections.shuffle(searchHitslist);
+        // Convert list of randomized search hits to queue
+        Queue<SearchHit> searchHitsQueue = new LinkedList<>(searchHitslist);
 
-        // loop to retrieve job that is not locked, and then acquire lock
-        for (SearchHit hit : searchHits) {
+        log.info("original queue size(before findFirstLock): " + searchHitsQueue.size());
+
+        findFirstAvaliableJob(searchHitsQueue);
+    }
+
+    private void findFirstAvaliableJob(Queue<SearchHit> searchHitsQueue) {
+        SearchHit hit = searchHitsQueue.poll();
+        log.info("queue size after poll: " + searchHitsQueue.size());
+
+        if (hit != null) {
             String jobId = hit.getId();
-            // TODO: duplicate code block
+            // set up lock service required parameters
             JobParameter jobParameter = new JobParameter();
             jobParameter.setLockDurationSeconds(LOCK_DURATION_SECONDS);
             JobExecutionContext ctx = new JobExecutionContext(null, null, null, ReportsSchedulerJobRunner.JOB_QUEUE_INDEX_NAME, jobId);
 
-            log.info("jobId: " + jobId);
-
             lockService.acquireLock(jobParameter, ctx, ActionListener.wrap(
                     lock -> {
                         if (lock == null) {
-                            return;
+                            findFirstAvaliableJob(searchHitsQueue);
+                        } else {
+                            log.info("send job data(report_definition_id) to reporting core for execution");
+
+                            RestResponse restResponse = new BytesRestResponse(RestStatus.OK, hit.toXContent(JsonXContent.contentBuilder(), null));
+                            channel.sendResponse(restResponse);
                         }
-
-                        log.info("send data to reporting core for execution ");
-
-                        RestResponse restResponse = new BytesRestResponse(RestStatus.OK, hit.toXContent(JsonXContent.contentBuilder(), null));
-                        channel.sendResponse(restResponse);
                     },
                     exception -> {
                         throw new IllegalStateException("Failed to acquire lock.");
                     }
             ));
+        } else {
+            // return 404 if no jobs in the queue or all jobs are being executed now(being locked)
+            channel.sendResponse(new BytesRestResponse(RestStatus.NOT_FOUND, "No jobs to execute"));
         }
-        // TODO: add logic to handle when there is no job in queue, or all jobs in queue are locked (Need help)
-//        channel.sendResponse(new BytesRestResponse(RestStatus.NOT_FOUND, "No jobs to be executed."));
     }
 
     public void updateJob(String jobId) {
@@ -128,7 +144,5 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
                 channel.sendResponse(new BytesRestResponse(RestStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
             }
         });
-
-
     }
 }
