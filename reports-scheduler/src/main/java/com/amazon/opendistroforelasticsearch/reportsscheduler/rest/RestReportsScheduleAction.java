@@ -13,58 +13,51 @@ import com.google.common.collect.ImmutableList;
 import org.elasticsearch.rest.RestStatus;
 import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.BASE_SCHEDULER_URI;
 
-
 public class RestReportsScheduleAction extends BaseRestHandler {
-    public static final String SCHEDULER_SCHEDULE_ACTION = "reports_scheduler_schedule_action";
+  public static final String SCHEDULER_SCHEDULE_ACTION = "reports_scheduler_schedule_action";
+  private final Settings settings;
+  private final String SCHEDULE = "schedule";
 
-    private final Settings settings;
+  public RestReportsScheduleAction(Settings settings) {
+    this.settings = settings;
+  }
 
-    private final String SCHEDULE = "schedule";
+  @Override
+  public String getName() {
+    return SCHEDULER_SCHEDULE_ACTION;
+  }
 
+  @Override
+  public List<Route> routes() {
+    return ImmutableList.of(
+        new Route(
+            RestRequest.Method.POST,
+            String.format(Locale.ROOT, "%s/%s", BASE_SCHEDULER_URI, SCHEDULE)),
+        new Route(
+            RestRequest.Method.DELETE,
+            String.format(Locale.ROOT, "%s/%s", BASE_SCHEDULER_URI, SCHEDULE)));
+  }
 
-    public RestReportsScheduleAction(Settings settings) {
-        this.settings = settings;
+  @Override
+  protected RestChannelConsumer prepareRequest(RestRequest request, NodeClient client) {
+    String jobId = request.param("job_id");
+
+    if (jobId == null) {
+      throw new IllegalArgumentException("Must specify id");
     }
 
-    @Override
-    public String getName() {
-        return SCHEDULER_SCHEDULE_ACTION;
-    }
+    return channel -> {
+      ReportsScheduleActionHandler handler = new ReportsScheduleActionHandler(client, channel);
 
-    @Override
-    public List<Route> routes() {
-        return ImmutableList
-            .of(
-                new Route(
-                    RestRequest.Method.POST,
-                    String.format(Locale.ROOT, "%s/%s", BASE_SCHEDULER_URI, SCHEDULE)
-                ),
-                new Route(
-                    RestRequest.Method.DELETE,
-                    String.format(Locale.ROOT, "%s/%s", BASE_SCHEDULER_URI, SCHEDULE)
-                )
-            );
-    }
-
-
-    @Override
-    protected RestChannelConsumer prepareRequest(RestRequest request, NodeClient client) {
-        String jobId = request.param("id");
-
-        if(jobId == null) {
-            throw new IllegalArgumentException("Must specify id");
-        }
-
-        return channel -> {
-            ReportsScheduleActionHandler handler = new ReportsScheduleActionHandler(client, channel);
-
-            if (request.method().equals(RestRequest.Method.POST)) {
-                handler.createSchedule(jobId, request);
-            } else if (request.method().equals(RestRequest.Method.DELETE)) {
-                handler.deleteSchedule(jobId);
-            } else {
-                channel.sendResponse(new BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, request.method() + " is not allowed."));
-            }
-        };
-    }
+      if (request.method().equals(RestRequest.Method.POST)) {
+        handler.createSchedule(jobId, request);
+      } else if (request.method().equals(RestRequest.Method.DELETE)) {
+        handler.deleteSchedule(jobId);
+      } else {
+        channel.sendResponse(
+            new BytesRestResponse(
+                RestStatus.METHOD_NOT_ALLOWED, request.method() + " is not allowed."));
+      }
+    };
+  }
 }

@@ -15,6 +15,8 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler;
 
+import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.JOB_INDEX_NAME;
+
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.JobSchedulerExtension;
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobParser;
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobRunner;
@@ -24,10 +26,7 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobC
 import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobParameter;
 import com.amazon.opendistroforelasticsearch.reportsscheduler.rest.RestReportsJobAction;
 import com.amazon.opendistroforelasticsearch.reportsscheduler.rest.RestReportsScheduleAction;
-import com.amazon.opendistroforelasticsearch.sample.SampleExtensionRestHandler;
 import com.google.common.collect.ImmutableList;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
 import org.elasticsearch.cluster.node.DiscoveryNodes;
@@ -59,16 +58,15 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * Sample JobScheduler extension plugin.
+ * Reports scheduler plugin.
  *
- * It use ".scheduler_sample_extension" index to manage its scheduled jobs, and exposes a REST API
- * endpoint using {@link SampleExtensionRestHandler}.
+ * It use ".reports_scheduler" index to manage its scheduled jobs, and exposes a REST API
+ * endpoint using {@link RestReportsJobAction} and {@link RestReportsScheduleAction}.
  *
  */
 public class ReportsSchedulerPlugin extends Plugin implements ActionPlugin, JobSchedulerExtension {
-    private static final Logger log = LogManager.getLogger(ReportsSchedulerPlugin.class);
     private ClusterService clusterService;
-    public static final String JOB_INDEX_NAME = ".reports_scheduler";
+
 
     @Override
     public Collection<Object> createComponents(Client client, ClusterService clusterService, ThreadPool threadPool,
@@ -131,9 +129,6 @@ public class ReportsSchedulerPlugin extends Plugin implements ActionPlugin, JobS
                         break;
                     case JobConstant.LOCK_DURATION_SECONDS:
                         jobParameter.setLockDurationSeconds(parser.longValue());
-                        break;
-                    case JobConstant.JITTER:
-                        jobParameter.setJitter(parser.doubleValue());
                         break;
                     default: XContentParserUtils.throwUnknownToken(parser.currentToken(), parser.getTokenLocation());
                 }

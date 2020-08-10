@@ -17,56 +17,51 @@ import org.elasticsearch.rest.RestStatus;
 
 import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.BASE_SCHEDULER_URI;
 
-
 public class RestReportsJobAction extends BaseRestHandler {
-    public static final String SCHEDULER_JOB_ACTION = "reports_scheduler_job_action";
+  public static final String SCHEDULER_JOB_ACTION = "reports_scheduler_job_action";
+  private final String JOB = "job";
+  private final String JOB_ID = "jobId";
 
-    private final Settings settings;
+  private final Settings settings;
+  private final ClusterService clusterService;
 
-    private final String JOB = "job";
-    private final String JOB_ID = "jobId";
-    private final ClusterService clusterService;
+  public RestReportsJobAction(Settings settings, ClusterService clusterService) {
+    this.settings = settings;
+    this.clusterService = clusterService;
+  }
 
+  @Override
+  public String getName() {
+    return SCHEDULER_JOB_ACTION;
+  }
 
-    public RestReportsJobAction(Settings settings, ClusterService clusterService) {
-        this.settings = settings;
-        this.clusterService = clusterService;
-    }
+  @Override
+  public List<Route> routes() {
+    return ImmutableList.of(
+        new Route(
+            RestRequest.Method.POST,
+            String.format(Locale.ROOT, "%s/%s/{%s}", BASE_SCHEDULER_URI, JOB, JOB_ID)),
+        new Route(
+            RestRequest.Method.GET, String.format(Locale.ROOT, "%s/%s", BASE_SCHEDULER_URI, JOB)));
+  }
 
-    @Override
-    public String getName() {
-        return SCHEDULER_JOB_ACTION;
-    }
+  @Override
+  protected RestChannelConsumer prepareRequest(RestRequest request, NodeClient client) {
+    String jobId = request.param(JOB_ID);
 
-    @Override
-    public List<Route> routes() {
-        return ImmutableList
-                .of(
-                        new Route(
-                                RestRequest.Method.POST,
-                                String.format(Locale.ROOT, "%s/%s/{%s}", BASE_SCHEDULER_URI, JOB, JOB_ID)
-                        ),
-                        new Route(
-                                RestRequest.Method.GET,
-                                String.format(Locale.ROOT, "%s/%s", BASE_SCHEDULER_URI, JOB)
-                        )
-                );
-    }
+    return channel -> {
+      ReportsJobActionHandler handler =
+          new ReportsJobActionHandler(client, channel, clusterService);
 
-    @Override
-    protected RestChannelConsumer prepareRequest(RestRequest request, NodeClient client) {
-        String jobId = request.param(JOB_ID);
-
-        return channel -> {
-            ReportsJobActionHandler handler = new ReportsJobActionHandler(client, channel, clusterService);
-
-            if (request.method().equals(RestRequest.Method.POST)) {
-                handler.updateJob(jobId);
-            } else if (request.method().equals(RestRequest.Method.GET)) {
-                handler.getJob();
-            } else {
-                channel.sendResponse(new BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, request.method() + " is not allowed."));
-            }
-        };
-    }
+      if (request.method().equals(RestRequest.Method.POST)) {
+        handler.updateJob(jobId);
+      } else if (request.method().equals(RestRequest.Method.GET)) {
+        handler.getJob();
+      } else {
+        channel.sendResponse(
+            new BytesRestResponse(
+                RestStatus.METHOD_NOT_ALLOWED, request.method() + " is not allowed."));
+      }
+    };
+  }
 }

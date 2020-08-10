@@ -8,5 +8,4 @@ public class JobConstant {
     public static final String ENABLED_TIME_FILED = "enabled_time";
     public static final String REPORT_DEFINITION_ID = "report_definition_id";
     public static final String LOCK_DURATION_SECONDS = "lock_duration_seconds";
-    public static final String JITTER = "jitter";
 }
