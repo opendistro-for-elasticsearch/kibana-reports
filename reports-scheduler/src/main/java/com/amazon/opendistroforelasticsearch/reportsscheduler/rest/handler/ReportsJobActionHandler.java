@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+
 package com.amazon.opendistroforelasticsearch.reportsscheduler.rest.handler;
 
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.JobExecutionContext;
@@ -22,9 +37,9 @@ import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.common.Randomness;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -70,7 +85,7 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
     SearchHit[] searchHits = hits.getHits();
     List<SearchHit> searchHitsList = Arrays.asList(searchHits);
     // randomize the jobs, for possible faster job retrieval
-    Collections.shuffle(searchHitsList);
+    Randomness.shuffle(searchHitsList);
     Queue<SearchHit> searchHitsQueue = new LinkedList<>(searchHitsList);
 
     log.info("original queue size: " + searchHitsQueue.size());
@@ -119,6 +134,7 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
                 throw new IllegalStateException("Failed to acquire lock.");
               }));
     } else {
+      log.info("No jobs to execute");
       channel.sendResponse(new BytesRestResponse(RestStatus.NO_CONTENT, "No jobs to execute"));
     }
   }
