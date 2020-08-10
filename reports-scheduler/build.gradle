@@ -33,7 +33,6 @@ buildscript {
 plugins {
     id 'nebula.ospackage' version "8.3.0"
     id 'java-library'
-    id "com.diffplug.gradle.spotless" version "3.26.1"
 }
 
 apply plugin: 'elasticsearch.esplugin'
@@ -94,14 +93,6 @@ afterEvaluate {
             plugins.remove(0)
             plugins.add(firstPlugin)
         }
-    }
-}
-
-spotless {
-    java {
-        removeUnusedImports()
-        importOrder 'java', 'javax', 'org', 'com'
-        licenseHeaderFile 'spotless.license.java'
     }
 }
 

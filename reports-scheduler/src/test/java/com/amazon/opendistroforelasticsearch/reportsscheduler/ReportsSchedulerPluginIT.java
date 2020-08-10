@@ -15,6 +15,8 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler;
 
+import java.util.List;
+
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.node.info.NodesInfoRequest;
@@ -24,8 +26,6 @@ import org.elasticsearch.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.plugins.PluginInfo;
 import org.elasticsearch.test.ESIntegTestCase;
 import org.junit.Assert;
-
-import java.util.List;
 
 public class ReportsSchedulerPluginIT extends ESIntegTestCase {
 

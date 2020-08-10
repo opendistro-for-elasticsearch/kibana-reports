@@ -15,9 +15,15 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.rest.handler;
 
-import com.amazon.opendistroforelasticsearch.jobscheduler.spi.JobExecutionContext;
-import com.amazon.opendistroforelasticsearch.jobscheduler.spi.utils.LockService;
-import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobParameter;
+import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.JOB_QUEUE_INDEX_NAME;
+import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.LOCK_DURATION_SECONDS;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Queue;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.ActionListener;
@@ -28,6 +34,7 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.node.NodeClient;
 import org.elasticsearch.cluster.service.ClusterService;
+import org.elasticsearch.common.Randomness;
 import org.elasticsearch.common.xcontent.json.JsonXContent;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.BytesRestResponse;
@@ -37,16 +44,10 @@ import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.common.Randomness;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Queue;
-
-import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.JOB_QUEUE_INDEX_NAME;
-import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.LOCK_DURATION_SECONDS;
+import com.amazon.opendistroforelasticsearch.jobscheduler.spi.JobExecutionContext;
+import com.amazon.opendistroforelasticsearch.jobscheduler.spi.utils.LockService;
+import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobParameter;
 
 public class ReportsJobActionHandler extends AbstractActionHandler {
   private final LockService lockService;

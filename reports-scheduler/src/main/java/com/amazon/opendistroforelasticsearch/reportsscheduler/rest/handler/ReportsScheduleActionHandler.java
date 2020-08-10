@@ -17,7 +17,9 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.rest.handler;
 
 import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.JOB_INDEX_NAME;
 
+import java.io.IOException;
 import java.util.Locale;
+
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
@@ -31,8 +33,6 @@ import org.elasticsearch.rest.RestChannel;
 import org.elasticsearch.rest.RestRequest;
 import org.elasticsearch.rest.RestResponse;
 import org.elasticsearch.rest.RestStatus;
-
-import java.io.IOException;
 
 public class ReportsScheduleActionHandler extends AbstractActionHandler {
 

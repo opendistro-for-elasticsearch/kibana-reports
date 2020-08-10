@@ -15,12 +15,13 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter;
 
-import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobParameter;
-import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.Schedule;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-
 import java.io.IOException;
 import java.time.Instant;
+
+import org.elasticsearch.common.xcontent.XContentBuilder;
+
+import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobParameter;
+import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.Schedule;
 
 /**
  * A report scheduled job parameter.

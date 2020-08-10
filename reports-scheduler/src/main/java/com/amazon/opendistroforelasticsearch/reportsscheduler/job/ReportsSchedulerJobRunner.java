@@ -15,10 +15,12 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.job;
 
-import com.amazon.opendistroforelasticsearch.jobscheduler.spi.JobExecutionContext;
-import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobParameter;
-import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobRunner;
-import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobParameter;
+import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.JOB_QUEUE_INDEX_NAME;
+
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.ActionListener;
@@ -29,11 +31,10 @@ import org.elasticsearch.cluster.service.ClusterService;
 import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.threadpool.ThreadPool;
 
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.JOB_QUEUE_INDEX_NAME;
+import com.amazon.opendistroforelasticsearch.jobscheduler.spi.JobExecutionContext;
+import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobParameter;
+import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobRunner;
+import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobParameter;
 
 /**
  * Reports scheduler job runner class.

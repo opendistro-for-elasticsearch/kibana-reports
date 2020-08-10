@@ -15,13 +15,13 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.rest.handler;
 
+import java.io.IOException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.client.node.NodeClient;
 import org.elasticsearch.rest.BytesRestResponse;
 import org.elasticsearch.rest.RestChannel;
-
-import java.io.IOException;
 
 /** Action handler to process REST request and handle failures. */
 public abstract class AbstractActionHandler {

@@ -17,16 +17,13 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler;
 
 import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.JOB_INDEX_NAME;
 
-import com.amazon.opendistroforelasticsearch.jobscheduler.spi.JobSchedulerExtension;
-import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobParser;
-import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobRunner;
-import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.ScheduleParser;
-import com.amazon.opendistroforelasticsearch.reportsscheduler.job.ReportsSchedulerJobRunner;
-import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobConstant;
-import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobParameter;
-import com.amazon.opendistroforelasticsearch.reportsscheduler.rest.RestReportsJobAction;
-import com.amazon.opendistroforelasticsearch.reportsscheduler.rest.RestReportsScheduleAction;
-import com.google.common.collect.ImmutableList;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Supplier;
+
 import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
 import org.elasticsearch.cluster.node.DiscoveryNodes;
@@ -50,12 +47,16 @@ import org.elasticsearch.script.ScriptService;
 import org.elasticsearch.threadpool.ThreadPool;
 import org.elasticsearch.watcher.ResourceWatcherService;
 
-import java.io.IOException;
-import java.time.Instant;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Supplier;
+import com.amazon.opendistroforelasticsearch.jobscheduler.spi.JobSchedulerExtension;
+import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobParser;
+import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobRunner;
+import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.ScheduleParser;
+import com.amazon.opendistroforelasticsearch.reportsscheduler.job.ReportsSchedulerJobRunner;
+import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobConstant;
+import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobParameter;
+import com.amazon.opendistroforelasticsearch.reportsscheduler.rest.RestReportsJobAction;
+import com.amazon.opendistroforelasticsearch.reportsscheduler.rest.RestReportsScheduleAction;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Reports scheduler plugin.

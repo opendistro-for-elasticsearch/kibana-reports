@@ -15,18 +15,20 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.rest;
 
-import com.amazon.opendistroforelasticsearch.reportsscheduler.rest.handler.ReportsScheduleActionHandler;
+import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.BASE_SCHEDULER_URI;
+
+import java.util.List;
+import java.util.Locale;
+
 import org.elasticsearch.client.node.NodeClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.rest.BaseRestHandler;
 import org.elasticsearch.rest.BytesRestResponse;
 import org.elasticsearch.rest.RestRequest;
-
-import java.util.List;
-import java.util.Locale;
-import com.google.common.collect.ImmutableList;
 import org.elasticsearch.rest.RestStatus;
-import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.BASE_SCHEDULER_URI;
+
+import com.amazon.opendistroforelasticsearch.reportsscheduler.rest.handler.ReportsScheduleActionHandler;
+import com.google.common.collect.ImmutableList;
 
 public class RestReportsScheduleAction extends BaseRestHandler {
   public static final String SCHEDULER_SCHEDULE_ACTION = "reports_scheduler_schedule_action";
