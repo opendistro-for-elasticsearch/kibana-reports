@@ -60,98 +60,111 @@ import java.util.function.Supplier;
 /**
  * Reports scheduler plugin.
  *
- * It use ".reports_scheduler" index to manage its scheduled jobs, and exposes a REST API
+ * <p>It use ".reports_scheduler" index to manage its scheduled jobs, and exposes a REST API
  * endpoint using {@link RestReportsJobAction} and {@link RestReportsScheduleAction}.
- *
  */
 public class ReportsSchedulerPlugin extends Plugin implements ActionPlugin, JobSchedulerExtension {
-    private ClusterService clusterService;
+  private ClusterService clusterService;
 
+  @Override
+  public Collection<Object> createComponents(
+      Client client,
+      ClusterService clusterService,
+      ThreadPool threadPool,
+      ResourceWatcherService resourceWatcherService,
+      ScriptService scriptService,
+      NamedXContentRegistry xContentRegistry,
+      Environment environment,
+      NodeEnvironment nodeEnvironment,
+      NamedWriteableRegistry namedWriteableRegistry,
+      IndexNameExpressionResolver indexNameExpressionResolver,
+      Supplier<RepositoriesService> repositoriesServiceSupplier) {
+    ReportsSchedulerJobRunner jobRunner = ReportsSchedulerJobRunner.getJobRunnerInstance();
+    jobRunner.setClusterService(clusterService);
+    jobRunner.setThreadPool(threadPool);
+    jobRunner.setClient(client);
+    this.clusterService = clusterService;
 
-    @Override
-    public Collection<Object> createComponents(Client client, ClusterService clusterService, ThreadPool threadPool,
-                                               ResourceWatcherService resourceWatcherService, ScriptService scriptService,
-                                               NamedXContentRegistry xContentRegistry, Environment environment,
-                                               NodeEnvironment nodeEnvironment, NamedWriteableRegistry namedWriteableRegistry,
-                                               IndexNameExpressionResolver indexNameExpressionResolver,
-                                               Supplier<RepositoriesService> repositoriesServiceSupplier) {
-        ReportsSchedulerJobRunner jobRunner = ReportsSchedulerJobRunner.getJobRunnerInstance();
-        jobRunner.setClusterService(clusterService);
-        jobRunner.setThreadPool(threadPool);
-        jobRunner.setClient(client);
-        this.clusterService = clusterService;
+    return Collections.emptyList();
+  }
 
-        return Collections.emptyList();
-    }
+  @Override
+  public String getJobType() {
+    return "reports-scheduler";
+  }
 
-    @Override
-    public String getJobType() {
-        return "reports-scheduler";
-    }
+  @Override
+  public String getJobIndex() {
+    return JOB_INDEX_NAME;
+  }
 
-    @Override
-    public String getJobIndex() {
-        return JOB_INDEX_NAME;
-    }
+  @Override
+  public ScheduledJobRunner getJobRunner() {
+    return ReportsSchedulerJobRunner.getJobRunnerInstance();
+  }
 
-    @Override
-    public ScheduledJobRunner getJobRunner() {
-        return ReportsSchedulerJobRunner.getJobRunnerInstance();
-    }
+  @Override
+  public ScheduledJobParser getJobParser() {
+    return (parser, id, jobDocVersion) -> {
+      JobParameter jobParameter = new JobParameter();
+      XContentParserUtils.ensureExpectedToken(
+          XContentParser.Token.START_OBJECT, parser.nextToken(), parser::getTokenLocation);
 
-    @Override
-    public ScheduledJobParser getJobParser() {
-        return (parser, id, jobDocVersion) -> {
-            JobParameter jobParameter = new JobParameter();
-            XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.nextToken(), parser::getTokenLocation);
-
-            while (!parser.nextToken().equals(XContentParser.Token.END_OBJECT)) {
-                String fieldName = parser.currentName();
-                parser.nextToken();
-                switch (fieldName) {
-                    case JobConstant.NAME_FIELD:
-                        jobParameter.setJobName(parser.text());
-                        break;
-                    case JobConstant.ENABLED_FILED:
-                        jobParameter.setEnabled(parser.booleanValue());
-                        break;
-                    case JobConstant.ENABLED_TIME_FILED:
-                        jobParameter.setEnabledTime(parseInstantValue(parser));
-                        break;
-                    case JobConstant.LAST_UPDATE_TIME_FIELD:
-                        jobParameter.setLastUpdateTime(parseInstantValue(parser));
-                        break;
-                    case JobConstant.SCHEDULE_FIELD:
-                        jobParameter.setSchedule(ScheduleParser.parse(parser));
-                        break;
-                    case JobConstant.REPORT_DEFINITION_ID:
-                        jobParameter.setReportDefinitionId(parser.text());
-                        break;
-                    case JobConstant.LOCK_DURATION_SECONDS:
-                        jobParameter.setLockDurationSeconds(parser.longValue());
-                        break;
-                    default: XContentParserUtils.throwUnknownToken(parser.currentToken(), parser.getTokenLocation());
-                }
-            }
-            return jobParameter;
-        };
-    }
-
-    private Instant parseInstantValue(XContentParser parser) throws IOException {
-        if(XContentParser.Token.VALUE_NULL.equals(parser.currentToken())) {
-            return null;
+      while (!parser.nextToken().equals(XContentParser.Token.END_OBJECT)) {
+        String fieldName = parser.currentName();
+        parser.nextToken();
+        switch (fieldName) {
+          case JobConstant.NAME_FIELD:
+            jobParameter.setJobName(parser.text());
+            break;
+          case JobConstant.ENABLED_FILED:
+            jobParameter.setEnabled(parser.booleanValue());
+            break;
+          case JobConstant.ENABLED_TIME_FILED:
+            jobParameter.setEnabledTime(parseInstantValue(parser));
+            break;
+          case JobConstant.LAST_UPDATE_TIME_FIELD:
+            jobParameter.setLastUpdateTime(parseInstantValue(parser));
+            break;
+          case JobConstant.SCHEDULE_FIELD:
+            jobParameter.setSchedule(ScheduleParser.parse(parser));
+            break;
+          case JobConstant.REPORT_DEFINITION_ID:
+            jobParameter.setReportDefinitionId(parser.text());
+            break;
+          case JobConstant.LOCK_DURATION_SECONDS:
+            jobParameter.setLockDurationSeconds(parser.longValue());
+            break;
+          default:
+            XContentParserUtils.throwUnknownToken(parser.currentToken(), parser.getTokenLocation());
         }
-        if(parser.currentToken().isValue()) {
-            return Instant.ofEpochMilli(parser.longValue());
-        }
-        XContentParserUtils.throwUnknownToken(parser.currentToken(), parser.getTokenLocation());
-        return null;
-    }
+      }
+      return jobParameter;
+    };
+  }
 
-    @Override
-    public List<RestHandler> getRestHandlers(Settings settings, RestController restController, ClusterSettings clusterSettings,
-                                      IndexScopedSettings indexScopedSettings, SettingsFilter settingsFilter,
-                                      IndexNameExpressionResolver indexNameExpressionResolver, Supplier<DiscoveryNodes> nodesInCluster) {
-        return ImmutableList.of(new RestReportsScheduleAction(settings), new RestReportsJobAction(settings, clusterService));
+  private Instant parseInstantValue(XContentParser parser) throws IOException {
+    if (XContentParser.Token.VALUE_NULL.equals(parser.currentToken())) {
+      return null;
     }
+    if (parser.currentToken().isValue()) {
+      return Instant.ofEpochMilli(parser.longValue());
+    }
+    XContentParserUtils.throwUnknownToken(parser.currentToken(), parser.getTokenLocation());
+    return null;
+  }
+
+  @Override
+  public List<RestHandler> getRestHandlers(
+      Settings settings,
+      RestController restController,
+      ClusterSettings clusterSettings,
+      IndexScopedSettings indexScopedSettings,
+      SettingsFilter settingsFilter,
+      IndexNameExpressionResolver indexNameExpressionResolver,
+      Supplier<DiscoveryNodes> nodesInCluster) {
+    return ImmutableList.of(
+        new RestReportsScheduleAction(settings),
+        new RestReportsJobAction(settings, clusterService));
+  }
 }

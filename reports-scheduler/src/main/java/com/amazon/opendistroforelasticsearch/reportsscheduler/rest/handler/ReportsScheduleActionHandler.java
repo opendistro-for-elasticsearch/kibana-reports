@@ -58,8 +58,7 @@ public class ReportsScheduleActionHandler extends AbstractActionHandler {
   }
 
   public void deleteSchedule(String jobId) {
-    DeleteRequest deleteRequest =
-        new DeleteRequest().index(JOB_INDEX_NAME).id(jobId);
+    DeleteRequest deleteRequest = new DeleteRequest().index(JOB_INDEX_NAME).id(jobId);
 
     client.delete(
         deleteRequest,
