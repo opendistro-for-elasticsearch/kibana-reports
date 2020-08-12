@@ -21,7 +21,8 @@ export const extractFilename = (filename: string) => {
 };
 
 export const extractFileFormat = (filename: string) => {
-  return filename.substring(filename.length - 3, filename.length);
+  const fileFormat = filename;
+  return fileFormat.substring(filename.length - 3, filename.length);
 };
 
 export const getFileFormatPrefix = (fileFormat: string) => {
@@ -110,9 +111,8 @@ export const readStreamToFile = async (
   document.body.removeChild(link);
 };
 
-export const generateReport = async (metadata, props) => {
-  const { httpClient } = props;
-  httpClient
+export const generateReport = async (metadata, httpClient) => {
+  await httpClient
     .post('../api/reporting/generateReport', {
       body: JSON.stringify(metadata),
       headers: {
@@ -121,8 +121,8 @@ export const generateReport = async (metadata, props) => {
     })
     .then(async (response) => {
       const fileFormat = extractFileFormat(response['filename']);
-      const fileName = extractFilename(response['filename']);
-      readStreamToFile(await response['data'], fileFormat, fileName);
+      const fileName = response['filename'];
+      await readStreamToFile(await response['data'], fileFormat, fileName);
       return response;
     })
     .catch((error) => {

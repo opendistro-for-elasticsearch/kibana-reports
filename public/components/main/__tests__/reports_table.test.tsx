@@ -16,6 +16,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { ReportsTable } from '../reports_table';
+import httpClientMock from '../../../../test/httpMockClient';
 
 describe('<ReportsTable /> panel', () => {
   test('render component', () => {
@@ -33,7 +34,10 @@ describe('<ReportsTable /> panel', () => {
       },
     ];
     const { container } = render(
-      <ReportsTable reportsTableItems={reportsTableItems} />
+      <ReportsTable
+        reportsTableItems={reportsTableItems}
+        httpClient={httpClientMock}
+      />
     );
     expect(container.firstChild).toMatchSnapshot();
   });

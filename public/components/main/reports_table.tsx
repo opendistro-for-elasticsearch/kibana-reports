@@ -23,8 +23,18 @@ import {
   EuiButtonIcon,
   EuiEmptyPrompt,
   EuiInMemoryTable,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiLoadingSpinner,
+  EuiModal,
+  EuiModalBody,
+  EuiModalHeader,
+  EuiOverlayMask,
+  EuiSpacer,
+  EuiTitle,
 } from '@elastic/eui';
 import { reports_list_users } from './test_data';
+import { generateReport } from './main_utils';
 
 const reportStatusOptions = [
   'Created',
@@ -55,10 +65,50 @@ const emptyMessageReports = (
 );
 
 export function ReportsTable(props) {
-  const { getRowProps, pagination, generateReport, reportsTableItems } = props;
+  const { getRowProps, pagination, reportsTableItems, httpClient } = props;
 
   const [sortField, setSortField] = useState('lastUpdated');
   const [sortDirection, setSortDirection] = useState('des');
+  const [showLoading, setShowLoading] = useState(false);
+
+  const handleLoading = (e) => {
+    setShowLoading(e);
+  };
+
+  const GenerateReportLoadingModal = () => {
+    const [isModalVisible, setIsModalVisible] = useState(true);
+
+    const closeModal = () => {
+      setIsModalVisible(false);
+      setShowLoading(false);
+    };
+    const showModal = () => setIsModalVisible(true);
+
+    return (
+      <div>
+        <EuiOverlayMask>
+          <EuiModal onClose={closeModal}>
+            <EuiModalHeader>
+              <EuiTitle>
+                <EuiText textAlign="right">
+                  <h2>Generating report</h2>
+                </EuiText>
+              </EuiTitle>
+            </EuiModalHeader>
+            <EuiModalBody>
+              <EuiText>Preparing your file for download...</EuiText>
+              <EuiSpacer />
+              <EuiFlexGroup justifyContent="spaceAround" alignItems="center">
+                <EuiFlexItem>
+                  <EuiLoadingSpinner size="xl" />
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiModalBody>
+          </EuiModal>
+        </EuiOverlayMask>
+      </div>
+    );
+  };
 
   const updateMetadata = (url: any) => {
     const onDemandDownloadMetadata = {
@@ -74,6 +124,12 @@ export function ReportsTable(props) {
       },
     };
     return onDemandDownloadMetadata;
+  };
+
+  const onDemandDownload = async (url: any) => {
+    handleLoading(true);
+    await generateReport(updateMetadata(url), httpClient);
+    handleLoading(false);
   };
 
   const reportsTableColumns = [
@@ -126,7 +182,7 @@ export function ReportsTable(props) {
           description: 'Generates the report',
           type: 'icon',
           icon: 'download',
-          onClick: (url: any) => generateReport(updateMetadata(url)),
+          onClick: (url: any) => onDemandDownload(url),
         },
       ],
     },
@@ -207,6 +263,8 @@ export function ReportsTable(props) {
     ],
   };
 
+  const showLoadingModal = showLoading ? <GenerateReportLoadingModal /> : null;
+
   return (
     <div>
       <EuiInMemoryTable
@@ -220,6 +278,7 @@ export function ReportsTable(props) {
         sorting={sorting}
         rowProps={getRowProps}
       />
+      {showLoadingModal}
     </div>
   );
 }

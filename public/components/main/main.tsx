@@ -38,7 +38,6 @@ import {
 import { ReportsTable } from './reports_table';
 import { ReportDefinitions } from './report_definitions_table';
 import {
-  extractFilename,
   extractFileFormat,
   getFileFormatPrefix,
   addReportsTableContent,
@@ -55,9 +54,6 @@ export class Main extends React.Component<RouterHomeProps, any> {
     super(props);
     this.state = {
       pagination: this.pagination,
-      renderCreateReport: false,
-      showGenerateReportLoadingModal: false,
-      showGenerateReportSuccessfulToast: false,
       generateReportFilename: '',
       generateReportFileFormat: '',
       generateReportStatus: '',
@@ -70,94 +66,6 @@ export class Main extends React.Component<RouterHomeProps, any> {
   pagination = {
     initialPageSize: 10,
     pageSizeOptions: [8, 10, 13],
-  };
-
-  GenerateReportLoadingModal() {
-    const [isModalVisible, setIsModalVisible] = useState(true);
-
-    const closeModal = () => setIsModalVisible(false);
-    const showModal = () => setIsModalVisible(true);
-
-    return (
-      <div>
-        <EuiOverlayMask>
-          <EuiModal onClose={closeModal}>
-            <EuiModalHeader>
-              <EuiTitle>
-                <EuiText textAlign="right">
-                  <h2>Generating report</h2>
-                </EuiText>
-              </EuiTitle>
-            </EuiModalHeader>
-            <EuiModalBody>
-              <EuiText>Preparing your file for download...</EuiText>
-              <EuiSpacer />
-              <EuiFlexGroup justifyContent="spaceAround" alignItems="center">
-                <EuiFlexItem>
-                  <EuiLoadingSpinner size="xl" />
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiModalBody>
-          </EuiModal>
-        </EuiOverlayMask>
-      </div>
-    );
-  }
-
-  readStreamToFile = async (stream: string) => {
-    let link = document.createElement('a');
-    let fileFormatPrefix = getFileFormatPrefix(
-      this.state.generateReportFileFormat
-    );
-    let url = fileFormatPrefix + stream;
-    if (typeof link.download !== 'string') {
-      window.open(url, '_blank');
-      return;
-    }
-    link.download = this.state.generateReportFilename;
-    link.href = url;
-    document.body.appendChild(link);
-    link.click();
-    await this.updateReportsTableContent();
-    document.body.removeChild(link);
-  };
-
-  generateReport = async (metadata) => {
-    const { httpClient } = this.props;
-    this.setState({
-      showGenerateReportLoadingToast: true,
-    });
-    httpClient
-      .post('../api/reporting/generateReport', {
-        body: JSON.stringify(metadata),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then(async (response) => {
-        const fileFormat = extractFileFormat(response['filename']);
-        const fileName = extractFilename(response['filename']);
-        this.setState({
-          generateReportFilename: fileName,
-          generateReportFileFormat: fileFormat,
-        });
-        readStreamToFile(
-          await response['data'],
-          this.state.generateReportFileFormat,
-          this.state.generateReportFilename
-        );
-
-        this.setState({
-          showGenerateReportLoadingToast: false,
-        });
-        return response;
-      })
-      .catch((error) => {
-        console.log('error on generating report:', error);
-        this.setState({
-          showGenerateReportLoadingToast: false,
-        });
-      });
   };
 
   updateReportsTableContent = async () => {
@@ -202,7 +110,7 @@ export class Main extends React.Component<RouterHomeProps, any> {
       .catch((error) => {
         console.log('error when fetching all report definitions: ', error);
       });
-  }
+  };
 
   refreshReportsTable = async () => {
     const { httpClient } = this.props;
@@ -266,10 +174,6 @@ export class Main extends React.Component<RouterHomeProps, any> {
   };
 
   render() {
-    const showLoading = this.state.showGenerateReportLoadingToast ? (
-      <this.GenerateReportLoadingModal />
-    ) : null;
-
     return (
       <div>
         <EuiPage>
@@ -291,8 +195,8 @@ export class Main extends React.Component<RouterHomeProps, any> {
               <ReportsTable
                 getRowProps={this.getReportsRowProps}
                 pagination={this.pagination}
-                generateReport={this.generateReport}
                 reportsTableItems={this.state.reportsTableContent}
+                httpClient={this.props['httpClient']}
               />
             </EuiPageContent>
             <EuiSpacer />
@@ -335,7 +239,6 @@ export class Main extends React.Component<RouterHomeProps, any> {
             </EuiPageContent>
           </EuiPageBody>
         </EuiPage>
-        {showLoading}
       </div>
     );
   }

@@ -79,7 +79,7 @@ export function CreateReport(props) {
               report_format: metadata['report_params']['report_format'],
             },
           };
-          await generateReport(onDemandDownloadMetadata, props);
+          generateReport(onDemandDownloadMetadata, httpClient);
         }
         window.location.assign(`opendistro_kibana_reports#/`);
       })

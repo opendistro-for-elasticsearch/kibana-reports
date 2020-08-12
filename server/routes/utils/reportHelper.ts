@@ -13,20 +13,19 @@
  * permissions and limitations under the License.
  */
 import puppeteer from 'puppeteer';
-import { Readable } from 'stream';
 import { v1 as uuidv1 } from 'uuid';
 
 const formats = {
   PDF: '.pdf',
-  PNG: '.png'
-}
+  PNG: '.png',
+};
 
 export const generatePNG = async (
   url: string,
   itemName: string,
   windowWidth: number,
   windowHeight: number
-): Promise<{ timeCreated: string; stream: Readable; fileName: string }> => {
+): Promise<{ timeCreated: string; dataUrl: string; fileName: string }> => {
   try {
     const browser = await puppeteer.launch({
       headless: true,
@@ -49,17 +48,10 @@ export const generatePNG = async (
       fullPage: true,
     });
 
-    const stream = new Readable({
-      read() {
-        this.push(buffer);
-        this.push(null);
-      },
-    });
-
     //TODO: Add header and footer, phase 2
 
     await browser.close();
-    return { timeCreated, stream: buffer.toString('base64'), fileName };
+    return { timeCreated, dataUrl: buffer.toString('base64'), fileName };
   } catch (error) {
     throw error;
   }
@@ -70,7 +62,7 @@ export const generatePDF = async (
   itemName: string,
   windowWidth: number,
   windowHeight: number
-): Promise<{ timeCreated: string; stream: Readable; fileName: string }> => {
+): Promise<{ timeCreated: string; dataUrl: string; fileName: string }> => {
   try {
     const browser = await puppeteer.launch({
       headless: true,
@@ -94,7 +86,6 @@ export const generatePDF = async (
     );
 
     const buffer = await page.pdf({
-      path: fileName,
       margin: 'none',
       width: windowWidth,
       height: scrollHeight + 'px',
@@ -102,17 +93,10 @@ export const generatePDF = async (
       pageRanges: '1',
     });
 
-    const stream = new Readable({
-      read() {
-        this.push(buffer);
-        this.push(null);
-      },
-    });
-
     //TODO: Add header and footer, phase 2
 
     await browser.close();
-    return { timeCreated, stream: buffer.toString('base64'), fileName };
+    return { timeCreated, dataUrl: buffer.toString('base64'), fileName };
   } catch (error) {
     throw error;
   }

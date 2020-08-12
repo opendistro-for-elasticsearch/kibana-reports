@@ -1,3 +1,4 @@
+import { RequestParams } from '@elastic/elasticsearch';
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -19,9 +20,7 @@ import {
   ResponseError,
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
-
-const { Client } = require('@elastic/elasticsearch');
-const client = new Client({ node: 'http://localhost:9200' });
+import { parseEsErrorResponse } from './utils/helpers';
 
 export default function (router: IRouter) {
   router.get(
@@ -34,41 +33,28 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
-      let dashboards = await getDashboards();
-      return response.ok({
-        body: dashboards,
-      });
+      const params: RequestParams.Search = {
+        index: '.kibana',
+        q: 'type:dashboard',
+      };
+      try {
+        const esResp = await context.core.elasticsearch.legacy.client.callAsInternalUser(
+          'search',
+          params
+        );
+        return response.ok({
+          body: esResp,
+        });
+      } catch (error) {
+        //@ts-ignore
+        context.reporting_plugin.logger.error(
+          `Failed to get reports details: ${error}`
+        );
+        return response.custom({
+          statusCode: error.statusCode,
+          body: parseEsErrorResponse(error),
+        });
+      }
     }
   );
-}
-
-async function getDashboards() {
-  const result = await client.search({
-    index: '.kibana',
-    body: {
-      query: {
-        match: {
-          type: 'dashboard',
-        },
-      },
-    },
-  });
-
-  client.search(
-    {
-      index: '.kibana',
-      body: {
-        query: {
-          match: {
-            type: 'dashboard',
-          },
-        },
-      },
-    },
-    (err, result) => {
-      if (err) console.log(err);
-    }
-  );
-
-  return result['body'];
 }
