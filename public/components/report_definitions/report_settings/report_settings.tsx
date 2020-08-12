@@ -45,8 +45,6 @@ import {
   SAVED_SEARCH_FORMAT_OPTIONS,
 } from './report_settings_constants';
 import dateMath from '@elastic/datemath';
-import { getReportSettingDashboardOptions } from '../../main/main_utils';
-import { defaultUrl } from '../create/create_report_definition';
 
 const isValidTimeRange = (
   timeRangeMoment: number | moment.Moment,
@@ -195,8 +193,8 @@ export function ReportSettings(props) {
     target: { value: React.SetStateAction<string> };
   }) => {
     setDashboardSourceSelect(e.target.value);
-    createReportDefinitionRequest['report_params']['url'] =
-      'http://localhost:5601/app/dashboards#/view/' + e.target.value;
+    createReportDefinitionRequest['report_params']['url'] = 
+      getBaseUrlFromCreate() + e.target.value;
   };
 
   const handleVisualizationSelect = (e: {
@@ -405,7 +403,6 @@ export function ReportSettings(props) {
   };
 
   useEffect(() => {
-    const baseUrl = getBaseUrlFromCreate();
     httpClientProps
       .get('../api/reporting/getDashboards')
       .then(async (response) => {
@@ -415,7 +412,7 @@ export function ReportSettings(props) {
         await handleDashboards(realDashboardOptions);
         await setDashboardSourceSelect(realDashboardOptions[0].value);
         createReportDefinitionRequest['report_params']['url'] =
-          baseUrl + response['hits']['hits'][0]['_id'].substring(10);
+          getBaseUrlFromCreate() + response['hits']['hits'][0]['_id'].substring(10);
       })
       .catch((error) => {
         console.log('error when fetching dashboards:', error);

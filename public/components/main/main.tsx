@@ -174,10 +174,10 @@ export class Main extends React.Component<RouterHomeProps, any> {
       });
   };
 
-  componentDidMount() {
+  componentDidMount = async () => {
     const { httpClient } = this.props;
     // get all reports
-    httpClient
+    await httpClient
       .get('../api/reporting/reports')
       .then((response) => {
         this.setState({
@@ -190,7 +190,7 @@ export class Main extends React.Component<RouterHomeProps, any> {
       });
 
     // get all report definitions
-    httpClient
+    await httpClient
       .get('../api/reporting/reportDefinitions')
       .then((response) => {
         this.setState({
