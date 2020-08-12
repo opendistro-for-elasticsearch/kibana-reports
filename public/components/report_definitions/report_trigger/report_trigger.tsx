@@ -52,6 +52,8 @@ import {
   TRIGGER_OPTION_MAP,
 } from './report_trigger_constants';
 
+const tempTriggerParamTime = '1553112384';
+
 let trigger_params = {
   schedule_type: '',
   schedule: {},
@@ -66,7 +68,7 @@ let temp_trigger_params = {
   interval: {
     period: '7',
     unit: 'DAYS',
-    start_time: '1553112384',
+    start_time: tempTriggerParamTime,
   },
 };
 
