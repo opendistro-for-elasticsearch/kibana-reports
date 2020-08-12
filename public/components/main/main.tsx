@@ -26,21 +26,14 @@ import {
   // @ts-ignore
   EuiPageContent,
   // @ts-ignore
-  EuiInMemoryTable,
   EuiHorizontalRule,
   EuiSpacer,
-  // @ts-ignore
-  EuiEmptyPrompt,
-  EuiToast,
   EuiLoadingSpinner,
-  EuiGlobalToastList,
   EuiModal,
   EuiOverlayMask,
   EuiModalHeader,
-  EuiModalHeaderTitle,
   EuiModalBody,
   EuiText,
-  EuiComboBoxTitle,
 } from '@elastic/eui';
 import { ReportsTable } from './reports_table';
 import { ReportDefinitions } from './report_definitions_table';
@@ -50,8 +43,7 @@ import {
   getFileFormatPrefix,
   addReportsTableContent,
   addReportDefinitionsTableContent,
-  getReportSettingDashboardOptions,
-  removeDuplicatePdfFileFormat,
+  readStreamToFile,
 } from './main_utils';
 
 interface RouterHomeProps {
@@ -117,7 +109,6 @@ export class Main extends React.Component<RouterHomeProps, any> {
     let fileFormatPrefix = getFileFormatPrefix(
       this.state.generateReportFileFormat
     );
-    console.log('fileformat prefix is', fileFormatPrefix);
     let url = fileFormatPrefix + stream;
     if (typeof link.download !== 'string') {
       window.open(url, '_blank');
@@ -150,7 +141,12 @@ export class Main extends React.Component<RouterHomeProps, any> {
           generateReportFilename: fileName,
           generateReportFileFormat: fileFormat,
         });
-        this.readStreamToFile(await response['data']);
+        readStreamToFile(
+          await response['data'],
+          this.state.generateReportFileFormat,
+          this.state.generateReportFilename
+        );
+
         this.setState({
           showGenerateReportLoadingToast: false,
         });
@@ -184,7 +180,6 @@ export class Main extends React.Component<RouterHomeProps, any> {
     httpClient
       .get('../api/reporting/reports')
       .then((response) => {
-        console.log('get reports response is', response);
         this.setState({
           reportsTableContent: addReportsTableContent(response.data),
         });
@@ -297,7 +292,7 @@ export class Main extends React.Component<RouterHomeProps, any> {
                 getRowProps={this.getReportsRowProps}
                 pagination={this.pagination}
                 generateReport={this.generateReport}
-                reports_table_items={this.state.reportsTableContent}
+                reportsTableItems={this.state.reportsTableContent}
               />
             </EuiPageContent>
             <EuiSpacer />
@@ -333,7 +328,7 @@ export class Main extends React.Component<RouterHomeProps, any> {
               <ReportDefinitions
                 pagination={this.pagination}
                 getRowProps={this.getReportDefinitionsRowProps}
-                report_definitions_table_content={
+                reportDefinitionsTableContent={
                   this.state.reportDefinitionsTableContent
                 }
               />

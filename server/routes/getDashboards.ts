@@ -20,7 +20,8 @@ import {
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 
-const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+const { Client } = require('@elastic/elasticsearch');
+const client = new Client({ node: 'http://localhost:9200' });
 
 export default function (router: IRouter) {
   router.get(
@@ -33,10 +34,7 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
-      console.log('in promise, going to call getDashboards');
-      let dashboards = getDashboards();
-      console.log('just assigned getDashboards retval to dashboards');
-      console.log('dahsboards is', dashboards);
+      let dashboards = await getDashboards();
       return response.ok({
         body: dashboards,
       });
@@ -44,20 +42,33 @@ export default function (router: IRouter) {
   );
 }
 
-function getDashboards() {
-  console.log('in getDashboards, about to call getJson()');
-  var jsonBeforeParse = getJson();
-  var jsonAfterParse = JSON.parse(jsonBeforeParse);
-  return jsonAfterParse;
-}
+async function getDashboards() {
+  const result = await client.search({
+    index: '.kibana',
+    body: {
+      query: {
+        match: {
+          type: 'dashboard',
+        },
+      },
+    },
+  });
 
-function getJson() {
-  console.log(
-    'in getJson(), about to make request to .kibana to get dashboards'
+  client.search(
+    {
+      index: '.kibana',
+      body: {
+        query: {
+          match: {
+            type: 'dashboard',
+          },
+        },
+      },
+    },
+    (err, result) => {
+      if (err) console.log(err);
+    }
   );
-  var url = 'http://localhost:9200/.kibana/_search?q=type:dashboard';
-  var HttpRequest = new XMLHttpRequest();
-  HttpRequest.open('GET', url, false);
-  HttpRequest.send(null);
-  return HttpRequest.responseText;
+
+  return result['body'];
 }

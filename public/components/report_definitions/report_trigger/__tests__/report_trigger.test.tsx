@@ -16,6 +16,8 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { ReportTrigger } from '../report_trigger';
+import 'babel-polyfill';
+import 'regenerator-runtime';
 
 describe('<ReportTrigger /> panel', () => {
   test('render component', () => {

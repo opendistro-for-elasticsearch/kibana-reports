@@ -239,13 +239,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
               <select
                 class="euiSelect"
                 id="random_html_id"
-              >
-                <option
-                  value="test_value"
-                >
-                  test text for snapshot dashboard
-                </option>
-              </select>
+              />
               <div
                 class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
               >

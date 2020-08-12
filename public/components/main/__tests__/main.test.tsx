@@ -16,14 +16,13 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { Main } from '../main';
-import 'babel-polyfill';
 import httpClientMock from '../../../../test/httpMockClient';
 
 describe('<Main /> panel', () => {
   test('render component', async (done) => {
     const { container } = await render(<Main httpClient={httpClientMock} />);
 
-    await expect(container).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();
     done();
   });
 });

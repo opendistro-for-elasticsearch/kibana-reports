@@ -26,14 +26,14 @@ import {
 } from '@elastic/eui';
 import { reports_list_users } from './test_data';
 
-const reports_status_options = [
+const reportStatusOptions = [
   'Created',
   'Error',
   'Pending',
   'Shared',
   'Archived',
 ];
-const reports_type_options = ['Schedule', 'Download', 'Alert'];
+const reportTypeOptions = ['Schedule', 'Download', 'Alert'];
 
 const emptyMessageReports = (
   <EuiEmptyPrompt
@@ -55,12 +55,7 @@ const emptyMessageReports = (
 );
 
 export function ReportsTable(props) {
-  const {
-    getRowProps,
-    pagination,
-    generateReport,
-    reports_table_items,
-  } = props;
+  const { getRowProps, pagination, generateReport, reportsTableItems } = props;
 
   const [sortField, setSortField] = useState('lastUpdated');
   const [sortDirection, setSortDirection] = useState('des');
@@ -81,7 +76,7 @@ export function ReportsTable(props) {
     return onDemandDownloadMetadata;
   };
 
-  const reports_list_columns = [
+  const reportsTableColumns = [
     {
       field: 'reportName',
       name: 'Name',
@@ -160,7 +155,7 @@ export function ReportsTable(props) {
     }
   });
 
-  const reports_list_search = {
+  const reportsListSearch = {
     box: {
       incremental: true,
     },
@@ -192,7 +187,7 @@ export function ReportsTable(props) {
         field: 'state',
         name: 'State',
         multiselect: false,
-        options: reports_status_options.map((state) => ({
+        options: reportStatusOptions.map((state) => ({
           value: state,
           name: state,
           view: state,
@@ -203,7 +198,7 @@ export function ReportsTable(props) {
         field: 'type',
         name: 'Type',
         multiselect: false,
-        options: reports_type_options.map((type) => ({
+        options: reportTypeOptions.map((type) => ({
           value: type,
           name: type,
           view: type,
@@ -215,12 +210,12 @@ export function ReportsTable(props) {
   return (
     <div>
       <EuiInMemoryTable
-        items={reports_table_items}
+        items={reportsTableItems}
         itemId="id"
         loading={false}
         message={emptyMessageReports}
-        columns={reports_list_columns}
-        search={reports_list_search}
+        columns={reportsTableColumns}
+        search={reportsListSearch}
         pagination={pagination}
         sorting={sorting}
         rowProps={getRowProps}

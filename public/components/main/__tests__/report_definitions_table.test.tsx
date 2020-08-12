@@ -16,11 +16,10 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { ReportDefinitions } from '../report_definitions_table';
-import moment from 'moment';
 
 describe('<ReportDefinitions /> panel', () => {
   test('render component', () => {
-    let report_definitions_table_content = [
+    let reportDefinitionsTableContent = [
       {
         reportName: 'test report name',
         type: 'Download',
@@ -33,7 +32,7 @@ describe('<ReportDefinitions /> panel', () => {
     ];
     const { container } = render(
       <ReportDefinitions
-        report_definitions_table_content={report_definitions_table_content}
+        reportDefinitionsTableContent={reportDefinitionsTableContent}
       />
     );
     expect(container.firstChild).toMatchSnapshot();

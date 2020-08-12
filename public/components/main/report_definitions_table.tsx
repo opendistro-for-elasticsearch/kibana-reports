@@ -21,9 +21,8 @@ import {
   EuiEmptyPrompt,
   EuiText,
 } from '@elastic/eui';
-import { savedObjectsMigrationConfig } from '../../../../../src/core/server/saved_objects';
 
-export const report_definitions_columns = [
+export const reportDefinitionsColumns = [
   {
     field: 'reportName',
     name: 'Name',
@@ -70,7 +69,7 @@ export const report_definitions_columns = [
   },
 ];
 
-const empty_message_report_definitions = (
+const emptyMessageReportDefinitions = (
   <EuiEmptyPrompt
     title={<h3>No report definitions to display</h3>}
     titleSize="xs"
@@ -97,7 +96,7 @@ const empty_message_report_definitions = (
   />
 );
 
-const report_definitions_search = {
+const reportDefinitionsSearch = {
   box: {
     incremental: true,
   },
@@ -105,7 +104,7 @@ const report_definitions_search = {
 };
 
 export function ReportDefinitions(props) {
-  const { pagination, getRowProps, report_definitions_table_content } = props;
+  const { pagination, getRowProps, reportDefinitionsTableContent } = props;
 
   const [sortField, setSortField] = useState('lastUpdated');
   const [sortDirection, setSortDirection] = useState('des');
@@ -120,12 +119,12 @@ export function ReportDefinitions(props) {
   return (
     <div>
       <EuiInMemoryTable
-        items={report_definitions_table_content}
+        items={reportDefinitionsTableContent}
         itemId="id"
         loading={false}
-        message={empty_message_report_definitions}
-        columns={report_definitions_columns}
-        search={report_definitions_search}
+        message={emptyMessageReportDefinitions}
+        columns={reportDefinitionsColumns}
+        search={reportDefinitionsSearch}
         pagination={pagination}
         sorting={sorting}
         isSelectable={true}

@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   EuiButtonEmpty,
   EuiFlexGroup,
@@ -23,11 +23,11 @@ import {
   EuiTitle,
   EuiPageBody,
   EuiSpacer,
-  EuiGlobalToastList,
 } from '@elastic/eui';
 import { ReportSettings } from '../report_settings';
 import { ReportDelivery } from '../delivery';
 import { ReportTrigger } from '../report_trigger';
+import { generateReport } from '../../main/main_utils';
 
 export const TIMEZONE_OPTIONS = [
   { value: -4, text: 'EDT -04:00' },
@@ -38,16 +38,9 @@ export const TIMEZONE_OPTIONS = [
   { value: -10, text: 'HST -10:00' },
 ];
 
+export let defaultUrl;
+
 export function CreateReport(props) {
-  const [
-    reportSettingsDashboardOptions,
-    setReportSettingsDashboardOptions,
-  ] = useState([]);
-
-  const handleReportSettingsDashboardOptions = (e) => {
-    setReportSettingsDashboardOptions(e);
-  };
-
   let createReportDefinitionRequest = {
     report_name: '',
     report_source: '',
@@ -64,51 +57,36 @@ export function CreateReport(props) {
   };
 
   const createNewReportDefinition = async (metadata) => {
-    fetch('../api/reporting/reportDefinition', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'kbn-xsrf': 'reporting',
-      },
-      body: JSON.stringify(metadata),
-    })
+    const { httpClient } = props;
+    httpClient
+      .post('../api/reporting/reportDefinition', {
+        body: JSON.stringify(metadata),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
       .then(async (resp) => {
+        if (metadata['trigger']['trigger_params']['schedule_type'] === 'Now') {
+          let onDemandDownloadMetadata = {
+            report_name: metadata['report_name'],
+            report_source: metadata['report_source'],
+            report_type: metadata['report_type'],
+            description: metadata['description'],
+            report_params: {
+              url: metadata['report_params']['url'],
+              window_width: 1440,
+              window_height: 2560,
+              report_format: metadata['report_params']['report_format'],
+            },
+          };
+          await generateReport(onDemandDownloadMetadata, props);
+        }
         window.location.assign(`opendistro_kibana_reports#/`);
       })
       .catch((error) => {
         console.log('error in creating report definition:', error);
       });
   };
-
-  const getReportSettingDashboardOptions = (data) => {
-    let index;
-    let dashboard_options = [];
-    for (index = 0; index < data.length; ++index) {
-      let entry = {
-        value: data[index]['_id'].substring(10),
-        text: data[index]['_source']['dashboard']['title'],
-      };
-      dashboard_options.push(entry);
-    }
-    return dashboard_options;
-  };
-
-  useEffect(() => {
-    const { httpClient } = props;
-    httpClient
-      .get('../api/reporting/getDashboards')
-      .then((response) => {
-        handleReportSettingsDashboardOptions(
-          getReportSettingDashboardOptions(response['hits']['hits'])
-        );
-        createReportDefinitionRequest['report_params']['url'] =
-          'http://localhost:5601/app/dashboards#/view/' +
-          response['hits']['hits'][0]['_id'].substring(10);
-      })
-      .catch((error) => {
-        console.log('error when fetching dashboards:', error);
-      });
-  }, []);
 
   return (
     <EuiPage>
@@ -119,7 +97,7 @@ export function CreateReport(props) {
         <EuiSpacer />
         <ReportSettings
           createReportDefinitionRequest={createReportDefinitionRequest}
-          dashboardOptions={reportSettingsDashboardOptions}
+          httpClientProps={props['httpClient']}
         />
         <EuiSpacer />
         <ReportTrigger

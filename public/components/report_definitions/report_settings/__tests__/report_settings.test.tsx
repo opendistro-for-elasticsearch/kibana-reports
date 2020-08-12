@@ -17,6 +17,8 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { ReportSettings } from '../report_settings';
 import 'babel-polyfill';
+import 'regenerator-runtime';
+import httpClientMock from '../../../../../test/httpMockClient';
 
 describe('<ReportSettings /> panel', () => {
   test('render component', () => {
@@ -35,16 +37,10 @@ describe('<ReportSettings /> panel', () => {
       trigger: {},
     };
 
-    let dashboardOptions = [
-      {
-        value: 'test_value',
-        text: 'test text for snapshot dashboard',
-      },
-    ];
     const { container } = render(
       <ReportSettings
         createReportDefinitionRequest={createReportDefinitionRequest}
-        dashboardOptions={dashboardOptions}
+        httpClientProps={httpClientMock}
       />
     );
 

@@ -13,6 +13,9 @@
  * permissions and limitations under the License.
  */
 
+import { get } from 'lodash';
+import 'babel-polyfill';
+
 export const extractFilename = (filename: string) => {
   return filename.substring(0, filename.length - 4);
 };
@@ -28,57 +31,101 @@ export const getFileFormatPrefix = (fileFormat: string) => {
 
 export const addReportsTableContent = (data) => {
   let index;
-  let reports_table_items = [];
+  let reportsTableItems = [];
   for (index = 0; index < data.length; ++index) {
-    let reports_table_entry = {
-      id: data[index]['_id'],
-      reportName: data[index]['_source']['report_name'],
-      type: data[index]['_source']['report_type'],
+    let reportsTableEntry = {
+      id: get(data, [index, '_id']),
+      reportName: get(data, [index, '_source', 'report_name']),
+      type: get(data, [index, '_source', 'report_type']),
       sender: 'N/A',
       recipients: 'N/A',
-      reportSource: data[index]['_source']['report_source'],
-      lastUpdated: data[index]['_source']['time_created'],
-      state: data[index]['_source']['state'],
-      url: data[index]['_source']['report_params']['url'],
+      reportSource: get(data, [index, '_source', 'report_source']),
+      lastUpdated: get(data, [index, '_source', 'time_created']),
+      state: get(data, [index, '_source', 'state']),
+      url: get(data, [index, '_source', 'report_params', 'url']),
     };
-    reports_table_items.push(reports_table_entry);
+    reportsTableItems.push(reportsTableEntry);
   }
-  return reports_table_items;
+  return reportsTableItems;
 };
 
 export const addReportDefinitionsTableContent = (data: any) => {
   let index;
-  let reports_definitions_table_items = [];
+  let reportDefinitionsTableItems = [];
   for (index = 0; index < data.length; ++index) {
-    let reports_definition_table_entry = {
-      id: data[index]['_id'],
-      reportName: data[index]['_source']['report_name'],
-      type: data[index]['_source']['report_type'],
-      owner: 'davidcui',
-      source: data[index]['_source']['report_source'],
-      lastUpdated: data[index]['_source']['time_created'],
-      details:
-        data[index]['_source']['trigger']['trigger_params']['schedule_type'],
-      status: data[index]['_source']['status'],
+    let reportDefinitionsTableEntry = {
+      id: get(data, [index, '_id']),
+      reportName: get(data, [index, '_source', 'report_name']),
+      type: get(data, [index, '_source', 'report_type']),
+      owner: 'davidcui', // Todo: replace
+      source: get(data, [index, '_source', 'report_source']),
+      lastUpdated: get(data, [index, '_source', 'time_created']),
+      details: get(data, [
+        index,
+        '_source',
+        'trigger',
+        'trigger_params',
+        'schedule_type',
+      ]),
+      status: get(data, [index, '_source', 'status']),
     };
-    reports_definitions_table_items.push(reports_definition_table_entry);
+    reportDefinitionsTableItems.push(reportDefinitionsTableEntry);
   }
-  return reports_definitions_table_items;
+  return reportDefinitionsTableItems;
 };
 
 export const getReportSettingDashboardOptions = (data) => {
   let index;
-  let dashboard_options = [];
+  let dashboardOptions = [];
   for (index = 0; index < data.length; ++index) {
     let entry = {
-      value: data[index]['_id'].substring(10),
-      text: data[index]['_source']['dashboard']['title'],
+      value: get(data, [index, '_id']).substring(10),
+      text: get(data, [index, '_source', 'dashboard', 'title']),
     };
-    dashboard_options.push(entry);
+    dashboardOptions.push(entry);
   }
-  return dashboard_options;
+  return dashboardOptions;
 };
 
 export const removeDuplicatePdfFileFormat = (filename) => {
   return filename.substring(0, filename.length - 4);
+};
+
+export const readStreamToFile = async (
+  stream: string,
+  fileFormat: string,
+  fileName: string
+) => {
+  let link = document.createElement('a');
+  let fileFormatPrefix = getFileFormatPrefix(fileFormat);
+  let url = fileFormatPrefix + stream;
+  if (typeof link.download !== 'string') {
+    window.open(url, '_blank');
+    return;
+  }
+  link.download = fileName;
+  link.href = url;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+export const generateReport = async (metadata, props) => {
+  const { httpClient } = props;
+  httpClient
+    .post('../api/reporting/generateReport', {
+      body: JSON.stringify(metadata),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(async (response) => {
+      const fileFormat = extractFileFormat(response['filename']);
+      const fileName = extractFilename(response['filename']);
+      readStreamToFile(await response['data'], fileFormat, fileName);
+      return response;
+    })
+    .catch((error) => {
+      console.log('error on generating report:', error);
+    });
 };
