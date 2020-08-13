@@ -83,7 +83,7 @@ export default function (router: IRouter) {
           return response.ok({
             body: {
               data: dataUrl,
-              filename: `${fileName}.${reportParams.report_format}`,
+              filename: `${fileName}`,
             },
           });
         } else if (reportParams.report_format === FORMAT.pdf) {

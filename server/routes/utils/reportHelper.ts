@@ -14,11 +14,7 @@
  */
 import puppeteer from 'puppeteer';
 import { v1 as uuidv1 } from 'uuid';
-
-const formats = {
-  PDF: '.pdf',
-  PNG: '.png',
-};
+import { FORMAT } from './constants';
 
 export const generatePNG = async (
   url: string,
@@ -42,7 +38,7 @@ export const generatePNG = async (
     // TODO: this element is for Dashboard page, need to think about addition params to select html element with source(Visualization, Dashboard)
 
     const timeCreated = new Date().toISOString();
-    const fileName = getFileName(itemName, timeCreated);
+    const fileName = getFileName(itemName, timeCreated) + '.' + FORMAT.png;
 
     const buffer = await page.screenshot({
       fullPage: true,
@@ -78,7 +74,7 @@ export const generatePDF = async (
     await page.goto(url, { waitUntil: 'networkidle0' });
 
     const timeCreated = new Date().toISOString();
-    const fileName = getFileName(itemName, timeCreated) + formats.PDF;
+    const fileName = getFileName(itemName, timeCreated) + '.' + FORMAT.pdf;
     // The scrollHeight value is equal to the minimum height the element would require in order to fit
     // all the content in the viewport without using a vertical scrollbar
     const scrollHeight = await page.evaluate(
