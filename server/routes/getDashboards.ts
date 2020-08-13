@@ -1,4 +1,3 @@
-import { RequestParams } from '@elastic/elasticsearch';
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -21,6 +20,7 @@ import {
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 import { parseEsErrorResponse } from './utils/helpers';
+import { RequestParams } from '@elastic/elasticsearch';
 
 export default function (router: IRouter) {
   router.get(
