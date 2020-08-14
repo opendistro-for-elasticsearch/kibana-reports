@@ -43,24 +43,25 @@ export function ReportDefinitionDetails(props) {
       name: data['report_name'],
       description: data['description'],
       created: data['time_created'],
-      last_updated: data['last_updated'],
+      lastUpdated: data['last_updated'],
       source: data['report_source'],
-      time_period:
+      timePeriod:
         data['trigger']['trigger_params']['schedule']['interval']['period'] +
-        data['trigger']['trigger_params']['schedule']['interval']['days'],
-      file_format: data['report_params']['report_format'],
-      report_header: '--',
-      report_footer: '--',
-      trigger_type: data['trigger']['trigger_type'],
-      schedule_details: '--',
-      alert_details: '--',
+        ' ' +
+        data['trigger']['trigger_params']['schedule']['interval']['unit'],
+      fileFormat: data['report_params']['report_format'],
+      reportHeader: '--',
+      reportFooter: '--',
+      triggerType: data['trigger']['trigger_type'],
+      scheduleDetails: data['trigger']['trigger_params']['schedule_type'],
+      alertDetails: '--',
       status: data['status'],
-      delivery_channels: data['delivery']['channel'],
-      kibana_recipients: data['delivery']['delivery_params']['recipients'],
-      email_recipients: '--', // todo: data model needs separate field for email vs kibana recipients
-      email_subject: data['delivery']['delivery_params']['subject'],
-      email_body: data['delivery']['delivery_params']['body'],
-      include_report_as_attachment:
+      deliveryChannels: data['delivery']['channel'],
+      kibanaRecipients: data['delivery']['delivery_params']['recipients'],
+      emailRecipients: '--', // todo: data model needs separate field for email vs kibana recipients
+      emailSubject: data['delivery']['delivery_params']['subject'],
+      emailBody: data['delivery']['delivery_params']['body'],
+      includeReportAsAttachment:
         data['delivery']['delivery_params']['has_attachment'],
     };
     return reportDefinitionDetails;
@@ -75,11 +76,13 @@ export function ReportDefinitionDetails(props) {
           getReportDefinitionDetailsMetadata(response)
         );
       })
-      .catch((error) => {});
+      .catch((error) => {
+        console.log('error when getting report definition details:', error);
+      });
   }, []);
 
   const includeReportAsAttachmentString = reportDefinitionDetails[
-    'include_report_as_attachment'
+    'includeReportAsAttachment'
   ]
     ? 'True'
     : 'False';
@@ -105,11 +108,11 @@ export function ReportDefinitionDetails(props) {
               alignItems="flexEnd"
               gutterSize="xs"
             >
-              <EuiFlexItem></EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
+              <EuiFlexItem />
+              <EuiFlexItem />
+              <EuiFlexItem />
+              <EuiFlexItem />
+              <EuiFlexItem />
               <EuiFlexItem>
                 <EuiText size="xs">
                   <h2>
@@ -163,7 +166,7 @@ export function ReportDefinitionDetails(props) {
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Last updated'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['last_updated']
+                reportDefinitionDetails['lastUpdated']
               }
             />
           </EuiFlexGroup>
@@ -176,18 +179,18 @@ export function ReportDefinitionDetails(props) {
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Time period'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['time_period']
+                reportDefinitionDetails['timePeriod']
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'File format'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['file_format']
+                reportDefinitionDetails['fileFormat']
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report header'}
-              ReportDefinitionDetails={reportDefinitionDetails['report_header']}
+              ReportDefinitionDetails={reportDefinitionDetails['reportHeader']}
             />
           </EuiFlexGroup>
           <EuiSpacer />
@@ -195,7 +198,7 @@ export function ReportDefinitionDetails(props) {
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report footer'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['report_footer']
+                reportDefinitionDetails['reportFooter']
               }
             />
             <ReportDetailsComponent />
@@ -211,19 +214,19 @@ export function ReportDefinitionDetails(props) {
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Trigger type'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['trigger_type']
+                reportDefinitionDetails['triggerType']
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Schedule details'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['schedule_details']
+                reportDefinitionDetails['scheduleDetails']
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Alert details'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['alert_details']
+                reportDefinitionDetails['alertDetails']
               }
             />
             <ReportDetailsComponent
@@ -240,25 +243,25 @@ export function ReportDefinitionDetails(props) {
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Delivery channels'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['delivery_channels']
+                reportDefinitionDetails['deliveryChannels']
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Kibana recipients'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['kibana_recipients']
+                reportDefinitionDetails['kibanaRecipients']
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email recipients'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['email_recipients']
+                reportDefinitionDetails['emailRecipients']
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email subject'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['email_subject']
+                reportDefinitionDetails['emailSubject']
               }
             />
           </EuiFlexGroup>
@@ -267,7 +270,7 @@ export function ReportDefinitionDetails(props) {
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email body'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['email_body']
+                reportDefinitionDetails['emailBody']
               }
             />
             <ReportDetailsComponent
