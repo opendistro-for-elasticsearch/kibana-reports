@@ -239,23 +239,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
               <select
                 class="euiSelect"
                 id="random_html_id"
-              >
-                <option
-                  value="dailySaves"
-                >
-                  Daily saves
-                </option>
-                <option
-                  value="webLogs"
-                >
-                  Web logs
-                </option>
-                <option
-                  value="flightTraffic"
-                >
-                  Flight traffic
-                </option>
-              </select>
+              />
               <div
                 class="euiFormControlLayoutIcons euiFormControlLayoutIcons--right"
               >

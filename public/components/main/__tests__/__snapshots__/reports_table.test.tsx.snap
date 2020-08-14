@@ -462,12 +462,11 @@ exports[`<ReportsTable /> panel render component 1`] = `
               </th>
               <th
                 class="euiTableHeaderCell"
-                data-test-subj="tableHeaderCell_download_7"
                 role="columnheader"
                 scope="col"
               >
                 <div
-                  class="euiTableCellContent"
+                  class="euiTableCellContent euiTableCellContent--alignRight"
                 >
                   <span
                     class="euiTableCellContent__text"
@@ -481,7 +480,7 @@ exports[`<ReportsTable /> panel render component 1`] = `
           </thead>
           <tbody>
             <tr
-              class="euiTableRow"
+              class="euiTableRow euiTableRow-hasActions"
             >
               <td
                 class="euiTableRowCell"
@@ -497,7 +496,7 @@ exports[`<ReportsTable /> panel render component 1`] = `
                   <span
                     class="euiTableCellContent__text"
                   >
-                    Web logs traffic July 7
+                    test report table item
                   </span>
                 </div>
               </td>
@@ -515,7 +514,7 @@ exports[`<ReportsTable /> panel render component 1`] = `
                   <span
                     class="euiTableCellContent__text"
                   >
-                    Schedule
+                    Test type
                   </span>
                 </div>
               </td>
@@ -533,7 +532,7 @@ exports[`<ReportsTable /> panel render component 1`] = `
                   <span
                     class="euiTableCellContent__text"
                   >
-                    jadhanir
+                    N/A
                   </span>
                 </div>
               </td>
@@ -551,7 +550,7 @@ exports[`<ReportsTable /> panel render component 1`] = `
                   <span
                     class="euiTableCellContent__text"
                   >
-                    szhongna, davidcui
+                    N/A
                   </span>
                 </div>
               </td>
@@ -564,16 +563,13 @@ exports[`<ReportsTable /> panel render component 1`] = `
                   Source
                 </div>
                 <div
-                  class="euiTableCellContent euiTableCellContent--overflowingContent"
+                  class="euiTableCellContent"
                 >
-                  <a
-                    class="euiLink euiLink--primary"
-                    href="#"
-                    rel="noopener noreferrer"
-                    target="_blank"
+                  <span
+                    class="euiTableCellContent__text"
                   >
-                    dashboard/web_logs
-                  </a>
+                    Test report source
+                  </span>
                 </div>
               </td>
               <td
@@ -590,7 +586,7 @@ exports[`<ReportsTable /> panel render component 1`] = `
                   <span
                     class="euiTableCellContent__text"
                   >
-                    7 Jul 2020 10:21
+                    test updated time
                   </span>
                 </div>
               </td>
@@ -613,514 +609,31 @@ exports[`<ReportsTable /> panel render component 1`] = `
                 </div>
               </td>
               <td
-                class="euiTableRowCell"
+                class="euiTableRowCell euiTableRowCell--hasActions"
               >
                 <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Download
-                </div>
-                <div
-                  class="euiTableCellContent euiTableCellContent--overflowingContent"
-                >
-                  <button
-                    class="euiButtonIcon euiButtonIcon--primary"
-                    type="button"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonIcon__icon"
-                      focusable="false"
-                      height="16"
-                      role="img"
-                      viewBox="0 0 16 16"
-                      width="16"
-                      xmlns="http://www.w3.org/2000/svg"
-                    />
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr
-              class="euiTableRow"
-            >
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Name
-                </div>
-                <div
-                  class="euiTableCellContent euiTableCellContent--truncateText"
+                  class="euiTableCellContent euiTableCellContent--alignRight euiTableCellContent--showOnHover euiTableCellContent--overflowingContent"
                 >
                   <span
-                    class="euiTableCellContent__text"
+                    class="euiToolTipAnchor"
                   >
-                    Daily Sales Report, April 23
+                    <button
+                      aria-label="Generate report"
+                      class="euiButtonIcon euiButtonIcon--primary euiTableCellContent__hoverItem"
+                      type="button"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonIcon__icon"
+                        focusable="false"
+                        height="16"
+                        role="img"
+                        viewBox="0 0 16 16"
+                        width="16"
+                        xmlns="http://www.w3.org/2000/svg"
+                      />
+                    </button>
                   </span>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Type
-                </div>
-                <div
-                  class="euiTableCellContent"
-                >
-                  <span
-                    class="euiTableCellContent__text"
-                  >
-                    Schedule
-                  </span>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Sender
-                </div>
-                <div
-                  class="euiTableCellContent"
-                >
-                  <span
-                    class="euiTableCellContent__text"
-                  >
-                    davidcui
-                  </span>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Recipient(s)
-                </div>
-                <div
-                  class="euiTableCellContent euiTableCellContent--truncateText"
-                >
-                  <span
-                    class="euiTableCellContent__text"
-                  >
-                    szhongna, jadhanir, kvngar
-                  </span>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Source
-                </div>
-                <div
-                  class="euiTableCellContent euiTableCellContent--overflowingContent"
-                >
-                  <a
-                    class="euiLink euiLink--primary"
-                    href="#"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    dashboard/daily_saves
-                  </a>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Last updated
-                </div>
-                <div
-                  class="euiTableCellContent euiTableCellContent--truncateText"
-                >
-                  <span
-                    class="euiTableCellContent__text"
-                  >
-                    23 Apr 2020 10:21
-                  </span>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  State
-                </div>
-                <div
-                  class="euiTableCellContent"
-                >
-                  <span
-                    class="euiTableCellContent__text"
-                  >
-                    Created
-                  </span>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Download
-                </div>
-                <div
-                  class="euiTableCellContent euiTableCellContent--overflowingContent"
-                >
-                  <button
-                    class="euiButtonIcon euiButtonIcon--primary"
-                    type="button"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonIcon__icon"
-                      focusable="false"
-                      height="16"
-                      role="img"
-                      viewBox="0 0 16 16"
-                      width="16"
-                      xmlns="http://www.w3.org/2000/svg"
-                    />
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr
-              class="euiTableRow"
-            >
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Name
-                </div>
-                <div
-                  class="euiTableCellContent euiTableCellContent--truncateText"
-                >
-                  <span
-                    class="euiTableCellContent__text"
-                  >
-                    Daily Sales Report, April 22
-                  </span>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Type
-                </div>
-                <div
-                  class="euiTableCellContent"
-                >
-                  <span
-                    class="euiTableCellContent__text"
-                  >
-                    Schedule
-                  </span>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Sender
-                </div>
-                <div
-                  class="euiTableCellContent"
-                >
-                  <span
-                    class="euiTableCellContent__text"
-                  >
-                    davidcui
-                  </span>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Recipient(s)
-                </div>
-                <div
-                  class="euiTableCellContent euiTableCellContent--truncateText"
-                >
-                  <span
-                    class="euiTableCellContent__text"
-                  >
-                    szhongna, jadhanir, kvngar
-                  </span>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Source
-                </div>
-                <div
-                  class="euiTableCellContent euiTableCellContent--overflowingContent"
-                >
-                  <a
-                    class="euiLink euiLink--primary"
-                    href="#"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    dashboard/daily_saves
-                  </a>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Last updated
-                </div>
-                <div
-                  class="euiTableCellContent euiTableCellContent--truncateText"
-                >
-                  <span
-                    class="euiTableCellContent__text"
-                  >
-                    22 Apr 2020 10:21
-                  </span>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  State
-                </div>
-                <div
-                  class="euiTableCellContent"
-                >
-                  <span
-                    class="euiTableCellContent__text"
-                  >
-                    Created
-                  </span>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Download
-                </div>
-                <div
-                  class="euiTableCellContent euiTableCellContent--overflowingContent"
-                >
-                  <button
-                    class="euiButtonIcon euiButtonIcon--primary"
-                    type="button"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonIcon__icon"
-                      focusable="false"
-                      height="16"
-                      role="img"
-                      viewBox="0 0 16 16"
-                      width="16"
-                      xmlns="http://www.w3.org/2000/svg"
-                    />
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr
-              class="euiTableRow"
-            >
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Name
-                </div>
-                <div
-                  class="euiTableCellContent euiTableCellContent--truncateText"
-                >
-                  <span
-                    class="euiTableCellContent__text"
-                  >
-                    Daily Sales Report, April 21
-                  </span>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Type
-                </div>
-                <div
-                  class="euiTableCellContent"
-                >
-                  <span
-                    class="euiTableCellContent__text"
-                  >
-                    Schedule
-                  </span>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Sender
-                </div>
-                <div
-                  class="euiTableCellContent"
-                >
-                  <span
-                    class="euiTableCellContent__text"
-                  >
-                    davidcui
-                  </span>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Recipient(s)
-                </div>
-                <div
-                  class="euiTableCellContent euiTableCellContent--truncateText"
-                >
-                  <span
-                    class="euiTableCellContent__text"
-                  >
-                    szhongna, jadhanir, kvngar
-                  </span>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Source
-                </div>
-                <div
-                  class="euiTableCellContent euiTableCellContent--overflowingContent"
-                >
-                  <a
-                    class="euiLink euiLink--primary"
-                    href="#"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    dashboard/daily_saves
-                  </a>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Last updated
-                </div>
-                <div
-                  class="euiTableCellContent euiTableCellContent--truncateText"
-                >
-                  <span
-                    class="euiTableCellContent__text"
-                  >
-                    21 Apr 2020 10:21
-                  </span>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  State
-                </div>
-                <div
-                  class="euiTableCellContent"
-                >
-                  <span
-                    class="euiTableCellContent__text"
-                  >
-                    Created
-                  </span>
-                </div>
-              </td>
-              <td
-                class="euiTableRowCell"
-              >
-                <div
-                  class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                >
-                  Download
-                </div>
-                <div
-                  class="euiTableCellContent euiTableCellContent--overflowingContent"
-                >
-                  <button
-                    class="euiButtonIcon euiButtonIcon--primary"
-                    type="button"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonIcon__icon"
-                      focusable="false"
-                      height="16"
-                      role="img"
-                      viewBox="0 0 16 16"
-                      width="16"
-                      xmlns="http://www.w3.org/2000/svg"
-                    />
-                  </button>
                 </div>
               </td>
             </tr>

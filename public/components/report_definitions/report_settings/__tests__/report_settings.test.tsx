@@ -16,10 +16,33 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { ReportSettings } from '../report_settings';
+import 'babel-polyfill';
+import 'regenerator-runtime';
+import httpClientMock from '../../../../../test/httpMockClient';
 
 describe('<ReportSettings /> panel', () => {
   test('render component', () => {
-    const { container } = render(<ReportSettings />);
+    let createReportDefinitionRequest = {
+      report_name: '',
+      report_source: '',
+      report_type: '',
+      description: '',
+      report_params: {
+        url: ``,
+        report_format: '',
+        window_width: 1560,
+        window_height: 2560,
+      },
+      delivery: {},
+      trigger: {},
+    };
+
+    const { container } = render(
+      <ReportSettings
+        createReportDefinitionRequest={createReportDefinitionRequest}
+        httpClientProps={httpClientMock}
+      />
+    );
 
     expect(container.firstChild).toMatchSnapshot();
   });

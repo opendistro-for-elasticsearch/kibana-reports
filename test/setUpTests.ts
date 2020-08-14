@@ -14,3 +14,4 @@
  */
 
 require('babel-polyfill');
+require('core-js/stable');
