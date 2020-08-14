@@ -119,11 +119,11 @@ export function ReportDetails(props) {
               alignItems="flexEnd"
               gutterSize="xs"
             >
-              <EuiFlexItem></EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
+              <EuiFlexItem />
+              <EuiFlexItem />
+              <EuiFlexItem />
+              <EuiFlexItem />
+              <EuiFlexItem />
               <EuiFlexItem>
                 <EuiText size="xs">
                   <h2>
