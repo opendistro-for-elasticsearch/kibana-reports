@@ -53,7 +53,6 @@ export const ReportDetailsComponent = (props) => {
 export function ReportDetails(props) {
   const [reportDetails, setReportDetails] = useState({});
   const reportId = props.match["params"]["reportId"];
-  // todo: replace values with values from props.reportDetailsMetadata
 
   const handleReportDetails = (e) => {
     setReportDetails(e);
@@ -61,25 +60,25 @@ export function ReportDetails(props) {
 
   const getReportDetailsData = (data) => {
     let reportDetails = {
-      report_name: data["report_name"],
+      reportName: data["report_name"],
       description: data["description"],
       created: data["time_created"],
-      last_updated: "--",
-      source_type: data["report_type"],
-      source: data["source_type"],
-      default_file_format: data["report_params"]["report_format"],
-      report_header: '--',
-      report_footer: '--',
-      report_type: data["report_type"],
-      schedule_type: '--',
-      schedule_details: '--',
-      alert_details: '--',
+      lastUpdated: "--",
+      sourceType: data["report_type"],
+      source: data["report_source"],
+      defaultFileFormat: data["report_params"]["report_format"],
+      reportHeader: '--',
+      reportFooter: '--',
+      reportType: data["report_type"],
+      scheduleType: '--',
+      scheduleDetails: '--',
+      alertDetails: '--',
       channel: '--',
-      kibana_recipients: '--',
-      email_recipients: '--',
-      email_subject: '--',
-      email_body: '--',
-      report_as_attachment: false
+      kibanaRecipients: '--',
+      emailRecipients: '--',
+      emailSubject: '--',
+      emailBody: '--',
+      reportAsAttachment: false
     }
     return reportDetails;
   }
@@ -88,6 +87,7 @@ export function ReportDetails(props) {
     const { httpClient } = props;
     httpClient.get('../api/reporting/reports/' + reportId)
       .then((response) => {
+        console.log("respnose is", response);
         handleReportDetails(getReportDetailsData(response));
       })
       .catch((error) => {
@@ -95,7 +95,7 @@ export function ReportDetails(props) {
       })
   }, []);
 
-  const includeReportAsAttachmentString = reportDetails["report_as_attachment"]
+  const includeReportAsAttachmentString = reportDetails["reportAsAttachment"]
     ? 'True'
     : 'False';
   return (
@@ -110,7 +110,7 @@ export function ReportDetails(props) {
             <EuiFlexItem>
               <EuiPageHeaderSection>
                 <EuiTitle>
-                  <h2>{reportDetails["report_name"]}</h2>
+                  <h2>{reportDetails["reportName"]}</h2>
                 </EuiTitle>
               </EuiPageHeaderSection>
             </EuiFlexItem>
@@ -150,7 +150,7 @@ export function ReportDetails(props) {
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Name'}
-              reportDetailsComponentContent={reportDetails["report_name"]}
+              reportDetailsComponentContent={reportDetails["reportName"]}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Description'}
@@ -162,14 +162,14 @@ export function ReportDetails(props) {
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Last updated'}
-              reportDetailsComponentContent={reportDetails["last_updated"]}
+              reportDetailsComponentContent={reportDetails["lastUpdated"]}
             />
           </EuiFlexGroup>
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Source type'}
-              reportDetailsComponentContent={reportDetails["source_type"]}
+              reportDetailsComponentContent={reportDetails["sourceType"]}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Source'}
@@ -178,7 +178,7 @@ export function ReportDetails(props) {
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Default file format'}
               reportDetailsComponentContent={
-                reportDetails["default_file_format"]
+                reportDetails["defaultFileFormat"]
               }
             />
             <ReportDetailsComponent />
@@ -188,13 +188,13 @@ export function ReportDetails(props) {
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report header'}
               reportDetailsComponentContent={
-                reportDetails["report_header"]
+                reportDetails["reportHeader"]
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report footer'}
               reportDetailsComponentContent={
-                reportDetails["report_footer"]
+                reportDetails["reportFooter"]
               }
             />
             <ReportDetailsComponent />
@@ -208,24 +208,24 @@ export function ReportDetails(props) {
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report type'}
-              reportDetailsComponentContent={reportDetails["report_type"]}
+              reportDetailsComponentContent={reportDetails["reportType"]}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Schedule type'}
               reportDetailsComponentContent={
-                reportDetails["schedule_type"]
+                reportDetails["scheduleType"]
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Schedule details'}
               reportDetailsComponentContent={
-                reportDetails["schedule_details"]
+                reportDetails["scheduleDetails"]
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Alert details'}
               reportDetailsComponentContent={
-                reportDetails["alert_details"]
+                reportDetails["alertDetails"]
               }
             />
           </EuiFlexGroup>
@@ -242,19 +242,19 @@ export function ReportDetails(props) {
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Kibana recipients'}
               reportDetailsComponentContent={
-                reportDetails["kibana_recipients"]
+                reportDetails["kibanaRecipients"]
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email recipients'}
               reportDetailsComponentContent={
-                reportDetails["email_recipients"]
+                reportDetails["emailRecipients"]
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email subject'}
               reportDetailsComponentContent={
-                reportDetails["email_subject"]
+                reportDetails["emailSubject"]
               }
             />
           </EuiFlexGroup>
@@ -262,7 +262,7 @@ export function ReportDetails(props) {
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email body'}
-              reportDetailsComponentContent={reportDetails["email_body"]}
+              reportDetailsComponentContent={reportDetails["emailBody"]}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Include report as attachment'}
