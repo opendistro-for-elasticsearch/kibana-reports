@@ -61,7 +61,15 @@ const INSERT_PLACEHOLDER_OPTIONS = [
   },
 ];
 
-export function ReportDelivery() {
+let delivery_params = {
+  subject: '',
+  body: '',
+  has_attachment: false,
+  recipients: ['array'],
+};
+
+export function ReportDelivery(props) {
+  const { createReportDefinitionRequest } = props;
   const [emailCheckbox, setEmailCheckbox] = useState(false);
   const [emailRecipients, setEmailRecipients] = useState([]);
   const [includeReportAsAttachment, setIncludeReportAsAttachment] = useState(
@@ -69,20 +77,39 @@ export function ReportDelivery() {
   );
   const [insertPlaceholder, setInsertPlaceholder] = useState(false);
 
+  // TODO: make these fields not required for Create report definition request so no need for filler values
+  let delivery = {
+    channel: 'Kibana User',
+    delivery_params: {
+      subject: 'test subject',
+      body: 'test body',
+      has_attachment: true,
+      recipients: ['test_entry@test.com'],
+    },
+  };
+
   const handleEmailCheckbox = (e: {
     target: { checked: React.SetStateAction<boolean> };
   }) => {
     setEmailCheckbox(e.target.checked);
+    if (e.target.checked) {
+      delivery['channel'] = 'Email';
+    }
+    delivery['delivery_params'] = delivery_params;
   };
 
   const handleEmailRecipients = (e: React.SetStateAction<any[]>) => {
     setEmailRecipients(e);
+    delivery_params['recipients'].push(e.toString());
   };
 
   const handleIncludeReportAsAttachment = (e: {
     target: { checked: React.SetStateAction<boolean> };
   }) => {
     setIncludeReportAsAttachment(e.target.checked);
+    if (e.target.checked) {
+      delivery_params['has_attachment'] = includeReportAsAttachment;
+    }
   };
 
   const handleInsertPlaceholderClick = () => {
@@ -147,12 +174,14 @@ export function ReportDelivery() {
       target: { value: React.SetStateAction<string> };
     }) => {
       setEmailSubject(e.target.value);
+      delivery_params['subject'] = e.target.value.toString();
     };
 
     const handleEmailBody = (e: {
       target: { value: React.SetStateAction<string> };
     }) => {
       setEmailBody(e.target.value);
+      delivery_params['body'] = e.target.value.toString();
     };
 
     return (
@@ -201,6 +230,8 @@ export function ReportDelivery() {
   };
 
   const emailDelivery = emailCheckbox ? <EmailDelivery /> : null;
+
+  createReportDefinitionRequest['delivery'] = delivery;
 
   return (
     <EuiPageContent panelPaddingSize={'l'}>

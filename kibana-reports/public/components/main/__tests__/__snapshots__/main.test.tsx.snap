@@ -1,1208 +1,109 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<Main /> panel render component 1`] = `
-<div
-  class="euiPage"
->
-  <main
-    class="euiPageBody"
+<div>
+  <div
+    class="euiPage"
   >
-    <div
-      class="euiPanel euiPanel--paddingLarge euiPageContent"
+    <main
+      class="euiPageBody"
     >
       <div
-        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentSpaceEvenly euiFlexGroup--directionRow euiFlexGroup--responsive"
+        class="euiPanel euiPanel--paddingLarge euiPageContent"
       >
         <div
-          class="euiFlexItem"
+          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentSpaceEvenly euiFlexGroup--directionRow euiFlexGroup--responsive"
         >
-          <h2
-            class="euiTitle euiTitle--medium"
+          <div
+            class="euiFlexItem"
           >
-            Reports (
-            4
-            )
-          </h2>
-        </div>
-        <span
-          class="euiFlexItem euiFlexItem--flexGrowZero"
-        >
-          <button
-            class="euiButton euiButton--primary"
-            type="button"
+            <h2
+              class="euiTitle euiTitle--medium"
+            >
+              Reports (
+              0
+              )
+            </h2>
+          </div>
+          <span
+            class="euiFlexItem euiFlexItem--flexGrowZero"
           >
-            <span
-              class="euiButton__content"
+            <button
+              class="euiButton euiButton--primary"
+              type="button"
             >
               <span
-                class="euiButton__text"
+                class="euiButton__content"
               >
-                Refresh
+                <span
+                  class="euiButton__text"
+                >
+                  Refresh
+                </span>
               </span>
-            </span>
-          </button>
-        </span>
-      </div>
-      <hr
-        class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
-      />
-      <div>
+            </button>
+          </span>
+        </div>
+        <hr
+          class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
+        />
         <div>
-          <div
-            class="euiFlexGroup euiFlexGroup--gutterMedium euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive euiFlexGroup--wrap"
-          >
+          <div>
             <div
-              class="euiFlexItem euiSearchBar__searchHolder"
+              class="euiFlexGroup euiFlexGroup--gutterMedium euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive euiFlexGroup--wrap"
             >
               <div
-                class="euiFormControlLayout euiFormControlLayout--fullWidth"
+                class="euiFlexItem euiSearchBar__searchHolder"
               >
                 <div
-                  class="euiFormControlLayout__childrenWrapper"
-                >
-                  <input
-                    aria-label="This is a search bar. As you type, the results lower in the page will automatically filter."
-                    class="euiFieldSearch euiFieldSearch--fullWidth"
-                    placeholder="Search..."
-                    type="search"
-                    value=""
-                  />
-                  <div
-                    class="euiFormControlLayoutIcons"
-                  >
-                    <span
-                      class="euiFormControlLayoutCustomIcon"
-                    >
-                      <svg
-                        aria-hidden="true"
-                        class="euiIcon euiIcon--medium euiIcon-isLoading euiFormControlLayoutCustomIcon__icon"
-                        focusable="false"
-                        height="16"
-                        role="img"
-                        viewBox="0 0 16 16"
-                        width="16"
-                        xmlns="http://www.w3.org/2000/svg"
-                      />
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="euiFlexItem euiFlexItem--flexGrowZero euiSearchBar__filtersHolder"
-            >
-              <div
-                class="euiFilterGroup"
-              >
-                <div
-                  class="euiPopover euiPopover--anchorDownCenter"
-                  id="field_value_selection_0"
+                  class="euiFormControlLayout euiFormControlLayout--fullWidth"
                 >
                   <div
-                    class="euiPopover__anchor"
+                    class="euiFormControlLayout__childrenWrapper"
                   >
-                    <button
-                      class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--iconRight euiFilterButton euiFilterButton--hasIcon"
-                      type="button"
-                    >
-                      <span
-                        class="euiButtonEmpty__content"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonEmpty__icon"
-                          focusable="false"
-                          height="16"
-                          role="img"
-                          viewBox="0 0 16 16"
-                          width="16"
-                          xmlns="http://www.w3.org/2000/svg"
-                        />
-                        <span
-                          class="euiButtonEmpty__text"
-                        >
-                          <span
-                            class="euiFilterButton__textShift"
-                            data-text="Sender"
-                            title="Sender"
-                          >
-                            Sender
-                          </span>
-                        </span>
-                      </span>
-                    </button>
-                  </div>
-                </div>
-                <div
-                  class="euiPopover euiPopover--anchorDownCenter"
-                  id="field_value_selection_1"
-                >
-                  <div
-                    class="euiPopover__anchor"
-                  >
-                    <button
-                      class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--iconRight euiFilterButton euiFilterButton--hasIcon"
-                      type="button"
-                    >
-                      <span
-                        class="euiButtonEmpty__content"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonEmpty__icon"
-                          focusable="false"
-                          height="16"
-                          role="img"
-                          viewBox="0 0 16 16"
-                          width="16"
-                          xmlns="http://www.w3.org/2000/svg"
-                        />
-                        <span
-                          class="euiButtonEmpty__text"
-                        >
-                          <span
-                            class="euiFilterButton__textShift"
-                            data-text="Recipients"
-                            title="Recipients"
-                          >
-                            Recipients
-                          </span>
-                        </span>
-                      </span>
-                    </button>
-                  </div>
-                </div>
-                <div
-                  class="euiPopover euiPopover--anchorDownCenter"
-                  id="field_value_selection_2"
-                >
-                  <div
-                    class="euiPopover__anchor"
-                  >
-                    <button
-                      class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--iconRight euiFilterButton euiFilterButton--hasIcon"
-                      type="button"
-                    >
-                      <span
-                        class="euiButtonEmpty__content"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonEmpty__icon"
-                          focusable="false"
-                          height="16"
-                          role="img"
-                          viewBox="0 0 16 16"
-                          width="16"
-                          xmlns="http://www.w3.org/2000/svg"
-                        />
-                        <span
-                          class="euiButtonEmpty__text"
-                        >
-                          <span
-                            class="euiFilterButton__textShift"
-                            data-text="State"
-                            title="State"
-                          >
-                            State
-                          </span>
-                        </span>
-                      </span>
-                    </button>
-                  </div>
-                </div>
-                <div
-                  class="euiPopover euiPopover--anchorDownCenter"
-                  id="field_value_selection_3"
-                >
-                  <div
-                    class="euiPopover__anchor"
-                  >
-                    <button
-                      class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--iconRight euiFilterButton euiFilterButton--hasIcon"
-                      type="button"
-                    >
-                      <span
-                        class="euiButtonEmpty__content"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonEmpty__icon"
-                          focusable="false"
-                          height="16"
-                          role="img"
-                          viewBox="0 0 16 16"
-                          width="16"
-                          xmlns="http://www.w3.org/2000/svg"
-                        />
-                        <span
-                          class="euiButtonEmpty__text"
-                        >
-                          <span
-                            class="euiFilterButton__textShift"
-                            data-text="Type"
-                            title="Type"
-                          >
-                            Type
-                          </span>
-                        </span>
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="euiSpacer euiSpacer--l"
-          />
-          <div
-            class="euiBasicTable"
-          >
-            <div>
-              <div
-                class="euiTableHeaderMobile"
-              >
-                <div
-                  class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsBaseline euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow"
-                >
-                  <div
-                    class="euiFlexItem euiFlexItem--flexGrowZero"
-                  />
-                  <div
-                    class="euiFlexItem euiFlexItem--flexGrowZero"
-                  >
+                    <input
+                      aria-label="This is a search bar. As you type, the results lower in the page will automatically filter."
+                      class="euiFieldSearch euiFieldSearch--fullWidth"
+                      placeholder="Search..."
+                      type="search"
+                      value=""
+                    />
                     <div
-                      class="euiTableSortMobile"
+                      class="euiFormControlLayoutIcons"
                     >
-                      <div
-                        class="euiPopover euiPopover--anchorDownRight"
+                      <span
+                        class="euiFormControlLayoutCustomIcon"
                       >
-                        <div
-                          class="euiPopover__anchor"
-                        >
-                          <button
-                            class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--iconRight euiButtonEmpty--flushRight"
-                            type="button"
-                          >
-                            <span
-                              class="euiButtonEmpty__content"
-                            >
-                              <svg
-                                aria-hidden="true"
-                                class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonEmpty__icon"
-                                focusable="false"
-                                height="16"
-                                role="img"
-                                viewBox="0 0 16 16"
-                                width="16"
-                                xmlns="http://www.w3.org/2000/svg"
-                              />
-                              <span
-                                class="euiButtonEmpty__text"
-                              >
-                                Sorting
-                              </span>
-                            </span>
-                          </button>
-                        </div>
-                      </div>
+                        <svg
+                          aria-hidden="true"
+                          class="euiIcon euiIcon--medium euiIcon-isLoading euiFormControlLayoutCustomIcon__icon"
+                          focusable="false"
+                          height="16"
+                          role="img"
+                          viewBox="0 0 16 16"
+                          width="16"
+                          xmlns="http://www.w3.org/2000/svg"
+                        />
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
-              <table
-                class="euiTable euiTable--responsive"
-                id="random_html_id"
-                tabindex="-1"
-              >
-                <caption
-                  class="euiScreenReaderOnly euiTableCaption"
-                />
-                <thead>
-                  <tr>
-                    <th
-                      aria-live="polite"
-                      aria-sort="none"
-                      class="euiTableHeaderCell"
-                      data-test-subj="tableHeaderCell_reportName_0"
-                      role="columnheader"
-                      scope="col"
-                    >
-                      <button
-                        class="euiTableHeaderButton"
-                        data-test-subj="tableHeaderSortButton"
-                        type="button"
-                      >
-                        <span
-                          class="euiTableCellContent"
-                        >
-                          <span
-                            class="euiTableCellContent__text"
-                            title="Name"
-                          >
-                            Name
-                          </span>
-                          <span
-                            class="euiScreenReaderOnly"
-                          >
-                            Click to sort in ascending order
-                          </span>
-                        </span>
-                      </button>
-                    </th>
-                    <th
-                      aria-live="polite"
-                      aria-sort="none"
-                      class="euiTableHeaderCell"
-                      data-test-subj="tableHeaderCell_type_1"
-                      role="columnheader"
-                      scope="col"
-                    >
-                      <button
-                        class="euiTableHeaderButton"
-                        data-test-subj="tableHeaderSortButton"
-                        type="button"
-                      >
-                        <span
-                          class="euiTableCellContent"
-                        >
-                          <span
-                            class="euiTableCellContent__text"
-                            title="Type"
-                          >
-                            Type
-                          </span>
-                          <span
-                            class="euiScreenReaderOnly"
-                          >
-                            Click to sort in ascending order
-                          </span>
-                        </span>
-                      </button>
-                    </th>
-                    <th
-                      aria-live="polite"
-                      aria-sort="none"
-                      class="euiTableHeaderCell"
-                      data-test-subj="tableHeaderCell_sender_2"
-                      role="columnheader"
-                      scope="col"
-                    >
-                      <button
-                        class="euiTableHeaderButton"
-                        data-test-subj="tableHeaderSortButton"
-                        type="button"
-                      >
-                        <span
-                          class="euiTableCellContent"
-                        >
-                          <span
-                            class="euiTableCellContent__text"
-                            title="Sender"
-                          >
-                            Sender
-                          </span>
-                          <span
-                            class="euiScreenReaderOnly"
-                          >
-                            Click to sort in ascending order
-                          </span>
-                        </span>
-                      </button>
-                    </th>
-                    <th
-                      aria-live="polite"
-                      aria-sort="none"
-                      class="euiTableHeaderCell"
-                      data-test-subj="tableHeaderCell_recipients_3"
-                      role="columnheader"
-                      scope="col"
-                    >
-                      <button
-                        class="euiTableHeaderButton"
-                        data-test-subj="tableHeaderSortButton"
-                        type="button"
-                      >
-                        <span
-                          class="euiTableCellContent"
-                        >
-                          <span
-                            class="euiTableCellContent__text"
-                            title="Recipient(s)"
-                          >
-                            Recipient(s)
-                          </span>
-                          <span
-                            class="euiScreenReaderOnly"
-                          >
-                            Click to sort in ascending order
-                          </span>
-                        </span>
-                      </button>
-                    </th>
-                    <th
-                      class="euiTableHeaderCell"
-                      data-test-subj="tableHeaderCell_reportSource_4"
-                      role="columnheader"
-                      scope="col"
-                    >
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                          title="Source"
-                        >
-                          Source
-                        </span>
-                      </div>
-                    </th>
-                    <th
-                      class="euiTableHeaderCell"
-                      data-test-subj="tableHeaderCell_lastUpdated_5"
-                      role="columnheader"
-                      scope="col"
-                    >
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                          title="Last updated"
-                        >
-                          Last updated
-                        </span>
-                      </div>
-                    </th>
-                    <th
-                      aria-live="polite"
-                      aria-sort="none"
-                      class="euiTableHeaderCell"
-                      data-test-subj="tableHeaderCell_state_6"
-                      role="columnheader"
-                      scope="col"
-                    >
-                      <button
-                        class="euiTableHeaderButton"
-                        data-test-subj="tableHeaderSortButton"
-                        type="button"
-                      >
-                        <span
-                          class="euiTableCellContent"
-                        >
-                          <span
-                            class="euiTableCellContent__text"
-                            title="State"
-                          >
-                            State
-                          </span>
-                          <span
-                            class="euiScreenReaderOnly"
-                          >
-                            Click to sort in ascending order
-                          </span>
-                        </span>
-                      </button>
-                    </th>
-                    <th
-                      class="euiTableHeaderCell"
-                      data-test-subj="tableHeaderCell_download_7"
-                      role="columnheader"
-                      scope="col"
-                    >
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                          title="Download"
-                        >
-                          Download
-                        </span>
-                      </div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    class="euiTableRow customRowClass euiTableRow-isClickable"
-                    data-test-subj="row-4"
-                    role="button"
-                    tabindex="0"
-                  >
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Name
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--truncateText"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          Web logs traffic July 7
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Type
-                      </div>
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          Schedule
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Sender
-                      </div>
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          jadhanir
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Recipient(s)
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--truncateText"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          szhongna, davidcui
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Source
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--overflowingContent"
-                      >
-                        <a
-                          class="euiLink euiLink--primary"
-                          href="#"
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          dashboard/web_logs
-                        </a>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Last updated
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--truncateText"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          7 Jul 2020 10:21
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        State
-                      </div>
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          Created
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Download
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--overflowingContent"
-                      >
-                        <button
-                          class="euiButtonIcon euiButtonIcon--primary"
-                          type="button"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonIcon__icon"
-                            focusable="false"
-                            height="16"
-                            role="img"
-                            viewBox="0 0 16 16"
-                            width="16"
-                            xmlns="http://www.w3.org/2000/svg"
-                          />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr
-                    class="euiTableRow customRowClass euiTableRow-isClickable"
-                    data-test-subj="row-3"
-                    role="button"
-                    tabindex="0"
-                  >
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Name
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--truncateText"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          Daily Sales Report, April 23
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Type
-                      </div>
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          Schedule
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Sender
-                      </div>
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          davidcui
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Recipient(s)
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--truncateText"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          szhongna, jadhanir, kvngar
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Source
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--overflowingContent"
-                      >
-                        <a
-                          class="euiLink euiLink--primary"
-                          href="#"
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          dashboard/daily_saves
-                        </a>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Last updated
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--truncateText"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          23 Apr 2020 10:21
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        State
-                      </div>
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          Created
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Download
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--overflowingContent"
-                      >
-                        <button
-                          class="euiButtonIcon euiButtonIcon--primary"
-                          type="button"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonIcon__icon"
-                            focusable="false"
-                            height="16"
-                            role="img"
-                            viewBox="0 0 16 16"
-                            width="16"
-                            xmlns="http://www.w3.org/2000/svg"
-                          />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr
-                    class="euiTableRow customRowClass euiTableRow-isClickable"
-                    data-test-subj="row-2"
-                    role="button"
-                    tabindex="0"
-                  >
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Name
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--truncateText"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          Daily Sales Report, April 22
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Type
-                      </div>
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          Schedule
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Sender
-                      </div>
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          davidcui
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Recipient(s)
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--truncateText"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          szhongna, jadhanir, kvngar
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Source
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--overflowingContent"
-                      >
-                        <a
-                          class="euiLink euiLink--primary"
-                          href="#"
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          dashboard/daily_saves
-                        </a>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Last updated
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--truncateText"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          22 Apr 2020 10:21
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        State
-                      </div>
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          Created
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Download
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--overflowingContent"
-                      >
-                        <button
-                          class="euiButtonIcon euiButtonIcon--primary"
-                          type="button"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonIcon__icon"
-                            focusable="false"
-                            height="16"
-                            role="img"
-                            viewBox="0 0 16 16"
-                            width="16"
-                            xmlns="http://www.w3.org/2000/svg"
-                          />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr
-                    class="euiTableRow customRowClass euiTableRow-isClickable"
-                    data-test-subj="row-1"
-                    role="button"
-                    tabindex="0"
-                  >
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Name
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--truncateText"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          Daily Sales Report, April 21
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Type
-                      </div>
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          Schedule
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Sender
-                      </div>
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          davidcui
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Recipient(s)
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--truncateText"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          szhongna, jadhanir, kvngar
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Source
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--overflowingContent"
-                      >
-                        <a
-                          class="euiLink euiLink--primary"
-                          href="#"
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          dashboard/daily_saves
-                        </a>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Last updated
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--truncateText"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          21 Apr 2020 10:21
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        State
-                      </div>
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          Created
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Download
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--overflowingContent"
-                      >
-                        <button
-                          class="euiButtonIcon euiButtonIcon--primary"
-                          type="button"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonIcon__icon"
-                            focusable="false"
-                            height="16"
-                            role="img"
-                            viewBox="0 0 16 16"
-                            width="16"
-                            xmlns="http://www.w3.org/2000/svg"
-                          />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div>
               <div
-                class="euiSpacer euiSpacer--m"
-              />
-              <div
-                class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow"
+                class="euiFlexItem euiFlexItem--flexGrowZero euiSearchBar__filtersHolder"
               >
                 <div
-                  class="euiFlexItem euiFlexItem--flexGrowZero"
+                  class="euiFilterGroup"
                 >
                   <div
-                    class="euiPopover euiPopover--anchorUpRight euiPopover--withTitle"
+                    class="euiPopover euiPopover--anchorDownCenter"
+                    id="field_value_selection_0"
                   >
                     <div
                       class="euiPopover__anchor"
                     >
                       <button
-                        class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--xSmall euiButtonEmpty--iconRight"
-                        data-test-subj="tablePaginationPopoverButton"
+                        class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--iconRight euiFilterButton euiFilterButton--hasIcon"
                         type="button"
                       >
                         <span
@@ -1221,584 +122,27 @@ exports[`<Main /> panel render component 1`] = `
                           <span
                             class="euiButtonEmpty__text"
                           >
-                            Rows per page
-                            : 
-                            10
+                            <span
+                              class="euiFilterButton__textShift"
+                              data-text="Sender"
+                              title="Sender"
+                            >
+                              Sender
+                            </span>
                           </span>
                         </span>
                       </button>
                     </div>
                   </div>
-                </div>
-                <div
-                  class="euiFlexItem euiFlexItem--flexGrowZero"
-                >
-                  <nav
-                    class="euiPagination"
-                  >
-                    <button
-                      aria-label="Previous page"
-                      class="euiButtonIcon euiButtonIcon--text"
-                      data-test-subj="pagination-button-previous"
-                      disabled=""
-                      type="button"
-                    >
-                      <svg
-                        aria-hidden="true"
-                        class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonIcon__icon"
-                        focusable="false"
-                        height="16"
-                        role="img"
-                        viewBox="0 0 16 16"
-                        width="16"
-                        xmlns="http://www.w3.org/2000/svg"
-                      />
-                    </button>
-                    <ul
-                      class="euiPagination__list"
-                    >
-                      <li
-                        class="euiPagination__item"
-                      >
-                        <button
-                          aria-controls="random_html_id"
-                          aria-current="true"
-                          aria-label="Page 1 of 1"
-                          class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--xSmall euiPaginationButton euiPaginationButton-isActive euiPaginationButton--hideOnMobile"
-                          data-test-subj="pagination-button-0"
-                          disabled=""
-                          type="button"
-                        >
-                          <span
-                            class="euiButtonEmpty__content"
-                          >
-                            <span
-                              class="euiButtonEmpty__text"
-                            >
-                              1
-                            </span>
-                          </span>
-                        </button>
-                      </li>
-                    </ul>
-                    <button
-                      aria-label="Next page"
-                      class="euiButtonIcon euiButtonIcon--text"
-                      data-test-subj="pagination-button-next"
-                      disabled=""
-                      type="button"
-                    >
-                      <svg
-                        aria-hidden="true"
-                        class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonIcon__icon"
-                        focusable="false"
-                        height="16"
-                        role="img"
-                        viewBox="0 0 16 16"
-                        width="16"
-                        xmlns="http://www.w3.org/2000/svg"
-                      />
-                    </button>
-                  </nav>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
-    <div
-      class="euiPanel euiPanel--paddingLarge euiPageContent"
-    >
-      <div
-        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentSpaceEvenly euiFlexGroup--directionRow euiFlexGroup--responsive"
-      >
-        <div
-          class="euiFlexItem"
-        >
-          <h2
-            class="euiTitle euiTitle--medium"
-          >
-            Report definitions (
-            1
-            )
-          </h2>
-        </div>
-        <span
-          class="euiFlexItem euiFlexItem--flexGrowZero"
-        >
-          <button
-            class="euiButton euiButton--primary euiButton--fill"
-            type="button"
-          >
-            <span
-              class="euiButton__content"
-            >
-              <span
-                class="euiButton__text"
-              >
-                Create
-              </span>
-            </span>
-          </button>
-        </span>
-      </div>
-      <hr
-        class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
-      />
-      <div>
-        <div>
-          <div
-            class="euiFlexGroup euiFlexGroup--gutterMedium euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive euiFlexGroup--wrap"
-          >
-            <div
-              class="euiFlexItem euiSearchBar__searchHolder"
-            >
-              <div
-                class="euiFormControlLayout euiFormControlLayout--fullWidth"
-              >
-                <div
-                  class="euiFormControlLayout__childrenWrapper"
-                >
-                  <input
-                    aria-label="This is a search bar. As you type, the results lower in the page will automatically filter."
-                    class="euiFieldSearch euiFieldSearch--fullWidth"
-                    placeholder="Search..."
-                    type="search"
-                    value=""
-                  />
                   <div
-                    class="euiFormControlLayoutIcons"
-                  >
-                    <span
-                      class="euiFormControlLayoutCustomIcon"
-                    >
-                      <svg
-                        aria-hidden="true"
-                        class="euiIcon euiIcon--medium euiIcon-isLoading euiFormControlLayoutCustomIcon__icon"
-                        focusable="false"
-                        height="16"
-                        role="img"
-                        viewBox="0 0 16 16"
-                        width="16"
-                        xmlns="http://www.w3.org/2000/svg"
-                      />
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="euiFlexItem euiFlexItem--flexGrowZero euiSearchBar__filtersHolder"
-            >
-              <div
-                class="euiFilterGroup"
-              />
-            </div>
-          </div>
-          <div
-            class="euiSpacer euiSpacer--l"
-          />
-          <div
-            class="euiBasicTable"
-          >
-            <div>
-              <div
-                class="euiTableHeaderMobile"
-              >
-                <div
-                  class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsBaseline euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow"
-                >
-                  <div
-                    class="euiFlexItem euiFlexItem--flexGrowZero"
-                  />
-                  <div
-                    class="euiFlexItem euiFlexItem--flexGrowZero"
-                  >
-                    <div
-                      class="euiTableSortMobile"
-                    >
-                      <div
-                        class="euiPopover euiPopover--anchorDownRight"
-                      >
-                        <div
-                          class="euiPopover__anchor"
-                        >
-                          <button
-                            class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--iconRight euiButtonEmpty--flushRight"
-                            type="button"
-                          >
-                            <span
-                              class="euiButtonEmpty__content"
-                            >
-                              <svg
-                                aria-hidden="true"
-                                class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonEmpty__icon"
-                                focusable="false"
-                                height="16"
-                                role="img"
-                                viewBox="0 0 16 16"
-                                width="16"
-                                xmlns="http://www.w3.org/2000/svg"
-                              />
-                              <span
-                                class="euiButtonEmpty__text"
-                              >
-                                Sorting
-                              </span>
-                            </span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <table
-                class="euiTable euiTable--responsive"
-                id="random_html_id"
-                tabindex="-1"
-              >
-                <caption
-                  class="euiScreenReaderOnly euiTableCaption"
-                />
-                <thead>
-                  <tr>
-                    <th
-                      aria-live="polite"
-                      aria-sort="none"
-                      class="euiTableHeaderCell"
-                      data-test-subj="tableHeaderCell_reportName_0"
-                      role="columnheader"
-                      scope="col"
-                    >
-                      <button
-                        class="euiTableHeaderButton"
-                        data-test-subj="tableHeaderSortButton"
-                        type="button"
-                      >
-                        <span
-                          class="euiTableCellContent"
-                        >
-                          <span
-                            class="euiTableCellContent__text"
-                            title="Name"
-                          >
-                            Name
-                          </span>
-                          <span
-                            class="euiScreenReaderOnly"
-                          >
-                            Click to sort in ascending order
-                          </span>
-                        </span>
-                      </button>
-                    </th>
-                    <th
-                      aria-live="polite"
-                      aria-sort="none"
-                      class="euiTableHeaderCell"
-                      data-test-subj="tableHeaderCell_type_1"
-                      role="columnheader"
-                      scope="col"
-                    >
-                      <button
-                        class="euiTableHeaderButton"
-                        data-test-subj="tableHeaderSortButton"
-                        type="button"
-                      >
-                        <span
-                          class="euiTableCellContent"
-                        >
-                          <span
-                            class="euiTableCellContent__text"
-                            title="Type"
-                          >
-                            Type
-                          </span>
-                          <span
-                            class="euiScreenReaderOnly"
-                          >
-                            Click to sort in ascending order
-                          </span>
-                        </span>
-                      </button>
-                    </th>
-                    <th
-                      aria-live="polite"
-                      aria-sort="none"
-                      class="euiTableHeaderCell"
-                      data-test-subj="tableHeaderCell_owner_2"
-                      role="columnheader"
-                      scope="col"
-                    >
-                      <button
-                        class="euiTableHeaderButton"
-                        data-test-subj="tableHeaderSortButton"
-                        type="button"
-                      >
-                        <span
-                          class="euiTableCellContent"
-                        >
-                          <span
-                            class="euiTableCellContent__text"
-                            title="Owner"
-                          >
-                            Owner
-                          </span>
-                          <span
-                            class="euiScreenReaderOnly"
-                          >
-                            Click to sort in ascending order
-                          </span>
-                        </span>
-                      </button>
-                    </th>
-                    <th
-                      class="euiTableHeaderCell"
-                      data-test-subj="tableHeaderCell_source_3"
-                      role="columnheader"
-                      scope="col"
-                    >
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                          title="Source"
-                        >
-                          Source
-                        </span>
-                      </div>
-                    </th>
-                    <th
-                      class="euiTableHeaderCell"
-                      data-test-subj="tableHeaderCell_lastUpdated_4"
-                      role="columnheader"
-                      scope="col"
-                    >
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                          title="Last Updated"
-                        >
-                          Last Updated
-                        </span>
-                      </div>
-                    </th>
-                    <th
-                      class="euiTableHeaderCell"
-                      data-test-subj="tableHeaderCell_details_5"
-                      role="columnheader"
-                      scope="col"
-                    >
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                          title="Details"
-                        >
-                          Details
-                        </span>
-                      </div>
-                    </th>
-                    <th
-                      aria-live="polite"
-                      aria-sort="none"
-                      class="euiTableHeaderCell"
-                      data-test-subj="tableHeaderCell_status_6"
-                      role="columnheader"
-                      scope="col"
-                    >
-                      <button
-                        class="euiTableHeaderButton"
-                        data-test-subj="tableHeaderSortButton"
-                        type="button"
-                      >
-                        <span
-                          class="euiTableCellContent"
-                        >
-                          <span
-                            class="euiTableCellContent__text"
-                            title="Status"
-                          >
-                            Status
-                          </span>
-                          <span
-                            class="euiScreenReaderOnly"
-                          >
-                            Click to sort in ascending order
-                          </span>
-                        </span>
-                      </button>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    class="euiTableRow customRowClass euiTableRow-isSelectable euiTableRow-isClickable"
-                    data-test-subj="row-undefined"
-                    role="button"
-                    tabindex="0"
-                  >
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Name
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--truncateText"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          Daily Sales Report
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Type
-                      </div>
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          Schedule
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Owner
-                      </div>
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          davidcui
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Source
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--overflowingContent"
-                      >
-                        <a
-                          class="euiLink euiLink--primary"
-                          href="#"
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
-                          dashboard/daily_saves
-                        </a>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Last Updated
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--truncateText"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          20 Apr 2020 19:32
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Details
-                      </div>
-                      <div
-                        class="euiTableCellContent euiTableCellContent--truncateText"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          Daily at 17:00:00.000 starting April 1, 2020
-                        </span>
-                      </div>
-                    </td>
-                    <td
-                      class="euiTableRowCell"
-                    >
-                      <div
-                        class="euiTableRowCell__mobileHeader euiTableRowCell--hideForDesktop"
-                      >
-                        Status
-                      </div>
-                      <div
-                        class="euiTableCellContent"
-                      >
-                        <span
-                          class="euiTableCellContent__text"
-                        >
-                          Active
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div>
-              <div
-                class="euiSpacer euiSpacer--m"
-              />
-              <div
-                class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow"
-              >
-                <div
-                  class="euiFlexItem euiFlexItem--flexGrowZero"
-                >
-                  <div
-                    class="euiPopover euiPopover--anchorUpRight euiPopover--withTitle"
+                    class="euiPopover euiPopover--anchorDownCenter"
+                    id="field_value_selection_1"
                   >
                     <div
                       class="euiPopover__anchor"
                     >
                       <button
-                        class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--xSmall euiButtonEmpty--iconRight"
-                        data-test-subj="tablePaginationPopoverButton"
+                        class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--iconRight euiFilterButton euiFilterButton--hasIcon"
                         type="button"
                       >
                         <span
@@ -1817,92 +161,871 @@ exports[`<Main /> panel render component 1`] = `
                           <span
                             class="euiButtonEmpty__text"
                           >
-                            Rows per page
-                            : 
-                            10
+                            <span
+                              class="euiFilterButton__textShift"
+                              data-text="Recipients"
+                              title="Recipients"
+                            >
+                              Recipients
+                            </span>
+                          </span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="euiPopover euiPopover--anchorDownCenter"
+                    id="field_value_selection_2"
+                  >
+                    <div
+                      class="euiPopover__anchor"
+                    >
+                      <button
+                        class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--iconRight euiFilterButton euiFilterButton--hasIcon"
+                        type="button"
+                      >
+                        <span
+                          class="euiButtonEmpty__content"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonEmpty__icon"
+                            focusable="false"
+                            height="16"
+                            role="img"
+                            viewBox="0 0 16 16"
+                            width="16"
+                            xmlns="http://www.w3.org/2000/svg"
+                          />
+                          <span
+                            class="euiButtonEmpty__text"
+                          >
+                            <span
+                              class="euiFilterButton__textShift"
+                              data-text="State"
+                              title="State"
+                            >
+                              State
+                            </span>
+                          </span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="euiPopover euiPopover--anchorDownCenter"
+                    id="field_value_selection_3"
+                  >
+                    <div
+                      class="euiPopover__anchor"
+                    >
+                      <button
+                        class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--iconRight euiFilterButton euiFilterButton--hasIcon"
+                        type="button"
+                      >
+                        <span
+                          class="euiButtonEmpty__content"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonEmpty__icon"
+                            focusable="false"
+                            height="16"
+                            role="img"
+                            viewBox="0 0 16 16"
+                            width="16"
+                            xmlns="http://www.w3.org/2000/svg"
+                          />
+                          <span
+                            class="euiButtonEmpty__text"
+                          >
+                            <span
+                              class="euiFilterButton__textShift"
+                              data-text="Type"
+                              title="Type"
+                            >
+                              Type
+                            </span>
                           </span>
                         </span>
                       </button>
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+            <div
+              class="euiSpacer euiSpacer--l"
+            />
+            <div
+              class="euiBasicTable"
+            >
+              <div>
                 <div
-                  class="euiFlexItem euiFlexItem--flexGrowZero"
+                  class="euiTableHeaderMobile"
                 >
-                  <nav
-                    class="euiPagination"
+                  <div
+                    class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsBaseline euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow"
                   >
-                    <button
-                      aria-label="Previous page"
-                      class="euiButtonIcon euiButtonIcon--text"
-                      data-test-subj="pagination-button-previous"
-                      disabled=""
-                      type="button"
+                    <div
+                      class="euiFlexItem euiFlexItem--flexGrowZero"
+                    />
+                    <div
+                      class="euiFlexItem euiFlexItem--flexGrowZero"
                     >
-                      <svg
-                        aria-hidden="true"
-                        class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonIcon__icon"
-                        focusable="false"
-                        height="16"
-                        role="img"
-                        viewBox="0 0 16 16"
-                        width="16"
-                        xmlns="http://www.w3.org/2000/svg"
-                      />
-                    </button>
-                    <ul
-                      class="euiPagination__list"
-                    >
-                      <li
-                        class="euiPagination__item"
+                      <div
+                        class="euiTableSortMobile"
+                      >
+                        <div
+                          class="euiPopover euiPopover--anchorDownRight"
+                        >
+                          <div
+                            class="euiPopover__anchor"
+                          >
+                            <button
+                              class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--iconRight euiButtonEmpty--flushRight"
+                              type="button"
+                            >
+                              <span
+                                class="euiButtonEmpty__content"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonEmpty__icon"
+                                  focusable="false"
+                                  height="16"
+                                  role="img"
+                                  viewBox="0 0 16 16"
+                                  width="16"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                />
+                                <span
+                                  class="euiButtonEmpty__text"
+                                >
+                                  Sorting
+                                </span>
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <table
+                  class="euiTable euiTable--responsive"
+                  id="random_html_id"
+                  tabindex="-1"
+                >
+                  <caption
+                    class="euiScreenReaderOnly euiTableCaption"
+                  />
+                  <thead>
+                    <tr>
+                      <th
+                        aria-live="polite"
+                        aria-sort="none"
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_reportName_0"
+                        role="columnheader"
+                        scope="col"
                       >
                         <button
-                          aria-controls="random_html_id"
-                          aria-current="true"
-                          aria-label="Page 1 of 1"
-                          class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--xSmall euiPaginationButton euiPaginationButton-isActive euiPaginationButton--hideOnMobile"
-                          data-test-subj="pagination-button-0"
-                          disabled=""
+                          class="euiTableHeaderButton"
+                          data-test-subj="tableHeaderSortButton"
                           type="button"
                         >
                           <span
-                            class="euiButtonEmpty__content"
+                            class="euiTableCellContent"
                           >
                             <span
-                              class="euiButtonEmpty__text"
+                              class="euiTableCellContent__text"
+                              title="Name"
                             >
-                              1
+                              Name
+                            </span>
+                            <span
+                              class="euiScreenReaderOnly"
+                            >
+                              Click to sort in ascending order
                             </span>
                           </span>
                         </button>
-                      </li>
-                    </ul>
-                    <button
-                      aria-label="Next page"
-                      class="euiButtonIcon euiButtonIcon--text"
-                      data-test-subj="pagination-button-next"
-                      disabled=""
-                      type="button"
+                      </th>
+                      <th
+                        aria-live="polite"
+                        aria-sort="none"
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_type_1"
+                        role="columnheader"
+                        scope="col"
+                      >
+                        <button
+                          class="euiTableHeaderButton"
+                          data-test-subj="tableHeaderSortButton"
+                          type="button"
+                        >
+                          <span
+                            class="euiTableCellContent"
+                          >
+                            <span
+                              class="euiTableCellContent__text"
+                              title="Type"
+                            >
+                              Type
+                            </span>
+                            <span
+                              class="euiScreenReaderOnly"
+                            >
+                              Click to sort in ascending order
+                            </span>
+                          </span>
+                        </button>
+                      </th>
+                      <th
+                        aria-live="polite"
+                        aria-sort="none"
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_sender_2"
+                        role="columnheader"
+                        scope="col"
+                      >
+                        <button
+                          class="euiTableHeaderButton"
+                          data-test-subj="tableHeaderSortButton"
+                          type="button"
+                        >
+                          <span
+                            class="euiTableCellContent"
+                          >
+                            <span
+                              class="euiTableCellContent__text"
+                              title="Sender"
+                            >
+                              Sender
+                            </span>
+                            <span
+                              class="euiScreenReaderOnly"
+                            >
+                              Click to sort in ascending order
+                            </span>
+                          </span>
+                        </button>
+                      </th>
+                      <th
+                        aria-live="polite"
+                        aria-sort="none"
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_recipients_3"
+                        role="columnheader"
+                        scope="col"
+                      >
+                        <button
+                          class="euiTableHeaderButton"
+                          data-test-subj="tableHeaderSortButton"
+                          type="button"
+                        >
+                          <span
+                            class="euiTableCellContent"
+                          >
+                            <span
+                              class="euiTableCellContent__text"
+                              title="Recipient(s)"
+                            >
+                              Recipient(s)
+                            </span>
+                            <span
+                              class="euiScreenReaderOnly"
+                            >
+                              Click to sort in ascending order
+                            </span>
+                          </span>
+                        </button>
+                      </th>
+                      <th
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_reportSource_4"
+                        role="columnheader"
+                        scope="col"
+                      >
+                        <div
+                          class="euiTableCellContent"
+                        >
+                          <span
+                            class="euiTableCellContent__text"
+                            title="Source"
+                          >
+                            Source
+                          </span>
+                        </div>
+                      </th>
+                      <th
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_lastUpdated_5"
+                        role="columnheader"
+                        scope="col"
+                      >
+                        <div
+                          class="euiTableCellContent"
+                        >
+                          <span
+                            class="euiTableCellContent__text"
+                            title="Last updated"
+                          >
+                            Last updated
+                          </span>
+                        </div>
+                      </th>
+                      <th
+                        aria-live="polite"
+                        aria-sort="none"
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_state_6"
+                        role="columnheader"
+                        scope="col"
+                      >
+                        <button
+                          class="euiTableHeaderButton"
+                          data-test-subj="tableHeaderSortButton"
+                          type="button"
+                        >
+                          <span
+                            class="euiTableCellContent"
+                          >
+                            <span
+                              class="euiTableCellContent__text"
+                              title="State"
+                            >
+                              State
+                            </span>
+                            <span
+                              class="euiScreenReaderOnly"
+                            >
+                              Click to sort in ascending order
+                            </span>
+                          </span>
+                        </button>
+                      </th>
+                      <th
+                        class="euiTableHeaderCell"
+                        role="columnheader"
+                        scope="col"
+                      >
+                        <div
+                          class="euiTableCellContent euiTableCellContent--alignRight"
+                        >
+                          <span
+                            class="euiTableCellContent__text"
+                            title="Download"
+                          >
+                            Download
+                          </span>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      class="euiTableRow"
                     >
-                      <svg
-                        aria-hidden="true"
-                        class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonIcon__icon"
-                        focusable="false"
-                        height="16"
-                        role="img"
-                        viewBox="0 0 16 16"
-                        width="16"
-                        xmlns="http://www.w3.org/2000/svg"
-                      />
-                    </button>
-                  </nav>
-                </div>
+                      <td
+                        class="euiTableRowCell euiTableRowCell--isMobileFullWidth"
+                        colspan="8"
+                      >
+                        <div
+                          class="euiTableCellContent euiTableCellContent--alignCenter"
+                        >
+                          <span
+                            class="euiTableCellContent__text"
+                          >
+                            <div
+                              class="euiEmptyPrompt"
+                            >
+                              <span
+                                class="euiTextColor euiTextColor--subdued"
+                              >
+                                <h3
+                                  class="euiTitle euiTitle--xsmall"
+                                >
+                                  No reports to display
+                                </h3>
+                                <div
+                                  class="euiSpacer euiSpacer--m"
+                                />
+                                <div
+                                  class="euiText euiText--medium"
+                                >
+                                  <div>
+                                    <div
+                                      class="euiText euiText--medium"
+                                    >
+                                      To get started, share or download a report from a dashboard, visualization or saved search, or create a report definition
+                                    </div>
+                                    <div
+                                      class="euiText euiText--medium"
+                                    >
+                                      To learn more, see
+                                       
+                                      <button
+                                        class="euiLink euiLink--primary"
+                                        type="button"
+                                      >
+                                        Get started with Kibana reporting
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </span>
+                            </div>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </main>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiPanel euiPanel--paddingLarge euiPageContent"
+      >
+        <div
+          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--justifyContentSpaceEvenly euiFlexGroup--directionRow euiFlexGroup--responsive"
+        >
+          <div
+            class="euiFlexItem"
+          >
+            <h2
+              class="euiTitle euiTitle--medium"
+            >
+              Report definitions (
+              0
+              )
+            </h2>
+          </div>
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <button
+              class="euiButton euiButton--primary"
+              type="button"
+            >
+              <span
+                class="euiButton__content"
+              >
+                <span
+                  class="euiButton__text"
+                >
+                  Refresh
+                </span>
+              </span>
+            </button>
+          </div>
+          <span
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <button
+              class="euiButton euiButton--primary euiButton--fill"
+              type="button"
+            >
+              <span
+                class="euiButton__content"
+              >
+                <span
+                  class="euiButton__text"
+                >
+                  Create
+                </span>
+              </span>
+            </button>
+          </span>
+        </div>
+        <hr
+          class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
+        />
+        <div>
+          <div>
+            <div
+              class="euiFlexGroup euiFlexGroup--gutterMedium euiFlexGroup--alignItemsCenter euiFlexGroup--directionRow euiFlexGroup--responsive euiFlexGroup--wrap"
+            >
+              <div
+                class="euiFlexItem euiSearchBar__searchHolder"
+              >
+                <div
+                  class="euiFormControlLayout euiFormControlLayout--fullWidth"
+                >
+                  <div
+                    class="euiFormControlLayout__childrenWrapper"
+                  >
+                    <input
+                      aria-label="This is a search bar. As you type, the results lower in the page will automatically filter."
+                      class="euiFieldSearch euiFieldSearch--fullWidth"
+                      placeholder="Search..."
+                      type="search"
+                      value=""
+                    />
+                    <div
+                      class="euiFormControlLayoutIcons"
+                    >
+                      <span
+                        class="euiFormControlLayoutCustomIcon"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="euiIcon euiIcon--medium euiIcon-isLoading euiFormControlLayoutCustomIcon__icon"
+                          focusable="false"
+                          height="16"
+                          role="img"
+                          viewBox="0 0 16 16"
+                          width="16"
+                          xmlns="http://www.w3.org/2000/svg"
+                        />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="euiFlexItem euiFlexItem--flexGrowZero euiSearchBar__filtersHolder"
+              >
+                <div
+                  class="euiFilterGroup"
+                />
+              </div>
+            </div>
+            <div
+              class="euiSpacer euiSpacer--l"
+            />
+            <div
+              class="euiBasicTable"
+            >
+              <div>
+                <div
+                  class="euiTableHeaderMobile"
+                >
+                  <div
+                    class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsBaseline euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow"
+                  >
+                    <div
+                      class="euiFlexItem euiFlexItem--flexGrowZero"
+                    />
+                    <div
+                      class="euiFlexItem euiFlexItem--flexGrowZero"
+                    >
+                      <div
+                        class="euiTableSortMobile"
+                      >
+                        <div
+                          class="euiPopover euiPopover--anchorDownRight"
+                        >
+                          <div
+                            class="euiPopover__anchor"
+                          >
+                            <button
+                              class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--iconRight euiButtonEmpty--flushRight"
+                              type="button"
+                            >
+                              <span
+                                class="euiButtonEmpty__content"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonEmpty__icon"
+                                  focusable="false"
+                                  height="16"
+                                  role="img"
+                                  viewBox="0 0 16 16"
+                                  width="16"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                />
+                                <span
+                                  class="euiButtonEmpty__text"
+                                >
+                                  Sorting
+                                </span>
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <table
+                  class="euiTable euiTable--responsive"
+                  id="random_html_id"
+                  tabindex="-1"
+                >
+                  <caption
+                    class="euiScreenReaderOnly euiTableCaption"
+                  />
+                  <thead>
+                    <tr>
+                      <th
+                        aria-live="polite"
+                        aria-sort="none"
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_reportName_0"
+                        role="columnheader"
+                        scope="col"
+                      >
+                        <button
+                          class="euiTableHeaderButton"
+                          data-test-subj="tableHeaderSortButton"
+                          type="button"
+                        >
+                          <span
+                            class="euiTableCellContent"
+                          >
+                            <span
+                              class="euiTableCellContent__text"
+                              title="Name"
+                            >
+                              Name
+                            </span>
+                            <span
+                              class="euiScreenReaderOnly"
+                            >
+                              Click to sort in ascending order
+                            </span>
+                          </span>
+                        </button>
+                      </th>
+                      <th
+                        aria-live="polite"
+                        aria-sort="none"
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_type_1"
+                        role="columnheader"
+                        scope="col"
+                      >
+                        <button
+                          class="euiTableHeaderButton"
+                          data-test-subj="tableHeaderSortButton"
+                          type="button"
+                        >
+                          <span
+                            class="euiTableCellContent"
+                          >
+                            <span
+                              class="euiTableCellContent__text"
+                              title="Type"
+                            >
+                              Type
+                            </span>
+                            <span
+                              class="euiScreenReaderOnly"
+                            >
+                              Click to sort in ascending order
+                            </span>
+                          </span>
+                        </button>
+                      </th>
+                      <th
+                        aria-live="polite"
+                        aria-sort="none"
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_owner_2"
+                        role="columnheader"
+                        scope="col"
+                      >
+                        <button
+                          class="euiTableHeaderButton"
+                          data-test-subj="tableHeaderSortButton"
+                          type="button"
+                        >
+                          <span
+                            class="euiTableCellContent"
+                          >
+                            <span
+                              class="euiTableCellContent__text"
+                              title="Owner"
+                            >
+                              Owner
+                            </span>
+                            <span
+                              class="euiScreenReaderOnly"
+                            >
+                              Click to sort in ascending order
+                            </span>
+                          </span>
+                        </button>
+                      </th>
+                      <th
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_source_3"
+                        role="columnheader"
+                        scope="col"
+                      >
+                        <div
+                          class="euiTableCellContent"
+                        >
+                          <span
+                            class="euiTableCellContent__text"
+                            title="Source"
+                          >
+                            Source
+                          </span>
+                        </div>
+                      </th>
+                      <th
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_lastUpdated_4"
+                        role="columnheader"
+                        scope="col"
+                      >
+                        <div
+                          class="euiTableCellContent"
+                        >
+                          <span
+                            class="euiTableCellContent__text"
+                            title="Last Updated"
+                          >
+                            Last Updated
+                          </span>
+                        </div>
+                      </th>
+                      <th
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_details_5"
+                        role="columnheader"
+                        scope="col"
+                      >
+                        <div
+                          class="euiTableCellContent"
+                        >
+                          <span
+                            class="euiTableCellContent__text"
+                            title="Details"
+                          >
+                            Details
+                          </span>
+                        </div>
+                      </th>
+                      <th
+                        aria-live="polite"
+                        aria-sort="none"
+                        class="euiTableHeaderCell"
+                        data-test-subj="tableHeaderCell_status_6"
+                        role="columnheader"
+                        scope="col"
+                      >
+                        <button
+                          class="euiTableHeaderButton"
+                          data-test-subj="tableHeaderSortButton"
+                          type="button"
+                        >
+                          <span
+                            class="euiTableCellContent"
+                          >
+                            <span
+                              class="euiTableCellContent__text"
+                              title="Status"
+                            >
+                              Status
+                            </span>
+                            <span
+                              class="euiScreenReaderOnly"
+                            >
+                              Click to sort in ascending order
+                            </span>
+                          </span>
+                        </button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      class="euiTableRow"
+                    >
+                      <td
+                        class="euiTableRowCell euiTableRowCell--isMobileFullWidth"
+                        colspan="7"
+                      >
+                        <div
+                          class="euiTableCellContent euiTableCellContent--alignCenter"
+                        >
+                          <span
+                            class="euiTableCellContent__text"
+                          >
+                            <div
+                              class="euiEmptyPrompt"
+                            >
+                              <span
+                                class="euiTextColor euiTextColor--subdued"
+                              >
+                                <h3
+                                  class="euiTitle euiTitle--xsmall"
+                                >
+                                  No report definitions to display
+                                </h3>
+                                <div
+                                  class="euiSpacer euiSpacer--m"
+                                />
+                                <div
+                                  class="euiText euiText--medium"
+                                >
+                                  <div>
+                                    <div
+                                      class="euiText euiText--medium"
+                                    >
+                                      Create a new report definition to get started
+                                    </div>
+                                    <div
+                                      class="euiText euiText--medium"
+                                    >
+                                      To learn more, see
+                                       
+                                      <button
+                                        class="euiLink euiLink--primary"
+                                        type="button"
+                                      >
+                                        Get started with Kibana reporting
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </span>
+                              <div
+                                class="euiSpacer euiSpacer--l"
+                              />
+                              <div
+                                class="euiSpacer euiSpacer--s"
+                              />
+                              <div>
+                                <button
+                                  class="euiButton euiButton--primary"
+                                  type="button"
+                                >
+                                  <span
+                                    class="euiButton__content"
+                                  >
+                                    <span
+                                      class="euiButton__text"
+                                    >
+                                      Create
+                                    </span>
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
 </div>
 `;
