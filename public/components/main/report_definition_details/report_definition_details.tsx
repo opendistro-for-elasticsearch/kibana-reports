@@ -70,7 +70,7 @@ export function ReportDefinitionDetails(props) {
   useEffect(() => {
     const { httpClient } = props;
     httpClient
-      .get('../api/reporting/reportDefinitions/' + reportDefinitionId)
+      .get(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
       .then((response) => {
         handleReportDefinitionDetails(
           getReportDefinitionDetailsMetadata(response)
