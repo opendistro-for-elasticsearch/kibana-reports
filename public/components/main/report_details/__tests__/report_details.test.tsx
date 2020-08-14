@@ -23,9 +23,9 @@ import 'babel-polyfill';
 describe('<ReportDetails /> panel', () => {
   const match = {
     params: {
-      reportId: "1"
-    }
-  }
+      reportId: '1',
+    },
+  };
 
   test('render component', async (done) => {
     const { container } = await render(
@@ -34,7 +34,6 @@ describe('<ReportDetails /> panel', () => {
         props={propsMock}
         match={match}
       />
-
     );
     await expect(container.firstChild).toMatchSnapshot();
     done();
