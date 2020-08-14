@@ -24,66 +24,26 @@ import {
   EuiEmptyPrompt,
   EuiInMemoryTable,
   EuiFlexGroup,
-  EuiSwitch,
   EuiFlexItem,
-  EuiCheckbox,
+  EuiLoadingSpinner,
+  EuiModal,
+  EuiModalBody,
+  EuiModalHeader,
+  EuiOverlayMask,
+  EuiSpacer,
+  EuiTitle,
 } from '@elastic/eui';
 import { reports_list_users } from './test_data';
+import { generateReport } from './main_utils';
 
-export const reports_list_columns = [
-  {
-    field: 'reportName',
-    name: 'Name',
-    sortable: true,
-    truncateText: true,
-  },
-  {
-    field: 'type',
-    name: 'Type',
-    sortable: true,
-    truncateText: false,
-  },
-  {
-    field: 'sender',
-    name: 'Sender',
-    sortable: true,
-    truncateText: false,
-  },
-  {
-    field: 'recipients',
-    name: 'Recipient(s)',
-    sortable: true,
-    truncateText: true,
-  },
-  {
-    field: 'reportSource',
-    name: 'Source',
-    render: (username: string) => (
-      <EuiLink href={'#'} target="_blank">
-        {username}
-      </EuiLink>
-    ),
-  },
-  {
-    field: 'lastUpdated',
-    name: 'Last updated',
-    truncateText: true,
-  },
-  {
-    field: 'state',
-    name: 'State',
-    sortable: true,
-    truncateText: false,
-  },
-  {
-    field: 'download',
-    name: 'Download',
-    sortable: false,
-    render: (download: any) => {
-      return <EuiButtonIcon iconType="download" />;
-    },
-  },
+const reportStatusOptions = [
+  'Created',
+  'Error',
+  'Pending',
+  'Shared',
+  'Archived',
 ];
+const reportTypeOptions = ['Schedule', 'Download', 'Alert'];
 
 const emptyMessageReports = (
   <EuiEmptyPrompt
@@ -105,23 +65,128 @@ const emptyMessageReports = (
 );
 
 export function ReportsTable(props) {
-  const { getRowProps, pagination } = props;
+  const { getRowProps, pagination, reportsTableItems, httpClient } = props;
 
-  const [pageIndex, setPageIndex] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
   const [sortField, setSortField] = useState('lastUpdated');
-  const [sortDirection, setSortDirection] = useState('desc');
+  const [sortDirection, setSortDirection] = useState('des');
+  const [showLoading, setShowLoading] = useState(false);
 
-  const onTableChange = ({ page = {}, sort = {} }) => {
-    const { index: pageIndex, size: pageSize } = page;
-
-    const { field: sortField, direction: sortDirection } = sort;
-
-    setPageIndex(pageIndex);
-    setPageSize(pageSize);
-    setSortField(sortField);
-    setSortDirection(sortDirection);
+  const handleLoading = (e) => {
+    setShowLoading(e);
   };
+
+  const GenerateReportLoadingModal = () => {
+    const [isModalVisible, setIsModalVisible] = useState(true);
+
+    const closeModal = () => {
+      setIsModalVisible(false);
+      setShowLoading(false);
+    };
+    const showModal = () => setIsModalVisible(true);
+
+    return (
+      <div>
+        <EuiOverlayMask>
+          <EuiModal onClose={closeModal}>
+            <EuiModalHeader>
+              <EuiTitle>
+                <EuiText textAlign="right">
+                  <h2>Generating report</h2>
+                </EuiText>
+              </EuiTitle>
+            </EuiModalHeader>
+            <EuiModalBody>
+              <EuiText>Preparing your file for download...</EuiText>
+              <EuiSpacer />
+              <EuiFlexGroup justifyContent="spaceAround" alignItems="center">
+                <EuiFlexItem>
+                  <EuiLoadingSpinner size="xl" />
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiModalBody>
+          </EuiModal>
+        </EuiOverlayMask>
+      </div>
+    );
+  };
+
+  const updateMetadata = (url: any) => {
+    const onDemandDownloadMetadata = {
+      report_name: url['reportName'],
+      report_source: url['reportSource'],
+      report_type: 'Download',
+      description: 'On-demand download of report ' + url['reportName'],
+      report_params: {
+        url: url['url'],
+        window_width: 1440,
+        window_height: 2560,
+        report_format: 'pdf', // current default format
+      },
+    };
+    return onDemandDownloadMetadata;
+  };
+
+  const onDemandDownload = async (url: any) => {
+    handleLoading(true);
+    await generateReport(updateMetadata(url), httpClient);
+    handleLoading(false);
+  };
+
+  const reportsTableColumns = [
+    {
+      field: 'reportName',
+      name: 'Name',
+      sortable: true,
+      truncateText: true,
+    },
+    {
+      field: 'type',
+      name: 'Type',
+      sortable: true,
+      truncateText: false,
+    },
+    {
+      field: 'sender',
+      name: 'Sender',
+      sortable: true,
+      truncateText: false,
+    },
+    {
+      field: 'recipients',
+      name: 'Recipient(s)',
+      sortable: true,
+      truncateText: true,
+    },
+    {
+      field: 'reportSource',
+      name: 'Source',
+    },
+    {
+      field: 'lastUpdated',
+      name: 'Last updated',
+      truncateText: true,
+    },
+    {
+      field: 'state',
+      name: 'State',
+      sortable: true,
+      truncateText: false,
+    },
+    {
+      field: 'url',
+      name: 'Download',
+      sortable: false,
+      actions: [
+        {
+          name: 'Generate report',
+          description: 'Generates the report',
+          type: 'icon',
+          icon: 'download',
+          onClick: (url: any) => onDemandDownload(url),
+        },
+      ],
+    },
+  ];
 
   const sorting = {
     sort: {
@@ -146,16 +211,7 @@ export function ReportsTable(props) {
     }
   });
 
-  const reports_status_options = [
-    'Created',
-    'Error',
-    'Pending',
-    'Shared',
-    'Archived',
-  ];
-  const reports_type_options = ['Schedule', 'Download', 'Alert'];
-
-  const reports_list_search = {
+  const reportsListSearch = {
     box: {
       incremental: true,
     },
@@ -187,7 +243,7 @@ export function ReportsTable(props) {
         field: 'state',
         name: 'State',
         multiselect: false,
-        options: reports_status_options.map((state) => ({
+        options: reportStatusOptions.map((state) => ({
           value: state,
           name: state,
           view: state,
@@ -198,7 +254,7 @@ export function ReportsTable(props) {
         field: 'type',
         name: 'Type',
         multiselect: false,
-        options: reports_type_options.map((type) => ({
+        options: reportTypeOptions.map((type) => ({
           value: type,
           name: type,
           view: type,
@@ -207,20 +263,22 @@ export function ReportsTable(props) {
     ],
   };
 
+  const showLoadingModal = showLoading ? <GenerateReportLoadingModal /> : null;
+
   return (
     <div>
       <EuiInMemoryTable
-        items={reports_list_users}
+        items={reportsTableItems}
         itemId="id"
         loading={false}
         message={emptyMessageReports}
-        columns={reports_list_columns}
-        search={reports_list_search}
+        columns={reportsTableColumns}
+        search={reportsListSearch}
         pagination={pagination}
         sorting={sorting}
         rowProps={getRowProps}
-        onChange={onTableChange}
       />
+      {showLoadingModal}
     </div>
   );
 }

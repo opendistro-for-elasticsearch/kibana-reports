@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   EuiLink,
   EuiInMemoryTable,
@@ -21,9 +21,8 @@ import {
   EuiEmptyPrompt,
   EuiText,
 } from '@elastic/eui';
-import { report_definitions } from './test_data';
 
-export const scheduled_report_columns = [
+export const reportDefinitionsColumns = [
   {
     field: 'reportName',
     name: 'Name',
@@ -70,7 +69,7 @@ export const scheduled_report_columns = [
   },
 ];
 
-const empty_message_report_definitions = (
+const emptyMessageReportDefinitions = (
   <EuiEmptyPrompt
     title={<h3>No report definitions to display</h3>}
     titleSize="xs"
@@ -97,7 +96,7 @@ const empty_message_report_definitions = (
   />
 );
 
-const report_definitions_search = {
+const reportDefinitionsSearch = {
   box: {
     incremental: true,
   },
@@ -105,18 +104,29 @@ const report_definitions_search = {
 };
 
 export function ReportDefinitions(props) {
-  const { pagination, getRowProps } = props;
+  const { pagination, getRowProps, reportDefinitionsTableContent } = props;
+
+  const [sortField, setSortField] = useState('lastUpdated');
+  const [sortDirection, setSortDirection] = useState('des');
+
+  const sorting = {
+    sort: {
+      field: sortField,
+      direction: sortDirection,
+    },
+  };
+
   return (
     <div>
       <EuiInMemoryTable
-        items={report_definitions}
+        items={reportDefinitionsTableContent}
         itemId="id"
         loading={false}
-        message={empty_message_report_definitions}
-        columns={scheduled_report_columns}
-        search={report_definitions_search}
+        message={emptyMessageReportDefinitions}
+        columns={reportDefinitionsColumns}
+        search={reportDefinitionsSearch}
         pagination={pagination}
-        sorting={true}
+        sorting={sorting}
         isSelectable={true}
         rowProps={getRowProps}
       />

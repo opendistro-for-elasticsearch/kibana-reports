@@ -16,10 +16,13 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { Main } from '../main';
+import httpClientMock from '../../../../test/httpMockClient';
 
 describe('<Main /> panel', () => {
-  test('render component', () => {
-    const { container } = render(<Main />);
+  test('render component', async (done) => {
+    const { container } = await render(<Main httpClient={httpClientMock} />);
+
     expect(container.firstChild).toMatchSnapshot();
+    done();
   });
 });
