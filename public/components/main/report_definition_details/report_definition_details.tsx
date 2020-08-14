@@ -77,13 +77,11 @@ export function ReportDefinitionDetails(props) {
         );
       })
       .catch((error) => {
-        console.log('error when getting report definition details:', error);
+        console.error('error when getting report definition details:', error);
       });
   }, []);
 
-  const includeReportAsAttachmentString = reportDefinitionDetails[
-    'includeReportAsAttachment'
-  ]
+  const includeReportAsAttachmentString = reportDefinitionDetails.includeReportAsAttachment
     ? 'True'
     : 'False';
 
@@ -99,7 +97,7 @@ export function ReportDefinitionDetails(props) {
             <EuiFlexItem>
               <EuiPageHeaderSection>
                 <EuiTitle>
-                  <h2>{reportDefinitionDetails['name']}</h2>
+                  <h2>{reportDefinitionDetails.name}</h2>
                 </EuiTitle>
               </EuiPageHeaderSection>
             </EuiFlexItem>
@@ -139,8 +137,8 @@ export function ReportDefinitionDetails(props) {
                   Edit
                 </EuiButton>
               </EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
+              <EuiFlexItem />
+              <EuiFlexItem />
             </EuiFlexGroup>
           </EuiPageHeader>
           <EuiHorizontalRule />
@@ -151,22 +149,22 @@ export function ReportDefinitionDetails(props) {
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Name'}
-              reportDetailsComponentContent={reportDefinitionDetails['name']}
+              reportDetailsComponentContent={reportDefinitionDetails.name}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Description'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['description']
+                reportDefinitionDetails.description
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Created'}
-              reportDetailsComponentContent={reportDefinitionDetails['created']}
+              reportDetailsComponentContent={reportDefinitionDetails.created}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Last updated'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['lastUpdated']
+                reportDefinitionDetails.lastUpdated
               }
             />
           </EuiFlexGroup>
@@ -174,23 +172,23 @@ export function ReportDefinitionDetails(props) {
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Source'}
-              reportDetailsComponentContent={reportDefinitionDetails['source']}
+              reportDetailsComponentContent={reportDefinitionDetails.source}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Time period'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['timePeriod']
+                reportDefinitionDetails.timePeriod
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'File format'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['fileFormat']
+                reportDefinitionDetails.fileFormat
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report header'}
-              ReportDefinitionDetails={reportDefinitionDetails['reportHeader']}
+              ReportDefinitionDetails={reportDefinitionDetails.reportHeader}
             />
           </EuiFlexGroup>
           <EuiSpacer />
@@ -198,7 +196,7 @@ export function ReportDefinitionDetails(props) {
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report footer'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['reportFooter']
+                reportDefinitionDetails.reportFooter
               }
             />
             <ReportDetailsComponent />
@@ -214,24 +212,24 @@ export function ReportDefinitionDetails(props) {
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Trigger type'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['triggerType']
+                reportDefinitionDetails.triggerType
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Schedule details'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['scheduleDetails']
+                reportDefinitionDetails.scheduleDetails
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Alert details'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['alertDetails']
+                reportDefinitionDetails.alertDetails
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Status'}
-              reportDetailsComponentContent={reportDefinitionDetails['status']}
+              reportDetailsComponentContent={reportDefinitionDetails.status}
             />
           </EuiFlexGroup>
           <EuiSpacer />
@@ -243,25 +241,25 @@ export function ReportDefinitionDetails(props) {
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Delivery channels'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['deliveryChannels']
+                reportDefinitionDetails.deliveryChannels
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Kibana recipients'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['kibanaRecipients']
+                reportDefinitionDetails.kibanaRecipients
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email recipients'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['emailRecipients']
+                reportDefinitionDetails.emailRecipients
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email subject'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['emailSubject']
+                reportDefinitionDetails.emailSubject
               }
             />
           </EuiFlexGroup>
@@ -270,7 +268,7 @@ export function ReportDefinitionDetails(props) {
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email body'}
               reportDetailsComponentContent={
-                reportDefinitionDetails['emailBody']
+                reportDefinitionDetails.emailBody
               }
             />
             <ReportDetailsComponent
