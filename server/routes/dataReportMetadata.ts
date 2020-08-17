@@ -15,9 +15,9 @@
 
 import { schema } from '@kbn/config-schema';
 import {
-	IRouter,
-	IKibanaResponse,
-	ResponseError,
+  IRouter,
+  IKibanaResponse,
+  ResponseError,
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 import { dataReportSchema } from '../model';
@@ -26,134 +26,106 @@ import { metaData, getSelectedFields } from './utils/dataReportHelpers';
 const axios = require('axios');
 
 export default function (router: IRouter) {
-	//generate report csv meta data
-	router.post(
-		{
-			path: `${API_PREFIX}/data-report/metadata`,
-			validate: {
-				body: schema.any(),
-			},
-		},
-		async (
-			context,
-			request,
-			response
-		): Promise<IKibanaResponse<any | ResponseError>> => {
-			// input validation
-			try {
-				dataReportSchema.validate(request.body);
-			} catch (error) {
-				return response.badRequest({ body: error });
-			}
-			try {
-				let dataReport = request.body;
-				metaData.saved_search_id = dataReport.saved_search_id;
-				metaData.report_format = dataReport.report_format;
-				metaData.start = dataReport.start;
-				metaData.end = dataReport.end;
-				let resIndexPattern: any = {};
+  //generate report csv meta data
+  router.post(
+    {
+      path: `${API_PREFIX}/data-report/metadata`,
+      validate: {
+        body: schema.any(),
+      },
+    },
+    async (
+      context,
+      request,
+      response
+    ): Promise<IKibanaResponse<any | ResponseError>> => {
+      // input validation
+      try {
+        dataReportSchema.validate(request.body);
+      } catch (error) {
+        return response.badRequest({ body: error });
+      }
+      try {
+        let dataReport = request.body;
+        metaData.saved_search_id = dataReport.saved_search_id;
+        metaData.report_format = dataReport.report_format;
+        metaData.start = dataReport.start;
+        metaData.end = dataReport.end;
+        let resIndexPattern: any = {};
 
-				//get the saved search infos
-				const ssParams = {
-					index: '.kibana',
-					id: 'search:' + dataReport.saved_search_id,
-				};
+        //get the saved search infos
+        const ssParams = {
+          index: '.kibana',
+          id: 'search:' + dataReport.saved_search_id,
+        };
 
-				//checking if the saved search exist
-				const url = '/api/saved_objects/search/' + metaData.saved_search_id;
-				let resp: any = {};
-				const ssExist = await axios({
-					method: 'GET',
-					proxy: { host: '127.0.0.1', port: 5601 },
-					url,
-					headers: { 'kbn-xsrf': 'reporting' },
-				})
-					.then((res) => {
-						resp = res.data;
-					})
-					.catch((error) => {
-						return error;
-					});
+        const ssInfos = await context.core.elasticsearch.adminClient.callAsInternalUser(
+          'get',
+          ssParams
+        );
 
-				if (ssExist && ssExist.name == 'Error') {
-					return response.custom({
-						statusCode: 200,
-						body: { message: "Saved Search doesn't exist !" },
-					});
-				}
+        // get the sorting
+        metaData.sorting = ssInfos._source.search.sort;
 
-				// return response.custom({
-				// 	statusCode: 200,
-				// 	body: { ssExist, resp },
-				// });
+        // get the saved search type
+        metaData.type = ssInfos._source.type;
 
-				const ssInfos = await context.core.elasticsearch.adminClient.callAsInternalUser(
-					'get',
-					ssParams
-				);
+        // get the filters
+        metaData.filters =
+          ssInfos._source.search.kibanaSavedObjectMeta.searchSourceJSON;
 
-				// get the sorting
-				metaData.sorting = ssInfos._source.search.sort;
+        //get the list of selected columns in the saved search.Otherwise select all the fields under the _source
+        await getSelectedFields(ssInfos._source.search.columns);
 
-				// get the saved search type
-				metaData.type = ssInfos._source.type;
+        //Get index name
+        for (let item of ssInfos._source.references) {
+          if (item.name === JSON.parse(metaData.filters).indexRefName) {
+            //Get index-pattern informations
+            const indexPattern = await context.core.elasticsearch.adminClient.callAsInternalUser(
+              'get',
+              {
+                index: '.kibana',
+                id: 'index-pattern:' + item.id,
+              }
+            );
+            resIndexPattern = indexPattern._source['index-pattern'];
+            metaData.paternName = resIndexPattern.title;
+            (metaData.timeFieldName = resIndexPattern.timeFieldName),
+              (metaData.fields = resIndexPattern.fields); //Get all fields
+            //Getting fields of type Date
+            for (let item of JSON.parse(metaData.fields)) {
+              if (item.type === 'date') {
+                metaData.dateFields.push(item.name);
+              }
+            }
+          }
+        }
 
-				// get the filters
-				metaData.filters =
-					ssInfos._source.search.kibanaSavedObjectMeta.searchSourceJSON;
+        //save the meta data to the dataReport index to be updated with the right mapping
+        const report = await context.core.elasticsearch.adminClient.callAsInternalUser(
+          'index',
+          {
+            index: 'datareport',
+            body: metaData,
+          }
+        );
 
-				//get the list of selected columns in the saved search.Otherwise select all the fields under the _source
-				await getSelectedFields(ssInfos._source.search.columns);
-
-				//Get index name
-				for (let item of ssInfos._source.references) {
-					if (item.name === JSON.parse(metaData.filters).indexRefName) {
-						//Get index-pattern informations
-						const indexPattern = await context.core.elasticsearch.adminClient.callAsInternalUser(
-							'get',
-							{
-								index: '.kibana',
-								id: 'index-pattern:' + item.id,
-							}
-						);
-						resIndexPattern = indexPattern._source['index-pattern'];
-						metaData.paternName = resIndexPattern.title;
-						(metaData.timeFieldName = resIndexPattern.timeFieldName),
-							(metaData.fields = resIndexPattern.fields); //Get all fields
-						//Get fields of type Date
-						for (let item of JSON.parse(metaData.fields)) {
-							if (item.type === 'date') {
-								metaData.dateFields.push(item.name);
-							}
-						}
-					}
-				}
-
-				//save the meta data to the report index to be updated with the right mapping
-				const report = await context.core.elasticsearch.adminClient.callAsInternalUser(
-					'index',
-					{
-						index: 'report',
-						body: metaData,
-					}
-				);
-
-				return response.ok({
-					body: { report, metaData },
-					headers: {
-						'content-type': 'application/json',
-					},
-				});
-			} catch (error) {
-				//@ts-ignore
-				context.reporting_plugin.logger.error(
-					`Failed to generate the report meta data: ${error}`
-				);
-				return response.custom({
-					statusCode: error.statusCode || 500,
-					body: parseEsErrorResponse(error),
-				});
-			}
-		}
-	);
+        return response.ok({
+          body: { report, metaData },
+          headers: {
+            'content-type': 'application/json',
+          },
+        });
+      } catch (error) {
+        //@ts-ignore
+        context.reporting_plugin.logger.error(
+          `Failed to generate the report meta data: ${error}`
+        );
+        return response.custom({
+          statusCode: error.statusCode || 500,
+          body: parseEsErrorResponse(error),
+        });
+      }
+    }
+  );
 }

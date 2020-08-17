@@ -14,34 +14,34 @@
  */
 
 export enum FORMAT {
-	pdf = 'pdf',
-	png = 'png',
+  pdf = 'pdf',
+  png = 'png',
 }
 
 export enum REPORT_STATE {
-	created = 'Created',
-	error = 'Error',
+  created = 'Created',
+  error = 'Error',
 }
 
 export enum REPORT_DEF_STATUS {
-	active = 'Active',
-	disabled = 'Disabled',
+  active = 'Active',
+  disabled = 'Disabled',
 }
 
 export enum DELIVERY_CHANNEL {
-	email = 'Email',
-	slack = 'Slack',
-	chime = 'Chime',
-	kibana = 'Kibana user',
+  email = 'Email',
+  slack = 'Slack',
+  chime = 'Chime',
+  kibana = 'Kibana user',
 }
 
 export enum SCHEDULE_TYPE {
-	recurring = 'Recurring',
-	now = 'Now',
-	future = 'Future date',
-	cron = 'Cron based',
+  recurring = 'Recurring',
+  now = 'Now',
+  future = 'Future date',
+  cron = 'Cron based',
 }
 
 export enum DATA_REPORT_CONFIG {
-	excelDateFormat = 'MM/DD/YYYY h:mm:ss a',
+  excelDateFormat = 'MM/DD/YYYY h:mm:ss a',
 }

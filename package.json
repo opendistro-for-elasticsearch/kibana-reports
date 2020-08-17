@@ -67,6 +67,8 @@
     "eslint-plugin-react": "^7.12.4",
     "jest": "^26.0.1",
     "prettier": "2.0.5",
-    "react-test-renderer": "^16.13.1"
+    "react-test-renderer": "^16.13.1",
+    "elastic-builder": "^2.7.1",
+    "json-2-csv": "^3.7.6"
   }
 }
