@@ -102,10 +102,12 @@ export function CreateReport(props) {
         />
         <EuiSpacer />
         <ReportTrigger
+          edit={false}
           reportDefinitionRequest={createReportDefinitionRequest}
         />
         <EuiSpacer />
         <ReportDelivery
+          edit={false}
           reportDefinitionRequest={createReportDefinitionRequest}
         />
         <EuiSpacer />

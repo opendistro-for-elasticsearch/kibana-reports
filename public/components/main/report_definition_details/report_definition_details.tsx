@@ -55,32 +55,9 @@ const reportDefinitionDetailsMockMetadata = {
   include_report_as_attachment: true,
 };
 
-interface ReportDefinitionDetailsRouteProps {
-  reportDefinitionId: string;
-  reportDefinitionDetailsMetadata: {
-    name: string;
-    description: string;
-    created: string;
-    last_updated: string;
-    source: string;
-    time_period: string;
-    file_format: string;
-    report_header: string;
-    report_footer: string;
-    trigger_type: string;
-    schedule_details: string;
-    alert_details: string;
-    status: string;
-    delivery_channels: string[];
-    kibana_recipients: string[];
-    email_recipients: string;
-    email_subject: string;
-    email_body: string;
-    include_report_as_attachment: boolean;
-  };
-}
-
-export function ReportDefinitionDetails(props) {
+export function ReportDefinitionDetails(
+  props
+) {
   const reportDefinitionId = props['match']['params']['reportDefinitionId'];
 
   const includeReportAsAttachmentString = reportDefinitionDetailsMockMetadata.include_report_as_attachment
@@ -130,12 +107,10 @@ export function ReportDefinitionDetails(props) {
                 </EuiText>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
-                <EuiButton
+                <EuiButton 
                   fill={true}
                   onClick={() => {
-                    window.location.assign(
-                      `opendistro_kibana_reports#/edit/${reportDefinitionId}`
-                    );
+                    window.location.assign(`opendistro_kibana_reports#/edit/${reportDefinitionId}`);
                   }}
                 >
                   Edit
