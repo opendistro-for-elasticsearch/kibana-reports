@@ -18,6 +18,7 @@ import { render } from '@testing-library/react';
 import { ReportTrigger } from '../report_trigger';
 import 'babel-polyfill';
 import 'regenerator-runtime';
+import httpClientMock from '../../../../../test/httpMockClient';
 
 describe('<ReportTrigger /> panel', () => {
   test('render component', () => {
@@ -37,7 +38,9 @@ describe('<ReportTrigger /> panel', () => {
     };
     const { container } = render(
       <ReportTrigger
-        createReportDefinitionRequest={createReportDefinitionRequest}
+        edit={false}
+        reportDefinitionRequest={createReportDefinitionRequest}
+        httpClientProps={httpClientMock}
       />
     );
 

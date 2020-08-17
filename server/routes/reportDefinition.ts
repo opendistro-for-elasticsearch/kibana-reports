@@ -133,7 +133,6 @@ export default function (router: IRouter) {
          * await context.core.elasticsearch.adminClient.callAsInternalUser('ping');
          * However, that doesn't work for now
          */
-
         const updatedDefinition = {
           ...request.body,
           last_updated: new Date().toISOString(),

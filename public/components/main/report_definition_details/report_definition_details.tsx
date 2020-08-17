@@ -80,10 +80,8 @@ interface ReportDefinitionDetailsRouteProps {
   };
 }
 
-export function ReportDefinitionDetails(
-  props: ReportDefinitionDetailsRouteProps
-) {
-  const reportId = props.reportDefinitionId;
+export function ReportDefinitionDetails(props) {
+  const reportDefinitionId = props['match']['params']['reportDefinitionId'];
 
   const includeReportAsAttachmentString = reportDefinitionDetailsMockMetadata.include_report_as_attachment
     ? 'True'
@@ -132,10 +130,12 @@ export function ReportDefinitionDetails(
                 </EuiText>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
-                <EuiButton 
+                <EuiButton
                   fill={true}
                   onClick={() => {
-                    window.location.assign('opendistro_kibana_reports#/edit');
+                    window.location.assign(
+                      `opendistro_kibana_reports#/edit/${reportDefinitionId}`
+                    );
                   }}
                 >
                   Edit

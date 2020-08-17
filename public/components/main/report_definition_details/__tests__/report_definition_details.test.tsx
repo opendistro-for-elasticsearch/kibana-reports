@@ -43,10 +43,16 @@ describe('<ReportDefinitionDetails /> panel', () => {
     include_report_as_attachment: true,
   };
 
+  const match = {
+    params: {
+      reportDefinitionId: '1',
+    },
+  };
+
   test('render component', () => {
     const { container } = render(
       <ReportDefinitionDetails
-        reportDefinitionId={'1'}
+        match={match}
         reportDefinitionDetailsMetadata={reportDefinitionDetailsMockMetadata}
       />
     );

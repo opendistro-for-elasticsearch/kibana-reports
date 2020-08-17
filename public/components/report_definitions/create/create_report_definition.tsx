@@ -96,16 +96,17 @@ export function CreateReport(props) {
         </EuiTitle>
         <EuiSpacer />
         <ReportSettings
-          createReportDefinitionRequest={createReportDefinitionRequest}
+          edit={false}
+          reportDefinitionRequest={createReportDefinitionRequest}
           httpClientProps={props['httpClient']}
         />
         <EuiSpacer />
         <ReportTrigger
-          createReportDefinitionRequest={createReportDefinitionRequest}
+          reportDefinitionRequest={createReportDefinitionRequest}
         />
         <EuiSpacer />
         <ReportDelivery
-          createReportDefinitionRequest={createReportDefinitionRequest}
+          reportDefinitionRequest={createReportDefinitionRequest}
         />
         <EuiSpacer />
         <EuiFlexGroup justifyContent="flexEnd">

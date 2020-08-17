@@ -139,7 +139,12 @@ function TimeRangeSelect() {
 }
 
 export function ReportSettings(props) {
-  const { createReportDefinitionRequest, httpClientProps } = props;
+  const {
+    edit,
+    editDefinitionId,
+    reportDefinitionRequest,
+    httpClientProps,
+  } = props;
 
   const [reportName, setReportName] = useState('');
   const [reportDescription, setReportDescription] = useState('');
@@ -170,22 +175,22 @@ export function ReportSettings(props) {
     target: { value: React.SetStateAction<string> };
   }) => {
     setReportName(e.target.value);
-    createReportDefinitionRequest['report_name'] = e.target.value.toString();
+    reportDefinitionRequest['report_name'] = e.target.value.toString();
   };
 
   const handleReportDescription = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
     setReportDescription(e.target.value);
-    createReportDefinitionRequest['description'] = e.target.value.toString();
+    reportDefinitionRequest['description'] = e.target.value.toString();
   };
 
   const handleReportSource = (e: React.SetStateAction<string>) => {
     setReportSourceId(e);
     if (e === 'dashboardReportSource') {
-      createReportDefinitionRequest['report_source'] = 'Dashboard';
+      reportDefinitionRequest['report_source'] = 'Dashboard';
     } else if (e === 'visualizationReportSource') {
-      createReportDefinitionRequest['report_source'] = 'Visualization';
+      reportDefinitionRequest['report_source'] = 'Visualization';
     }
   };
 
@@ -193,8 +198,8 @@ export function ReportSettings(props) {
     target: { value: React.SetStateAction<string> };
   }) => {
     setDashboardSourceSelect(e.target.value);
-    createReportDefinitionRequest['report_params']['url'] = 
-      getDashboardBaseUrl() + e.target.value;
+    reportDefinitionRequest['report_params']['url'] =
+      getDashboardBaseUrlCreate() + e.target.value;
   };
 
   const handleVisualizationSelect = (e: {
@@ -212,9 +217,9 @@ export function ReportSettings(props) {
   const handleFileFormat = (e: React.SetStateAction<string>) => {
     setFileFormat(e);
     if (e === 'pdfFormat') {
-      createReportDefinitionRequest['report_params']['report_format'] = 'pdf';
+      reportDefinitionRequest['report_params']['report_format'] = 'pdf';
     } else if (e === 'pngFormat') {
-      createReportDefinitionRequest['report_params']['report_format'] = 'png';
+      reportDefinitionRequest['report_params']['report_format'] = 'png';
     }
   };
 
@@ -394,31 +399,122 @@ export function ReportSettings(props) {
     return dashboard_options;
   };
 
-  const getDashboardBaseUrl = () => {
+  const getDashboardBaseUrlCreate = () => {
     let baseUrl = window.location.href;
+    if (edit) {
+      return baseUrl.replace(
+        `opendistro_kibana_reports#/edit/${editDefinitionId}`,
+        'dashboards#/view/'
+      );
+    }
     return baseUrl.replace(
       'opendistro_kibana_reports#/create',
       'dashboards#/view/'
     );
   };
 
-  useEffect(() => {
-    httpClientProps
+  const setReportSourceDropdownOption = (options, report_source, url) => {
+    let index = 0;
+    if (report_source === 'Dashboard') {
+      for (index = 0; index < options.dashboard.length; ++index) {
+        if (url.includes(options.dashboard[index].value)) {
+          setDashboardSourceSelect(options.dashboard[index].value);
+        }
+      }
+    } else if (report_source === 'Visualization') {
+      // todo: add logic once get Visualizations + search is merged
+    } else if (report_source === 'Saved search') {
+      // todo: add logic once get Visualizations + search is merged
+    }
+  };
+
+  const setDefaultFileFormat = (fileFormat) => {
+    let index = 0;
+    for (index = 0; index < PDF_PNG_FILE_FORMAT_OPTIONS.length; ++index) {
+      if (
+        fileFormat.toUpperCase() === PDF_PNG_FILE_FORMAT_OPTIONS[index].label
+      ) {
+        setFileFormat(PDF_PNG_FILE_FORMAT_OPTIONS[index].id);
+      }
+    }
+  };
+
+  const setDefaultEditValues = async (response, reportSourceOptions) => {
+    setReportName(response.report_name);
+    setReportDescription(response.description);
+    reportDefinitionRequest.report_name = response.report_name;
+    reportDefinitionRequest.description = response.description;
+    reportDefinitionRequest.report_params = response.report_params;
+    REPORT_SOURCE_RADIOS.map((radio) => {
+      if (radio.label === response.report_source) {
+        setReportSourceId(radio.id);
+        reportDefinitionRequest.report_source = response.report_source;
+      }
+    });
+    setDefaultFileFormat(response['report_params']['report_format']);
+    setReportSourceDropdownOption(
+      reportSourceOptions,
+      response['report_source'],
+      response['report_params']['url']
+    );
+  };
+
+  const defaultConfigurationEdit = async (httpClientProps) => {
+    let editData = {};
+    await httpClientProps
+      .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
+      .then(async (response) => {
+        editData = response;
+      })
+      .catch((error) => {
+        console.error('error in fetching report definition details:', error);
+      });
+    return editData;
+  };
+
+  const defaultConfigurationCreate = async (httpClientProps) => {
+    let reportSourceOptions = {
+      dashboard: [],
+      visualizations: [],
+      savedSearch: [],
+    };
+    await httpClientProps
       .get('../api/reporting/getDashboards')
       .then(async (response) => {
         let dashboardOptions = getReportSettingDashboardOptions(
           response['hits']['hits']
         );
-        await handleDashboards(dashboardOptions);
-        await setDashboardSourceSelect(dashboardOptions[0].value);
-        createReportDefinitionRequest['report_params']['url'] =
-          getDashboardBaseUrl() + response['hits']['hits'][0]['_id'].substring(10);
+        reportSourceOptions.dashboard = dashboardOptions;
+        handleDashboards(dashboardOptions);
+        if (!edit) {
+          setDashboardSourceSelect(dashboardOptions[0].value);
+          reportDefinitionRequest['report_params']['url'] =
+            getDashboardBaseUrlCreate() +
+            response['hits']['hits'][0]['_id'].substring(10);
+        }
       })
       .catch((error) => {
         console.log('error when fetching dashboards:', error);
       });
-    createReportDefinitionRequest['report_params']['report_format'] = 'pdf';
-    createReportDefinitionRequest['report_source'] = 'Dashboard';
+    reportDefinitionRequest['report_params']['report_format'] = 'pdf';
+    reportDefinitionRequest['report_source'] = 'Dashboard';
+    return reportSourceOptions;
+  };
+
+  useEffect(() => {
+    let reportSourceOptions = {};
+    let editData = {};
+    if (edit) {
+      defaultConfigurationEdit(httpClientProps).then(async (response) => {
+        editData = response;
+      });
+    }
+    defaultConfigurationCreate(httpClientProps).then(async (response) => {
+      reportSourceOptions = response;
+      if (edit) {
+        setDefaultEditValues(editData, reportSourceOptions);
+      }
+    });
   }, []);
 
   return (
