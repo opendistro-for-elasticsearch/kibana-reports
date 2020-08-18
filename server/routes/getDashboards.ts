@@ -38,7 +38,7 @@ export default function (router: IRouter) {
         q: 'type:dashboard',
       };
       try {
-        const esResp = await context.core.elasticsearch.legacy.client.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
           'search',
           params
         );
