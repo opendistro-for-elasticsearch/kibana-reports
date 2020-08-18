@@ -16,40 +16,33 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { ReportDefinitionDetails } from '../report_definition_details';
+import httpClientMock from '../../../../../test/httpMockClient';
+import 'babel-polyfill';
 
 describe('<ReportDefinitionDetails /> panel', () => {
-  const created_date = new Date('April 20, 2020 20:32:12');
-
-  const reportDefinitionDetailsMockMetadata = {
-    name: '[Logs] Web traffic',
-    description: '--',
-    created: created_date.toString(),
-    last_updated: '--',
-    source: 'dashboards/daily_sales',
-    time_period: 'Last 30 minutes',
-    file_format: 'PDF',
-    report_header: '--',
-    report_footer: '--',
-    trigger_type: 'Schedule',
-    schedule_details: '--',
-    alert_details: '--',
-    status: 'Active',
-    delivery_channels: ['Kibana reports'],
-    kibana_recipients: ['admin'],
-    email_recipients: 'user1@email.com',
-    email_subject: 'Latest web traffic report',
-    email_body:
-      'View report details %REPORT_DETAILS_URL% Download report file %FILE_DOWNLOAD_URL%',
-    include_report_as_attachment: true,
+  const propsMock = {
+    match: {
+      params: {
+        reportDefinitionId: jest.fn(),
+      },
+    },
   };
 
-  test('render component', () => {
+  const match = {
+    params: {
+      reportDefinitionId: '1',
+    },
+  };
+
+  test('render component', async (done) => {
     const { container } = render(
       <ReportDefinitionDetails
-        reportDefinitionId={'1'}
-        reportDefinitionDetailsMetadata={reportDefinitionDetailsMockMetadata}
+        httpClient={httpClientMock}
+        props={propsMock}
+        match={match}
       />
     );
     expect(container.firstChild).toMatchSnapshot();
+    done();
   });
 });

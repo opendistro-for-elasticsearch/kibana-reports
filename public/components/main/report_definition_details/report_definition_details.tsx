@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   EuiFlexGroup,
   EuiFlexItem,
@@ -30,62 +30,58 @@ import {
 } from '@elastic/eui';
 import { ReportDetailsComponent } from '../report_details/report_details';
 
-const created_date = new Date('April 20, 2020 20:32:12');
+export function ReportDefinitionDetails(props) {
+  const [reportDefinitionDetails, setReportDefinitionDetails] = useState({});
+  const reportDefinitionId = props.match['params']['reportDefinitionId'];
 
-const reportDefinitionDetailsMockMetadata = {
-  name: '[Logs] Web traffic',
-  description: '--',
-  created: created_date.toString(),
-  last_updated: '--',
-  source: 'dashboards/daily_sales',
-  time_period: 'Last 30 minutes',
-  file_format: 'PDF',
-  report_header: '--',
-  report_footer: '--',
-  trigger_type: 'Schedule',
-  schedule_details: '--',
-  alert_details: '--',
-  status: 'Active',
-  delivery_channels: ['Kibana reports'],
-  kibana_recipients: ['admin'],
-  email_recipients: 'user1@email.com',
-  email_subject: 'Latest web traffic report',
-  email_body:
-    'View report details %REPORT_DETAILS_URL% Download report file %FILE_DOWNLOAD_URL%',
-  include_report_as_attachment: true,
-};
-
-interface ReportDefinitionDetailsRouteProps {
-  reportDefinitionId: string;
-  reportDefinitionDetailsMetadata: {
-    name: string;
-    description: string;
-    created: string;
-    last_updated: string;
-    source: string;
-    time_period: string;
-    file_format: string;
-    report_header: string;
-    report_footer: string;
-    trigger_type: string;
-    schedule_details: string;
-    alert_details: string;
-    status: string;
-    delivery_channels: string[];
-    kibana_recipients: string[];
-    email_recipients: string;
-    email_subject: string;
-    email_body: string;
-    include_report_as_attachment: boolean;
+  const handleReportDefinitionDetails = (e) => {
+    setReportDefinitionDetails(e);
   };
-}
 
-export function ReportDefinitionDetails(
-  props: ReportDefinitionDetailsRouteProps
-) {
-  const reportId = props.reportDefinitionId;
+  const getReportDefinitionDetailsMetadata = (data) => {
+    let reportDefinitionDetails = {
+      name: data['report_name'],
+      description: data['description'],
+      created: data['time_created'],
+      lastUpdated: data['last_updated'],
+      source: data['report_source'],
+      timePeriod:
+        data['trigger']['trigger_params']['schedule']['interval']['period'] +
+        ' ' +
+        data['trigger']['trigger_params']['schedule']['interval']['unit'],
+      fileFormat: data['report_params']['report_format'],
+      reportHeader: '--',
+      reportFooter: '--',
+      triggerType: data['trigger']['trigger_type'],
+      scheduleDetails: data['trigger']['trigger_params']['schedule_type'],
+      alertDetails: '--',
+      status: data['status'],
+      deliveryChannels: data['delivery']['channel'],
+      kibanaRecipients: data['delivery']['delivery_params']['recipients'],
+      emailRecipients: '--', // todo: data model needs separate field for email vs kibana recipients
+      emailSubject: data['delivery']['delivery_params']['subject'],
+      emailBody: data['delivery']['delivery_params']['body'],
+      includeReportAsAttachment:
+        data['delivery']['delivery_params']['has_attachment'],
+    };
+    return reportDefinitionDetails;
+  };
 
-  const includeReportAsAttachmentString = reportDefinitionDetailsMockMetadata.include_report_as_attachment
+  useEffect(() => {
+    const { httpClient } = props;
+    httpClient
+      .get(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
+      .then((response) => {
+        handleReportDefinitionDetails(
+          getReportDefinitionDetailsMetadata(response)
+        );
+      })
+      .catch((error) => {
+        console.error('error when getting report definition details:', error);
+      });
+  }, []);
+
+  const includeReportAsAttachmentString = reportDefinitionDetails.includeReportAsAttachment
     ? 'True'
     : 'False';
 
@@ -101,7 +97,7 @@ export function ReportDefinitionDetails(
             <EuiFlexItem>
               <EuiPageHeaderSection>
                 <EuiTitle>
-                  <h2>{reportDefinitionDetailsMockMetadata.name}</h2>
+                  <h2>{reportDefinitionDetails.name}</h2>
                 </EuiTitle>
               </EuiPageHeaderSection>
             </EuiFlexItem>
@@ -110,11 +106,11 @@ export function ReportDefinitionDetails(
               alignItems="flexEnd"
               gutterSize="xs"
             >
-              <EuiFlexItem></EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
+              <EuiFlexItem />
+              <EuiFlexItem />
+              <EuiFlexItem />
+              <EuiFlexItem />
+              <EuiFlexItem />
               <EuiFlexItem>
                 <EuiText size="xs">
                   <h2>
@@ -132,7 +128,7 @@ export function ReportDefinitionDetails(
                 </EuiText>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
-                <EuiButton 
+                <EuiButton
                   fill={true}
                   onClick={() => {
                     window.location.assign('opendistro_kibana_reports#/edit');
@@ -141,8 +137,8 @@ export function ReportDefinitionDetails(
                   Edit
                 </EuiButton>
               </EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
+              <EuiFlexItem />
+              <EuiFlexItem />
             </EuiFlexGroup>
           </EuiPageHeader>
           <EuiHorizontalRule />
@@ -153,26 +149,22 @@ export function ReportDefinitionDetails(
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Name'}
-              reportDetailsComponentContent={
-                reportDefinitionDetailsMockMetadata.name
-              }
+              reportDetailsComponentContent={reportDefinitionDetails.name}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Description'}
               reportDetailsComponentContent={
-                reportDefinitionDetailsMockMetadata.description
+                reportDefinitionDetails.description
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Created'}
-              reportDetailsComponentContent={
-                reportDefinitionDetailsMockMetadata.created
-              }
+              reportDetailsComponentContent={reportDefinitionDetails.created}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Last updated'}
               reportDetailsComponentContent={
-                reportDefinitionDetailsMockMetadata.last_updated
+                reportDefinitionDetails.lastUpdated
               }
             />
           </EuiFlexGroup>
@@ -180,27 +172,23 @@ export function ReportDefinitionDetails(
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Source'}
-              reportDetailsComponentContent={
-                reportDefinitionDetailsMockMetadata.source
-              }
+              reportDetailsComponentContent={reportDefinitionDetails.source}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Time period'}
               reportDetailsComponentContent={
-                reportDefinitionDetailsMockMetadata.time_period
+                reportDefinitionDetails.timePeriod
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'File format'}
               reportDetailsComponentContent={
-                reportDefinitionDetailsMockMetadata.file_format
+                reportDefinitionDetails.fileFormat
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report header'}
-              ReportDefinitionDetails={
-                reportDefinitionDetailsMockMetadata.report_header
-              }
+              ReportDefinitionDetails={reportDefinitionDetails.reportHeader}
             />
           </EuiFlexGroup>
           <EuiSpacer />
@@ -208,7 +196,7 @@ export function ReportDefinitionDetails(
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report footer'}
               reportDetailsComponentContent={
-                reportDefinitionDetailsMockMetadata.report_footer
+                reportDefinitionDetails.reportFooter
               }
             />
             <ReportDetailsComponent />
@@ -224,26 +212,24 @@ export function ReportDefinitionDetails(
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Trigger type'}
               reportDetailsComponentContent={
-                reportDefinitionDetailsMockMetadata.trigger_type
+                reportDefinitionDetails.triggerType
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Schedule details'}
               reportDetailsComponentContent={
-                reportDefinitionDetailsMockMetadata.schedule_details
+                reportDefinitionDetails.scheduleDetails
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Alert details'}
               reportDetailsComponentContent={
-                reportDefinitionDetailsMockMetadata.alert_details
+                reportDefinitionDetails.alertDetails
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Status'}
-              reportDetailsComponentContent={
-                reportDefinitionDetailsMockMetadata.status
-              }
+              reportDetailsComponentContent={reportDefinitionDetails.status}
             />
           </EuiFlexGroup>
           <EuiSpacer />
@@ -255,25 +241,25 @@ export function ReportDefinitionDetails(
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Delivery channels'}
               reportDetailsComponentContent={
-                reportDefinitionDetailsMockMetadata.delivery_channels
+                reportDefinitionDetails.deliveryChannels
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Kibana recipients'}
               reportDetailsComponentContent={
-                reportDefinitionDetailsMockMetadata.kibana_recipients
+                reportDefinitionDetails.kibanaRecipients
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email recipients'}
               reportDetailsComponentContent={
-                reportDefinitionDetailsMockMetadata.email_recipients
+                reportDefinitionDetails.emailRecipients
               }
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email subject'}
               reportDetailsComponentContent={
-                reportDefinitionDetailsMockMetadata.email_subject
+                reportDefinitionDetails.emailSubject
               }
             />
           </EuiFlexGroup>
@@ -282,7 +268,7 @@ export function ReportDefinitionDetails(
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email body'}
               reportDetailsComponentContent={
-                reportDefinitionDetailsMockMetadata.email_body
+                reportDefinitionDetails.emailBody
               }
             />
             <ReportDetailsComponent
