@@ -310,7 +310,7 @@ exports[`<ReportDefinitions /> panel render component 1`] = `
                   <span
                     class="euiTableCellContent__text"
                   >
-                    Daily Sales Report
+                    test report name
                   </span>
                 </div>
               </td>
@@ -328,7 +328,7 @@ exports[`<ReportDefinitions /> panel render component 1`] = `
                   <span
                     class="euiTableCellContent__text"
                   >
-                    Schedule
+                    Download
                   </span>
                 </div>
               </td>
@@ -367,7 +367,7 @@ exports[`<ReportDefinitions /> panel render component 1`] = `
                     rel="noopener noreferrer"
                     target="_blank"
                   >
-                    dashboard/daily_saves
+                    Dashboard
                   </a>
                 </div>
               </td>
@@ -385,7 +385,7 @@ exports[`<ReportDefinitions /> panel render component 1`] = `
                   <span
                     class="euiTableCellContent__text"
                   >
-                    20 Apr 2020 19:32
+                    test updated time
                   </span>
                 </div>
               </td>
@@ -402,9 +402,7 @@ exports[`<ReportDefinitions /> panel render component 1`] = `
                 >
                   <span
                     class="euiTableCellContent__text"
-                  >
-                    Daily at 17:00:00.000 starting April 1, 2020
-                  </span>
+                  />
                 </div>
               </td>
               <td
@@ -421,7 +419,7 @@ exports[`<ReportDefinitions /> panel render component 1`] = `
                   <span
                     class="euiTableCellContent__text"
                   >
-                    Active
+                    Created
                   </span>
                 </div>
               </td>

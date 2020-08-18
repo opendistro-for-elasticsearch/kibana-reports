@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   EuiButtonEmpty,
   EuiFlexGroup,
@@ -27,6 +27,7 @@ import {
 import { ReportSettings } from '../report_settings';
 import { ReportDelivery } from '../delivery';
 import { ReportTrigger } from '../report_trigger';
+import { generateReport } from '../../main/main_utils';
 
 export const TIMEZONE_OPTIONS = [
   { value: -4, text: 'EDT -04:00' },
@@ -37,7 +38,56 @@ export const TIMEZONE_OPTIONS = [
   { value: -10, text: 'HST -10:00' },
 ];
 
-export function CreateReport() {
+export let defaultUrl;
+
+export function CreateReport(props) {
+  let createReportDefinitionRequest = {
+    report_name: '',
+    report_source: '',
+    report_type: '',
+    description: '',
+    report_params: {
+      url: ``,
+      report_format: '',
+      window_width: 1560,
+      window_height: 2560,
+    },
+    delivery: {},
+    trigger: {},
+  };
+
+  const createNewReportDefinition = async (metadata) => {
+    const { httpClient } = props;
+    httpClient
+      .post('../api/reporting/reportDefinition', {
+        body: JSON.stringify(metadata),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(async (resp) => {
+        if (metadata['trigger']['trigger_params']['schedule_type'] === 'Now') {
+          let onDemandDownloadMetadata = {
+            report_name: metadata['report_name'],
+            report_source: metadata['report_source'],
+            report_type: metadata['report_type'],
+            description: metadata['description'],
+            report_params: {
+              url: metadata['report_params']['url'],
+              window_width: 1440,
+              window_height: 2560,
+              report_format: metadata['report_params']['report_format'],
+            },
+          };
+          generateReport(onDemandDownloadMetadata, httpClient);
+        }
+        window.location.assign(`opendistro_kibana_reports#/`);
+      })
+      .catch((error) => {
+        console.log('error in creating report definition:', error);
+      });
+  };
+
   return (
     <EuiPage>
       <EuiPageBody>
@@ -45,11 +95,18 @@ export function CreateReport() {
           <h1>Create report definition</h1>
         </EuiTitle>
         <EuiSpacer />
-        <ReportSettings />
+        <ReportSettings
+          createReportDefinitionRequest={createReportDefinitionRequest}
+          httpClientProps={props['httpClient']}
+        />
         <EuiSpacer />
-        <ReportTrigger />
+        <ReportTrigger
+          createReportDefinitionRequest={createReportDefinitionRequest}
+        />
         <EuiSpacer />
-        <ReportDelivery />
+        <ReportDelivery
+          createReportDefinitionRequest={createReportDefinitionRequest}
+        />
         <EuiSpacer />
         <EuiFlexGroup justifyContent="flexEnd">
           <EuiFlexItem grow={false}>
@@ -62,7 +119,14 @@ export function CreateReport() {
             </EuiButtonEmpty>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton fill>Create</EuiButton>
+            <EuiButton
+              fill={true}
+              onClick={() =>
+                createNewReportDefinition(createReportDefinitionRequest)
+              }
+            >
+              Create
+            </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiPageBody>

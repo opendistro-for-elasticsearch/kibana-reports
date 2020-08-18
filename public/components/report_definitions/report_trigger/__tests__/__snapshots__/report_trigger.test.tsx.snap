@@ -59,25 +59,6 @@ exports[`<ReportTrigger /> panel render component 1`] = `
               Schedule based
             </label>
           </div>
-          <div
-            class="euiRadio euiRadioGroup__item"
-          >
-            <input
-              class="euiRadio__input"
-              id="alertOption"
-              type="radio"
-              value=""
-            />
-            <div
-              class="euiRadio__circle"
-            />
-            <label
-              class="euiRadio__label"
-              for="alertOption"
-            >
-              Alert based
-            </label>
-          </div>
         </div>
       </div>
     </div>
@@ -124,25 +105,6 @@ exports[`<ReportTrigger /> panel render component 1`] = `
                 for="nowOption"
               >
                 Now
-              </label>
-            </div>
-            <div
-              class="euiRadio euiRadioGroup__item"
-            >
-              <input
-                class="euiRadio__input"
-                id="futureDateOption"
-                type="radio"
-                value=""
-              />
-              <div
-                class="euiRadio__circle"
-              />
-              <label
-                class="euiRadio__label"
-                for="futureDateOption"
-              >
-                Future date
               </label>
             </div>
             <div

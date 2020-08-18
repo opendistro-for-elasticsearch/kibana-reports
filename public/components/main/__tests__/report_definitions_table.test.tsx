@@ -19,7 +19,22 @@ import { ReportDefinitions } from '../report_definitions_table';
 
 describe('<ReportDefinitions /> panel', () => {
   test('render component', () => {
-    const { container } = render(<ReportDefinitions />);
+    let reportDefinitionsTableContent = [
+      {
+        reportName: 'test report name',
+        type: 'Download',
+        owner: 'davidcui',
+        source: 'Dashboard',
+        lastUpdated: 'test updated time',
+        details: '',
+        status: 'Created',
+      },
+    ];
+    const { container } = render(
+      <ReportDefinitions
+        reportDefinitionsTableContent={reportDefinitionsTableContent}
+      />
+    );
     expect(container.firstChild).toMatchSnapshot();
   });
 });

@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   EuiFieldText,
   EuiFlexGroup,
@@ -138,13 +138,16 @@ function TimeRangeSelect() {
   );
 }
 
-export function ReportSettings() {
+export function ReportSettings(props) {
+  const { createReportDefinitionRequest, httpClientProps } = props;
+
   const [reportName, setReportName] = useState('');
   const [reportDescription, setReportDescription] = useState('');
   const [reportSourceId, setReportSourceId] = useState('dashboardReportSource');
-  const [dashboardSourceSelect, setDashboardSourceSelect] = useState(
-    REPORT_SOURCE_DASHBOARD_OPTIONS[0].value
-  );
+
+  const [dashboardSourceSelect, setDashboardSourceSelect] = useState('');
+  const [dashboards, setDashboards] = useState([]);
+
   const [visualizationSourceSelect, setVisualizationSourceSelect] = useState(
     REPORT_SOURCE_VISUALIZATION_OPTIONS[0].value
   );
@@ -152,32 +155,46 @@ export function ReportSettings() {
     REPORT_SOURCE_SAVED_SEARCH_OPTIONS[0].value
   );
   const [fileFormat, setFileFormat] = useState('pdfFormat');
+
   const [savedSearchFileFormat, setSavedSearchFileFormat] = useState(
     'csvFormat'
   );
   const [includeHeader, setIncludeHeader] = useState(false);
   const [includeFooter, setIncludeFooter] = useState(false);
 
+  const handleDashboards = (e) => {
+    setDashboards(e);
+  };
+
   const handleReportName = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
     setReportName(e.target.value);
+    createReportDefinitionRequest['report_name'] = e.target.value.toString();
   };
 
   const handleReportDescription = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
     setReportDescription(e.target.value);
+    createReportDefinitionRequest['description'] = e.target.value.toString();
   };
 
   const handleReportSource = (e: React.SetStateAction<string>) => {
     setReportSourceId(e);
+    if (e === 'dashboardReportSource') {
+      createReportDefinitionRequest['report_source'] = 'Dashboard';
+    } else if (e === 'visualizationReportSource') {
+      createReportDefinitionRequest['report_source'] = 'Visualization';
+    }
   };
 
   const handleDashboardSelect = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
     setDashboardSourceSelect(e.target.value);
+    createReportDefinitionRequest['report_params']['url'] = 
+      getDashboardBaseUrl() + e.target.value;
   };
 
   const handleVisualizationSelect = (e: {
@@ -194,6 +211,11 @@ export function ReportSettings() {
 
   const handleFileFormat = (e: React.SetStateAction<string>) => {
     setFileFormat(e);
+    if (e === 'pdfFormat') {
+      createReportDefinitionRequest['report_params']['report_format'] = 'pdf';
+    } else if (e === 'pngFormat') {
+      createReportDefinitionRequest['report_params']['report_format'] = 'png';
+    }
   };
 
   const handleSavedSearchFileFormat = (e: React.SetStateAction<string>) => {
@@ -287,7 +309,7 @@ export function ReportSettings() {
         <EuiFormRow label="Select dashboard">
           <EuiSelect
             id="reportSourceDashboardSelect"
-            options={REPORT_SOURCE_DASHBOARD_OPTIONS}
+            options={dashboards}
             value={dashboardSourceSelect}
             onChange={handleDashboardSelect}
           />
@@ -344,7 +366,7 @@ export function ReportSettings() {
     );
   };
 
-  const displayDashboardSelect =
+  let displayDashboardSelect =
     reportSourceId === 'dashboardReportSource' ? (
       <ReportSourceDashboard />
     ) : null;
@@ -358,6 +380,46 @@ export function ReportSettings() {
     reportSourceId === 'savedSearchReportSource' ? (
       <ReportSourceSavedSearch />
     ) : null;
+
+  const getReportSettingDashboardOptions = (data) => {
+    let index;
+    let dashboard_options = [];
+    for (index = 0; index < data.length; ++index) {
+      let entry = {
+        value: data[index]['_id'].substring(10),
+        text: data[index]['_source']['dashboard']['title'],
+      };
+      dashboard_options.push(entry);
+    }
+    return dashboard_options;
+  };
+
+  const getDashboardBaseUrl = () => {
+    let baseUrl = window.location.href;
+    return baseUrl.replace(
+      'opendistro_kibana_reports#/create',
+      'dashboards#/view/'
+    );
+  };
+
+  useEffect(() => {
+    httpClientProps
+      .get('../api/reporting/getDashboards')
+      .then(async (response) => {
+        let dashboardOptions = getReportSettingDashboardOptions(
+          response['hits']['hits']
+        );
+        await handleDashboards(dashboardOptions);
+        await setDashboardSourceSelect(dashboardOptions[0].value);
+        createReportDefinitionRequest['report_params']['url'] =
+          getDashboardBaseUrl() + response['hits']['hits'][0]['_id'].substring(10);
+      })
+      .catch((error) => {
+        console.log('error when fetching dashboards:', error);
+      });
+    createReportDefinitionRequest['report_params']['report_format'] = 'pdf';
+    createReportDefinitionRequest['report_source'] = 'Dashboard';
+  }, []);
 
   return (
     <EuiPageContent panelPaddingSize={'l'}>
