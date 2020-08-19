@@ -20,37 +20,48 @@ describe('test generate report', () => {
   test('generate PNG successfully', async () => {
     expect.assertions(1);
     const input = {
-      url: 'https://opendistro.github.io/for-elasticsearch-docs/',
+      url: 'https://demo.elastic.co/app/kibana#/dashboard/welcome_dashboard',
+      source: 'Dashboard',
       itemName: 'test',
       windowWidth: 1200,
       windowLength: 800,
+      header: 'Test report header',
+      footer: 'Test report footer',
     };
 
     const { timeCreated, fileName } = await generatePNG(
       input.url,
+      input.source,
       input.itemName,
       input.windowWidth,
-      input.windowLength
+      input.windowLength,
+      input.header,
+      input.footer
     );
     expect(fileName).toContain(`${input.itemName}_${timeCreated}`);
-  }, 20000);
+  }, 45000);
 
   test('generate PDF successfully', async () => {
     expect.assertions(1);
     const input = {
-      url: 'https://opendistro.github.io/for-elasticsearch-docs/',
+      url: 'https://demo.elastic.co/app/kibana#/dashboard/welcome_dashboard',
+      source: 'Dashboard',
       itemName: 'test',
       windowWidth: 1200,
       windowLength: 800,
-      reportFormat: 'pdf',
+      header: 'Test report header',
+      footer: 'Test report footer',
     };
 
     const { timeCreated, fileName } = await generatePDF(
       input.url,
+      input.source,
       input.itemName,
       input.windowWidth,
-      input.windowLength
+      input.windowLength,
+      input.header,
+      input.footer
     );
     expect(fileName).toContain(`${input.itemName}_${timeCreated}`);
-  }, 20000);
+  }, 45000);
 });

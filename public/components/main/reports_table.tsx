@@ -118,9 +118,9 @@ export function ReportsTable(props) {
       description: 'On-demand download of report ' + url['reportName'],
       report_params: {
         url: url['url'],
-        window_width: 1440,
-        window_height: 2560,
-        report_format: 'pdf', // current default format
+        window_width: 900,
+        window_height: 1300,
+        report_format: 'png', // current default format
       },
     };
     return onDemandDownloadMetadata;

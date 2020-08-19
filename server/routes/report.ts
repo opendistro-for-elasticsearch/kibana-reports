@@ -50,13 +50,18 @@ export default function (router: IRouter) {
       try {
         let report = request.body;
         const reportParams = report.report_params;
-
+        // placeholder since header & footer are not currently in data schema
+        const testHeader = 'Test report header sample text';
+        const testFooter = 'Test report footer sample text';
         if (reportParams.report_format === FORMAT.png) {
           const { timeCreated, dataUrl, fileName } = await generatePNG(
             reportParams.url,
+            report.report_source,
             report.report_name,
             reportParams.window_width,
-            reportParams.window_height
+            reportParams.window_height,
+            testHeader,
+            testFooter
           );
           /**
            * TODO: temporary, need to change after we figure out the correct date modeling
@@ -89,9 +94,12 @@ export default function (router: IRouter) {
         } else if (reportParams.report_format === FORMAT.pdf) {
           const { timeCreated, dataUrl, fileName } = await generatePDF(
             reportParams.url,
+            report.report_source,
             report.report_name,
             reportParams.window_width,
-            reportParams.window_height
+            reportParams.window_height,
+            testHeader,
+            testFooter
           );
 
           report = {
