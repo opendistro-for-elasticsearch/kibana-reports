@@ -78,7 +78,7 @@ export default function (router: IRouter) {
           index: 'report_definition',
           body: definition,
         };
-        const esResp = await context.core.elasticsearch.legacy.client.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
           'index',
           params
         );
@@ -146,7 +146,7 @@ export default function (router: IRouter) {
             doc: updatedDefinition,
           },
         };
-        const esResp = await context.core.elasticsearch.legacy.client.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
           'update',
           params
         );
@@ -197,7 +197,7 @@ export default function (router: IRouter) {
         sort: `${sortField}:${sortDirection}`,
       };
       try {
-        const esResp = await context.core.elasticsearch.legacy.client.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
           'search',
           params
         );
@@ -236,7 +236,7 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
-        const esResp = await context.core.elasticsearch.legacy.client.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
           'get',
           {
             index: 'report_definition',
@@ -275,7 +275,7 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
-        const esResp = await context.core.elasticsearch.legacy.client.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
           'delete',
           {
             index: 'report_definition',
