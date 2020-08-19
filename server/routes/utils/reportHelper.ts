@@ -14,7 +14,6 @@
  */
 import puppeteer from 'puppeteer';
 import { v1 as uuidv1 } from 'uuid';
-import { LegacyObjectToConfigAdapter } from '../../../../../src/core/server/legacy';
 import { FORMAT } from './constants';
 
 export const generatePNG = async (
