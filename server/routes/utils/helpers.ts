@@ -17,6 +17,9 @@ export function parseEsErrorResponse(error: any) {
   if (error.response) {
     try {
       const esErrorResponse = JSON.parse(error.response);
+      if (!esErrorResponse.found) {
+        return "Saved Search doesn't exist !";
+      }
       return esErrorResponse.reason || error.response;
     } catch (parsingError) {
       return error.response;
