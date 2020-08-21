@@ -18,20 +18,12 @@ export const REPORT_TYPE_OPTIONS = [
     id: 'scheduleOption',
     label: 'Schedule based',
   },
-  {
-    id: 'alertOption',
-    label: 'Alert based',
-  },
 ];
 
 export const SCHEDULE_REQUEST_TIME_OPTIONS = [
   {
     id: 'nowOption',
     label: 'Now',
-  },
-  {
-    id: 'futureDateOption',
-    label: 'Future date',
   },
   {
     id: 'recurringOption',
@@ -173,3 +165,15 @@ export const MONTHLY_DAY_SELECT_OPTIONS = [
     text: 'Saturday',
   },
 ];
+
+export const SCHEDULE_OPTION_MAP = {
+  nowOption: 'Now',
+  futureDateOption: 'Future date',
+  recurringOption: 'Recurring',
+  cronBasedOption: 'Cron',
+};
+
+export const TRIGGER_OPTION_MAP = {
+  scheduleOption: 'Schedule',
+  alertOption: 'Alert',
+};

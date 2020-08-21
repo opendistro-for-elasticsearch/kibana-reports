@@ -29,9 +29,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
           >
             <h2
               class="euiTitle euiTitle--medium"
-            >
-              [Logs] Web traffic
-            </h2>
+            />
           </div>
         </div>
         <div
@@ -137,9 +135,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              [Logs] Web traffic
-            </dd>
+            />
           </dl>
         </div>
         <div
@@ -155,9 +151,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              --
-            </dd>
+            />
           </dl>
         </div>
         <div
@@ -173,9 +167,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              Mon Apr 20 2020 20:32:12 GMT-0700 (Pacific Daylight Time)
-            </dd>
+            />
           </dl>
         </div>
         <div
@@ -191,9 +183,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              --
-            </dd>
+            />
           </dl>
         </div>
       </div>
@@ -216,9 +206,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              dashboards/daily_sales
-            </dd>
+            />
           </dl>
         </div>
         <div
@@ -234,9 +222,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              Last 30 minutes
-            </dd>
+            />
           </dl>
         </div>
         <div
@@ -252,9 +238,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              PDF
-            </dd>
+            />
           </dl>
         </div>
         <div
@@ -293,9 +277,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              --
-            </dd>
+            />
           </dl>
         </div>
         <div
@@ -368,9 +350,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              Schedule
-            </dd>
+            />
           </dl>
         </div>
         <div
@@ -386,9 +366,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              --
-            </dd>
+            />
           </dl>
         </div>
         <div
@@ -404,9 +382,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              --
-            </dd>
+            />
           </dl>
         </div>
         <div
@@ -422,9 +398,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              Active
-            </dd>
+            />
           </dl>
         </div>
       </div>
@@ -455,9 +429,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              Kibana reports
-            </dd>
+            />
           </dl>
         </div>
         <div
@@ -473,9 +445,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              admin
-            </dd>
+            />
           </dl>
         </div>
         <div
@@ -491,9 +461,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              user1@email.com
-            </dd>
+            />
           </dl>
         </div>
         <div
@@ -509,9 +477,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              Latest web traffic report
-            </dd>
+            />
           </dl>
         </div>
       </div>
@@ -534,9 +500,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              View report details %REPORT_DETAILS_URL% Download report file %FILE_DOWNLOAD_URL%
-            </dd>
+            />
           </dl>
         </div>
         <div
@@ -553,7 +517,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             <dd
               class="euiDescriptionList__description"
             >
-              True
+              False
             </dd>
           </dl>
         </div>

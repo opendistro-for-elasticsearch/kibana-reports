@@ -16,10 +16,29 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { ReportsTable } from '../reports_table';
+import httpClientMock from '../../../../test/httpMockClient';
 
 describe('<ReportsTable /> panel', () => {
   test('render component', () => {
-    const { container } = render(<ReportsTable />);
+    let reportsTableItems = [
+      {
+        id: '1',
+        reportName: 'test report table item',
+        type: 'Test type',
+        sender: 'N/A',
+        recipients: 'N/A',
+        reportSource: 'Test report source',
+        lastUpdated: 'test updated time',
+        state: 'Created',
+        url: 'Test url',
+      },
+    ];
+    const { container } = render(
+      <ReportsTable
+        reportsTableItems={reportsTableItems}
+        httpClient={httpClientMock}
+      />
+    );
     expect(container.firstChild).toMatchSnapshot();
   });
 });

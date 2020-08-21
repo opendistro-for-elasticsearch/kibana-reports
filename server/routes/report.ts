@@ -52,7 +52,7 @@ export default function (router: IRouter) {
         const reportParams = report.report_params;
 
         if (reportParams.report_format === FORMAT.png) {
-          const { timeCreated, stream, fileName } = await generatePNG(
+          const { timeCreated, dataUrl, fileName } = await generatePNG(
             reportParams.url,
             report.report_name,
             reportParams.window_width,
@@ -75,24 +75,23 @@ export default function (router: IRouter) {
             index: 'report',
             body: report,
           };
-          await context.core.elasticsearch.legacy.client.callAsInternalUser(
+          await context.core.elasticsearch.adminClient.callAsInternalUser(
             'index',
             params
           );
 
           return response.ok({
-            body: stream,
-            headers: {
-              'content-type': 'image/png',
-              'content-disposition': `attachment; filename=${fileName}.${reportParams.report_format}`,
+            body: {
+              data: dataUrl,
+              filename: `${fileName}`,
             },
           });
         } else if (reportParams.report_format === FORMAT.pdf) {
-          const { timeCreated, stream, fileName } = await generatePDF(
+          const { timeCreated, dataUrl, fileName } = await generatePDF(
             reportParams.url,
             report.report_name,
             reportParams.window_width,
-            reportParams.windowLength
+            reportParams.window_height
           );
 
           report = {
@@ -105,16 +104,15 @@ export default function (router: IRouter) {
             index: 'report',
             body: report,
           };
-          await context.core.elasticsearch.legacy.client.callAsInternalUser(
+          await context.core.elasticsearch.adminClient.callAsInternalUser(
             'index',
             params
           );
 
           return response.ok({
-            body: stream,
-            headers: {
-              'content-type': 'application/pdf',
-              'content-disposition': `attachment; filename=${fileName}.${reportParams.report_format}`,
+            body: {
+              data: dataUrl,
+              filename: `${fileName}`,
             },
           });
         }
@@ -161,7 +159,7 @@ export default function (router: IRouter) {
         sort: `${sortField}:${sortDirection}`,
       };
       try {
-        const esResp = await context.core.elasticsearch.legacy.client.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
           'search',
           params
         );
@@ -200,7 +198,7 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
-        const esResp = await context.core.elasticsearch.legacy.client.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
           'get',
           {
             index: 'report',
@@ -239,7 +237,7 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
-        const esResp = await context.core.elasticsearch.legacy.client.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
           'delete',
           {
             index: 'report',
