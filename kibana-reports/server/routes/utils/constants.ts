@@ -41,3 +41,7 @@ export enum SCHEDULE_TYPE {
   future = 'Future date',
   cron = 'Cron based',
 }
+
+export enum DATA_REPORT_CONFIG {
+  excelDateFormat = 'MM/DD/YYYY h:mm:ss a',
+}
