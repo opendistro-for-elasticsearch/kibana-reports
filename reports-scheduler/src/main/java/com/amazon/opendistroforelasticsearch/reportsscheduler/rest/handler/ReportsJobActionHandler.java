@@ -68,8 +68,8 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
 
   public void getJob() {
     // get all jobs from job_queue index
-    SearchRequest searchRequest = new SearchRequest(JOB_QUEUE_INDEX_NAME);
-    SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+    final SearchRequest searchRequest = new SearchRequest(JOB_QUEUE_INDEX_NAME);
+    final SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
     searchSourceBuilder.query(QueryBuilders.matchAllQuery());
 
     //    // sort the document by enqueue_time
@@ -82,12 +82,12 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
   }
 
   private void onSearchJobResponse(SearchResponse response) {
-    SearchHits hits = response.getHits();
-    SearchHit[] searchHits = hits.getHits();
-    List<SearchHit> searchHitsList = Arrays.asList(searchHits);
+    final SearchHits hits = response.getHits();
+    final SearchHit[] searchHits = hits.getHits();
+    final List<SearchHit> searchHitsList = Arrays.asList(searchHits);
     // randomize the jobs, for possible faster job retrieval
     Randomness.shuffle(searchHitsList);
-    Queue<SearchHit> searchHitsQueue = new LinkedList<>(searchHitsList);
+    final Queue<SearchHit> searchHitsQueue = new LinkedList<>(searchHitsList);
 
     log.info("original queue size: " + searchHitsQueue.size());
 
@@ -101,20 +101,20 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
    * @param searchHitsQueue a queue which saves all jobs from .reports_scheduler_job_queue index
    */
   private void findFirstAvailableJob(Queue<SearchHit> searchHitsQueue) {
-    SearchHit hit = searchHitsQueue.poll();
+    final SearchHit hit = searchHitsQueue.poll();
     log.info("queue size after poll: " + searchHitsQueue.size());
 
     if (hit != null) {
       String jobId = hit.getId();
       // set up jobParamater and jobContext that is required by lockService
-      JobParameter jobParameter = new JobParameter();
+      final JobParameter jobParameter = new JobParameter(null, null, null, false, null, null);
       jobParameter.setLockDurationSeconds(LOCK_DURATION_SECONDS);
-      JobExecutionContext ctx =
+      final JobExecutionContext jobExecutionContext =
           new JobExecutionContext(null, null, null, JOB_QUEUE_INDEX_NAME, jobId);
 
       lockService.acquireLock(
           jobParameter,
-          ctx,
+          jobExecutionContext,
           ActionListener.wrap(
               lock -> {
                 if (lock == null) {
@@ -148,10 +148,10 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
    */
   public void updateJob(String jobId) {
     // the lockId format is required by lockService to avoid conflict
-    String lockId = JOB_QUEUE_INDEX_NAME + "-" + jobId;
+    final String lockId = JOB_QUEUE_INDEX_NAME + "-" + jobId;
 
     // remove job from queue
-    DeleteRequest deleteRequest = new DeleteRequest().index(JOB_QUEUE_INDEX_NAME).id(jobId);
+    final DeleteRequest deleteRequest = new DeleteRequest().index(JOB_QUEUE_INDEX_NAME).id(jobId);
 
     client.delete(
         deleteRequest,

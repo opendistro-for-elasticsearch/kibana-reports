@@ -106,15 +106,15 @@ public class ReportsSchedulerJobRunner implements ScheduledJobRunner {
 
     Runnable runnable =
         () -> {
-          JobParameter parameter = (JobParameter) jobParameter;
-          String reportDefinitionId = parameter.getReportDefinitionId();
+          final JobParameter parameter = (JobParameter) jobParameter;
+          final String reportDefinitionId = parameter.getReportDefinitionId();
 
           // compose json and save into job queue index
-          Map<String, Object> jsonMap = new HashMap<>();
+          final Map<String, Object> jsonMap = new HashMap<>();
           jsonMap.put("report_definition_id", reportDefinitionId);
           jsonMap.put("enqueue_time", Instant.now().toEpochMilli());
 
-          IndexRequest indexRequest =
+          final IndexRequest indexRequest =
               new IndexRequest().index(JOB_QUEUE_INDEX_NAME).id(reportDefinitionId).source(jsonMap);
 
           client.index(
@@ -123,12 +123,14 @@ public class ReportsSchedulerJobRunner implements ScheduledJobRunner {
                 @Override
                 public void onResponse(IndexResponse indexResponse) {
                   log.info(
-                      "Scheduled job triggered and add to job queue index, waiting to be picked up by Reporting Core");
+                      "Scheduled job triggered and add to job queue index, waiting to be picked up by reporting core poller");
                 }
 
                 @Override
                 public void onFailure(Exception e) {
-                  log.error(e.toString());
+                  log.error(
+                      "Scheduled job gets triggered but fail to add to job queue index "
+                          + e.toString());
                 }
               });
         };

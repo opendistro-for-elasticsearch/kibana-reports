@@ -17,6 +17,7 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler;
 
 import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.JOB_INDEX_NAME;
 
+import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.Schedule;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Collection;
@@ -107,7 +108,13 @@ public class ReportsSchedulerPlugin extends Plugin implements ActionPlugin, JobS
   @Override
   public ScheduledJobParser getJobParser() {
     return (parser, id, jobDocVersion) -> {
-      JobParameter jobParameter = new JobParameter();
+      String jobName = null;
+      Instant enabledTime = null;
+      String reportDefinitionId = null;
+      boolean isEnabled = false;
+      Schedule schedule = null;
+      Instant lastUpdateTime = null;
+
       XContentParserUtils.ensureExpectedToken(
           XContentParser.Token.START_OBJECT, parser.nextToken(), parser::getTokenLocation);
 
@@ -116,31 +123,29 @@ public class ReportsSchedulerPlugin extends Plugin implements ActionPlugin, JobS
         parser.nextToken();
         switch (fieldName) {
           case JobConstant.NAME_FIELD:
-            jobParameter.setJobName(parser.text());
+            jobName = parser.text();
             break;
           case JobConstant.ENABLED_FILED:
-            jobParameter.setEnabled(parser.booleanValue());
+            isEnabled = parser.booleanValue();
             break;
           case JobConstant.ENABLED_TIME_FILED:
-            jobParameter.setEnabledTime(parseInstantValue(parser));
+            enabledTime = parseInstantValue(parser);
             break;
           case JobConstant.LAST_UPDATE_TIME_FIELD:
-            jobParameter.setLastUpdateTime(parseInstantValue(parser));
+            lastUpdateTime = parseInstantValue(parser);
             break;
           case JobConstant.SCHEDULE_FIELD:
-            jobParameter.setSchedule(ScheduleParser.parse(parser));
+            schedule = ScheduleParser.parse(parser);
             break;
           case JobConstant.REPORT_DEFINITION_ID:
-            jobParameter.setReportDefinitionId(parser.text());
-            break;
-          case JobConstant.LOCK_DURATION_SECONDS:
-            jobParameter.setLockDurationSeconds(parser.longValue());
+            reportDefinitionId = parser.text();
             break;
           default:
             XContentParserUtils.throwUnknownToken(parser.currentToken(), parser.getTokenLocation());
         }
       }
-      return jobParameter;
+      return new JobParameter(
+          jobName, enabledTime, reportDefinitionId, isEnabled, schedule, lastUpdateTime);
     };
   }
 

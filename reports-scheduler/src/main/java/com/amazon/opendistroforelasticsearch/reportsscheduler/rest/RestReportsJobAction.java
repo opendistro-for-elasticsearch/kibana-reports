@@ -61,10 +61,10 @@ public class RestReportsJobAction extends BaseRestHandler {
 
   @Override
   protected RestChannelConsumer prepareRequest(RestRequest request, NodeClient client) {
-    String jobId = request.param(JOB_ID);
+    final String jobId = request.param(JOB_ID);
 
     return channel -> {
-      ReportsJobActionHandler handler =
+      final ReportsJobActionHandler handler =
           new ReportsJobActionHandler(client, channel, clusterService);
 
       if (request.method().equals(RestRequest.Method.POST)) {

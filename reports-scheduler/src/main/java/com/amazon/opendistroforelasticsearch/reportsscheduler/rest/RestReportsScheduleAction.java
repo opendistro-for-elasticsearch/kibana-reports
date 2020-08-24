@@ -57,14 +57,14 @@ public class RestReportsScheduleAction extends BaseRestHandler {
 
   @Override
   protected RestChannelConsumer prepareRequest(RestRequest request, NodeClient client) {
-    String jobId = request.param("job_id");
+    final String jobId = request.param("job_id");
 
     if (jobId == null) {
       throw new IllegalArgumentException("Must specify id");
     }
 
     return channel -> {
-      ReportsScheduleActionHandler handler = new ReportsScheduleActionHandler(client, channel);
+      final ReportsScheduleActionHandler handler = new ReportsScheduleActionHandler(client, channel);
 
       if (request.method().equals(RestRequest.Method.POST)) {
         handler.createSchedule(jobId, request);
