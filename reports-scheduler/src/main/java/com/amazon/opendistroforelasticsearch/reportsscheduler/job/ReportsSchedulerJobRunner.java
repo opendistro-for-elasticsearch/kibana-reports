@@ -42,14 +42,15 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobP
  * <p>The job runner should be a singleton class if it uses Elasticsearch client or other objects
  * passed from Elasticsearch. Because when registering the job runner to JobScheduler plugin,
  * Elasticsearch has not invoke plugins' createComponents() method. That is saying the plugin is not
- * completely initalized, and the Elasticsearch {@link org.elasticsearch.client.Client}, {@link
+ * completely initialized, and the Elasticsearch {@link org.elasticsearch.client.Client}, {@link
  * ClusterService} and other objects are not available to plugin and this job runner.
  *
- * <p>So we have to move this job runner intialization to {@link Plugin} createComponents() method,
+ * <p>So we have to move this job runner initialization to {@link Plugin} createComponents() method,
  * and using singleton job runner to ensure we register a usable job runner instance to JobScheduler
  * plugin.
  *
- * <p>This reports scheduler job runner will write the report_definition_id
+ * <p>This reports scheduler job runner will add a scheduled job to a queue index once it gets
+ * triggered.
  */
 public class ReportsSchedulerJobRunner implements ScheduledJobRunner {
   private static final Logger log = LogManager.getLogger(ScheduledJobRunner.class);

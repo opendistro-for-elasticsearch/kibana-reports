@@ -18,7 +18,6 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.rest;
 import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.BASE_SCHEDULER_URI;
 
 import java.util.List;
-import java.util.Locale;
 
 import org.elasticsearch.client.node.NodeClient;
 import org.elasticsearch.cluster.service.ClusterService;
@@ -33,8 +32,10 @@ import com.google.common.collect.ImmutableList;
 
 public class RestReportsJobAction extends BaseRestHandler {
   public static final String SCHEDULER_JOB_ACTION = "reports_scheduler_job_action";
-  private final String JOB = "job";
-  private final String JOB_ID = "jobId";
+  private static final String JOB = "job";
+  private static final String JOB_ID = "jobId";
+  private static final String JOB_ID_URL = BASE_SCHEDULER_URI + "/" + JOB + "/{" + JOB_ID + "}";
+  private static final String JOB_URL = BASE_SCHEDULER_URI + "/" + JOB;
 
   private final Settings settings;
   private final ClusterService clusterService;
@@ -52,11 +53,7 @@ public class RestReportsJobAction extends BaseRestHandler {
   @Override
   public List<Route> routes() {
     return ImmutableList.of(
-        new Route(
-            RestRequest.Method.POST,
-            String.format(Locale.ROOT, "%s/%s/{%s}", BASE_SCHEDULER_URI, JOB, JOB_ID)),
-        new Route(
-            RestRequest.Method.GET, String.format(Locale.ROOT, "%s/%s", BASE_SCHEDULER_URI, JOB)));
+        new Route(RestRequest.Method.POST, JOB_ID_URL), new Route(RestRequest.Method.GET, JOB_URL));
   }
 
   @Override

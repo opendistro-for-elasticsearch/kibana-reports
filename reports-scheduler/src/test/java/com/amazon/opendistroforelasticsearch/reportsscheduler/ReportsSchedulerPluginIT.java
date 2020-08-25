@@ -30,14 +30,14 @@ import org.junit.Assert;
 public class ReportsSchedulerPluginIT extends ESIntegTestCase {
 
   public void testPluginsAreInstalled() {
-    ClusterHealthRequest request = new ClusterHealthRequest();
-    ClusterHealthResponse response =
+    final ClusterHealthRequest request = new ClusterHealthRequest();
+    final ClusterHealthResponse response =
         ESIntegTestCase.client().admin().cluster().health(request).actionGet();
     Assert.assertEquals(ClusterHealthStatus.GREEN, response.getStatus());
 
-    NodesInfoRequest nodesInfoRequest = new NodesInfoRequest();
+    final NodesInfoRequest nodesInfoRequest = new NodesInfoRequest();
     nodesInfoRequest.addMetric(NodesInfoRequest.Metric.PLUGINS.metricName());
-    NodesInfoResponse nodesInfoResponse =
+    final NodesInfoResponse nodesInfoResponse =
         ESIntegTestCase.client().admin().cluster().nodesInfo(nodesInfoRequest).actionGet();
     List<PluginInfo> pluginInfos =
         nodesInfoResponse.getNodes().get(0).getInfo(PluginsAndModules.class).getPluginInfos();

@@ -18,7 +18,6 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.rest;
 import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.BASE_SCHEDULER_URI;
 
 import java.util.List;
-import java.util.Locale;
 
 import org.elasticsearch.client.node.NodeClient;
 import org.elasticsearch.common.settings.Settings;
@@ -33,7 +32,9 @@ import com.google.common.collect.ImmutableList;
 public class RestReportsScheduleAction extends BaseRestHandler {
   public static final String SCHEDULER_SCHEDULE_ACTION = "reports_scheduler_schedule_action";
   private final Settings settings;
-  private final String SCHEDULE = "schedule";
+  private static final String SCHEDULE = "schedule";
+  private static final String JOB_ID = "job_id";
+  private static final String SCHEDULE_URL = BASE_SCHEDULER_URI + "/" + SCHEDULE;
 
   public RestReportsScheduleAction(Settings settings) {
     this.settings = settings;
@@ -47,24 +48,21 @@ public class RestReportsScheduleAction extends BaseRestHandler {
   @Override
   public List<Route> routes() {
     return ImmutableList.of(
-        new Route(
-            RestRequest.Method.POST,
-            String.format(Locale.ROOT, "%s/%s", BASE_SCHEDULER_URI, SCHEDULE)),
-        new Route(
-            RestRequest.Method.DELETE,
-            String.format(Locale.ROOT, "%s/%s", BASE_SCHEDULER_URI, SCHEDULE)));
+        new Route(RestRequest.Method.POST, SCHEDULE_URL),
+        new Route(RestRequest.Method.DELETE, SCHEDULE_URL));
   }
 
   @Override
   protected RestChannelConsumer prepareRequest(RestRequest request, NodeClient client) {
-    final String jobId = request.param("job_id");
+    final String jobId = request.param(JOB_ID);
 
     if (jobId == null) {
       throw new IllegalArgumentException("Must specify id");
     }
 
     return channel -> {
-      final ReportsScheduleActionHandler handler = new ReportsScheduleActionHandler(client, channel);
+      final ReportsScheduleActionHandler handler =
+          new ReportsScheduleActionHandler(client, channel);
 
       if (request.method().equals(RestRequest.Method.POST)) {
         handler.createSchedule(jobId, request);

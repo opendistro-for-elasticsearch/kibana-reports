@@ -22,12 +22,8 @@ import java.util.Locale;
 
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.DocWriteResponse;
-import org.elasticsearch.action.DocWriteResponse.Result;
-import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
-import org.elasticsearch.action.get.GetRequest;
-import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.node.NodeClient;
@@ -38,7 +34,6 @@ import org.elasticsearch.rest.RestChannel;
 import org.elasticsearch.rest.RestRequest;
 import org.elasticsearch.rest.RestResponse;
 import org.elasticsearch.rest.RestStatus;
-import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 
 public class ReportsScheduleActionHandler extends AbstractActionHandler {
 
@@ -60,7 +55,7 @@ public class ReportsScheduleActionHandler extends AbstractActionHandler {
           @Override
           public void onResponse(IndexResponse indexResponse) {
             try {
-              RestResponse restResponse =
+              final RestResponse restResponse =
                   new BytesRestResponse(
                       RestStatus.OK, indexResponse.toXContent(JsonXContent.contentBuilder(), null));
               channel.sendResponse(restResponse);

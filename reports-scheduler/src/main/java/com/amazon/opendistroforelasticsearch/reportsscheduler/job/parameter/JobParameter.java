@@ -88,30 +88,6 @@ public class JobParameter implements ScheduledJobParameter {
     return this.reportDefinitionId;
   }
 
-  //  public void setJobName(String jobName) {
-  //    this.jobName = jobName;
-  //  }
-  //
-  //  public void setLastUpdateTime(Instant lastUpdateTime) {
-  //    this.lastUpdateTime = lastUpdateTime;
-  //  }
-  //
-  //  public void setEnabledTime(Instant enabledTime) {
-  //    this.enabledTime = enabledTime;
-  //  }
-  //
-  //  public void setEnabled(boolean enabled) {
-  //    isEnabled = enabled;
-  //  }
-  //
-  //  public void setSchedule(Schedule schedule) {
-  //    this.schedule = schedule;
-  //  }
-  //
-  //  public void setReportDefinitionId(String reportDefinitionId) {
-  //    this.reportDefinitionId = reportDefinitionId;
-  //  }
-
   public void setLockDurationSeconds(Long lockDurationSeconds) {
     this.lockDurationSeconds = lockDurationSeconds;
   }

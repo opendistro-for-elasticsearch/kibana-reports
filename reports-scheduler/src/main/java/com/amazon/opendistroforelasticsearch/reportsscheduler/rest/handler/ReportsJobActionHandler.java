@@ -89,8 +89,6 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
     Randomness.shuffle(searchHitsList);
     final Queue<SearchHit> searchHitsQueue = new LinkedList<>(searchHitsList);
 
-    log.info("original queue size: " + searchHitsQueue.size());
-
     findFirstAvailableJob(searchHitsQueue);
   }
 
@@ -102,11 +100,10 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
    */
   private void findFirstAvailableJob(Queue<SearchHit> searchHitsQueue) {
     final SearchHit hit = searchHitsQueue.poll();
-    log.info("queue size after poll: " + searchHitsQueue.size());
 
     if (hit != null) {
       String jobId = hit.getId();
-      // set up jobParamater and jobContext that is required by lockService
+      // set up "fake" jobParamater and jobContext that is required to initialize lockService
       final JobParameter jobParameter = new JobParameter(null, null, null, false, null, null);
       jobParameter.setLockDurationSeconds(LOCK_DURATION_SECONDS);
       final JobExecutionContext jobExecutionContext =
@@ -122,7 +119,7 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
                 } else {
                   log.info("send job data(report_definition_id) to reporting core for execution");
 
-                  RestResponse restResponse =
+                  final RestResponse restResponse =
                       new BytesRestResponse(
                           RestStatus.OK, hit.toXContent(JsonXContent.contentBuilder(), null));
                   channel.sendResponse(restResponse);
@@ -132,7 +129,7 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
                 channel.sendResponse(
                     new BytesRestResponse(
                         RestStatus.INTERNAL_SERVER_ERROR, "Failed to acquire lock"));
-                throw new IllegalStateException("Failed to acquire lock.");
+                log.debug("Failed tp acquire lock " + exception);
               }));
     } else {
       log.info("No jobs to execute");
@@ -175,7 +172,7 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
                                 RestStatus.OK,
                                 String.format(
                                     Locale.ROOT,
-                                    "Job deleted from jobs queue. Job id: %s",
+                                    "Job removed from jobs queue. Job id: %s",
                                     jobId)));
                       },
                       exception -> log.debug("Failed to delete lock", exception)));
