@@ -48,7 +48,11 @@ public class RestReportsScheduleAction extends BaseRestHandler {
   @Override
   public List<Route> routes() {
     return ImmutableList.of(
+        // create a scheduled job from report definition
+        // POST /_opendistro/reports_scheduler/schedule?job_id=<job_id>
         new Route(RestRequest.Method.POST, SCHEDULE_URL),
+        // de-schedule a job
+        // DELETE /_opendistro/reports_scheduler/schedule?job_id=<job_id>
         new Route(RestRequest.Method.DELETE, SCHEDULE_URL));
   }
 

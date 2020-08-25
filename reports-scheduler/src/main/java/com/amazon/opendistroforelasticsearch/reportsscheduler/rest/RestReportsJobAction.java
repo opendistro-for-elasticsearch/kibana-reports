@@ -33,7 +33,7 @@ import com.google.common.collect.ImmutableList;
 public class RestReportsJobAction extends BaseRestHandler {
   public static final String SCHEDULER_JOB_ACTION = "reports_scheduler_job_action";
   private static final String JOB = "job";
-  private static final String JOB_ID = "jobId";
+  private static final String JOB_ID = "job_id";
   private static final String JOB_ID_URL = BASE_SCHEDULER_URI + "/" + JOB + "/{" + JOB_ID + "}";
   private static final String JOB_URL = BASE_SCHEDULER_URI + "/" + JOB;
 
@@ -53,7 +53,12 @@ public class RestReportsJobAction extends BaseRestHandler {
   @Override
   public List<Route> routes() {
     return ImmutableList.of(
-        new Route(RestRequest.Method.POST, JOB_ID_URL), new Route(RestRequest.Method.GET, JOB_URL));
+        // update job status, release lock and remove job from queue.
+        // POST /_opendistro/reports_scheduler/job/{job_id}
+        new Route(RestRequest.Method.POST, JOB_ID_URL),
+        // get triggered jobs from jobs queue.
+        // GET /_opendistro/reports_scheduler/job
+        new Route(RestRequest.Method.GET, JOB_URL));
   }
 
   @Override
