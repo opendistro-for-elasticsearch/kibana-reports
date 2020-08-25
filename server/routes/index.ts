@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import registerReportRoute from './report';
+import registervisualReportRoute from './visualReport';
 import registerReportDefinitionRoute from './reportDefinition';
 import registerDataReport from './dataReport';
 import registerDataReportMetadata from './dataReportMetadata';
@@ -21,9 +21,9 @@ import dashboardRoute from './getDashboards';
 import { IRouter } from '../../../../src/core/server';
 
 export default function (router: IRouter) {
-	registerReportRoute(router);
-	registerReportDefinitionRoute(router);
-	registerDataReportMetadata(router);
-	registerDataReport(router);
+  registervisualReportRoute(router);
+  registerReportDefinitionRoute(router);
+  registerDataReportMetadata(router);
+  registerDataReport(router);
   dashboardRoute(router);
 }
