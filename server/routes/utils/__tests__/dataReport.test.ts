@@ -14,8 +14,8 @@
  */
 
 import 'regenerator-runtime/runtime';
-import DATA_REPORT_TEST_DATA_LARGE from './dataReportTestDataLarge.json';
-import DATA_REPORT_TEST_DATA_SMALL from './dataReportTestDataSmall.json';
+import DATA_REPORT_TEST_DATA_LARGE from './test_data/dataReportTestDataLarge.json';
+import DATA_REPORT_TEST_DATA_SMALL from './test_data/dataReportTestDataSmall.json';
 const axios = require('axios');
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
