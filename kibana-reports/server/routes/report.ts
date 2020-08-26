@@ -20,14 +20,13 @@ import {
   ResponseError,
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
-import { FORMAT, REPORT_STATE } from './utils/constants';
 import { RequestParams } from '@elastic/elasticsearch';
-import { generatePDF, generatePNG } from './utils/visualReportHelper';
-import { reportSchema } from '../model';
+import { createVisualReport, createReport } from './utils/reportHelper';
+import { reportSchema, ReportSchemaType } from '../model';
 import { parseEsErrorResponse } from './utils/helpers';
 
 export default function (router: IRouter) {
-  // Download visual report
+  // Download report
   router.post(
     {
       path: `${API_PREFIX}/generateReport`,
@@ -46,80 +45,25 @@ export default function (router: IRouter) {
       } catch (error) {
         return response.badRequest({ body: error });
       }
-
+      // generate report
       try {
         let report = request.body;
-        const reportParams = report.report_params;
 
-        if (reportParams.report_format === FORMAT.png) {
-          const { timeCreated, dataUrl, fileName } = await generatePNG(
-            reportParams.url,
-            report.report_name,
-            reportParams.window_width,
-            reportParams.window_height
-          );
-          /**
-           * TODO: temporary, need to change after we figure out the correct date modeling
-           * https://github.com/elastic/kibana/blob/master/src/core/MIGRATION.md#use-scoped-services
-           * from the migration plan of kibana new platform, the usage says to get access to Elasticsearch data by
-           * await context.core.elasticsearch.adminClient.callAsInternalUser('ping');
-           * However, that doesn't work for now
-           */
-          report = {
-            ...report,
-            time_created: timeCreated,
-            state: REPORT_STATE.created,
-          };
+        const reportData = await createReport(
+          report,
+          context.core.elasticsearch.adminClient
+        );
 
-          const params: RequestParams.Index = {
-            index: 'report',
-            body: report,
-          };
-          await context.core.elasticsearch.adminClient.callAsInternalUser(
-            'index',
-            params
-          );
-
-          return response.ok({
-            body: {
-              data: dataUrl,
-              filename: `${fileName}`,
-            },
-          });
-        } else if (reportParams.report_format === FORMAT.pdf) {
-          const { timeCreated, dataUrl, fileName } = await generatePDF(
-            reportParams.url,
-            report.report_name,
-            reportParams.window_width,
-            reportParams.window_height
-          );
-
-          report = {
-            ...report,
-            time_created: timeCreated,
-            state: REPORT_STATE.created,
-          };
-
-          const params: RequestParams.Index = {
-            index: 'report',
-            body: report,
-          };
-          await context.core.elasticsearch.adminClient.callAsInternalUser(
-            'index',
-            params
-          );
-
-          return response.ok({
-            body: {
-              data: dataUrl,
-              filename: `${fileName}`,
-            },
-          });
-        }
+        return response.ok({
+          body: {
+            data: reportData.dataUrl,
+            filename: reportData.fileName,
+          },
+        });
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
-          `Failed to download visual reports: ${error}`
+          `Failed to create report: ${error}`
         );
 
         return response.custom({

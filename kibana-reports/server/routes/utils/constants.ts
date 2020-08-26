@@ -42,6 +42,12 @@ export enum SCHEDULE_TYPE {
   cron = 'Cron based',
 }
 
+export enum REPORT_TYPE {
+  savedSearch = 'Saved search',
+  dashboard = 'Dashboard',
+  visualization = 'Visualization',
+}
+
 export enum DATA_REPORT_CONFIG {
   excelDateFormat = 'MM/DD/YYYY h:mm:ss a',
 }

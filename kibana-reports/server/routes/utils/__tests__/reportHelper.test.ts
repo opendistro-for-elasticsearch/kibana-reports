@@ -14,43 +14,48 @@
  */
 
 import 'regenerator-runtime/runtime';
-import { generatePDF, generatePNG } from '../visualReportHelper';
+import { createVisualReport } from '../reportHelper';
 
-describe('test generate report', () => {
-  test('generate PNG successfully', async () => {
-    expect.assertions(1);
+describe('test create visual report', () => {
+  test('create png report', async () => {
+    expect.assertions(3);
     const input = {
-      url: 'https://opendistro.github.io/for-elasticsearch-docs/',
-      itemName: 'test',
-      windowWidth: 1200,
-      windowLength: 800,
+      report_name: 'Zhongnan_daily_report/4pm',
+      report_source: 'Dashboard',
+      report_type: 'Download',
+      description: 'Hi this is your dashboard',
+      report_params: {
+        url: 'https://opendistro.github.io/for-elasticsearch-docs/',
+        window_width: 1300,
+        window_height: 900,
+        report_format: 'png',
+      },
     };
 
-    const { timeCreated, fileName } = await generatePNG(
-      input.url,
-      input.itemName,
-      input.windowWidth,
-      input.windowLength
-    );
-    expect(fileName).toContain(`${input.itemName}_${timeCreated}`);
+    const { timeCreated, dataUrl, fileName } = await createVisualReport(input);
+    expect(fileName).toContain(`${input.report_name}_${timeCreated}`);
+    expect(fileName).toContain(`.${input.report_params.report_format}`);
+    expect(dataUrl).toBeDefined();
   }, 20000);
 
-  test('generate PDF successfully', async () => {
-    expect.assertions(1);
+  test('create pdf report', async () => {
+    expect.assertions(3);
     const input = {
-      url: 'https://opendistro.github.io/for-elasticsearch-docs/',
-      itemName: 'test',
-      windowWidth: 1200,
-      windowLength: 800,
-      reportFormat: 'pdf',
+      report_name: 'Zhongnan_daily_report/4pm',
+      report_source: 'Dashboard',
+      report_type: 'Download',
+      description: 'Hi this is your dashboard',
+      report_params: {
+        url: 'https://opendistro.github.io/for-elasticsearch-docs/',
+        window_width: 1300,
+        window_height: 900,
+        report_format: 'pdf',
+      },
     };
 
-    const { timeCreated, fileName } = await generatePDF(
-      input.url,
-      input.itemName,
-      input.windowWidth,
-      input.windowLength
-    );
-    expect(fileName).toContain(`${input.itemName}_${timeCreated}`);
+    const { timeCreated, dataUrl, fileName } = await createVisualReport(input);
+    expect(fileName).toContain(`${input.report_name}_${timeCreated}`);
+    expect(fileName).toContain(`.${input.report_params.report_format}`);
+    expect(dataUrl).toBeDefined();
   }, 20000);
 });

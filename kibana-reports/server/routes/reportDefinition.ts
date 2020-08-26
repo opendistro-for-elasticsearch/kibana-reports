@@ -51,8 +51,7 @@ export default function (router: IRouter) {
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       // input validation
       try {
-        const reportDefinition = request.body;
-        validateReportDefinition(reportDefinition);
+        validateReportDefinition(request.body);
       } catch (error) {
         return response.badRequest({ body: error });
       }
@@ -78,13 +77,35 @@ export default function (router: IRouter) {
           index: 'report_definition',
           body: definition,
         };
+
         const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
           'index',
           params
         );
 
+        const reportDefinitionId = esResp._id;
+
+        // Handle the trigger
+        const reportDefinition = request.body;
+        const scheduledJob = handleTrigger(
+          reportDefinition,
+          reportDefinitionId
+        );
+        // @ts-ignore
+        const client = context.reporting_plugin.schedulerClient.asScoped(
+          request
+        );
+        // create schedule in reports-scheduler
+        const res = await client.callAsInternalUser(
+          'reports_scheduler.createSchedule',
+          {
+            jobId: reportDefinitionId,
+            body: scheduledJob,
+          }
+        );
+
         return response.ok({
-          body: esResp._id,
+          body: res,
         });
       } catch (error) {
         //@ts-ignore
@@ -336,5 +357,30 @@ function validateReportDefinition(reportDefinition: any) {
         //TODO:
         break;
     }
+  }
+}
+
+function handleTrigger(reportDefinition: any, reportDefinitionId: string) {
+  const trigger = reportDefinition.trigger;
+  const triggerType = trigger.trigger_type;
+  const triggerParams = trigger.trigger_params;
+
+  if (triggerType === 'Schedule') {
+    const schedule = triggerParams.schedule;
+
+    // compose the request body
+    const scheduledJob = {
+      schedule: schedule,
+      name: reportDefinition.report_name + '_schedule',
+      enabled: true,
+      report_definition_id: reportDefinitionId,
+      enabled_time: triggerParams.enabled_time,
+    };
+
+    return scheduledJob;
+
+    // send to reports-scheduler to create a scheduled job
+  } else if (triggerType == 'Alerting') {
+    //TODO:
   }
 }
