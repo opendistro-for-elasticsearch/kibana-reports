@@ -18,7 +18,8 @@ import {
   IRouter,
   IKibanaResponse,
   ResponseError,
-  IScopedClusterClient,
+  RequestHandlerContext,
+  KibanaRequest,
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
@@ -36,6 +37,7 @@ import {
   DELIVERY_CHANNEL,
   TRIGGER_TYPE,
 } from './utils/constants';
+import { createReport } from './utils/reportHelper';
 
 export default function (router: IRouter) {
   // Create report Definition
@@ -58,7 +60,7 @@ export default function (router: IRouter) {
         return response.badRequest({ body: error });
       }
 
-      // Store metadata
+      // save metadata
       try {
         const definition = {
           ...request.body,
@@ -77,22 +79,19 @@ export default function (router: IRouter) {
           params
         );
 
+        // create schedule by reports-scheduler
         const reportDefinitionId = esResp._id;
-        const reportDefinition = request.body;
-        // @ts-ignore
-        const schedulerClient = context.reporting_plugin.schedulerClient.asScoped(
-          request
-        );
-
-        // create schedule in reports-scheduler
         const res = await createScheduledJob(
-          reportDefinition,
+          request,
           reportDefinitionId,
-          schedulerClient
+          context
         );
 
         return response.ok({
-          body: res,
+          body: {
+            state: 'Report definition scheduled',
+            scheduler_response: res,
+          },
         });
       } catch (error) {
         //@ts-ignore
@@ -318,8 +317,8 @@ function validateReportDefinition(reportDefinition: any) {
       break;
   }
 
-  // TODO: add alert
-  if (trigger.trigger_type === 'Schedule') {
+  // TODO: add alert/on-demand
+  if (trigger.trigger_type === TRIGGER_TYPE.schedule) {
     scheduleSchema.validate(triggerParams);
 
     const schedule = triggerParams.schedule;
@@ -341,20 +340,26 @@ function validateReportDefinition(reportDefinition: any) {
 }
 
 async function createScheduledJob(
-  reportDefinition: any,
+  request: KibanaRequest,
   reportDefinitionId: string,
-  schedulerClient: IScopedClusterClient
+  context: RequestHandlerContext
 ) {
+  const reportDefinition: any = request.body;
   const trigger = reportDefinition.trigger;
   const triggerType = trigger.trigger_type;
   const triggerParams = trigger.trigger_params;
-  let scheduledJob: any;
+
+  // @ts-ignore
+  const schedulerClient = context.reporting_plugin.schedulerClient.asScoped(
+    request
+  );
+  const esClient = context.core.elasticsearch.adminClient;
 
   if (triggerType === TRIGGER_TYPE.schedule) {
     const schedule = triggerParams.schedule;
 
     // compose the request body
-    scheduledJob = {
+    const scheduledJob = {
       schedule: schedule,
       name: reportDefinition.report_name + '_schedule',
       enabled: true,
@@ -362,17 +367,19 @@ async function createScheduledJob(
       enabled_time: triggerParams.enabled_time,
     };
     // send to reports-scheduler to create a scheduled job
+    const res = await schedulerClient.callAsInternalUser(
+      'reports_scheduler.createSchedule',
+      {
+        jobId: reportDefinitionId,
+        body: scheduledJob,
+      }
+    );
+
+    return res;
   } else if (triggerType == TRIGGER_TYPE.alerting) {
-    //TODO:
+    //TODO: add alert-based scheduling logic [enhancement feature]
+  } else if (triggerType == TRIGGER_TYPE.onDemand) {
+    await createReport(reportDefinition, esClient);
+    return;
   }
-
-  const res = await schedulerClient.callAsInternalUser(
-    'reports_scheduler.createSchedule',
-    {
-      jobId: reportDefinitionId,
-      body: scheduledJob,
-    }
-  );
-
-  return res;
 }

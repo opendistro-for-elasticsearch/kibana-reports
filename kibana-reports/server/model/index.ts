@@ -106,6 +106,7 @@ export const reportSchema = schema.object({
       trigger_type: schema.oneOf([
         schema.literal('Alert'),
         schema.literal('Schedule'),
+        schema.literal('On demand'),
       ]),
       trigger_params: schema.conditional(
         schema.siblingRef('trigger_type'),
