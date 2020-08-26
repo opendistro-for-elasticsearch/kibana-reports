@@ -16,6 +16,13 @@ Please add your feature requests here [ New Requests ](https://github.com/opendi
 1. Change your node version to the version specified in `.node-version` inside the Kibana root directory.
 1. Create a `plugins` directory inside the Kibana source code directory, if `plugins` directory doesn't exist.
 1. Check out this package from version control into the `plugins` directory.
+   ```
+   git clone git@github.com:opendistro-for-elasticsearch/kibana-reports.git plugins --no-checkout
+   cd plugins
+   echo 'kibana-reports/*' >> .git/info/sparse-checkout
+   git config core.sparseCheckout true
+   git checkout dev
+   ```
 1. Run `yarn kbn bootstrap` inside `kibana/plugins/kibana-reports`.
 
 Ultimately, your directory structure should look like this:

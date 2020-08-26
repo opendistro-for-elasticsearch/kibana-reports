@@ -15,14 +15,16 @@
 
 import { IClusterClient, Logger } from '../../../../src/core/server';
 import { createReport } from '../routes/utils/reportHelper';
-import { logger } from 'elastic-apm-node';
+import { POLLER_INTERVAL } from './constants';
 
 async function pollAndExecuteJob(
   schedulerClient: IClusterClient,
   esClient: IClusterClient,
   logger: Logger
 ) {
-  logger.info('call at time: ' + new Date().toISOString());
+  logger.info(
+    `start polling at time: ${new Date().toISOString()} with fixed interval: ${POLLER_INTERVAL}`
+  );
   try {
     const getJobRes = await schedulerClient.callAsInternalUser(
       'reports_scheduler.getJob'
@@ -30,11 +32,13 @@ async function pollAndExecuteJob(
 
     // job retrieved, otherwise will be undefined because 204 No-content is returned
     if (getJobRes) {
-      const reportDefId = getJobRes._source.report_definition_id;
+      const reportDefinitionId = getJobRes._source.report_definition_id;
       const jobId = getJobRes._id;
-      logger.info('report definition id sent from scheduler: ' + reportDefId);
+      logger.info(
+        `scheduled job sent from scheduler with report definition id: ${reportDefinitionId}`
+      );
 
-      await executeScheduledJob(reportDefId, esClient);
+      await executeScheduledJob(reportDefinitionId, esClient, logger);
 
       // updateJobStatus, release/delete lock of the job
       const updateJobStatusRes = await schedulerClient.callAsInternalUser(
@@ -43,8 +47,9 @@ async function pollAndExecuteJob(
           jobId: jobId,
         }
       );
-      logger.info(updateJobStatusRes);
+      logger.info(`done executing job. ${updateJobStatusRes}`);
     } else {
+      // 204 no content is returned, 204 doesn't have response body
       logger.info('no available job in queue');
     }
   } catch (error) {
@@ -53,19 +58,23 @@ async function pollAndExecuteJob(
   }
 }
 
-async function executeScheduledJob(defId: string, client: IClusterClient) {
+async function executeScheduledJob(
+  reportDefinitionId: string,
+  client: IClusterClient,
+  logger: Logger
+) {
   // retrieve report definition
   const res = await client.callAsInternalUser('get', {
     index: 'report_definition',
-    id: defId,
+    id: reportDefinitionId,
   });
   const reportDefinition = res._source;
 
   // create report and return report data
   const reportData = await createReport(reportDefinition, client);
-  // TODO: Deliver report: pass report data and (maybe original reportDefinition as well) to notification module
+  // TODO: Delivery: pass report data and (maybe original reportDefinition as well) to notification module
 
-  logger.info('new report created: ' + reportData.fileName);
+  logger.info(`new report created: ${reportData.fileName}`);
 }
 
 export { pollAndExecuteJob };

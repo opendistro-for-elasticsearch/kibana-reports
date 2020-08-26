@@ -21,7 +21,7 @@ import {
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
-import { createVisualReport, createReport } from './utils/reportHelper';
+import { createReport } from './utils/reportHelper';
 import { reportSchema, ReportSchemaType } from '../model';
 import { parseEsErrorResponse } from './utils/helpers';
 

@@ -51,3 +51,9 @@ export enum REPORT_TYPE {
 export enum DATA_REPORT_CONFIG {
   excelDateFormat = 'MM/DD/YYYY h:mm:ss a',
 }
+
+export enum TRIGGER_TYPE {
+  schedule = 'Schedule',
+  onDemand = 'On demand',
+  alerting = 'Alerting',
+}
