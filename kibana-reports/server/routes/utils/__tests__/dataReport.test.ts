@@ -14,7 +14,47 @@
  */
 
 import 'regenerator-runtime/runtime';
+import DATA_REPORT_TEST_DATA_LARGE from './test_data/dataReportTestDataLarge.json';
+import DATA_REPORT_TEST_DATA_SMALL from './test_data/dataReportTestDataSmall.json';
 const axios = require('axios');
+
+axios.defaults.adapter = require('axios/lib/adapters/http');
+
+beforeAll(async () => {
+  // create the datareport index
+  await axios
+    .put('http://localhost:9200/datareport?pretty')
+    .then((res) => {})
+    .catch((error) => {
+      console.log('error in creating datareport index:', error.response);
+    });
+
+  // add first document
+  await axios
+    .post(
+      'http://localhost:9200/datareport/_doc/RwLFIXQBdaQgV0jgh80O?pretty',
+      DATA_REPORT_TEST_DATA_LARGE
+    )
+    .then(() => {})
+    .catch((error) => {
+      console.log('error in adding large sample data:', error);
+    });
+
+  // add second document
+  await axios
+    .post(
+      'http://localhost:9200/datareport/_doc/FgLXJnQBdaQgV0jgTtEp?pretty',
+      DATA_REPORT_TEST_DATA_SMALL
+    )
+    .then(() => {})
+    .catch((error) => {
+      console.log('error in adding small sample data:', error);
+    });
+});
+
+afterAll(async () => {
+  // delete datareport index after test?
+});
 
 describe('data report metadata tests suites', () => {
   test('test to generate data report meta data successfully', async () => {
@@ -27,15 +67,24 @@ describe('data report metadata tests suites', () => {
       report_format: 'csv',
     };
     let response: any = {};
+
     const report = await axios({
       method: 'POST',
       proxy: { host: '127.0.0.1', port: 5601 },
       url,
       headers: { 'kbn-xsrf': 'reporting' },
       data: input,
-    }).then((res) => {
-      response = res.data;
-    });
+    })
+      .then((res) => {
+        response = res.data;
+      })
+      .catch((error) => {
+        console.log(
+          'Error in test to generate data report meta data successfully:',
+          error
+        );
+      });
+
     const {
       saved_search_id,
       report_format,
@@ -83,7 +132,7 @@ describe('data report data generation tests suites', () => {
     test('esCount > default_fetch_size  => default_fetch_size', async () => {
       expect.assertions(1);
       const input = {
-        reportId: 'ldfN-3MBBSuiES58RP5j',
+        reportId: 'RwLFIXQBdaQgV0jgh80O',
         default_max_size: 10000,
       };
       let url = '/api/reporting/data-report/generate/' + input.reportId;
@@ -93,9 +142,16 @@ describe('data report data generation tests suites', () => {
         proxy: { host: '127.0.0.1', port: 5601 },
         url,
         headers: { 'kbn-xsrf': 'reporting' },
-      }).then((res) => {
-        response = res.data;
-      });
+      })
+        .then((res) => {
+          response = res.data;
+        })
+        .catch((error) => {
+          console.log(
+            'error in esCount > default_fetch_size  => default_fetch_size:',
+            error
+          );
+        });
       const { datasetCount } = response;
 
       expect(datasetCount).toEqual(input.default_max_size);
@@ -104,8 +160,8 @@ describe('data report data generation tests suites', () => {
     test('esCount < default_fetch_size => esCount ', async () => {
       expect.assertions(1);
       const input = {
-        reportId: 'LNf9-3MBBSuiES58df_j',
-        esCount: 818,
+        reportId: 'FgLXJnQBdaQgV0jgTtEp',
+        esCount: 445,
         default_max_size: 10000,
       };
       let url = '/api/reporting/data-report/generate/' + input.reportId;
@@ -115,9 +171,16 @@ describe('data report data generation tests suites', () => {
         proxy: { host: '127.0.0.1', port: 5601 },
         url,
         headers: { 'kbn-xsrf': 'reporting' },
-      }).then((res) => {
-        response = res.data;
-      });
+      })
+        .then((res) => {
+          response = res.data;
+        })
+        .catch((error) => {
+          console.log(
+            'error in esCount < default_fetch_size => esCount:',
+            error
+          );
+        });
       const { datasetCount } = response;
       expect(datasetCount).toEqual(input.esCount);
     }, 20000);
@@ -127,9 +190,9 @@ describe('data report data generation tests suites', () => {
     test('nbRows == esCount => esCount', async () => {
       expect.assertions(1);
       const input = {
-        reportId: 'ldfN-3MBBSuiES58RP5j',
-        nbRows: 111396,
-        esCount: 111396,
+        reportId: 'RwLFIXQBdaQgV0jgh80O',
+        nbRows: 13059,
+        esCount: 13059,
         default_max_size: 10000,
       };
       let url = '/api/reporting/data-report/generate/' + input.reportId;
@@ -142,9 +205,13 @@ describe('data report data generation tests suites', () => {
         params: {
           nbRows: input.nbRows,
         },
-      }).then((res) => {
-        response = res.data;
-      });
+      })
+        .then((res) => {
+          response = res.data;
+        })
+        .catch((error) => {
+          console.log('error in nbRows == esCount => esCount:', error);
+        });
       const { datasetCount } = response;
 
       expect(datasetCount).toEqual(input.esCount);
@@ -153,9 +220,9 @@ describe('data report data generation tests suites', () => {
     test('nbRows > esCount  < default_max_size => esCount', async () => {
       expect.assertions(1);
       const input = {
-        reportId: 'ldfN-3MBBSuiES58RP5j',
+        reportId: 'RwLFIXQBdaQgV0jgh80O',
         nbRows: 200000,
-        esCount: 111396,
+        esCount: 13059,
         default_max_size: 10000,
       };
       let url = '/api/reporting/data-report/generate/' + input.reportId;
@@ -168,9 +235,16 @@ describe('data report data generation tests suites', () => {
         params: {
           nbRows: input.nbRows,
         },
-      }).then((res) => {
-        response = res.data;
-      });
+      })
+        .then((res) => {
+          response = res.data;
+        })
+        .catch((error) => {
+          console.log(
+            'error in nbRows > esCount  < default_max_size => esCount:',
+            error
+          );
+        });
       const { datasetCount } = response;
 
       expect(datasetCount).toEqual(input.esCount);
@@ -179,9 +253,9 @@ describe('data report data generation tests suites', () => {
     test('nbRows > esCount > default_max_size => default_max_size', async () => {
       expect.assertions(1);
       const input = {
-        reportId: 'ldfN-3MBBSuiES58RP5j',
+        reportId: 'RwLFIXQBdaQgV0jgh80O',
         nbRows: 200000,
-        esCount: 111396,
+        esCount: 13059,
         default_max_size: 10000,
       };
       let url = '/api/reporting/data-report/generate/' + input.reportId;
@@ -194,9 +268,16 @@ describe('data report data generation tests suites', () => {
         params: {
           nbRows: input.nbRows,
         },
-      }).then((res) => {
-        response = res.data;
-      });
+      })
+        .then((res) => {
+          response = res.data;
+        })
+        .catch((error) => {
+          console.log(
+            'error in nbRows > esCount > default_max_size => default_max_size:',
+            error
+          );
+        });
       const { datasetCount } = response;
 
       expect(datasetCount).toEqual(input.esCount);
@@ -205,9 +286,9 @@ describe('data report data generation tests suites', () => {
     test('nbRows > default_max_size && nbRows < esCount => nbRows ', async () => {
       expect.assertions(1);
       const input = {
-        reportId: 'ldfN-3MBBSuiES58RP5j',
-        nbRows: 30000,
-        esCount: 111396,
+        reportId: 'RwLFIXQBdaQgV0jgh80O',
+        nbRows: 12000,
+        esCount: 13059,
         default_max_size: 10000,
       };
       let url = '/api/reporting/data-report/generate/' + input.reportId;
@@ -220,9 +301,16 @@ describe('data report data generation tests suites', () => {
         params: {
           nbRows: input.nbRows,
         },
-      }).then((res) => {
-        response = res.data;
-      });
+      })
+        .then((res) => {
+          response = res.data;
+        })
+        .catch((error) => {
+          console.log(
+            'error in nbRows > default_max_size && nbRows < esCount => nbRows:',
+            error
+          );
+        });
       const { datasetCount } = response;
 
       expect(datasetCount).toEqual(input.nbRows);
@@ -231,9 +319,9 @@ describe('data report data generation tests suites', () => {
     test('nbRows < default_max_size => nbRows', async () => {
       expect.assertions(1);
       const input = {
-        reportId: 'ldfN-3MBBSuiES58RP5j',
+        reportId: 'RwLFIXQBdaQgV0jgh80O',
         nbRows: 5000,
-        esCount: 111396,
+        esCount: 13059,
         default_max_size: 10000,
       };
       let url = '/api/reporting/data-report/generate/' + input.reportId;
@@ -259,9 +347,9 @@ describe('data report data generation tests suites', () => {
     test('esCount > default_max_size &&  scroll_size > default_max_size => esCount', async () => {
       expect.assertions(2);
       const input = {
-        reportId: 'ldfN-3MBBSuiES58RP5j',
+        reportId: 'RwLFIXQBdaQgV0jgh80O',
         scroll_size: 200000,
-        esCount: 111396,
+        esCount: 13059,
         default_max_size: 10000,
       };
       let url = '/api/reporting/data-report/generate/' + input.reportId;
@@ -286,9 +374,9 @@ describe('data report data generation tests suites', () => {
     test('esCount > default_max_size &&  scroll_size < default_max_size ', async () => {
       expect.assertions(2);
       const input = {
-        reportId: 'ldfN-3MBBSuiES58RP5j',
+        reportId: 'RwLFIXQBdaQgV0jgh80O',
         scroll_size: 8000,
-        esCount: 111396,
+        esCount: 13059,
         default_max_size: 10000,
       };
       let url = '/api/reporting/data-report/generate/' + input.reportId;
@@ -313,9 +401,9 @@ describe('data report data generation tests suites', () => {
     test('esCount < default_max_size  ', async () => {
       expect.assertions(2);
       const input = {
-        reportId: 'LNf9-3MBBSuiES58df_j',
+        reportId: 'FgLXJnQBdaQgV0jgTtEp',
         scroll_size: 200000,
-        esCount: 818,
+        esCount: 445,
         default_max_size: 10000,
       };
       let url = '/api/reporting/data-report/generate/' + input.reportId;
@@ -342,10 +430,10 @@ describe('data report data generation tests suites', () => {
     test('nbRows > esCount  > default_max_size  &&  scroll_size < default_max_size', async () => {
       expect.assertions(2);
       const input = {
-        reportId: 'ldfN-3MBBSuiES58RP5j',
+        reportId: 'RwLFIXQBdaQgV0jgh80O',
         nbRows: 200000,
         scroll_size: 200,
-        esCount: 111396,
+        esCount: 13059,
         default_max_size: 10000,
       };
       let url = '/api/reporting/data-report/generate/' + input.reportId;
@@ -371,10 +459,10 @@ describe('data report data generation tests suites', () => {
     test('nbRows > esCount > default_max_size  &&  scroll_size > default_max_size', async () => {
       expect.assertions(2);
       const input = {
-        reportId: 'ldfN-3MBBSuiES58RP5j',
+        reportId: 'RwLFIXQBdaQgV0jgh80O',
         nbRows: 200000,
         scroll_size: 12000,
-        esCount: 111396,
+        esCount: 13059,
         default_max_size: 10000,
       };
       let url = '/api/reporting/data-report/generate/' + input.reportId;
@@ -402,10 +490,10 @@ describe('data report data generation tests suites', () => {
     test('nbRows > esCount < default_max_size  &&  scroll_size > default_max_size', async () => {
       expect.assertions(2);
       const input = {
-        reportId: 'LNf9-3MBBSuiES58df_j',
+        reportId: 'FgLXJnQBdaQgV0jgTtEp',
         nbRows: 200000,
         scroll_size: 18000,
-        esCount: 818,
+        esCount: 445,
         default_max_size: 10000,
       };
 
@@ -434,10 +522,10 @@ describe('data report data generation tests suites', () => {
     test('nbRows > esCount < default_max_size  &&  scroll_size < default_max_size', async () => {
       expect.assertions(2);
       const input = {
-        reportId: 'LNf9-3MBBSuiES58df_j',
+        reportId: 'FgLXJnQBdaQgV0jgTtEp',
         nbRows: 200000,
         scroll_size: 8000,
-        esCount: 818,
+        esCount: 445,
         default_max_size: 10000,
       };
       let url = '/api/reporting/data-report/generate/' + input.reportId;
@@ -465,10 +553,10 @@ describe('data report data generation tests suites', () => {
     test('esCount > nbRows < default_max_size  &&  scroll_size > default_max_size', async () => {
       expect.assertions(2);
       const input = {
-        reportId: 'ldfN-3MBBSuiES58RP5j',
+        reportId: 'RwLFIXQBdaQgV0jgh80O',
         nbRows: 5000,
         scroll_size: 28000,
-        esCount: 111396,
+        esCount: 13059,
         default_max_size: 10000,
       };
       let url = '/api/reporting/data-report/generate/' + input.reportId;
@@ -496,10 +584,10 @@ describe('data report data generation tests suites', () => {
     test('esCount > nbRows < default_max_size  &&  scroll_size < default_max_size', async () => {
       expect.assertions(2);
       const input = {
-        reportId: 'ldfN-3MBBSuiES58RP5j',
+        reportId: 'RwLFIXQBdaQgV0jgh80O',
         nbRows: 5000,
         scroll_size: 8000,
-        esCount: 111396,
+        esCount: 13059,
         default_max_size: 10000,
       };
       let url = '/api/reporting/data-report/generate/' + input.reportId;
@@ -527,10 +615,10 @@ describe('data report data generation tests suites', () => {
     test('esCount > nbRows > default_max_size  &&  scroll_size > default_max_size', async () => {
       expect.assertions(2);
       const input = {
-        reportId: 'ldfN-3MBBSuiES58RP5j',
-        nbRows: 20000,
+        reportId: 'RwLFIXQBdaQgV0jgh80O',
+        nbRows: 12000,
         scroll_size: 18000,
-        esCount: 111396,
+        esCount: 13059,
         default_max_size: 10000,
       };
       let url = '/api/reporting/data-report/generate/' + input.reportId;
@@ -558,10 +646,10 @@ describe('data report data generation tests suites', () => {
     test('esCount > nbRows > default_max_size  &&  scroll_size < default_max_size', async () => {
       expect.assertions(2);
       const input = {
-        reportId: 'ldfN-3MBBSuiES58RP5j',
-        nbRows: 15000,
+        reportId: 'RwLFIXQBdaQgV0jgh80O',
+        nbRows: 12000,
         scroll_size: 7000,
-        esCount: 111396,
+        esCount: 13059,
         default_max_size: 10000,
       };
       let url = '/api/reporting/data-report/generate/' + input.reportId;

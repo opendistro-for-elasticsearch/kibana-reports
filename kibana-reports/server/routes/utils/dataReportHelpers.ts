@@ -117,14 +117,13 @@ export const buildQuery = (report, is_count) => {
   if (searchQuery) {
     requestBody.must(esb.queryStringQuery(searchQuery));
   }
-
   if (report._source.timeFieldName && report._source.timeFieldName.length > 0) {
     requestBody.must(
       esb
         .rangeQuery(report._source.timeFieldName)
         .format('epoch_millis')
-        .gte(report._source.start)
-        .lte(report._source.end)
+        .gte(report._source.start - 1)
+        .lte(report._source.end + 1)
     );
   }
   if (is_count) {

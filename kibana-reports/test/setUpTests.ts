@@ -15,3 +15,4 @@
 
 require('babel-polyfill');
 require('core-js/stable');
+require('axios/lib/adapters/http');
