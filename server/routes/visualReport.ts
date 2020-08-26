@@ -22,7 +22,7 @@ import {
 import { API_PREFIX } from '../../common';
 import { FORMAT, REPORT_STATE } from './utils/constants';
 import { RequestParams } from '@elastic/elasticsearch';
-import { generatePDF, generatePNG } from './utils/reportHelper';
+import { generatePDF, generatePNG } from './utils/visualReportHelper';
 import { reportSchema } from '../model';
 import { parseEsErrorResponse } from './utils/helpers';
 

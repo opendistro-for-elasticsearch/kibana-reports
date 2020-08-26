@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.10.2",
+    "@babel/parser": "^7.11.4",
     "@elastic/elasticsearch": "^7.8.0",
     "@elastic/eui": "^26.0.0",
     "@testing-library/jest-dom": "^5.10.1",
@@ -32,6 +33,7 @@
     "@types/react": "^16.9.36",
     "@types/react-dom": "^16.9.8",
     "@types/react-test-renderer": "^16.9.2",
+    "axios": "^0.20.0",
     "babel-polyfill": "^6.26.0",
     "jest-cli": "^26.0.1",
     "jest-dom": "^4.0.0",
@@ -64,6 +66,7 @@
     "@kbn/plugin-helpers": "link:../../packages/kbn-plugin-helpers",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^26.0.1",
+    "elastic-builder": "^2.7.1",
     "eslint": "^5.16.0",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-import": "^2.16.0",
@@ -74,9 +77,8 @@
     "eslint-plugin-prefer-object-spread": "^1.2.1",
     "eslint-plugin-react": "^7.12.4",
     "jest": "^26.0.1",
+    "json-2-csv": "^3.7.6",
     "prettier": "2.0.5",
-    "react-test-renderer": "^16.13.1",
-    "elastic-builder": "^2.7.1",
-    "json-2-csv": "^3.7.6"
+    "react-test-renderer": "^16.13.1"
   }
 }

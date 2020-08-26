@@ -193,7 +193,7 @@ export function ReportSettings(props) {
     target: { value: React.SetStateAction<string> };
   }) => {
     setDashboardSourceSelect(e.target.value);
-    createReportDefinitionRequest['report_params']['url'] = 
+    createReportDefinitionRequest['report_params']['url'] =
       getDashboardBaseUrl() + e.target.value;
   };
 
@@ -398,7 +398,7 @@ export function ReportSettings(props) {
     let baseUrl = window.location.href;
     return baseUrl.replace(
       'opendistro_kibana_reports#/create',
-      'dashboards#/view/'
+      'kibana#/dashboard/'
     );
   };
 
@@ -412,7 +412,8 @@ export function ReportSettings(props) {
         await handleDashboards(dashboardOptions);
         await setDashboardSourceSelect(dashboardOptions[0].value);
         createReportDefinitionRequest['report_params']['url'] =
-          getDashboardBaseUrl() + response['hits']['hits'][0]['_id'].substring(10);
+          getDashboardBaseUrl() +
+          response['hits']['hits'][0]['_id'].substring(10);
       })
       .catch((error) => {
         console.log('error when fetching dashboards:', error);
