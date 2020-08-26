@@ -20,6 +20,7 @@ import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Cons
 import java.io.IOException;
 import java.util.Locale;
 
+import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -36,9 +37,13 @@ import org.elasticsearch.rest.RestResponse;
 import org.elasticsearch.rest.RestStatus;
 
 public class ReportsScheduleActionHandler extends AbstractActionHandler {
+  private final NodeClient client;
+  private final RestChannel channel;
 
   public ReportsScheduleActionHandler(NodeClient client, RestChannel channel) {
     super(client, channel);
+    this.client = getClient();
+    this.channel = getChannel();
   }
 
   public void createSchedule(String jobId, RestRequest request) {
@@ -67,8 +72,15 @@ public class ReportsScheduleActionHandler extends AbstractActionHandler {
 
           @Override
           public void onFailure(Exception e) {
-            channel.sendResponse(
-                new BytesRestResponse(RestStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+            RestStatus statusCode;
+            if (e instanceof IOException) {
+              statusCode = RestStatus.BAD_GATEWAY;
+            } else if (e instanceof ElasticsearchException) {
+              statusCode = RestStatus.SERVICE_UNAVAILABLE;
+            } else {
+              statusCode = RestStatus.INTERNAL_SERVER_ERROR;
+            }
+            channel.sendResponse(new BytesRestResponse(statusCode, e.getMessage()));
           }
         });
   }
@@ -96,8 +108,15 @@ public class ReportsScheduleActionHandler extends AbstractActionHandler {
 
           @Override
           public void onFailure(Exception e) {
-            channel.sendResponse(
-                new BytesRestResponse(RestStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+            RestStatus statusCode;
+            if (e instanceof IOException) {
+              statusCode = RestStatus.BAD_GATEWAY;
+            } else if (e instanceof ElasticsearchException) {
+              statusCode = RestStatus.SERVICE_UNAVAILABLE;
+            } else {
+              statusCode = RestStatus.INTERNAL_SERVER_ERROR;
+            }
+            channel.sendResponse(new BytesRestResponse(statusCode, e.getMessage()));
           }
         });
   }

@@ -18,6 +18,7 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.rest.handler;
 import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.JOB_QUEUE_INDEX_NAME;
 import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.LOCK_DURATION_SECONDS;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.Queue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -50,8 +52,10 @@ import com.amazon.opendistroforelasticsearch.jobscheduler.spi.utils.LockService;
 import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobParameter;
 
 public class ReportsJobActionHandler extends AbstractActionHandler {
-  private final LockService lockService;
   private static final Logger log = LogManager.getLogger(ReportsJobActionHandler.class);
+  private final LockService lockService;
+  private final NodeClient client;
+  private final RestChannel channel;
 
   /**
    * Constructor function.
@@ -64,6 +68,8 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
       NodeClient client, RestChannel channel, ClusterService clusterService) {
     super(client, channel);
     this.lockService = new LockService(client, clusterService);
+    this.client = getClient();
+    this.channel = getChannel();
   }
 
   public void getJob() {
@@ -104,8 +110,8 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
     if (hit != null) {
       String jobId = hit.getId();
       // set up "fake" jobParamater and jobContext that is required to initialize lockService
-      final JobParameter jobParameter = new JobParameter(null, null, null, false, null, null);
-      jobParameter.setLockDurationSeconds(LOCK_DURATION_SECONDS);
+      final JobParameter jobParameter =
+          new JobParameter(null, null, null, false, null, null, LOCK_DURATION_SECONDS);
       final JobExecutionContext jobExecutionContext =
           new JobExecutionContext(null, null, null, JOB_QUEUE_INDEX_NAME, jobId);
 
@@ -181,8 +187,15 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
 
           @Override
           public void onFailure(Exception e) {
-            channel.sendResponse(
-                new BytesRestResponse(RestStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+            RestStatus statusCode;
+            if (e instanceof IOException) {
+              statusCode = RestStatus.BAD_GATEWAY;
+            } else if (e instanceof ElasticsearchException) {
+              statusCode = RestStatus.SERVICE_UNAVAILABLE;
+            } else {
+              statusCode = RestStatus.INTERNAL_SERVER_ERROR;
+            }
+            channel.sendResponse(new BytesRestResponse(statusCode, e.getMessage()));
           }
         });
   }

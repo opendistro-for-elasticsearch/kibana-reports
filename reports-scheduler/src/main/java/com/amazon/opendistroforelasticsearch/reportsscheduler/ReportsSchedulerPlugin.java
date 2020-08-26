@@ -18,6 +18,7 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler;
 import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.JOB_INDEX_NAME;
 
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.Schedule;
+import com.amazon.opendistroforelasticsearch.reportsscheduler.job.ReportsSchedulerJobRunnerProxy;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Collection;
@@ -52,7 +53,6 @@ import com.amazon.opendistroforelasticsearch.jobscheduler.spi.JobSchedulerExtens
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobParser;
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobRunner;
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.ScheduleParser;
-import com.amazon.opendistroforelasticsearch.reportsscheduler.job.ReportsSchedulerJobRunner;
 import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobConstant;
 import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobParameter;
 import com.amazon.opendistroforelasticsearch.reportsscheduler.rest.RestReportsJobAction;
@@ -66,6 +66,8 @@ import com.google.common.collect.ImmutableList;
  * endpoint using {@link RestReportsJobAction} and {@link RestReportsScheduleAction}.
  */
 public class ReportsSchedulerPlugin extends Plugin implements ActionPlugin, JobSchedulerExtension {
+  private final ReportsSchedulerJobRunnerProxy jobRunner =
+      ReportsSchedulerJobRunnerProxy.getJobRunnerInstance();
   private ClusterService clusterService;
 
   @Override
@@ -81,10 +83,7 @@ public class ReportsSchedulerPlugin extends Plugin implements ActionPlugin, JobS
       NamedWriteableRegistry namedWriteableRegistry,
       IndexNameExpressionResolver indexNameExpressionResolver,
       Supplier<RepositoriesService> repositoriesServiceSupplier) {
-    ReportsSchedulerJobRunner jobRunner = ReportsSchedulerJobRunner.getJobRunnerInstance();
-    jobRunner.setClusterService(clusterService);
-    jobRunner.setThreadPool(threadPool);
-    jobRunner.setClient(client);
+    jobRunner.createRunnerInstance(clusterService, threadPool, client);
     this.clusterService = clusterService;
 
     return Collections.emptyList();
@@ -102,7 +101,7 @@ public class ReportsSchedulerPlugin extends Plugin implements ActionPlugin, JobS
 
   @Override
   public ScheduledJobRunner getJobRunner() {
-    return ReportsSchedulerJobRunner.getJobRunnerInstance();
+    return jobRunner;
   }
 
   @Override
@@ -114,6 +113,7 @@ public class ReportsSchedulerPlugin extends Plugin implements ActionPlugin, JobS
       boolean isEnabled = false;
       Schedule schedule = null;
       Instant lastUpdateTime = null;
+      Long lockDurationSeconds = null;
 
       XContentParserUtils.ensureExpectedToken(
           XContentParser.Token.START_OBJECT, parser.nextToken(), parser::getTokenLocation);
@@ -145,7 +145,13 @@ public class ReportsSchedulerPlugin extends Plugin implements ActionPlugin, JobS
         }
       }
       return new JobParameter(
-          jobName, enabledTime, reportDefinitionId, isEnabled, schedule, lastUpdateTime);
+          jobName,
+          enabledTime,
+          reportDefinitionId,
+          isEnabled,
+          schedule,
+          lastUpdateTime,
+          lockDurationSeconds);
     };
   }
 

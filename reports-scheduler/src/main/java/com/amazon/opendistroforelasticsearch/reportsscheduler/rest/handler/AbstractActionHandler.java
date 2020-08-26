@@ -25,9 +25,17 @@ import org.elasticsearch.rest.RestChannel;
 
 /** Action handler to process REST request and handle failures. */
 public abstract class AbstractActionHandler {
-  protected final NodeClient client;
-  protected final RestChannel channel;
+  private final NodeClient client;
+  private final RestChannel channel;
   private final Logger logger = LogManager.getLogger(AbstractActionHandler.class);
+
+  protected NodeClient getClient() {
+    return client;
+  }
+
+  protected RestChannel getChannel() {
+    return channel;
+  }
 
   /**
    * Constructor function.

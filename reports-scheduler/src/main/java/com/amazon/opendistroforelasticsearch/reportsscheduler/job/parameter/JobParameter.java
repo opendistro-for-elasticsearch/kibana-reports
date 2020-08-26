@@ -37,7 +37,7 @@ public class JobParameter implements ScheduledJobParameter {
   private final boolean isEnabled;
   private final Schedule schedule;
   private final Instant lastUpdateTime;
-  private Long lockDurationSeconds;
+  private final Long lockDurationSeconds;
 
   public JobParameter(
       String jobName,
@@ -45,13 +45,15 @@ public class JobParameter implements ScheduledJobParameter {
       String reportDefinitionId,
       boolean isEnabled,
       Schedule schedule,
-      Instant lastUpdateTime) {
+      Instant lastUpdateTime,
+      Long lockDurationSeconds) {
     this.jobName = jobName;
     this.enabledTime = enabledTime;
     this.reportDefinitionId = reportDefinitionId;
     this.isEnabled = isEnabled;
     this.schedule = schedule;
     this.lastUpdateTime = lastUpdateTime;
+    this.lockDurationSeconds = lockDurationSeconds;
   }
 
   @Override
@@ -86,10 +88,6 @@ public class JobParameter implements ScheduledJobParameter {
 
   public String getReportDefinitionId() {
     return this.reportDefinitionId;
-  }
-
-  public void setLockDurationSeconds(Long lockDurationSeconds) {
-    this.lockDurationSeconds = lockDurationSeconds;
   }
 
   @Override

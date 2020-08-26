@@ -28,7 +28,6 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.service.ClusterService;
-import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.threadpool.ThreadPool;
 
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.JobExecutionContext;
@@ -37,56 +36,29 @@ import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobRunner
 import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobParameter;
 
 /**
- * Reports scheduler job runner class.
- *
- * <p>The job runner should be a singleton class if it uses Elasticsearch client or other objects
- * passed from Elasticsearch. Because when registering the job runner to JobScheduler plugin,
- * Elasticsearch has not invoke plugins' createComponents() method. That is saying the plugin is not
- * completely initialized, and the Elasticsearch {@link org.elasticsearch.client.Client}, {@link
- * ClusterService} and other objects are not available to plugin and this job runner.
- *
- * <p>So we have to move this job runner initialization to {@link Plugin} createComponents() method,
- * and using singleton job runner to ensure we register a usable job runner instance to JobScheduler
- * plugin.
- *
- * <p>This reports scheduler job runner will add a scheduled job to a queue index once it gets
+ * This reports scheduler job runner will add a scheduled job to a queue index once it gets
  * triggered.
  */
 public class ReportsSchedulerJobRunner implements ScheduledJobRunner {
   private static final Logger log = LogManager.getLogger(ScheduledJobRunner.class);
-  private static ReportsSchedulerJobRunner INSTANCE;
 
-  private ClusterService clusterService;
-  private ThreadPool threadPool;
-  private Client client;
+  private final ClusterService clusterService;
+  private final ThreadPool threadPool;
+  private final Client client;
 
-  public static ReportsSchedulerJobRunner getJobRunnerInstance() {
-    if (INSTANCE != null) {
-      return INSTANCE;
+  public ReportsSchedulerJobRunner(
+      ClusterService clusterService, ThreadPool threadPool, Client client) {
+    if (clusterService == null) {
+      throw new IllegalArgumentException("ClusterService is not initialized");
     }
-    synchronized (ReportsSchedulerJobRunner.class) {
-      if (INSTANCE != null) {
-        return INSTANCE;
-      }
-      INSTANCE = new ReportsSchedulerJobRunner();
-      return INSTANCE;
+
+    if (threadPool == null) {
+      throw new IllegalArgumentException("ThreadPool is not initialized");
     }
-  }
 
-  private ReportsSchedulerJobRunner() {
-    // Singleton class, use getJobRunner method instead of constructor
-  }
-
-  public void setClient(Client client) {
-    this.client = client;
-  }
-
-  public void setClusterService(ClusterService clusterService) {
     this.clusterService = clusterService;
-  }
-
-  public void setThreadPool(ThreadPool threadPool) {
     this.threadPool = threadPool;
+    this.client = client;
   }
 
   @Override
@@ -95,14 +67,6 @@ public class ReportsSchedulerJobRunner implements ScheduledJobRunner {
       throw new IllegalStateException(
           "Job parameter is not instance of JobParameter, type: "
               + jobParameter.getClass().getCanonicalName());
-    }
-
-    if (this.clusterService == null) {
-      throw new IllegalStateException("ClusterService is not initialized.");
-    }
-
-    if (this.threadPool == null) {
-      throw new IllegalStateException("ThreadPool is not initialized.");
     }
 
     Runnable runnable =
