@@ -72,7 +72,7 @@ public class ReportsScheduleActionHandler extends AbstractActionHandler {
 
           @Override
           public void onFailure(Exception e) {
-            RestStatus statusCode;
+            final RestStatus statusCode;
             if (e instanceof IOException) {
               statusCode = RestStatus.BAD_GATEWAY;
             } else if (e instanceof ElasticsearchException) {
@@ -108,7 +108,7 @@ public class ReportsScheduleActionHandler extends AbstractActionHandler {
 
           @Override
           public void onFailure(Exception e) {
-            RestStatus statusCode;
+            final RestStatus statusCode;
             if (e instanceof IOException) {
               statusCode = RestStatus.BAD_GATEWAY;
             } else if (e instanceof ElasticsearchException) {
