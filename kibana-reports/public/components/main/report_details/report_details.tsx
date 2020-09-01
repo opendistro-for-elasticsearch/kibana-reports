@@ -30,8 +30,11 @@ import {
   EuiPageHeaderSection,
   EuiButton,
   EuiText,
+  EuiLink,
+  EuiIcon,
 } from '@elastic/eui';
 import { ShareModal } from './share_modal/share_modal';
+import { fileFormatsUpper } from '../main_utils';
 
 export const ReportDetailsComponent = (props) => {
   const { reportDetailsComponentTitle, reportDetailsComponentContent } = props;
@@ -59,32 +62,49 @@ export function ReportDetails(props) {
   };
 
   const getReportDetailsData = (data) => {
+    let readableDate = new Date(data['time_created']);
+    let displayDate =
+      readableDate.toDateString() + ' ' + readableDate.toLocaleTimeString();
     let reportDetails = {
       reportName: data['report_name'],
       description: data['description'],
-      created: data['time_created'],
-      lastUpdated: '--',
+      created: displayDate,
+      lastUpdated: `\u2014`,
       sourceType: data['report_type'],
       source: data['report_source'],
       defaultFileFormat: data['report_params']['report_format'],
-      reportHeader: '--',
-      reportFooter: '--',
+      reportHeader: `\u2014`,
+      reportFooter: `\u2014`,
       reportType: data['report_type'],
-      scheduleType: '--',
-      scheduleDetails: '--',
-      alertDetails: '--',
-      channel: '--',
-      kibanaRecipients: '--',
-      emailRecipients: '--',
-      emailSubject: '--',
-      emailBody: '--',
+      scheduleType: `\u2014`,
+      scheduleDetails: `\u2014`,
+      alertDetails: `\u2014`,
+      channel: `\u2014`,
+      kibanaRecipients: `\u2014`,
+      emailRecipients: `\u2014`,
+      emailSubject: `\u2014`,
+      emailBody: `\u2014`,
       reportAsAttachment: false,
     };
     return reportDetails;
   };
 
   useEffect(() => {
+    props.setBreadcrumbs([
+      {
+        text: 'Reporting',
+        href: '#',
+      },
+      {
+        text: 'Report details',
+        href: `#/report_details/${props.match['params']['reportId']}`,
+      },
+      {
+        text: `${props.match['params']['reportId']}`,
+      },
+    ]);
     const { httpClient } = props;
+    console.log('props in reportdetails is', props);
     httpClient
       .get('../api/reporting/reports/' + reportId)
       .then((response) => {
@@ -95,9 +115,25 @@ export function ReportDetails(props) {
       });
   }, []);
 
+  const fileFormatDownload = (data) => {
+    let formatUpper = data['defaultFileFormat'];
+    formatUpper = fileFormatsUpper[formatUpper];
+    return (
+      <EuiLink>
+        {formatUpper}
+        <EuiIcon type="importAction" />
+      </EuiLink>
+    );
+  };
+
+  const sourceURL = (data) => {
+    return <EuiLink>{data['source']}</EuiLink>;
+  };
+
   const includeReportAsAttachmentString = reportDetails['reportAsAttachment']
     ? 'True'
     : 'False';
+
   return (
     <EuiPage>
       <EuiPageBody>
@@ -107,39 +143,26 @@ export function ReportDetails(props) {
         <EuiSpacer size="m" />
         <EuiPageContent panelPaddingSize={'l'}>
           <EuiPageHeader>
-            <EuiFlexItem>
-              <EuiPageHeaderSection>
-                <EuiTitle>
-                  <h2>{reportDetails['reportName']}</h2>
-                </EuiTitle>
-              </EuiPageHeaderSection>
-            </EuiFlexItem>
+            <EuiFlexGroup>
+              <EuiFlexItem>
+                <EuiPageHeaderSection>
+                  <EuiTitle>
+                    <h2>{reportDetails['reportName']}</h2>
+                  </EuiTitle>
+                </EuiPageHeaderSection>
+              </EuiFlexItem>
+            </EuiFlexGroup>
             <EuiFlexGroup
               justifyContent="flexEnd"
               alignItems="flexEnd"
-              gutterSize="xs"
+              gutterSize="l"
             >
-              <EuiFlexItem />
-              <EuiFlexItem />
-              <EuiFlexItem />
-              <EuiFlexItem />
-              <EuiFlexItem />
-              <EuiFlexItem>
-                <EuiText size="xs">
-                  <h2>
-                    <a href="#">Archive</a>
-                  </h2>
-                  <div></div>
-                </EuiText>
-              </EuiFlexItem>
-              <EuiFlexItem>
-                <ShareModal />
+              <EuiFlexItem grow={false}>
+                <EuiButton>Archive</EuiButton>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
-                <EuiButton fill={true}>Download</EuiButton>
+                <ShareModal />
               </EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
-              <EuiFlexItem></EuiFlexItem>
             </EuiFlexGroup>
           </EuiPageHeader>
           <EuiHorizontalRule />
@@ -173,11 +196,11 @@ export function ReportDetails(props) {
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Source'}
-              reportDetailsComponentContent={reportDetails['source']}
+              reportDetailsComponentContent={sourceURL(reportDetails)}
             />
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Default file format'}
-              reportDetailsComponentContent={reportDetails['defaultFileFormat']}
+              reportDetailsComponentTitle={'File format'}
+              reportDetailsComponentContent={fileFormatDownload(reportDetails)}
             />
             <ReportDetailsComponent />
           </EuiFlexGroup>
@@ -228,11 +251,11 @@ export function ReportDetails(props) {
               reportDetailsComponentContent={reportDetails['channel']}
             />
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Kibana recipients'}
+              reportDetailsComponentTitle={'Kibana recipient(s)'}
               reportDetailsComponentContent={reportDetails['kibanaRecipients']}
             />
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Email recipients'}
+              reportDetailsComponentTitle={'Email recipient(s)'}
               reportDetailsComponentContent={reportDetails['emailRecipients']}
             />
             <ReportDetailsComponent

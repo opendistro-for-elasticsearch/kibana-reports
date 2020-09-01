@@ -30,9 +30,16 @@ import {
   EuiLink,
   EuiPopover,
   EuiListGroup,
+  EuiRadioGroup,
 } from '@elastic/eui';
 import { DeliveryRecipientsBox } from './delivery_recipients_box';
-import { EMAIL_RECIPIENT_OPTIONS } from './delivery_constants';
+import ReactMDE from 'react-mde';
+import Showdown from 'showdown';
+import {
+  EMAIL_FORMAT_OPTIONS,
+  EMAIL_RECIPIENT_OPTIONS,
+} from './delivery_constants';
+import 'react-mde/lib/styles/css/react-mde-all.css';
 
 const INSERT_PLACEHOLDER_OPTIONS = [
   {
@@ -169,6 +176,10 @@ export function ReportDelivery(props) {
   const EmailDelivery = () => {
     const [emailSubject, setEmailSubject] = useState('');
     const [emailBody, setEmailBody] = useState('');
+    const [emailFormat, setEmailFormat] = useState('htmlReport');
+    const [selectedTab, setSelectedTab] = React.useState<'write' | 'preview'>(
+      'write'
+    );
 
     const handleEmailSubject = (e: {
       target: { value: React.SetStateAction<string> };
@@ -181,21 +192,37 @@ export function ReportDelivery(props) {
       target: { value: React.SetStateAction<string> };
     }) => {
       setEmailBody(e.target.value);
-      delivery_params['body'] = e.target.value.toString();
+      // delivery_params['body'] = e.target.value.toString();
     };
+
+    const handleEmailFormat = (e) => {
+      setEmailFormat(e);
+    };
+
+    const converter = new Showdown.Converter({
+      tables: true,
+      simplifiedAutoLink: true,
+      strikethrough: true,
+      tasklists: true,
+    });
 
     return (
       <div>
-        <EuiFormRow
-          label="Email recipients"
-          helpText="Select or add recipients"
-        >
+        <EuiFormRow label="Email recipients" helpText="Select or add users">
           <EuiComboBox
             placeholder={'Add users here'}
             options={EMAIL_RECIPIENT_OPTIONS}
             selectedOptions={emailRecipients}
             onChange={handleEmailRecipients}
             onCreateOption={handleCreateEmailRecipient}
+          />
+        </EuiFormRow>
+        <EuiSpacer />
+        <EuiFormRow label="Email format">
+          <EuiRadioGroup
+            options={EMAIL_FORMAT_OPTIONS}
+            idSelected={emailFormat}
+            onChange={handleEmailFormat}
           />
         </EuiFormRow>
         <EuiSpacer />
@@ -208,23 +235,37 @@ export function ReportDelivery(props) {
         </EuiFormRow>
         <EuiSpacer />
         <EuiFormRow
-          label="Email body"
+          label="Add optional message"
           labelAppend={<InsertPlaceholderPopover />}
+          fullWidth={true}
         >
-          <EuiTextArea
+          {/* <EuiTextArea
             fullWidth={true}
             placeholder="Body content"
             value={emailBody}
             onChange={handleEmailBody}
+          /> */}
+          <ReactMDE
+            value={emailBody}
+            onChange={setEmailBody}
+            selectedTab={selectedTab}
+            onTabChange={setSelectedTab}
+            toolbarCommands={[
+              ['header', 'bold', 'italic', 'strikethrough'],
+              ['unordered-list', 'ordered-list', 'checked-list'],
+            ]}
+            generateMarkdownPreview={(markdown) =>
+              Promise.resolve(converter.makeHtml(markdown))
+            }
           />
         </EuiFormRow>
         <EuiSpacer size="xs" />
-        <EuiCheckbox
+        {/* <EuiCheckbox
           id="includeReportAsAttachment"
           label="Include report as attachment"
           checked={includeReportAsAttachment}
           onChange={handleIncludeReportAsAttachment}
-        />
+        /> */}
       </div>
     );
   };
@@ -246,12 +287,14 @@ export function ReportDelivery(props) {
           <DeliveryRecipientsBox />
         </EuiFormRow>
         <EuiSpacer />
-        <EuiCheckbox
-          id="emailCheckboxDelivery"
-          label="Email"
-          checked={emailCheckbox}
-          onChange={handleEmailCheckbox}
-        />
+        <EuiFormRow label="Email configuration">
+          <EuiCheckbox
+            id="emailCheckboxDelivery"
+            label="Add email recipients"
+            checked={emailCheckbox}
+            onChange={handleEmailCheckbox}
+          />
+        </EuiFormRow>
         <EuiSpacer />
         {emailDelivery}
       </EuiPageContentBody>

@@ -15,6 +15,33 @@
 
 import { get } from 'lodash';
 import 'babel-polyfill';
+import { DateFormat } from '../../../../../src/plugins/data/public/field_formats';
+
+export const fileFormatsUpper = {
+  csv: 'CSV',
+  pdf: 'PDF',
+  png: 'PNG',
+  xlsx: 'XLS',
+};
+
+export const breadcrumbs = [
+  {
+    text: 'Homepage',
+    href: 'opendistro_kibana_reports#/',
+  },
+  {
+    text: 'Create report definition',
+    href: '#/create',
+  },
+  {
+    text: 'Report details',
+    href: '#/report_details/*',
+  },
+  {
+    text: 'Edit report definition',
+    href: '#/edit',
+  },
+];
 
 export const extractFilename = (filename: string) => {
   return filename.substring(0, filename.length - 4);
@@ -34,19 +61,25 @@ export const addReportsTableContent = (data) => {
   let index;
   let reportsTableItems = [];
   for (index = 0; index < data.length; ++index) {
+    console.log('raw entry is', get(data, [index, '_source', 'time_created']));
+    let readableDate = new Date(get(data, [index, '_source', 'time_created']));
+    // console.log("readable date is", readableDate);
     let reportsTableEntry = {
       id: get(data, [index, '_id']),
       reportName: get(data, [index, '_source', 'report_name']),
       type: get(data, [index, '_source', 'report_type']),
-      sender: 'N/A',
-      recipients: 'N/A',
+      sender: `\u2014`,
+      kibanaRecipients: `\u2014`,
+      emailRecipients: `\u2014`,
       reportSource: get(data, [index, '_source', 'report_source']),
-      lastUpdated: get(data, [index, '_source', 'time_created']),
+      lastUpdated: readableDate,
       state: get(data, [index, '_source', 'state']),
       url: get(data, [index, '_source', 'report_params', 'url']),
+      format: get(data, [index, '_source', 'report_params', 'report_format']),
     };
     reportsTableItems.push(reportsTableEntry);
   }
+  console.log('reports table items are', reportsTableItems);
   return reportsTableItems;
 };
 

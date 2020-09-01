@@ -32,6 +32,7 @@ import {
   EuiCheckbox,
   EuiSuperDatePicker,
   EuiTextArea,
+  EuiPage,
 } from '@elastic/eui';
 import moment from 'moment';
 import {
@@ -119,9 +120,10 @@ function TimeRangeSelect() {
     <div>
       <EuiFormRow
         label="Time range"
-        helpText="Time range is relative to the report creation date on the report trigger"
+        helpText="Time range is relative to the report creation date on the report trigger."
       >
         <EuiSuperDatePicker
+          isDisabled={false}
           isLoading={isLoading}
           start={start}
           end={end}
@@ -131,7 +133,9 @@ function TimeRangeSelect() {
           refreshInterval={refreshInterval}
           onRefreshChange={onRefreshChange}
           recentlyUsedRanges={recentlyUsedRanges}
-          commonlyUsedRanges={[]}
+          // commonlyUsedRanges={[]}
+          showUpdateButton={false}
+          // isAutoRefreshOnly={true}
         />
       </EuiFormRow>
     </div>
@@ -259,29 +263,36 @@ export function ReportSettings(props) {
     ) : null;
 
     const showFooter = includeFooter ? (
-      <EuiTextArea
-        placeholder="Footer text"
-        value={footer}
-        onChange={handleFooter}
-      />
+      <EuiFormRow label="Show footer">
+        <EuiTextArea
+          placeholder="Footer text"
+          value={footer}
+          onChange={handleFooter}
+        />
+      </EuiFormRow>
     ) : null;
 
     return (
       <div>
-        <EuiCheckbox
-          id="includeHeaderCheckbox"
-          label="Include header"
-          checked={includeHeader}
-          onChange={handleIncludeHeader}
-        />
+        <EuiFormRow label="Show header">
+          <EuiCheckbox
+            id="includeHeaderCheckbox"
+            label="Include header"
+            checked={includeHeader}
+            onChange={handleIncludeHeader}
+          />
+        </EuiFormRow>
         {showHeader}
+        {/* </EuiFormRow> */}
         <EuiSpacer />
-        <EuiCheckbox
-          id="includeFooterCheckbox"
-          label="Include footer"
-          checked={includeFooter}
-          onChange={handleIncludeFooter}
-        />
+        <EuiFormRow label="Show footer">
+          <EuiCheckbox
+            id="includeFooterCheckbox"
+            label="Include footer"
+            checked={includeFooter}
+            onChange={handleIncludeFooter}
+          />
+        </EuiFormRow>
         {showFooter}
       </div>
     );
@@ -423,56 +434,55 @@ export function ReportSettings(props) {
   }, []);
 
   return (
-    <EuiPageContent panelPaddingSize={'l'}>
-      <EuiPageHeader>
-        <EuiTitle>
-          <h2>Report Settings</h2>
-        </EuiTitle>
-      </EuiPageHeader>
-      <EuiHorizontalRule />
-      <EuiPageContentBody>
-        <EuiFlexGroup>
-          <EuiFlexItem>
-            <EuiFormRow
-              label="Name"
-              helpText="Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space)"
-            >
-              <EuiFieldText
-                placeholder="Report name"
-                value={reportName}
-                onChange={handleReportName}
-              />
-            </EuiFormRow>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-        <EuiFlexGroup style={{ maxWidth: 600 }}>
-          <EuiFlexItem>
-            <EuiFormRow label="Description" helpText="Optional">
-              <EuiFieldText
-                placeholder="Describe this report"
-                value={reportDescription}
-                onChange={handleReportDescription}
-              />
-            </EuiFormRow>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-        <EuiSpacer />
-        <EuiFormRow
-          label="Report source"
-          helpText="Where is the report generated from"
-        >
-          <EuiRadioGroup
-            options={REPORT_SOURCE_RADIOS}
-            idSelected={reportSourceId}
-            onChange={handleReportSource}
-          />
-        </EuiFormRow>
-        <EuiSpacer />
-        {displayDashboardSelect}
-        {displayVisualizationSelect}
-        {displaySavedSearchSelect}
-        <EuiSpacer />
-      </EuiPageContentBody>
-    </EuiPageContent>
+    <EuiPage>
+      <EuiPageContent panelPaddingSize={'l'}>
+        <EuiPageHeader>
+          <EuiTitle>
+            <h2>Report Settings</h2>
+          </EuiTitle>
+        </EuiPageHeader>
+        <EuiHorizontalRule />
+        <EuiPageContentBody>
+          <EuiFlexGroup>
+            <EuiFlexItem>
+              <EuiFormRow
+                label="Name"
+                helpText="Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space)."
+              >
+                <EuiFieldText
+                  placeholder="Report name (e.g Log Traffic Daily Report)"
+                  value={reportName}
+                  onChange={handleReportName}
+                />
+              </EuiFormRow>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+          <EuiFlexGroup style={{ maxWidth: 600 }}>
+            <EuiFlexItem>
+              <EuiFormRow label="Description (optional)">
+                <EuiFieldText
+                  placeholder="Describe this report (e.g Morning daily reports for log traffic)"
+                  value={reportDescription}
+                  onChange={handleReportDescription}
+                />
+              </EuiFormRow>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+          <EuiSpacer />
+          <EuiFormRow label="Report source">
+            <EuiRadioGroup
+              options={REPORT_SOURCE_RADIOS}
+              idSelected={reportSourceId}
+              onChange={handleReportSource}
+            />
+          </EuiFormRow>
+          <EuiSpacer />
+          {displayDashboardSelect}
+          {displayVisualizationSelect}
+          {displaySavedSearchSelect}
+          <EuiSpacer />
+        </EuiPageContentBody>
+      </EuiPageContent>
+    </EuiPage>
   );
 }

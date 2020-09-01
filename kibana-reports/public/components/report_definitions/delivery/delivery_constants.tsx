@@ -20,3 +20,18 @@ export const EMAIL_RECIPIENT_OPTIONS = [
   { label: 'jadhanir' },
   { label: 'kvngar' },
 ];
+
+export const EMAIL_FORMAT_OPTIONS = [
+  {
+    id: 'htmlReport',
+    label: 'HTML report',
+  },
+  {
+    id: 'htmlEmailWithAttachment',
+    label: 'HTML email with attachment',
+  },
+  {
+    id: 'plainTextWithAttachment',
+    label: 'Plain text with attachment',
+  },
+];

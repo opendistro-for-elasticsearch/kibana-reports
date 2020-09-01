@@ -88,8 +88,22 @@ export function CreateReport(props) {
       });
   };
 
+  useEffect(() => {
+    props.setBreadcrumbs([
+      {
+        text: 'Reporting',
+        href: '#',
+      },
+      {
+        text: 'Create report definition',
+        href: '#/create',
+      },
+    ]);
+  }, []);
+
   return (
-    <EuiPage>
+    <div>
+      {/* <EuiPage> */}
       <EuiPageBody>
         <EuiTitle>
           <h1>Create report definition</h1>
@@ -130,6 +144,7 @@ export function CreateReport(props) {
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiPageBody>
-    </EuiPage>
+      {/* </EuiPage> */}
+    </div>
   );
 }

@@ -20,14 +20,16 @@ import {
   EuiButton,
   EuiEmptyPrompt,
   EuiText,
+  EuiIcon,
 } from '@elastic/eui';
 
 export const reportDefinitionsColumns = [
   {
     field: 'reportName',
     name: 'Name',
-    sortable: true,
-    truncateText: true,
+    // sortable: true,
+    // truncateText: true,
+    render: (name) => <EuiLink>{name}</EuiLink>,
   },
   {
     field: 'type',
@@ -78,7 +80,9 @@ const emptyMessageReportDefinitions = (
         <EuiText>Create a new report definition to get started</EuiText>
         <EuiText>
           To learn more, see{' '}
-          <EuiLink>Get started with Kibana reporting</EuiLink>
+          <EuiLink>
+            Get started with Kibana reporting <EuiIcon type="popout" />
+          </EuiLink>
         </EuiText>
       </div>
     }
@@ -89,7 +93,7 @@ const emptyMessageReportDefinitions = (
             window.location.assign('opendistro-kibana-reports#/create');
           }}
         >
-          Create
+          Create report definition
         </EuiButton>
       </div>
     }
@@ -129,6 +133,7 @@ export function ReportDefinitions(props) {
         sorting={sorting}
         isSelectable={true}
         rowProps={getRowProps}
+        tableLayout={'auto'}
       />
     </div>
   );

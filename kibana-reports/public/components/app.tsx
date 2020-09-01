@@ -29,9 +29,15 @@ import {
   EuiTitle,
   EuiText,
   EuiPageContentHeaderSection,
+  EuiHeader,
 } from '@elastic/eui';
-
-import { CoreStart } from '../../../../src/core/public';
+import CSS from 'csstype';
+import {
+  CoreStart,
+  CoreSystem,
+  ChromeBreadcrumb,
+  IUiSettingsClient,
+} from '../../../../src/core/public';
 import { NavigationPublicPluginStart } from '../../../../src/plugins/navigation/public';
 
 import { PLUGIN_ID, PLUGIN_NAME } from '../../common';
@@ -41,88 +47,105 @@ import { ReportDetails } from './main/report_details/report_details';
 import { ReportDefinitionDetails } from './main/report_definition_details/report_definition_details';
 import { EditReportDefinition } from './report_definitions/edit/edit_report_definition';
 
+export interface CoreInterface {
+  http: CoreStart['http'];
+  uiSettings: IUiSettingsClient;
+  setBreadcrumbs: (newBreadcrumbs: ChromeBreadcrumb[]) => void;
+}
+
 interface OpendistroKibanaReportsAppDeps {
   basename: string;
   notifications: CoreStart['notifications'];
   http: CoreStart['http'];
   navigation: NavigationPublicPluginStart;
+  chrome: CoreStart['chrome'];
 }
+
+const styles: CSS.Properties = {
+  float: 'left',
+  width: '1500px',
+};
 
 export const OpendistroKibanaReportsApp = ({
   basename,
   notifications,
   http,
   navigation,
+  chrome,
 }: OpendistroKibanaReportsAppDeps) => {
   // Render the application DOM.
   return (
     <Router basename={'/' + basename}>
       <I18nProvider>
-        <>
-          <EuiPage restrictWidth="2000px">
+        <div style={styles}>
+          <EuiPage>
             <EuiPageBody>
-              <EuiPageContent>
-                <EuiPageContentHeader>
-                  <EuiPageContentHeaderSection></EuiPageContentHeaderSection>
-                </EuiPageContentHeader>
-                <EuiPageContentBody>
-                  <Switch>
-                    <Route
-                      path="/report_details/:reportId"
-                      render={(props) => (
-                        <ReportDetails
-                          title="Report Details"
-                          httpClient={http}
-                          {...props}
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/report_definition_details/:reportDefinitionId"
-                      render={(props) => (
-                        <ReportDefinitionDetails
-                          title="Report Definition Details"
-                          httpClient={http}
-                          {...props}
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/create"
-                      render={(props) => (
-                        <CreateReport
-                          title="Create Report"
-                          httpClient={http}
-                          {...props}
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/edit"
-                      render={(props) => (
-                        <EditReportDefinition
-                          title="Edit Report Definition"
-                          httpClient={http}
-                          {...props}
-                        />
-                      )}
-                    />
-                    <Route
-                      path="/"
-                      render={(props) => (
-                        <Main
-                          title="Reporting Homepage"
-                          httpClient={http}
-                          {...props}
-                        />
-                      )}
-                    />
-                  </Switch>
-                </EuiPageContentBody>
-              </EuiPageContent>
+              {/* <EuiPageContent> */}
+              <EuiPageContentHeader>
+                <EuiPageContentHeaderSection></EuiPageContentHeaderSection>
+              </EuiPageContentHeader>
+              <EuiPageContentBody>
+                <Switch>
+                  <Route
+                    path="/report_details/:reportId"
+                    render={(props) => (
+                      <ReportDetails
+                        title="Report Details"
+                        httpClient={http}
+                        {...props}
+                        setBreadcrumbs={chrome.setBreadcrumbs}
+                      />
+                    )}
+                  />
+                  <Route
+                    path="/report_definition_details/:reportDefinitionId"
+                    render={(props) => (
+                      <ReportDefinitionDetails
+                        title="Report Definition Details"
+                        httpClient={http}
+                        {...props}
+                        setBreadcrumbs={chrome.setBreadcrumbs}
+                      />
+                    )}
+                  />
+                  <Route
+                    path="/create"
+                    render={(props) => (
+                      <CreateReport
+                        title="Create Report"
+                        httpClient={http}
+                        {...props}
+                        setBreadcrumbs={chrome.setBreadcrumbs}
+                      />
+                    )}
+                  />
+                  <Route
+                    path="/edit"
+                    render={(props) => (
+                      <EditReportDefinition
+                        title="Edit Report Definition"
+                        httpClient={http}
+                        {...props}
+                      />
+                    )}
+                  />
+                  <Route
+                    path="/"
+                    render={(props) => (
+                      <Main
+                        title="Reporting Homepage"
+                        httpClient={http}
+                        {...props}
+                        setBreadcrumbs={chrome.setBreadcrumbs}
+                      />
+                    )}
+                  />
+                </Switch>
+              </EuiPageContentBody>
+              {/* </EuiPageContent> */}
             </EuiPageBody>
           </EuiPage>
-        </>
+        </div>
       </I18nProvider>
     </Router>
   );
