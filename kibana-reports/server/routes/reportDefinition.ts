@@ -89,7 +89,7 @@ export default function (router: IRouter) {
 
         return response.ok({
           body: {
-            state: 'Report definition scheduled',
+            state: 'Report definition created',
             scheduler_response: res,
           },
         });
@@ -353,7 +353,6 @@ async function createScheduledJob(
   const schedulerClient = context.reporting_plugin.schedulerClient.asScoped(
     request
   );
-  const esClient = context.core.elasticsearch.adminClient;
 
   if (triggerType === TRIGGER_TYPE.schedule) {
     const schedule = triggerParams.schedule;
@@ -379,7 +378,10 @@ async function createScheduledJob(
   } else if (triggerType == TRIGGER_TYPE.alerting) {
     //TODO: add alert-based scheduling logic [enhancement feature]
   } else if (triggerType == TRIGGER_TYPE.onDemand) {
-    await createReport(reportDefinition, esClient);
+    //TODO: return nothing for on Demand report, because currently on-demand report is handled by client side,
+    // by hitting the create report http endpoint with data to get a report downloaded. Server side only saves
+    // that on-demand report definition into the index. Need further discussion on what behavior we want
+    // await createReport(reportDefinition, esClient);
     return;
   }
 }

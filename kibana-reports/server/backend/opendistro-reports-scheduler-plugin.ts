@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import { API } from '../../common';
+import { REPORTS_SCHEDULER_API } from '../../common';
 
 export default function (Client: any, config: any, components: any) {
   const ca = components.clientAction.factory;
@@ -23,7 +23,7 @@ export default function (Client: any, config: any, components: any) {
 
   scheduler.createSchedule = ca({
     url: {
-      fmt: `${API.SCHEDULE_BASE}?job_id=<%=jobId%>`,
+      fmt: `${REPORTS_SCHEDULER_API.SCHEDULE_BASE}?job_id=<%=jobId%>`,
       req: {
         jobId: {
           type: 'string',
@@ -37,7 +37,7 @@ export default function (Client: any, config: any, components: any) {
 
   scheduler.deleteSchedule = ca({
     url: {
-      fmt: `${API.SCHEDULE_BASE}?job_id=<%=jobId%>`,
+      fmt: `${REPORTS_SCHEDULER_API.SCHEDULE_BASE}?job_id=<%=jobId%>`,
       req: {
         jobId: {
           type: 'string',
@@ -50,14 +50,14 @@ export default function (Client: any, config: any, components: any) {
 
   scheduler.getJob = ca({
     url: {
-      fmt: `${API.JOB_BASE}`,
+      fmt: `${REPORTS_SCHEDULER_API.JOB_BASE}`,
     },
     method: 'GET',
   });
 
   scheduler.updateJobStatus = ca({
     url: {
-      fmt: `${API.JOB_BASE}/<%=jobId%>`,
+      fmt: `${REPORTS_SCHEDULER_API.JOB_BASE}/<%=jobId%>`,
       req: {
         jobId: {
           type: 'string',
