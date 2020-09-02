@@ -21,6 +21,7 @@ import {
 import { API_PREFIX } from '../../common';
 import { parseEsErrorResponse } from './utils/helpers';
 import { RequestParams } from '@elastic/elasticsearch';
+import { DEFAULT_MAX_SIZE } from './utils/constants';
 
 export default function (router: IRouter) {
   router.get(
@@ -36,7 +37,7 @@ export default function (router: IRouter) {
       const params: RequestParams.Search = {
         index: '.kibana',
         q: 'type:visualization',
-        size: 10000,
+        size: DEFAULT_MAX_SIZE,
       };
       try {
         const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
