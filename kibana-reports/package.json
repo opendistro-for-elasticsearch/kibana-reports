@@ -22,11 +22,8 @@
   },
   "dependencies": {
     "@babel/core": "^7.10.2",
-<<<<<<< HEAD:package.json
     "@elastic/datemath": "^5.0.3",
-=======
     "@babel/parser": "^7.11.4",
->>>>>>> upstream/dev:kibana-reports/package.json
     "@elastic/elasticsearch": "^7.8.0",
     "@elastic/eui": "^26.0.0",
     "@nteract/markdown": "^4.5.1",
