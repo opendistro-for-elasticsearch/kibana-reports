@@ -16,12 +16,12 @@
 import { REPORTS_SCHEDULER_API } from '../../common';
 
 export default function (Client: any, config: any, components: any) {
-  const ca = components.clientAction.factory;
+  const clientAction = components.clientAction.factory;
 
   Client.prototype.reports_scheduler = components.clientAction.namespaceFactory();
   const scheduler = Client.prototype.reports_scheduler.prototype;
 
-  scheduler.createSchedule = ca({
+  scheduler.createSchedule = clientAction({
     url: {
       fmt: `${REPORTS_SCHEDULER_API.SCHEDULE_BASE}?job_id=<%=jobId%>`,
       req: {
@@ -35,7 +35,7 @@ export default function (Client: any, config: any, components: any) {
     needBody: true,
   });
 
-  scheduler.deleteSchedule = ca({
+  scheduler.deleteSchedule = clientAction({
     url: {
       fmt: `${REPORTS_SCHEDULER_API.SCHEDULE_BASE}?job_id=<%=jobId%>`,
       req: {
@@ -48,14 +48,14 @@ export default function (Client: any, config: any, components: any) {
     method: 'DELETE',
   });
 
-  scheduler.getJob = ca({
+  scheduler.getJob = clientAction({
     url: {
       fmt: `${REPORTS_SCHEDULER_API.JOB_BASE}`,
     },
     method: 'GET',
   });
 
-  scheduler.updateJobStatus = ca({
+  scheduler.updateJobStatus = clientAction({
     url: {
       fmt: `${REPORTS_SCHEDULER_API.JOB_BASE}/<%=jobId%>`,
       req: {

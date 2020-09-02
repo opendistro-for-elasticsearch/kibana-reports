@@ -55,7 +55,7 @@ export const intervalSchema = schema.object({
 });
 
 export const cronSchema = schema.object({
-  corn: schema.object({
+  cron: schema.object({
     expression: schema.string(),
     time_zone: schema.string(),
   }),
