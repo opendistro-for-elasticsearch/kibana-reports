@@ -39,77 +39,45 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      let responseParams;
       if (request.params.reportSourceType === 'dashboard') {
-        try {
-          const params: RequestParams.Search = {
-            index: '.kibana',
-            q: 'type:dashboard',
-          };
-          const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
-            'search',
-            params
-          );
-          return response.ok({
-            body: esResp,
-          });
-        } catch (error) {
-          //@ts-ignore
-          context.reporting_plugin.logger.error(
-            `Failed to get reports details: ${error}`
-          );
-          return response.custom({
-            statusCode: error.statusCode,
-            body: parseEsErrorResponse(error),
-          });
-        }
+        const params: RequestParams.Search = {
+          index: '.kibana',
+          q: 'type:dashboard',
+        };
+        responseParams = params;
       } else if (request.params.reportSourceType === 'visualization') {
         const params: RequestParams.Search = {
           index: '.kibana',
           q: 'type:visualization',
           size: DEFAULT_MAX_SIZE,
         };
-        try {
-          const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
-            'search',
-            params
-          );
-          return response.ok({
-            body: esResp,
-          });
-        } catch (error) {
-          //@ts-ignore
-          context.reporting_plugin.logger.error(
-            `Failed to get visualizations: ${error}`
-          );
-          return response.custom({
-            statusCode: error.statusCode,
-            body: parseEsErrorResponse(error),
-          });
-        }
+        responseParams = params;
       } else if (request.params.reportSourceType === 'search') {
         const params: RequestParams.Search = {
           index: '.kibana',
           q: 'type:search',
           size: DEFAULT_MAX_SIZE,
         };
-        try {
-          const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
-            'search',
-            params
-          );
-          return response.ok({
-            body: esResp,
-          });
-        } catch (error) {
-          //@ts-ignore
-          context.reporting_plugin.logger.error(
-            `Failed to get saved searches: ${error}`
-          );
-          return response.custom({
-            statusCode: error.statusCode,
-            body: parseEsErrorResponse(error),
-          });
-        }
+        responseParams = params;
+      }
+      try {
+        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
+          'search',
+          responseParams
+        );
+        return response.ok({
+          body: esResp,
+        });
+      } catch (error) {
+        //@ts-ignore
+        context.reporting_plugin.logger.error(
+          `Failed to get reports source for ${request.params.reportSourceType}: ${error}`
+        );
+        return response.custom({
+          statusCode: error.statusCode,
+          body: parseEsErrorResponse(error),
+        });
       }
     }
   );
