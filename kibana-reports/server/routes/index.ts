@@ -17,7 +17,7 @@ import registerVisualReportRoute from './visualReport';
 import registerReportDefinitionRoute from './reportDefinition';
 import registerDataReport from './dataReport';
 import registerDataReportMetadata from './dataReportMetadata';
-import registerDashboardRoute from './getDashboards';
+import registerReportSourceRoute from './getReportSource';
 import { IRouter } from '../../../../src/core/server';
 
 export default function (router: IRouter) {
@@ -25,5 +25,5 @@ export default function (router: IRouter) {
   registerReportDefinitionRoute(router);
   registerDataReportMetadata(router);
   registerDataReport(router);
-  registerDashboardRoute(router);
+  registerReportSourceRoute(router);
 }
