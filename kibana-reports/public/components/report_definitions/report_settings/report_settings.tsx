@@ -45,6 +45,9 @@ import {
   SAVED_SEARCH_FORMAT_OPTIONS,
 } from './report_settings_constants';
 import dateMath from '@elastic/datemath';
+import Showdown from 'showdown';
+import ReactMde from 'react-mde';
+import 'react-mde/lib/styles/css/react-mde-all.css';
 
 const isValidTimeRange = (
   timeRangeMoment: number | moment.Moment,
@@ -161,8 +164,6 @@ export function ReportSettings(props) {
   const [savedSearchFileFormat, setSavedSearchFileFormat] = useState(
     'csvFormat'
   );
-  const [includeHeader, setIncludeHeader] = useState(false);
-  const [includeFooter, setIncludeFooter] = useState(false);
 
   const handleDashboards = (e) => {
     setDashboards(e);
@@ -234,47 +235,40 @@ export function ReportSettings(props) {
     setSavedSearchFileFormat(e);
   };
 
-  const handleIncludeHeader = (e: {
-    target: { checked: React.SetStateAction<boolean> };
-  }) => {
-    setIncludeHeader(e.target.checked);
-  };
+  const converter = new Showdown.Converter({
+    tables: true,
+    simplifiedAutoLink: true,
+    strikethrough: true,
+    tasklists: true,
+  });
 
-  const handleIncludeFooter = (e: {
-    target: { checked: React.SetStateAction<boolean> };
-  }) => {
-    setIncludeFooter(e.target.checked);
-  };
+  const Header = () => {
+    const [includeHeader, setIncludeHeader] = useState(false);
 
-  const HeaderAndFooter = () => {
     const [header, setHeader] = useState('');
-    const [footer, setFooter] = useState('');
+    const [selectedTabHeader, setSelectedTabHeader] = React.useState<
+      'write' | 'preview'
+    >('write');
 
-    const handleHeader = (e: {
-      target: { value: React.SetStateAction<string> };
+    const handleIncludeHeader = (e: {
+      target: { checked: React.SetStateAction<boolean> };
     }) => {
-      setHeader(e.target.value);
-    };
-
-    const handleFooter = (e: {
-      target: { value: React.SetStateAction<string> };
-    }) => {
-      setFooter(e.target.value);
+      setIncludeHeader(e.target.checked);
     };
 
     const showHeader = includeHeader ? (
-      <EuiTextArea
-        placeholder="Header text"
+      <ReactMde
         value={header}
-        onChange={handleHeader}
-      />
-    ) : null;
-
-    const showFooter = includeFooter ? (
-      <EuiTextArea
-        placeholder="Footer text"
-        value={footer}
-        onChange={handleFooter}
+        onChange={setHeader}
+        selectedTab={selectedTabHeader}
+        onTabChange={setSelectedTabHeader}
+        toolbarCommands={[
+          ['header', 'bold', 'italic', 'strikethrough'],
+          ['unordered-list', 'ordered-list', 'checked-list'],
+        ]}
+        generateMarkdownPreview={(markdown) =>
+          Promise.resolve(converter.makeHtml(markdown))
+        }
       />
     ) : null;
 
@@ -287,7 +281,42 @@ export function ReportSettings(props) {
           onChange={handleIncludeHeader}
         />
         {showHeader}
-        <EuiSpacer />
+      </div>
+    );
+  };
+
+  const Footer = () => {
+    const [includeFooter, setIncludeFooter] = useState(false);
+
+    const [footer, setFooter] = useState('');
+    const [selectedTabFooter, setSelectedTabFooter] = React.useState<
+      'write' | 'preview'
+    >('write');
+
+    const handleIncludeFooter = (e: {
+      target: { checked: React.SetStateAction<boolean> };
+    }) => {
+      setIncludeFooter(e.target.checked);
+    };
+
+    const showFooter = includeFooter ? (
+      <ReactMde
+        value={footer}
+        onChange={setFooter}
+        selectedTab={selectedTabFooter}
+        onTabChange={setSelectedTabFooter}
+        toolbarCommands={[
+          ['header', 'bold', 'italic', 'strikethrough'],
+          ['unordered-list', 'ordered-list', 'checked-list'],
+        ]}
+        generateMarkdownPreview={(markdown) =>
+          Promise.resolve(converter.makeHtml(markdown))
+        }
+      />
+    ) : null;
+
+    return (
+      <div>
         <EuiCheckbox
           id="includeFooterCheckbox"
           label="Include footer"
@@ -310,7 +339,6 @@ export function ReportSettings(props) {
           />
         </EuiFormRow>
         <EuiSpacer />
-        <HeaderAndFooter />
       </div>
     );
   };
@@ -330,6 +358,10 @@ export function ReportSettings(props) {
         <TimeRangeSelect />
         <EuiSpacer />
         <PDFandPNGFileFormats />
+        <EuiSpacer />
+        <Header />
+        <EuiSpacer size="s" />
+        <Footer />
       </div>
     );
   };
@@ -349,6 +381,10 @@ export function ReportSettings(props) {
         <TimeRangeSelect />
         <EuiSpacer />
         <PDFandPNGFileFormats />
+        <EuiSpacer />
+        <Header />
+        <EuiSpacer size="s" />
+        <Footer />
       </div>
     );
   };

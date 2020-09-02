@@ -618,7 +618,7 @@ exports[`<ReportsTable /> panel render component 1`] = `
                     class="euiToolTipAnchor"
                   >
                     <button
-                      aria-label="Generate report"
+                      aria-labelledby="random_html_id"
                       class="euiButtonIcon euiButtonIcon--primary euiTableCellContent__hoverItem"
                       type="button"
                     >
@@ -633,6 +633,12 @@ exports[`<ReportsTable /> panel render component 1`] = `
                         xmlns="http://www.w3.org/2000/svg"
                       />
                     </button>
+                    <span
+                      class="euiScreenReaderOnly"
+                      id="random_html_id"
+                    >
+                      Generate report
+                    </span>
                   </span>
                 </div>
               </td>
