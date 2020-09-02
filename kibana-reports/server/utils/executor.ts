@@ -23,7 +23,7 @@ async function pollAndExecuteJob(
   logger: Logger
 ) {
   logger.info(
-    `start polling at time: ${new Date().toISOString()} with fixed interval: ${POLLER_INTERVAL}`
+    `start polling at time: ${new Date().toISOString()} with fixed interval: ${POLLER_INTERVAL} milliseconds`
   );
   try {
     const getJobRes = await schedulerClient.callAsInternalUser(

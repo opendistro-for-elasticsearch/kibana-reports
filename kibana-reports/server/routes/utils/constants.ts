@@ -57,3 +57,5 @@ export enum TRIGGER_TYPE {
   onDemand = 'On demand',
   alerting = 'Alerting',
 }
+
+export const DEFAULT_MAX_SIZE = 10000;
