@@ -1,0 +1,8 @@
+{
+  "id": "opendistroKibanaReports",
+  "version": "0.0.1",
+  "kibanaVersion": "7.8.0",
+  "requiredPlugins": ["navigation"],
+  "server": true,
+  "ui": true
+}
