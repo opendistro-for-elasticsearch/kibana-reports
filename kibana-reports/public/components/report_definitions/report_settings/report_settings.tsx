@@ -438,7 +438,7 @@ export function ReportSettings(props) {
   useEffect(() => {
     // get dashboard options
     httpClientProps
-      .get('../api/reporting/getDashboards')
+      .get('../api/reporting/getReportSource/dashboard')
       .then(async (response) => {
         let dashboardOptions = getReportSettingDashboardOptions(
           response['hits']['hits']
@@ -456,7 +456,7 @@ export function ReportSettings(props) {
     createReportDefinitionRequest['report_source'] = 'Dashboard';
 
     httpClientProps
-      .get('../api/reporting/getVisualizations')
+      .get('../api/reporting/getReportSource/visualization')
       .then(async (response) => {
         let visualizationOptions = getVisualizationOptions(
           response['hits']['hits']

@@ -15,19 +15,15 @@
 
 import registerVisualReportRoute from './visualReport';
 import registerReportDefinitionRoute from './reportDefinition';
-import registerGetVisualizationsRoute from './getVisualizations';
-import registerGetSavedSearchesRoute from './getSavedSearches';
 import registerDataReport from './dataReport';
 import registerDataReportMetadata from './dataReportMetadata';
-import registerDashboardRoute from './getDashboards';
+import registerReportSourceRoute from './getReportSource';
 import { IRouter } from '../../../../src/core/server';
 
 export default function (router: IRouter) {
   registerVisualReportRoute(router);
   registerReportDefinitionRoute(router);
-  registerGetVisualizationsRoute(router);
-  registerGetSavedSearchesRoute(router);
   registerDataReportMetadata(router);
   registerDataReport(router);
-  registerDashboardRoute(router);
+  registerReportSourceRoute(router);
 }
