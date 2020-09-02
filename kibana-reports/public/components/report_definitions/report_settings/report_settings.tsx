@@ -45,7 +45,6 @@ import {
   SAVED_SEARCH_FORMAT_OPTIONS,
 } from './report_settings_constants';
 import dateMath from '@elastic/datemath';
-// import ReactMarkdown from 'react-markdown';
 import Showdown from 'showdown';
 import ReactMde from 'react-mde';
 import 'react-mde/lib/styles/css/react-mde-all.css';
