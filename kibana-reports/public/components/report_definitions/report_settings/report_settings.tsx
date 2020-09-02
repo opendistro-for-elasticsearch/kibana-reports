@@ -155,6 +155,8 @@ export function ReportSettings(props) {
   const [visualizationSourceSelect, setVisualizationSourceSelect] = useState(
     REPORT_SOURCE_VISUALIZATION_OPTIONS[0].value
   );
+  const [visualizations, setVisualizations] = useState([]);
+
   const [savedSearchSourceSelect, setSavedSearchSourceSelect] = useState(
     REPORT_SOURCE_SAVED_SEARCH_OPTIONS[0].value
   );
@@ -166,6 +168,10 @@ export function ReportSettings(props) {
 
   const handleDashboards = (e) => {
     setDashboards(e);
+  };
+
+  const handleVisualizations = (e) => {
+    setVisualizations(e);
   };
 
   const handleReportName = (e: {
@@ -186,8 +192,12 @@ export function ReportSettings(props) {
     setReportSourceId(e);
     if (e === 'dashboardReportSource') {
       createReportDefinitionRequest['report_source'] = 'Dashboard';
+      createReportDefinitionRequest['report_params']['url'] =
+        getDashboardBaseUrl() + dashboards[0].value;
     } else if (e === 'visualizationReportSource') {
       createReportDefinitionRequest['report_source'] = 'Visualization';
+      createReportDefinitionRequest['report_params']['url'] =
+        getVisualizationBaseUrl() + visualizations[0].value;
     }
   };
 
@@ -203,6 +213,8 @@ export function ReportSettings(props) {
     target: { value: React.SetStateAction<string> };
   }) => {
     setVisualizationSourceSelect(e.target.value);
+    createReportDefinitionRequest['report_params']['url'] =
+      getVisualizationBaseUrl() + e.target.value;
   };
 
   const handleSavedSearchSelect = (e: {
@@ -361,7 +373,7 @@ export function ReportSettings(props) {
         <EuiFormRow label="Select visualization">
           <EuiSelect
             id="reportSourceVisualizationSelect"
-            options={REPORT_SOURCE_VISUALIZATION_OPTIONS}
+            options={visualizations}
             value={visualizationSourceSelect}
             onChange={handleVisualizationSelect}
           />
@@ -439,9 +451,31 @@ export function ReportSettings(props) {
     );
   };
 
+  const getVisualizationOptions = (data) => {
+    let index;
+    let options = [];
+    for (index = 0; index < data.length; ++index) {
+      let entry = {
+        value: data[index]['_id'].substring(14),
+        text: data[index]['_source']['visualization']['title'],
+      };
+      options.push(entry);
+    }
+    return options;
+  };
+
+  const getVisualizationBaseUrl = () => {
+    let baseUrl = window.location.href;
+    return baseUrl.replace(
+      'opendistro_kibana_reports#/create',
+      'kibana#/visualize/edit/'
+    );
+  };
+
   useEffect(() => {
+    // get dashboard options
     httpClientProps
-      .get('../api/reporting/getDashboards')
+      .get('../api/reporting/getReportSource/dashboard')
       .then(async (response) => {
         let dashboardOptions = getReportSettingDashboardOptions(
           response['hits']['hits']
@@ -457,6 +491,19 @@ export function ReportSettings(props) {
       });
     createReportDefinitionRequest['report_params']['report_format'] = 'pdf';
     createReportDefinitionRequest['report_source'] = 'Dashboard';
+
+    httpClientProps
+      .get('../api/reporting/getReportSource/visualization')
+      .then(async (response) => {
+        let visualizationOptions = getVisualizationOptions(
+          response['hits']['hits']
+        );
+        await handleVisualizations(visualizationOptions);
+        await setVisualizationSourceSelect(visualizationOptions[0].value);
+      })
+      .catch((error) => {
+        console.log('error when fetching visualizations:', error);
+      });
   }, []);
 
   return (

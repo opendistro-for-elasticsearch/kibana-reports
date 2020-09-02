@@ -45,3 +45,5 @@ export enum SCHEDULE_TYPE {
 export enum DATA_REPORT_CONFIG {
   excelDateFormat = 'MM/DD/YYYY h:mm:ss a',
 }
+
+export const DEFAULT_MAX_SIZE = 10000;
