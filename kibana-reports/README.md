@@ -6,13 +6,50 @@ Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including b
 
 Please add your feature requests here [ New Requests ](https://github.com/opendistro-for-elasticsearch/kibana-reports/issues) and view project progress here [RFCs](https://github.com/opendistro-for-elasticsearch/kibana-reports/projects/1).
 
-## Setup & Build
+## Setup
 
-Complete Kibana Reports is composed of 3 plugins. Refer to README in each plugin folder for more details.
+1. Download Elasticsearch for the version that matches the [Kibana version specified in package.json](./package.json#L7).
+1. Download the Kibana source code for the [version specified in package.json](./package.json#L7) you want to set up.
 
-- [Kibana reports plugin](./kibana-reports/README.md)
-- [Reports scheduler ES plugin](./reports-scheduler/README.md)（TODO）
-- [Reports notification ES plugin]() (TODO)
+   See the [Kibana contributing guide](https://github.com/elastic/kibana/blob/master/CONTRIBUTING.md#setting-up-your-development-environment) for more instructions on setting up your development environment.
+
+1. Change your node version to the version specified in `.node-version` inside the Kibana root directory.
+1. Create a `plugins` directory inside the Kibana source code directory, if `plugins` directory doesn't exist.
+1. Check out this package from version control into the `plugins` directory.
+   ```
+   git clone git@github.com:opendistro-for-elasticsearch/kibana-reports.git plugins --no-checkout
+   cd plugins
+   echo 'kibana-reports/*' >> .git/info/sparse-checkout
+   git config core.sparseCheckout true
+   git checkout dev
+   ```
+1. Run `yarn kbn bootstrap` inside `kibana/plugins/kibana-reports`.
+
+Ultimately, your directory structure should look like this:
+
+<!-- prettier-ignore -->
+```md
+.
+├── kibana
+│   └──plugins
+│      └── kibana-reports
+```
+
+## Build
+
+To build the plugin's distributable zip simply run `yarn build`.
+
+Example output: `./build/opendistro-kibana-reports-0.0.1.zip`
+
+## Run
+
+- `yarn start`
+
+  Starts Kibana and includes this plugin. Kibana will be available on `localhost:5601`.
+
+- `yarn test:jest`
+
+  Runs the plugin tests.
 
 ## Contributing to Kibana reports for Open Distro
 

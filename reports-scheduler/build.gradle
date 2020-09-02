@@ -1,0 +1,101 @@
+/*
+ * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+
+buildscript {
+    ext {
+        es_group = "org.elasticsearch"
+        es_version = '7.8.0'
+    }
+
+    repositories {
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+        jcenter()
+    }
+
+    dependencies {
+        classpath "${es_group}.gradle:build-tools:${es_version}"
+    }
+}
+
+plugins {
+    id 'nebula.ospackage' version "8.3.0"
+    id 'java-library'
+}
+
+apply plugin: 'elasticsearch.esplugin'
+apply plugin: 'elasticsearch.testclusters'
+
+esplugin {
+    name 'opendistro-reports-scheduler'
+    description 'Scheduler for ODFE Kibana Reports Plugin'
+    classname 'com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin'
+    extendedPlugins = ['opendistro-job-scheduler']
+}
+
+ext {
+    projectSubstitutions = [:]
+    licenseFile = rootProject.file('LICENSE.txt')
+    noticeFile = rootProject.file('NOTICE.txt')
+}
+
+dependencies {
+    compile "org.elasticsearch:elasticsearch:${es_version}"
+    compileOnly "com.amazon.opendistroforelasticsearch:opendistro-job-scheduler-spi:1.9.0.0"
+    compile group: 'com.google.guava', name: 'guava', version:'15.0'
+}
+
+licenseHeaders.enabled = true
+validateNebulaPom.enabled = false
+dependencyLicenses.enabled = false
+thirdPartyAudit.enabled = false
+// Allow @Test to be used in test classes not inherited from LuceneTestCase.
+// see https://github.com/elastic/elasticsearch/blob/master/buildSrc/src/main/resources/forbidden/es-test-signatures.txt
+forbiddenApis.ignoreFailures = true
+// Allow test cases to be named Tests without having to be inherited from LuceneTestCase.
+// see https://github.com/elastic/elasticsearch/blob/323f312bbc829a63056a79ebe45adced5099f6e6/buildSrc/src/main/java/org/elasticsearch/gradle/precommit/TestingConventionsTasks.java
+testingConventions.enabled = false
+// no need to validate pom, as we do not upload to maven/sonatype
+validateNebulaPom.enabled = false
+
+integTest.dependsOn(rootProject.assemble)
+integTestRunner {
+    systemProperty 'tests.security.manager', 'false'
+}
+testClusters.integTest {
+    testDistribution = 'OSS'
+    // need to install job-scheduler first, need to assemble job-scheduler first
+    plugin(fileTree("src/test/resources/job-scheduler").getSingleFile())
+}
+
+// As of ES 7.7 the sample-extension-plugin is being added to the list of plugins for the testCluster during build before
+// the job-scheduler plugin is causing build failures.
+// The job-scheduler zip is added explicitly above but the sample-extension-plugin is added implicitly at some time during evaluation.
+// Will need to do a deep dive to find out exactly what task adds the sample-extension-plugin and add job-scheduler there but a temporary hack is to
+// reorder the plugins list after evaluation but prior to task execution when the plugins are installed.
+afterEvaluate {
+    testClusters.integTest.nodes.each { node ->
+        def plugins = node.plugins
+        def firstPlugin = plugins.get(0)
+        if (firstPlugin.provider == project.bundlePlugin.archiveFile) {
+            plugins.remove(0)
+            plugins.add(firstPlugin)
+        }
+    }
+}
+
+tasks.withType(licenseHeaders.class) {
+    additionalLicense 'AL   ', 'Apache', 'Licensed under the Apache License, Version 2.0 (the "License")'
+}
