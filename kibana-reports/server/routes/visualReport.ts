@@ -50,7 +50,7 @@ export default function (router: IRouter) {
       try {
         let report = request.body;
         const reportParams = report.report_params;
-        // placeholder since header & footer are not currently in data schema
+        // TODO: replace placeholders with actual schema data fields
         const testHeader = 'Test report header sample text';
         const testFooter = 'Test report footer sample text';
         if (reportParams.report_format === FORMAT.png) {

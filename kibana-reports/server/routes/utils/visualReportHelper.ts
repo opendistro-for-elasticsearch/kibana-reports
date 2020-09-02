@@ -76,14 +76,6 @@ async function renderReport(
   header: string,
   footer: string
 ) {
-  if (source === 'Dashboard') {
-    windowWidth = 1440;
-    windowHeight = 2560;
-  } else if (source === 'Visualization') {
-    windowWidth = 900;
-    windowHeight = 1300;
-  }
-
   const browser = await puppeteer.launch({
     headless: true,
   });
@@ -109,10 +101,15 @@ async function renderReport(
   const screenshot = await element.screenshot({ fullPage: false });
   const timeCreated = new Date().toISOString();
 
+  // The scrollHeight value is equal to the minimum height the element would require in order to fit
+  // all the content in the viewport without using a vertical scrollbar
   const scrollHeight = await page.evaluate(
     () => document.documentElement.scrollHeight
   );
 
+  /**
+   * Sets the content of the page to have the header be above the trimmed screenshot and the footer be below it
+   */
   await page.setContent(`
   <!DOCTYPE html>
   <html>
