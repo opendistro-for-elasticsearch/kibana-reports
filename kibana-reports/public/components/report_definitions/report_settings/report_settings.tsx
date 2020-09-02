@@ -32,7 +32,8 @@ import {
   EuiCheckbox,
   EuiSuperDatePicker,
   EuiTextArea,
-  EuiPage,
+  EuiPage, 
+  EuiCheckboxGroup
 } from '@elastic/eui';
 import moment from 'moment';
 import {
@@ -43,7 +44,8 @@ import {
 import {
   REPORT_SOURCE_RADIOS,
   PDF_PNG_FILE_FORMAT_OPTIONS,
-  SAVED_SEARCH_FORMAT_OPTIONS,
+  SAVED_SEARCH_FORMAT_OPTIONS, 
+  HEADER_FOOTER_CHECKBOX
 } from './report_settings_constants';
 import dateMath from '@elastic/datemath';
 
@@ -165,6 +167,8 @@ export function ReportSettings(props) {
   );
   const [includeHeader, setIncludeHeader] = useState(false);
   const [includeFooter, setIncludeFooter] = useState(false);
+  const [checkboxIdSelectHeaderFooter, setCheckboxIdSelectHeaderFooter] = 
+    useState({['header']: false, ['footer']: false});
 
   const handleDashboards = (e) => {
     setDashboards(e);
@@ -238,6 +242,17 @@ export function ReportSettings(props) {
     setIncludeFooter(e.target.checked);
   };
 
+  const handleCheckboxHeaderFooter = optionId => {
+    const newCheckboxIdToSelectedMap = {
+      ...checkboxIdSelectHeaderFooter,
+      ...{
+        [optionId]: !checkboxIdSelectHeaderFooter[optionId],
+      },
+    };
+    console.log(checkboxIdSelectHeaderFooter)
+    setCheckboxIdSelectHeaderFooter(newCheckboxIdToSelectedMap);
+  };
+
   const HeaderAndFooter = () => {
     const [header, setHeader] = useState('');
     const [footer, setFooter] = useState('');
@@ -254,7 +269,7 @@ export function ReportSettings(props) {
       setFooter(e.target.value);
     };
 
-    const showHeader = includeHeader ? (
+    const showHeader = (checkboxIdSelectHeaderFooter.header) ? (
       <EuiTextArea
         placeholder="Header text"
         value={header}
@@ -262,37 +277,25 @@ export function ReportSettings(props) {
       />
     ) : null;
 
-    const showFooter = includeFooter ? (
-      <EuiFormRow label="Show footer">
+    const showFooter = (checkboxIdSelectHeaderFooter.footer) ? (
         <EuiTextArea
           placeholder="Footer text"
           value={footer}
           onChange={handleFooter}
         />
-      </EuiFormRow>
     ) : null;
 
     return (
       <div>
-        <EuiFormRow label="Show header">
-          <EuiCheckbox
-            id="includeHeaderCheckbox"
-            label="Include header"
-            checked={includeHeader}
-            onChange={handleIncludeHeader}
+        <EuiCheckboxGroup 
+            options={HEADER_FOOTER_CHECKBOX}
+            idToSelectedMap={checkboxIdSelectHeaderFooter}
+            onChange={handleCheckboxHeaderFooter}
+            legend={{children:"Header and footer"}}
           />
-        </EuiFormRow>
+        <EuiSpacer/>
         {showHeader}
-        {/* </EuiFormRow> */}
-        <EuiSpacer />
-        <EuiFormRow label="Show footer">
-          <EuiCheckbox
-            id="includeFooterCheckbox"
-            label="Include footer"
-            checked={includeFooter}
-            onChange={handleIncludeFooter}
-          />
-        </EuiFormRow>
+        <EuiSpacer/>
         {showFooter}
       </div>
     );

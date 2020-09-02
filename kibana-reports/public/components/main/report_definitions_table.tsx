@@ -23,53 +23,6 @@ import {
   EuiIcon,
 } from '@elastic/eui';
 
-export const reportDefinitionsColumns = [
-  {
-    field: 'reportName',
-    name: 'Name',
-    // sortable: true,
-    // truncateText: true,
-    render: (name) => <EuiLink>{name}</EuiLink>,
-  },
-  {
-    field: 'type',
-    name: 'Type',
-    sortable: true,
-    truncateText: false,
-  },
-  {
-    field: 'owner',
-    name: 'Owner',
-    sortable: true,
-    truncateText: false,
-  },
-  {
-    field: 'source',
-    name: 'Source',
-    render: (username: string) => (
-      <EuiLink href={'#'} target="_blank">
-        {username}
-      </EuiLink>
-    ),
-  },
-  {
-    field: 'lastUpdated',
-    name: 'Last Updated',
-    truncateText: true,
-  },
-  {
-    field: 'details',
-    name: 'Details',
-    sortable: false,
-    truncateText: true,
-  },
-  {
-    field: 'status',
-    name: 'Status',
-    sortable: true,
-    truncateText: false,
-  },
-];
 
 const emptyMessageReportDefinitions = (
   <EuiEmptyPrompt
@@ -120,6 +73,70 @@ export function ReportDefinitions(props) {
     },
   };
 
+  const getDefinitionTableItemId = (name) => {
+    let index; 
+    for (index = 0; index < props.reportDefinitionsTableContent.length; ++index) {
+      if (name === reportDefinitionsTableContent[index].reportName) {
+        return reportDefinitionsTableContent[index].id;
+      }
+    }
+  }
+
+  const navigateToDefinitionDetails = (name: any) => {
+    let id = getDefinitionTableItemId(name);
+    window.location.assign(`opendistro_kibana_reports#/report_definition_details/${id}`);
+  }
+
+  const reportDefinitionsColumns = [
+    {
+      field: 'reportName',
+      name: 'Name',
+      render: (name) => (
+        <EuiLink onClick={() => navigateToDefinitionDetails(name)}>
+          {name}
+        </EuiLink>
+      )
+    },
+    {
+      field: 'type',
+      name: 'Type',
+      sortable: true,
+      truncateText: false,
+    },
+    {
+      field: 'owner',
+      name: 'Owner',
+      sortable: true,
+      truncateText: false,
+    },
+    {
+      field: 'source',
+      name: 'Source',
+      render: (username: string) => (
+        <EuiLink href={'#'} target="_blank">
+          {username}
+        </EuiLink>
+      ),
+    },
+    {
+      field: 'lastUpdated',
+      name: 'Last Updated',
+      truncateText: true,
+    },
+    {
+      field: 'details',
+      name: 'Details',
+      sortable: false,
+      truncateText: true,
+    },
+    {
+      field: 'status',
+      name: 'Status',
+      sortable: true,
+      truncateText: false,
+    },
+  ];
+
   return (
     <div>
       <EuiInMemoryTable
@@ -132,7 +149,7 @@ export function ReportDefinitions(props) {
         pagination={pagination}
         sorting={sorting}
         isSelectable={true}
-        rowProps={getRowProps}
+        // rowProps={getRowProps}
         tableLayout={'auto'}
       />
     </div>

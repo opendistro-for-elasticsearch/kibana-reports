@@ -49,3 +49,14 @@ export const SAVED_SEARCH_FORMAT_OPTIONS = [
     label: 'XLS',
   },
 ];
+
+export const HEADER_FOOTER_CHECKBOX = [
+  {  
+    id: 'header',
+    label: 'Header'
+  },
+  {
+    id: 'footer',
+    label: 'Footer'
+  }
+]

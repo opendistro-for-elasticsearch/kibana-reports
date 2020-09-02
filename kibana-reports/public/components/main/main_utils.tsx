@@ -61,9 +61,8 @@ export const addReportsTableContent = (data) => {
   let index;
   let reportsTableItems = [];
   for (index = 0; index < data.length; ++index) {
-    console.log('raw entry is', get(data, [index, '_source', 'time_created']));
     let readableDate = new Date(get(data, [index, '_source', 'time_created']));
-    // console.log("readable date is", readableDate);
+    let displayDate = readableDate.toDateString() + ' @ ' + readableDate.toLocaleTimeString();
     let reportsTableEntry = {
       id: get(data, [index, '_id']),
       reportName: get(data, [index, '_source', 'report_name']),
@@ -72,14 +71,13 @@ export const addReportsTableContent = (data) => {
       kibanaRecipients: `\u2014`,
       emailRecipients: `\u2014`,
       reportSource: get(data, [index, '_source', 'report_source']),
-      lastUpdated: readableDate,
+      lastUpdated: displayDate,
       state: get(data, [index, '_source', 'state']),
       url: get(data, [index, '_source', 'report_params', 'url']),
       format: get(data, [index, '_source', 'report_params', 'report_format']),
     };
     reportsTableItems.push(reportsTableEntry);
   }
-  console.log('reports table items are', reportsTableItems);
   return reportsTableItems;
 };
 
@@ -87,13 +85,15 @@ export const addReportDefinitionsTableContent = (data: any) => {
   let index;
   let reportDefinitionsTableItems = [];
   for (index = 0; index < data.length; ++index) {
+    let readableDate = new Date(get(data, [index, '_source', 'time_created']));
+    let displayDate = readableDate.toDateString() + ' @ ' + readableDate.toLocaleTimeString();
     let reportDefinitionsTableEntry = {
       id: get(data, [index, '_id']),
       reportName: get(data, [index, '_source', 'report_name']),
       type: get(data, [index, '_source', 'report_type']),
       owner: 'davidcui', // Todo: replace
       source: get(data, [index, '_source', 'report_source']),
-      lastUpdated: get(data, [index, '_source', 'time_created']),
+      lastUpdated: displayDate,
       details: get(data, [
         index,
         '_source',

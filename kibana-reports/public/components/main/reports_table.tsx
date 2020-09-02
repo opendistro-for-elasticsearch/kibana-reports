@@ -141,8 +141,6 @@ export function ReportsTable(props) {
   const onDemandDownload = async (url: any) => {
     console.log('url is', url);
     let data = getReportsTableItemContent(url);
-    // console.log("data in on deman is", data);
-    // return;
     handleLoading(true);
     await generateReport(updateMetadata(data), httpClient);
     handleLoading(false);
