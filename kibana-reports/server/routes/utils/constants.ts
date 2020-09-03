@@ -42,8 +42,20 @@ export enum SCHEDULE_TYPE {
   cron = 'Cron based',
 }
 
+export enum REPORT_TYPE {
+  savedSearch = 'Saved search',
+  dashboard = 'Dashboard',
+  visualization = 'Visualization',
+}
+
 export enum DATA_REPORT_CONFIG {
   excelDateFormat = 'MM/DD/YYYY h:mm:ss a',
 }
 
+export enum TRIGGER_TYPE {
+  schedule = 'Schedule',
+  onDemand = 'On demand',
+  alerting = 'Alerting',
+}
+// https://www.elastic.co/guide/en/elasticsearch/reference/6.8/search-request-from-size.html
 export const DEFAULT_MAX_SIZE = 10000;
