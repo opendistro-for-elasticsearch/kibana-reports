@@ -170,16 +170,6 @@ export function ReportSettings(props) {
   const [savedSearchFileFormat, setSavedSearchFileFormat] = useState(
     'csvFormat'
   );
-  const [includeHeader, setIncludeHeader] = useState(false);
-  const [includeFooter, setIncludeFooter] = useState(false);
-
-  const [footer, setFooter] = useState('');
-  const [selectedTabFooter, setSelectedTabFooter] = React.useState<
-    'write' | 'preview'
-  >('write');
-
-  const [checkboxIdSelectHeaderFooter, setCheckboxIdSelectHeaderFooter] = 
-    useState({['header']: false, ['footer']: false});
 
   const handleDashboards = (e) => {
     setDashboards(e);
@@ -251,16 +241,6 @@ export function ReportSettings(props) {
     setSavedSearchFileFormat(e);
   };
 
-  const handleCheckboxHeaderFooter = optionId => {
-    const newCheckboxIdToSelectedMap = {
-      ...checkboxIdSelectHeaderFooter,
-      ...{
-        [optionId]: !checkboxIdSelectHeaderFooter[optionId],
-      },
-    };
-    setCheckboxIdSelectHeaderFooter(newCheckboxIdToSelectedMap);
-  };
-
   const converter = new Showdown.Converter({
     tables: true,
     simplifiedAutoLink: true,
@@ -268,7 +248,31 @@ export function ReportSettings(props) {
     tasklists: true,
   });
 
-  const Header = () => {
+  const PDFandPNGFileFormats = () => {
+    return (
+      <div>
+        <EuiFormRow label="File format">
+          <EuiRadioGroup
+            options={PDF_PNG_FILE_FORMAT_OPTIONS}
+            idSelected={fileFormat}
+            onChange={handleFileFormat}
+          />
+        </EuiFormRow>
+        <EuiSpacer />
+      </div>
+    );
+  };
+
+  const SettingsMarkdown = () => {
+    const [includeFooter, setIncludeFooter] = useState(false);
+    const [checkboxIdSelectHeaderFooter, setCheckboxIdSelectHeaderFooter] = 
+    useState({['header']: false, ['footer']: false});
+
+    const [footer, setFooter] = useState('');
+    const [selectedTabFooter, setSelectedTabFooter] = React.useState<
+      'write' | 'preview'
+    >('write');
+
     const [includeHeader, setIncludeHeader] = useState(false);
 
     const [header, setHeader] = useState('');
@@ -276,11 +280,31 @@ export function ReportSettings(props) {
       'write' | 'preview'
     >('write');
 
-    const handleIncludeHeader = (e: {
-      target: { checked: React.SetStateAction<boolean> };
-    }) => {
-      setIncludeHeader(e.target.checked);
+    const handleCheckboxHeaderFooter = optionId => {
+      const newCheckboxIdToSelectedMap = {
+        ...checkboxIdSelectHeaderFooter,
+        ...{
+          [optionId]: !checkboxIdSelectHeaderFooter[optionId],
+        },
+      };
+      setCheckboxIdSelectHeaderFooter(newCheckboxIdToSelectedMap);
     };
+
+    const showFooter = (checkboxIdSelectHeaderFooter.footer) ? (
+      <ReactMde
+        value={footer}
+        onChange={setFooter}
+        selectedTab={selectedTabFooter}
+        onTabChange={setSelectedTabFooter}
+        toolbarCommands={[
+          ['header', 'bold', 'italic', 'strikethrough'],
+          ['unordered-list', 'ordered-list', 'checked-list'],
+        ]}
+        generateMarkdownPreview={(markdown) =>
+          Promise.resolve(converter.makeHtml(markdown))
+        }
+      />
+    ) : null;
 
     const showHeader = (checkboxIdSelectHeaderFooter.header) ? (
       <ReactMde
@@ -300,69 +324,17 @@ export function ReportSettings(props) {
 
     return (
       <div>
-        {/* <EuiCheckboxGroup 
-            options={HEADER_FOOTER_CHECKBOX}
-            idToSelectedMap={checkboxIdSelectHeaderFooter}
-            onChange={handleCheckboxHeaderFooter}
-            legend={{children:"Header and footer"}}
-          />
-        <EuiSpacer/> */}
+        <EuiCheckboxGroup 
+          options={HEADER_FOOTER_CHECKBOX}
+          idToSelectedMap={checkboxIdSelectHeaderFooter}
+          onChange={handleCheckboxHeaderFooter}
+          legend={{children:"Header and footer"}}
+        />
         {showHeader}
-      </div>
-    );
-  };
-
-  const Footer = () => {
-    const [includeFooter, setIncludeFooter] = useState(false);
-
-    // const [footer, setFooter] = useState('');
-    // const [selectedTabFooter, setSelectedTabFooter] = React.useState<
-    //   'write' | 'preview'
-    // >('write');
-
-    const handleIncludeFooter = (e: {
-      target: { checked: React.SetStateAction<boolean> };
-    }) => {
-      setIncludeFooter(e.target.checked);
-    };
-
-    const showFooter = (checkboxIdSelectHeaderFooter.footer) ? (
-      <ReactMde
-        value={footer}
-        onChange={setFooter}
-        selectedTab={selectedTabFooter}
-        onTabChange={setSelectedTabFooter}
-        toolbarCommands={[
-          ['header', 'bold', 'italic', 'strikethrough'],
-          ['unordered-list', 'ordered-list', 'checked-list'],
-        ]}
-        generateMarkdownPreview={(markdown) =>
-          Promise.resolve(converter.makeHtml(markdown))
-        }
-      />
-    ) : null;
-
-    return (
-      <div>
         {showFooter}
       </div>
     );
-  };
-
-  const PDFandPNGFileFormats = () => {
-    return (
-      <div>
-        <EuiFormRow label="File format">
-          <EuiRadioGroup
-            options={PDF_PNG_FILE_FORMAT_OPTIONS}
-            idSelected={fileFormat}
-            onChange={handleFileFormat}
-          />
-        </EuiFormRow>
-        <EuiSpacer />
-      </div>
-    );
-  };
+  }
 
   const ReportSourceDashboard = () => {
     return (
@@ -383,16 +355,17 @@ export function ReportSettings(props) {
         {/* <Header /> */}
         <EuiSpacer size="s" />
         {/* <Footer /> */}
-        <EuiCheckboxGroup 
+        {/* <EuiCheckboxGroup 
             options={HEADER_FOOTER_CHECKBOX}
             idToSelectedMap={checkboxIdSelectHeaderFooter}
             onChange={handleCheckboxHeaderFooter}
             legend={{children:"Header and footer"}}
-        />
+        /> */}
+        <SettingsMarkdown />
         <EuiSpacer/>
-        <Header />
+        {/* <Header /> */}
         <EuiSpacer/>
-        <Footer/>
+        {/* <Footer/> */}
       </div>
     );
   };
@@ -413,9 +386,9 @@ export function ReportSettings(props) {
         <EuiSpacer />
         <PDFandPNGFileFormats />
         <EuiSpacer />
-        <Header />
+        {/* <Header /> */}
         <EuiSpacer size="s" />
-        <Footer />
+        {/* <Footer /> */}
       </div>
     );
   };
