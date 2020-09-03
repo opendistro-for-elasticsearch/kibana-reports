@@ -68,7 +68,7 @@ async function executeScheduledJob(
     index: 'report_definition',
     id: reportDefinitionId,
   });
-  const reportDefinition = esResp._source;
+  const reportDefinition = esResp._source.report_definition;
 
   // create report and return report data
   const reportData = await createReport(reportDefinition, client);

@@ -14,11 +14,11 @@
  */
 
 import { schema, TypeOf } from '@kbn/config-schema';
+import { REPORT_TYPE, TRIGGER_TYPE } from '../routes/utils/constants';
 
 export const dataReportSchema = schema.object({
   saved_search_id: schema.string(),
-  start: schema.string(),
-  end: schema.string(),
+  time_duration: schema.duration(), // moment.js duration format. e.g. "1h"
   report_format: schema.oneOf([schema.literal('csv'), schema.literal('xlsx')]),
 });
 
@@ -27,17 +27,6 @@ const visualReportSchema = schema.object({
   window_width: schema.number({ defaultValue: 1200 }),
   window_height: schema.number({ defaultValue: 800 }),
   report_format: schema.oneOf([schema.literal('pdf'), schema.literal('png')]),
-});
-
-export const scheduleSchema = schema.object({
-  schedule_type: schema.oneOf([
-    schema.literal('Now'),
-    schema.literal('Future Date'),
-    schema.literal('Recurring'),
-    schema.literal('Cron Based'),
-  ]),
-  schedule: schema.any(),
-  enabled_time: schema.number(),
 });
 
 export const intervalSchema = schema.object({
@@ -49,7 +38,7 @@ export const intervalSchema = schema.object({
       schema.literal('HOURS'),
       schema.literal('DAYS'),
     ]),
-    // timeStamp
+    // timestamp
     start_time: schema.number(),
   }),
 });
@@ -61,62 +50,67 @@ export const cronSchema = schema.object({
   }),
 });
 
-export const emailSchema = schema.object({
-  subject: schema.string(),
-  body: schema.string(),
-  has_attachment: schema.boolean({ defaultValue: true }),
-  recipients: schema.arrayOf(schema.string(), { minSize: 1 }),
+export const scheduleSchema = schema.object({
+  schedule_type: schema.oneOf([
+    /*
+    TODO: Alerting will be added in the future.
+    Currently @kbn/config-schema has no support for more than 2 conditions, keep an eye on library update
+    */
+    // schema.literal('Future Date'),
+    schema.literal('Recurring'),
+    schema.literal('Cron Based'),
+  ]),
+  schedule: schema.conditional(
+    schema.siblingRef('schedule_type'),
+    'Recurring',
+    intervalSchema,
+    cronSchema
+  ),
+  enabled_time: schema.number(),
+  enabled: schema.boolean(),
 });
 
-export const reportSchema = schema.object({
-  report_name: schema.string(),
-  report_source: schema.oneOf([
-    schema.literal('Dashboard'),
-    schema.literal('Visualization'),
-    schema.literal('Saved search'),
-  ]),
-  report_type: schema.oneOf([
-    schema.literal('Download'),
-    schema.literal('Alert'),
-    schema.literal('Schedule'),
-  ]),
-  description: schema.string(),
-  report_params: schema.conditional(
-    schema.siblingRef('report_source'),
-    'Saved search',
-    dataReportSchema,
-    visualReportSchema
-  ),
+export const reportDefinitionSchema = schema.object({
+  report_params: schema.object({
+    report_name: schema.string(),
+    report_source: schema.oneOf([
+      schema.literal('Dashboard'),
+      schema.literal('Visualization'),
+      schema.literal('Saved search'),
+    ]),
+    description: schema.string(),
 
-  delivery: schema.maybe(
-    schema.object({
-      channel: schema.oneOf([
-        schema.literal('Email'),
-        schema.literal('Slack'),
-        schema.literal('Chime'),
-        schema.literal('Kibana User'),
-      ]),
-      //TODO: no validation on delivery settings for now, because @kbn/config-schema has no support for more than 2 conditions
-      delivery_params: schema.any(),
-    })
-  ),
+    core_params: schema.conditional(
+      schema.siblingRef('report_source'),
+      'Saved search',
+      dataReportSchema,
+      visualReportSchema
+    ),
+  }),
 
-  trigger: schema.maybe(
-    schema.object({
-      trigger_type: schema.oneOf([
-        schema.literal('Alert'),
-        schema.literal('Schedule'),
-        schema.literal('On demand'),
-      ]),
-      trigger_params: schema.conditional(
-        schema.siblingRef('trigger_type'),
-        'Alert',
-        // TODO: add alerting schema here once we finished the design for alerting integration
-        schema.any(),
-        scheduleSchema
-      ),
-    })
-  ),
+  delivery: schema.object({
+    recipients: schema.arrayOf(schema.string(), { minSize: 0 }),
+    title: schema.string(),
+    description: schema.string(),
+  }),
+
+  trigger: schema.object({
+    trigger_type: schema.oneOf([
+      /*
+      TODO: Alerting will be added in the future.
+      Currently @kbn/config-schema has no support for more than 2 conditions, keep an eye on library update
+      */
+      // schema.literal(TRIGGER_TYPE.alerting)
+      schema.literal('Schedule'),
+      schema.literal('On demand'),
+    ]),
+    trigger_params: schema.conditional(
+      schema.siblingRef('trigger_type'),
+      'On demand',
+      schema.never(),
+      scheduleSchema
+    ),
+  }),
 });
 
-export type ReportSchemaType = TypeOf<typeof reportSchema>;
+export type ReportDefinitionSchemaType = TypeOf<typeof reportDefinitionSchema>;

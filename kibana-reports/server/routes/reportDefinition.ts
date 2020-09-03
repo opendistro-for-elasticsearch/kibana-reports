@@ -23,20 +23,9 @@ import {
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
-import {
-  reportSchema,
-  emailSchema,
-  scheduleSchema,
-  intervalSchema,
-  cronSchema,
-} from '../model';
+import { reportDefinitionSchema, ReportDefinitionSchemaType } from '../model';
 import { parseEsErrorResponse } from './utils/helpers';
-import {
-  REPORT_DEF_STATUS,
-  SCHEDULE_TYPE,
-  DELIVERY_CHANNEL,
-  TRIGGER_TYPE,
-} from './utils/constants';
+import { REPORT_DEFINITION_STATUS, TRIGGER_TYPE } from './utils/constants';
 
 export default function (router: IRouter) {
   // Create report Definition
@@ -54,23 +43,25 @@ export default function (router: IRouter) {
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       // input validation
       try {
-        validateReportDefinition(request.body);
+        reportDefinitionSchema.validate(request.body);
       } catch (error) {
         return response.badRequest({ body: error });
       }
 
       // save metadata
       try {
-        const definition = {
-          ...request.body,
-          time_created: new Date().toISOString(),
-          last_updated: new Date().toISOString(),
-          status: REPORT_DEF_STATUS.active,
+        const toSave = {
+          report_definition: {
+            ...request.body,
+            time_created: new Date().toISOString(),
+            last_updated: new Date().toISOString(),
+            status: REPORT_DEFINITION_STATUS.active,
+          },
         };
 
         const params: RequestParams.Index = {
           index: 'report_definition',
-          body: definition,
+          body: toSave,
         };
 
         const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
@@ -124,8 +115,7 @@ export default function (router: IRouter) {
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       // input validation
       try {
-        const reportDefinition = request.body;
-        validateReportDefinition(reportDefinition);
+        reportDefinitionSchema.validate(request.body);
       } catch (error) {
         return response.badRequest({ body: error });
       }
@@ -296,53 +286,12 @@ export default function (router: IRouter) {
   );
 }
 
-function validateReportDefinition(reportDefinition: any) {
-  reportSchema.validate(reportDefinition);
-  const delivery = reportDefinition.delivery;
-  const trigger = reportDefinition.trigger;
-  const deliveryParams = delivery.delivery_params;
-  const triggerParams = trigger.trigger_params;
-
-  switch (delivery.channel) {
-    case DELIVERY_CHANNEL.email:
-      emailSchema.validate(deliveryParams);
-      break;
-    //TODO: Add logic for the following
-    case DELIVERY_CHANNEL.slack:
-      break;
-    case DELIVERY_CHANNEL.chime:
-      break;
-    case DELIVERY_CHANNEL.kibana:
-      break;
-  }
-
-  // TODO: add alert/on-demand
-  if (trigger.trigger_type === TRIGGER_TYPE.schedule) {
-    scheduleSchema.validate(triggerParams);
-
-    const schedule = triggerParams.schedule;
-    switch (triggerParams.schedule_type) {
-      case SCHEDULE_TYPE.recurring:
-        intervalSchema.validate(schedule);
-        break;
-      case SCHEDULE_TYPE.cron:
-        cronSchema.validate(schedule);
-        break;
-      case SCHEDULE_TYPE.now:
-        //TODO: will do in refactor
-        break;
-      case SCHEDULE_TYPE.future:
-        //TODO: will add as enhancement feature
-        break;
-    }
-  }
-}
-
 async function createScheduledJob(
   request: KibanaRequest,
   reportDefinitionId: string,
   context: RequestHandlerContext
 ) {
+  // TODO: use ReportDefinitionSchemaType
   const reportDefinition: any = request.body;
   const trigger = reportDefinition.trigger;
   const triggerType = trigger.trigger_type;
@@ -360,7 +309,7 @@ async function createScheduledJob(
     const scheduledJob = {
       schedule: schedule,
       name: reportDefinition.report_name + '_schedule',
-      enabled: true,
+      enabled: triggerParams.enabled,
       report_definition_id: reportDefinitionId,
       enabled_time: triggerParams.enabled_time,
     };

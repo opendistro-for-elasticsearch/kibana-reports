@@ -23,16 +23,16 @@ import {
 } from '../../../../../src/core/server';
 
 export const createVisualReport = async (
-  report: any
+  reportParams: any
 ): Promise<{ timeCreated: string; dataUrl: string; fileName: string }> => {
-  const reportParams = report.report_params;
+  const coreParams = reportParams.core_params;
   // parse params
-  const url = reportParams.url;
-  const name = report.report_name;
-  const windowWidth = reportParams.window_width;
-  const windowHeight = reportParams.window_height;
-  const reportFormat = reportParams.report_format;
-  const reportSource = report.report_source;
+  const reportSource = reportParams.report_source;
+  const name = reportParams.report_name;
+  const url = coreParams.url;
+  const windowWidth = coreParams.window_width;
+  const windowHeight = coreParams.window_height;
+  const reportFormat = coreParams.report_format;
 
   // TODO: replace placeholders with actual schema data fields
   const header = 'Test report header sample text';
@@ -63,7 +63,8 @@ export const createVisualReport = async (
   const screenshot = await element.screenshot({ fullPage: false });
 
   /**
-   * Sets the content of the page to have the header be above the trimmed screenshot and the footer be below it
+   * Sets the content of the page to have the header be above the trimmed screenshot
+   * and the footer be below it
    */
   await page.setContent(`
     <!DOCTYPE html>
@@ -105,7 +106,7 @@ export const createVisualReport = async (
 };
 
 export const createReport = async (
-  report: any,
+  reportDefinition: any,
   client: IClusterClient | IScopedClusterClient
 ): Promise<{ timeCreated: string; dataUrl: string; fileName: string }> => {
   let createReportResult: {
@@ -115,8 +116,8 @@ export const createReport = async (
   };
 
   //TODO: create new report instance with pending status
-
-  const reportSource = report.report_source;
+  const reportParams = reportDefinition.report_params;
+  const reportSource = reportParams.report_source;
 
   if (reportSource === REPORT_TYPE.savedSearch) {
     // TODO: Add createDataReport(report)
@@ -125,20 +126,24 @@ export const createReport = async (
     reportSource === REPORT_TYPE.dashboard ||
     reportSource === REPORT_TYPE.visualization
   ) {
-    createReportResult = await createVisualReport(report);
+    createReportResult = await createVisualReport(reportParams);
   }
 
   // save report instance with created state
   // TODO: save report instance with error state
-  report = {
-    ...report,
-    time_created: createReportResult.timeCreated,
-    state: REPORT_STATE.created,
+  const toSave = {
+    report: {
+      time_created: createReportResult.timeCreated,
+      state: REPORT_STATE.created,
+      report_definition: {
+        ...reportDefinition,
+      },
+    },
   };
 
   const params: RequestParams.Index = {
     index: 'report',
-    body: report,
+    body: toSave,
   };
 
   //@ts-ignore

@@ -23,7 +23,7 @@ export enum REPORT_STATE {
   error = 'Error',
 }
 
-export enum REPORT_DEF_STATUS {
+export enum REPORT_DEFINITION_STATUS {
   active = 'Active',
   disabled = 'Disabled',
 }

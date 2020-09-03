@@ -22,7 +22,7 @@ import {
 import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
 import { createReport } from './utils/reportHelper';
-import { reportSchema, ReportSchemaType } from '../model';
+import { reportDefinitionSchema } from '../model';
 import { parseEsErrorResponse } from './utils/helpers';
 
 export default function (router: IRouter) {
@@ -41,7 +41,7 @@ export default function (router: IRouter) {
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       // input validation
       try {
-        reportSchema.validate(request.body);
+        reportDefinitionSchema.validate(request.body);
       } catch (error) {
         return response.badRequest({ body: error });
       }
