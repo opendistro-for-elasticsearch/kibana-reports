@@ -64,11 +64,11 @@ async function executeScheduledJob(
   logger: Logger
 ) {
   // retrieve report definition
-  const res = await client.callAsInternalUser('get', {
+  const esResp = await client.callAsInternalUser('get', {
     index: 'report_definition',
     id: reportDefinitionId,
   });
-  const reportDefinition = res._source;
+  const reportDefinition = esResp._source;
 
   // create report and return report data
   const reportData = await createReport(reportDefinition, client);

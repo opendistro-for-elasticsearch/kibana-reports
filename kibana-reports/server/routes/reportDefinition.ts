@@ -37,7 +37,6 @@ import {
   DELIVERY_CHANNEL,
   TRIGGER_TYPE,
 } from './utils/constants';
-import { createReport } from './utils/reportHelper';
 
 export default function (router: IRouter) {
   // Create report Definition
@@ -378,10 +377,12 @@ async function createScheduledJob(
   } else if (triggerType == TRIGGER_TYPE.alerting) {
     //TODO: add alert-based scheduling logic [enhancement feature]
   } else if (triggerType == TRIGGER_TYPE.onDemand) {
-    //TODO: return nothing for on Demand report, because currently on-demand report is handled by client side,
-    // by hitting the create report http endpoint with data to get a report downloaded. Server side only saves
-    // that on-demand report definition into the index. Need further discussion on what behavior we want
-    // await createReport(reportDefinition, esClient);
+    /*
+     * TODO: return nothing for on Demand report, because currently on-demand report is handled by client side,
+     * by hitting the create report http endpoint with data to get a report downloaded. Server side only saves
+     * that on-demand report definition into the index. Need further discussion on what behavior we want
+     * await createReport(reportDefinition, esClient);
+     */
     return;
   }
 }
