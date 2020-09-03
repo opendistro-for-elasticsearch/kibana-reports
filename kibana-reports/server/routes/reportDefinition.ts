@@ -316,7 +316,6 @@ function validateReportDefinition(reportDefinition: any) {
       break;
   }
 
-
   // TODO: add alert/on-demand
   if (trigger.trigger_type === TRIGGER_TYPE.schedule) {
     scheduleSchema.validate(triggerParams);
