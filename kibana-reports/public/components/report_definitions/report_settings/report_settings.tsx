@@ -43,6 +43,7 @@ import {
   REPORT_SOURCE_RADIOS,
   PDF_PNG_FILE_FORMAT_OPTIONS,
   SAVED_SEARCH_FORMAT_OPTIONS,
+  reportSourceType
 } from './report_settings_constants';
 import dateMath from '@elastic/datemath';
 import Showdown from 'showdown';
@@ -461,21 +462,21 @@ export function ReportSettings(props) {
     );
   };
 
-  const setReportSourceDropdownOption = (options, report_source, url) => {
+  const setReportSourceDropdownOption = (options, reportSource, url) => {
     let index = 0;
-    if (report_source === 'Dashboard') {
+    if (reportSource === reportSourceType.dashboard) {
       for (index = 0; index < options.dashboard.length; ++index) {
         if (url.includes(options.dashboard[index].value)) {
           setDashboardSourceSelect(options.dashboard[index].value);
         }
       }
-    } else if (report_source === 'Visualization') {
+    } else if (reportSource === reportSourceType.visualization) {
       for (index = 0; index < options.visualizations.length; ++index) {
         if (url.includes(options.visualizations[index].value)) {
           setVisualizationSourceSelect(options.visualizations[index].value);
         }
       }
-    } else if (report_source === 'Saved search') {
+    } else if (reportSource === reportSourceType.savedSearch) {
       // todo: add logic once get Visualizations + search is merged
     }
   };
