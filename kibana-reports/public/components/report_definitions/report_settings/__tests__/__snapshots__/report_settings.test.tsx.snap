@@ -469,46 +469,51 @@ exports[`<ReportSettings /> panel render component 1`] = `
         <div
           class="euiSpacer euiSpacer--l"
         />
-        <div>
-          <div
-            class="euiCheckbox"
-          >
-            <input
-              class="euiCheckbox__input"
-              id="includeHeaderCheckbox"
-              type="checkbox"
-            />
-            <div
-              class="euiCheckbox__square"
-            />
-            <label
-              class="euiCheckbox__label"
-              for="includeHeaderCheckbox"
-            >
-              Include header
-            </label>
-          </div>
-          <div
-            class="euiSpacer euiSpacer--l"
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div>
+        <div
+          class="euiCheckbox"
+        >
+          <input
+            class="euiCheckbox__input"
+            id="includeHeaderCheckbox"
+            type="checkbox"
           />
           <div
-            class="euiCheckbox"
+            class="euiCheckbox__square"
+          />
+          <label
+            class="euiCheckbox__label"
+            for="includeHeaderCheckbox"
           >
-            <input
-              class="euiCheckbox__input"
-              id="includeFooterCheckbox"
-              type="checkbox"
-            />
-            <div
-              class="euiCheckbox__square"
-            />
-            <label
-              class="euiCheckbox__label"
-              for="includeFooterCheckbox"
-            >
-              Include footer
-            </label>
-          </div>
+            Include header
+          </label>
+        </div>
+      </div>
+      <div
+        class="euiSpacer euiSpacer--s"
+      />
+      <div>
+        <div
+          class="euiCheckbox"
+        >
+          <input
+            class="euiCheckbox__input"
+            id="includeFooterCheckbox"
+            type="checkbox"
+          />
+          <div
+            class="euiCheckbox__square"
+          />
+          <label
+            class="euiCheckbox__label"
+            for="includeFooterCheckbox"
+          >
+            Include footer
+          </label>
         </div>
       </div>
     </div>

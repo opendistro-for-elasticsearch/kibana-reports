@@ -25,7 +25,7 @@ describe('test create visual report', () => {
       report_type: 'Download',
       description: 'Hi this is your dashboard',
       report_params: {
-        url: 'https://opendistro.github.io/for-elasticsearch-docs/',
+        url: 'https://demo.elastic.co/app/kibana#/dashboard/welcome_dashboard',
         window_width: 1300,
         window_height: 900,
         report_format: 'png',
@@ -46,7 +46,7 @@ describe('test create visual report', () => {
       report_type: 'Download',
       description: 'Hi this is your dashboard',
       report_params: {
-        url: 'https://opendistro.github.io/for-elasticsearch-docs/',
+        url: 'https://demo.elastic.co/app/kibana#/dashboard/welcome_dashboard',
         window_width: 1300,
         window_height: 900,
         report_format: 'pdf',

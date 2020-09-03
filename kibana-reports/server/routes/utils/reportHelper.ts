@@ -12,6 +12,7 @@
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+
 import puppeteer from 'puppeteer';
 import { v1 as uuidv1 } from 'uuid';
 import { FORMAT, REPORT_TYPE, REPORT_STATE } from './constants';
@@ -31,51 +32,76 @@ export const createVisualReport = async (
   const windowWidth = reportParams.window_width;
   const windowHeight = reportParams.window_height;
   const reportFormat = reportParams.report_format;
+  const reportSource = report.report_source;
 
-  try {
-    // set up puppeteer
-    const browser = await puppeteer.launch({
-      headless: true,
-    });
-    const page = await browser.newPage();
-    await page.setDefaultNavigationTimeout(0);
-    await page.goto(url, { waitUntil: 'networkidle0' });
+  // TODO: replace placeholders with actual schema data fields
+  const header = 'Test report header sample text';
+  const footer = 'Test report footer sample text';
+  // set up puppeteer
+  const browser = await puppeteer.launch({
+    headless: true,
+  });
+  const page = await browser.newPage();
+  await page.setDefaultNavigationTimeout(0);
+  await page.goto(url, { waitUntil: 'networkidle0' });
+  await page.setViewport({
+    width: windowWidth,
+    height: windowHeight,
+  });
 
-    await page.setViewport({
-      width: windowWidth,
-      height: windowHeight,
-    });
-
-    let buffer;
-    // create pdf or png accordingly
-    if (reportFormat === FORMAT.pdf) {
-      const scrollHeight = await page.evaluate(
-        () => document.documentElement.scrollHeight
-      );
-
-      buffer = await page.pdf({
-        margin: 'none',
-        width: windowWidth,
-        height: scrollHeight + 'px',
-        printBackground: true,
-        pageRanges: '1',
-      });
-    } else if (reportFormat === FORMAT.png) {
-      buffer = await page.screenshot({
-        fullPage: true,
-      });
-    }
-
-    const timeCreated = new Date().toISOString();
-    const fileName = getFileName(name, timeCreated) + '.' + reportFormat;
-
-    //TODO: Add header and footer, phase 2
-
-    await browser.close();
-    return { timeCreated, dataUrl: buffer.toString('base64'), fileName };
-  } catch (error) {
-    throw error;
+  let buffer;
+  let element;
+  // crop content
+  if (reportSource === REPORT_TYPE.dashboard) {
+    await page.waitForSelector('#dashboardViewport');
+    element = await page.$('#dashboardViewport');
+  } else if (reportSource === REPORT_TYPE.visualization) {
+    await page.waitForSelector('.visChart');
+    element = await page.$('.visChart');
   }
+
+  const screenshot = await element.screenshot({ fullPage: false });
+
+  /**
+   * Sets the content of the page to have the header be above the trimmed screenshot and the footer be below it
+   */
+  await page.setContent(`
+    <!DOCTYPE html>
+    <html>
+      <div>
+      <h1>${header}</h1>
+        <img src="data:image/png;base64,${screenshot.toString('base64')}">
+      <h1>${footer}</h1>
+      </div>
+    </html>
+    `);
+
+  // create pdf or png accordingly
+  if (reportFormat === FORMAT.pdf) {
+    const scrollHeight = await page.evaluate(
+      () => document.documentElement.scrollHeight
+    );
+
+    buffer = await page.pdf({
+      margin: 'none',
+      width: windowWidth,
+      height: scrollHeight + 'px',
+      printBackground: true,
+      pageRanges: '1',
+    });
+  } else if (reportFormat === FORMAT.png) {
+    buffer = await page.screenshot({
+      fullPage: true,
+    });
+  }
+
+  const timeCreated = new Date().toISOString();
+  const fileName = getFileName(name, timeCreated) + '.' + reportFormat;
+
+  //TODO: Add header and footer, phase 2
+
+  await browser.close();
+  return { timeCreated, dataUrl: buffer.toString('base64'), fileName };
 };
 
 export const createReport = async (
@@ -93,7 +119,7 @@ export const createReport = async (
   const reportSource = report.report_source;
 
   if (reportSource === REPORT_TYPE.savedSearch) {
-    // TODO: createDataReport(report)
+    // TODO: Add createDataReport(report)
     console.log('placeholder for createDataReport');
   } else if (
     reportSource === REPORT_TYPE.dashboard ||
