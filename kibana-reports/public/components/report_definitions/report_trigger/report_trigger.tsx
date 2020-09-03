@@ -468,7 +468,6 @@ export function ReportTrigger(props) {
   const alert = reportTriggerType === 'alertOption' ? <AlertTrigger /> : null;
 
   // TODO: Change schema so these values are not required depending on trigger type
-  // trigger_params['schedule'] = temp_trigger_params;
   trigger_schema['trigger_params'] = trigger_params;
   reportDefinitionRequest['trigger'] = trigger_schema;
 
