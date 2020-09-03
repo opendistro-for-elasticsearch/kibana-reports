@@ -48,6 +48,9 @@ import {
   HEADER_FOOTER_CHECKBOX
 } from './report_settings_constants';
 import dateMath from '@elastic/datemath';
+import Showdown from 'showdown';
+import ReactMde from 'react-mde';
+import 'react-mde/lib/styles/css/react-mde-all.css';
 
 const isValidTimeRange = (
   timeRangeMoment: number | moment.Moment,
@@ -169,6 +172,12 @@ export function ReportSettings(props) {
   );
   const [includeHeader, setIncludeHeader] = useState(false);
   const [includeFooter, setIncludeFooter] = useState(false);
+
+  const [footer, setFooter] = useState('');
+  const [selectedTabFooter, setSelectedTabFooter] = React.useState<
+    'write' | 'preview'
+  >('write');
+
   const [checkboxIdSelectHeaderFooter, setCheckboxIdSelectHeaderFooter] = 
     useState({['header']: false, ['footer']: false});
 
@@ -242,18 +251,6 @@ export function ReportSettings(props) {
     setSavedSearchFileFormat(e);
   };
 
-  const handleIncludeHeader = (e: {
-    target: { checked: React.SetStateAction<boolean> };
-  }) => {
-    setIncludeHeader(e.target.checked);
-  };
-
-  const handleIncludeFooter = (e: {
-    target: { checked: React.SetStateAction<boolean> };
-  }) => {
-    setIncludeFooter(e.target.checked);
-  };
-
   const handleCheckboxHeaderFooter = optionId => {
     const newCheckboxIdToSelectedMap = {
       ...checkboxIdSelectHeaderFooter,
@@ -261,53 +258,92 @@ export function ReportSettings(props) {
         [optionId]: !checkboxIdSelectHeaderFooter[optionId],
       },
     };
-    console.log(checkboxIdSelectHeaderFooter)
     setCheckboxIdSelectHeaderFooter(newCheckboxIdToSelectedMap);
   };
 
-  const HeaderAndFooter = () => {
+  const converter = new Showdown.Converter({
+    tables: true,
+    simplifiedAutoLink: true,
+    strikethrough: true,
+    tasklists: true,
+  });
+
+  const Header = () => {
+    const [includeHeader, setIncludeHeader] = useState(false);
+
     const [header, setHeader] = useState('');
-    const [footer, setFooter] = useState('');
+    const [selectedTabHeader, setSelectedTabHeader] = React.useState<
+      'write' | 'preview'
+    >('write');
 
-    const handleHeader = (e: {
-      target: { value: React.SetStateAction<string> };
+    const handleIncludeHeader = (e: {
+      target: { checked: React.SetStateAction<boolean> };
     }) => {
-      setHeader(e.target.value);
-    };
-
-    const handleFooter = (e: {
-      target: { value: React.SetStateAction<string> };
-    }) => {
-      setFooter(e.target.value);
+      setIncludeHeader(e.target.checked);
     };
 
     const showHeader = (checkboxIdSelectHeaderFooter.header) ? (
-      <EuiTextArea
-        placeholder="Header text"
+      <ReactMde
         value={header}
-        onChange={handleHeader}
+        onChange={setHeader}
+        selectedTab={selectedTabHeader}
+        onTabChange={setSelectedTabHeader}
+        toolbarCommands={[
+          ['header', 'bold', 'italic', 'strikethrough'],
+          ['unordered-list', 'ordered-list', 'checked-list'],
+        ]}
+        generateMarkdownPreview={(markdown) =>
+          Promise.resolve(converter.makeHtml(markdown))
+        }
       />
-    ) : null;
-
-    const showFooter = (checkboxIdSelectHeaderFooter.footer) ? (
-        <EuiTextArea
-          placeholder="Footer text"
-          value={footer}
-          onChange={handleFooter}
-        />
     ) : null;
 
     return (
       <div>
-        <EuiCheckboxGroup 
+        {/* <EuiCheckboxGroup 
             options={HEADER_FOOTER_CHECKBOX}
             idToSelectedMap={checkboxIdSelectHeaderFooter}
             onChange={handleCheckboxHeaderFooter}
             legend={{children:"Header and footer"}}
           />
-        <EuiSpacer/>
+        <EuiSpacer/> */}
         {showHeader}
-        <EuiSpacer/>
+      </div>
+    );
+  };
+
+  const Footer = () => {
+    const [includeFooter, setIncludeFooter] = useState(false);
+
+    // const [footer, setFooter] = useState('');
+    // const [selectedTabFooter, setSelectedTabFooter] = React.useState<
+    //   'write' | 'preview'
+    // >('write');
+
+    const handleIncludeFooter = (e: {
+      target: { checked: React.SetStateAction<boolean> };
+    }) => {
+      setIncludeFooter(e.target.checked);
+    };
+
+    const showFooter = (checkboxIdSelectHeaderFooter.footer) ? (
+      <ReactMde
+        value={footer}
+        onChange={setFooter}
+        selectedTab={selectedTabFooter}
+        onTabChange={setSelectedTabFooter}
+        toolbarCommands={[
+          ['header', 'bold', 'italic', 'strikethrough'],
+          ['unordered-list', 'ordered-list', 'checked-list'],
+        ]}
+        generateMarkdownPreview={(markdown) =>
+          Promise.resolve(converter.makeHtml(markdown))
+        }
+      />
+    ) : null;
+
+    return (
+      <div>
         {showFooter}
       </div>
     );
@@ -324,7 +360,6 @@ export function ReportSettings(props) {
           />
         </EuiFormRow>
         <EuiSpacer />
-        <HeaderAndFooter />
       </div>
     );
   };
@@ -344,6 +379,20 @@ export function ReportSettings(props) {
         <TimeRangeSelect />
         <EuiSpacer />
         <PDFandPNGFileFormats />
+        <EuiSpacer />
+        {/* <Header /> */}
+        <EuiSpacer size="s" />
+        {/* <Footer /> */}
+        <EuiCheckboxGroup 
+            options={HEADER_FOOTER_CHECKBOX}
+            idToSelectedMap={checkboxIdSelectHeaderFooter}
+            onChange={handleCheckboxHeaderFooter}
+            legend={{children:"Header and footer"}}
+        />
+        <EuiSpacer/>
+        <Header />
+        <EuiSpacer/>
+        <Footer/>
       </div>
     );
   };
@@ -363,6 +412,10 @@ export function ReportSettings(props) {
         <TimeRangeSelect />
         <EuiSpacer />
         <PDFandPNGFileFormats />
+        <EuiSpacer />
+        <Header />
+        <EuiSpacer size="s" />
+        <Footer />
       </div>
     );
   };
