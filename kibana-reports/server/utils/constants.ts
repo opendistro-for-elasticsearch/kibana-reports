@@ -13,17 +13,4 @@
  * permissions and limitations under the License.
  */
 
-import registerReportRoute from './report';
-import registerReportDefinitionRoute from './reportDefinition';
-import registerDataReport from './dataReport';
-import registerDataReportMetadata from './dataReportMetadata';
-import registerReportSourceRoute from './getReportSource';
-import { IRouter } from '../../../../src/core/server';
-
-export default function (router: IRouter) {
-  registerReportRoute(router);
-  registerReportDefinitionRoute(router);
-  registerDataReportMetadata(router);
-  registerDataReport(router);
-  registerReportSourceRoute(router);
-}
+export const POLLER_INTERVAL = 1000 * 60 * 5; // in milliseconds (5 min)

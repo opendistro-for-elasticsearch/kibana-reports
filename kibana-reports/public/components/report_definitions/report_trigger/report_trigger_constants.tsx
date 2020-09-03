@@ -15,6 +15,10 @@
 
 export const REPORT_TYPE_OPTIONS = [
   {
+    id: 'onDemand',
+    label: 'On demand'
+  },
+  {
     id: 'scheduleOption',
     label: 'Schedule based',
   },

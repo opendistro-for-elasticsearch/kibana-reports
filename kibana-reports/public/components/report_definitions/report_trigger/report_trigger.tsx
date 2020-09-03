@@ -57,6 +57,7 @@ const tempTriggerParamTime = '1553112384';
 let trigger_params = {
   schedule_type: '',
   schedule: {},
+  enabled_time: 1234567 // temp value to pass schema
 };
 
 let trigger_schema = {
@@ -80,8 +81,8 @@ export function ReportTrigger(props) {
     httpClientProps,
   } = props;
 
-  const [reportTriggerType, setReportTriggerType] = useState('scheduleOption');
-  trigger_schema['trigger_type'] = 'Schedule';
+  const [reportTriggerType, setReportTriggerType] = useState('onDemand');
+  trigger_schema['trigger_type'] = 'On demand';
 
   const [scheduleRequestTime, setScheduleRequestTime] = useState('nowOption');
   trigger_params['schedule_type'] = 'Now';
@@ -467,7 +468,7 @@ export function ReportTrigger(props) {
   const alert = reportTriggerType === 'alertOption' ? <AlertTrigger /> : null;
 
   // TODO: Change schema so these values are not required depending on trigger type
-  trigger_params['schedule'] = temp_trigger_params;
+  // trigger_params['schedule'] = temp_trigger_params;
   trigger_schema['trigger_params'] = trigger_params;
   reportDefinitionRequest['trigger'] = trigger_schema;
 

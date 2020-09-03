@@ -45,6 +45,9 @@ import {
   SAVED_SEARCH_FORMAT_OPTIONS,
 } from './report_settings_constants';
 import dateMath from '@elastic/datemath';
+import Showdown from 'showdown';
+import ReactMde from 'react-mde';
+import 'react-mde/lib/styles/css/react-mde-all.css';
 
 const isValidTimeRange = (
   timeRangeMoment: number | moment.Moment,
@@ -156,6 +159,8 @@ export function ReportSettings(props) {
   const [visualizationSourceSelect, setVisualizationSourceSelect] = useState(
     REPORT_SOURCE_VISUALIZATION_OPTIONS[0].value
   );
+  const [visualizations, setVisualizations] = useState([]);
+
   const [savedSearchSourceSelect, setSavedSearchSourceSelect] = useState(
     REPORT_SOURCE_SAVED_SEARCH_OPTIONS[0].value
   );
@@ -164,11 +169,13 @@ export function ReportSettings(props) {
   const [savedSearchFileFormat, setSavedSearchFileFormat] = useState(
     'csvFormat'
   );
-  const [includeHeader, setIncludeHeader] = useState(false);
-  const [includeFooter, setIncludeFooter] = useState(false);
 
   const handleDashboards = (e) => {
     setDashboards(e);
+  };
+
+  const handleVisualizations = (e) => {
+    setVisualizations(e);
   };
 
   const handleReportName = (e: {
@@ -189,8 +196,12 @@ export function ReportSettings(props) {
     setReportSourceId(e);
     if (e === 'dashboardReportSource') {
       reportDefinitionRequest['report_source'] = 'Dashboard';
+      reportDefinitionRequest['report_params']['url'] =
+        getDashboardBaseUrlCreate() + dashboards[0].value;
     } else if (e === 'visualizationReportSource') {
       reportDefinitionRequest['report_source'] = 'Visualization';
+      reportDefinitionRequest['report_params']['url'] =
+        getVisualizationBaseUrlCreate() + visualizations[0].value;
     }
   };
 
@@ -206,6 +217,8 @@ export function ReportSettings(props) {
     target: { value: React.SetStateAction<string> };
   }) => {
     setVisualizationSourceSelect(e.target.value);
+    reportDefinitionRequest['report_params']['url'] =
+      getVisualizationBaseUrlCreate() + e.target.value;
   };
 
   const handleSavedSearchSelect = (e: {
@@ -227,47 +240,40 @@ export function ReportSettings(props) {
     setSavedSearchFileFormat(e);
   };
 
-  const handleIncludeHeader = (e: {
-    target: { checked: React.SetStateAction<boolean> };
-  }) => {
-    setIncludeHeader(e.target.checked);
-  };
+  const converter = new Showdown.Converter({
+    tables: true,
+    simplifiedAutoLink: true,
+    strikethrough: true,
+    tasklists: true,
+  });
 
-  const handleIncludeFooter = (e: {
-    target: { checked: React.SetStateAction<boolean> };
-  }) => {
-    setIncludeFooter(e.target.checked);
-  };
+  const Header = () => {
+    const [includeHeader, setIncludeHeader] = useState(false);
 
-  const HeaderAndFooter = () => {
     const [header, setHeader] = useState('');
-    const [footer, setFooter] = useState('');
+    const [selectedTabHeader, setSelectedTabHeader] = React.useState<
+      'write' | 'preview'
+    >('write');
 
-    const handleHeader = (e: {
-      target: { value: React.SetStateAction<string> };
+    const handleIncludeHeader = (e: {
+      target: { checked: React.SetStateAction<boolean> };
     }) => {
-      setHeader(e.target.value);
-    };
-
-    const handleFooter = (e: {
-      target: { value: React.SetStateAction<string> };
-    }) => {
-      setFooter(e.target.value);
+      setIncludeHeader(e.target.checked);
     };
 
     const showHeader = includeHeader ? (
-      <EuiTextArea
-        placeholder="Header text"
+      <ReactMde
         value={header}
-        onChange={handleHeader}
-      />
-    ) : null;
-
-    const showFooter = includeFooter ? (
-      <EuiTextArea
-        placeholder="Footer text"
-        value={footer}
-        onChange={handleFooter}
+        onChange={setHeader}
+        selectedTab={selectedTabHeader}
+        onTabChange={setSelectedTabHeader}
+        toolbarCommands={[
+          ['header', 'bold', 'italic', 'strikethrough'],
+          ['unordered-list', 'ordered-list', 'checked-list'],
+        ]}
+        generateMarkdownPreview={(markdown) =>
+          Promise.resolve(converter.makeHtml(markdown))
+        }
       />
     ) : null;
 
@@ -280,7 +286,42 @@ export function ReportSettings(props) {
           onChange={handleIncludeHeader}
         />
         {showHeader}
-        <EuiSpacer />
+      </div>
+    );
+  };
+
+  const Footer = () => {
+    const [includeFooter, setIncludeFooter] = useState(false);
+
+    const [footer, setFooter] = useState('');
+    const [selectedTabFooter, setSelectedTabFooter] = React.useState<
+      'write' | 'preview'
+    >('write');
+
+    const handleIncludeFooter = (e: {
+      target: { checked: React.SetStateAction<boolean> };
+    }) => {
+      setIncludeFooter(e.target.checked);
+    };
+
+    const showFooter = includeFooter ? (
+      <ReactMde
+        value={footer}
+        onChange={setFooter}
+        selectedTab={selectedTabFooter}
+        onTabChange={setSelectedTabFooter}
+        toolbarCommands={[
+          ['header', 'bold', 'italic', 'strikethrough'],
+          ['unordered-list', 'ordered-list', 'checked-list'],
+        ]}
+        generateMarkdownPreview={(markdown) =>
+          Promise.resolve(converter.makeHtml(markdown))
+        }
+      />
+    ) : null;
+
+    return (
+      <div>
         <EuiCheckbox
           id="includeFooterCheckbox"
           label="Include footer"
@@ -303,7 +344,6 @@ export function ReportSettings(props) {
           />
         </EuiFormRow>
         <EuiSpacer />
-        <HeaderAndFooter />
       </div>
     );
   };
@@ -323,6 +363,10 @@ export function ReportSettings(props) {
         <TimeRangeSelect />
         <EuiSpacer />
         <PDFandPNGFileFormats />
+        <EuiSpacer />
+        <Header />
+        <EuiSpacer size="s" />
+        <Footer />
       </div>
     );
   };
@@ -333,7 +377,7 @@ export function ReportSettings(props) {
         <EuiFormRow label="Select visualization">
           <EuiSelect
             id="reportSourceVisualizationSelect"
-            options={REPORT_SOURCE_VISUALIZATION_OPTIONS}
+            options={visualizations}
             value={visualizationSourceSelect}
             onChange={handleVisualizationSelect}
           />
@@ -342,6 +386,10 @@ export function ReportSettings(props) {
         <TimeRangeSelect />
         <EuiSpacer />
         <PDFandPNGFileFormats />
+        <EuiSpacer />
+        <Header />
+        <EuiSpacer size="s" />
+        <Footer />
       </div>
     );
   };
@@ -422,7 +470,11 @@ export function ReportSettings(props) {
         }
       }
     } else if (report_source === 'Visualization') {
-      // todo: add logic once get Visualizations + search is merged
+      for (index = 0; index < options.visualizations.length; ++index) {
+        if (url.includes(options.visualizations[index].value)) {
+          setVisualizationSourceSelect(options.visualizations[index].value);
+        }
+      }
     } else if (report_source === 'Saved search') {
       // todo: add logic once get Visualizations + search is merged
     }
@@ -479,7 +531,7 @@ export function ReportSettings(props) {
       savedSearch: [],
     };
     await httpClientProps
-      .get('../api/reporting/getDashboards')
+      .get('../api/reporting/getReportSource/dashboard')
       .then(async (response) => {
         let dashboardOptions = getReportSettingDashboardOptions(
           response['hits']['hits']
@@ -498,7 +550,50 @@ export function ReportSettings(props) {
       });
     reportDefinitionRequest['report_params']['report_format'] = 'pdf';
     reportDefinitionRequest['report_source'] = 'Dashboard';
+
+    await httpClientProps
+      .get('../api/reporting/getReportSource/visualization')
+      .then(async (response) => {
+        let visualizationOptions = getVisualizationOptions(
+          response['hits']['hits']
+        );
+        reportSourceOptions.visualizations = visualizationOptions;
+        await handleVisualizations(visualizationOptions);
+        await setVisualizationSourceSelect(visualizationOptions[0].value);
+      })
+      .catch((error) => {
+        console.log('error when fetching visualizations:', error);
+      });
+
     return reportSourceOptions;
+  }
+
+
+  const getVisualizationOptions = (data) => {
+    let index;
+    let options = [];
+    for (index = 0; index < data.length; ++index) {
+      let entry = {
+        value: data[index]['_id'].substring(14),
+        text: data[index]['_source']['visualization']['title'],
+      };
+      options.push(entry);
+    }
+    return options;
+  };
+
+  const getVisualizationBaseUrlCreate = () => {
+    let baseUrl = window.location.href;
+    if (edit) {
+      return baseUrl.replace(
+        'opendistro_kibana_reports#/edit',
+        'kibana#/visualize/edit/'
+      );
+    }
+    return baseUrl.replace(
+      'opendistro_kibana_reports#/create',
+      'kibana#/visualize/edit/'
+    );
   };
 
   useEffect(() => {

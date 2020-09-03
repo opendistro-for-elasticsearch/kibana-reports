@@ -21,26 +21,50 @@ import {
 import { API_PREFIX } from '../../common';
 import { parseEsErrorResponse } from './utils/helpers';
 import { RequestParams } from '@elastic/elasticsearch';
+import { schema } from '@kbn/config-schema';
+import { DEFAULT_MAX_SIZE } from './utils/constants';
 
 export default function (router: IRouter) {
   router.get(
     {
-      path: `${API_PREFIX}/getDashboards`,
-      validate: {},
+      path: `${API_PREFIX}/getReportSource/{reportSourceType}`,
+      validate: {
+        params: schema.object({
+          reportSourceType: schema.string(),
+        }),
+      },
     },
     async (
       context,
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
-      const params: RequestParams.Search = {
-        index: '.kibana',
-        q: 'type:dashboard',
-      };
+      let responseParams;
+      if (request.params.reportSourceType === 'dashboard') {
+        const params: RequestParams.Search = {
+          index: '.kibana',
+          q: 'type:dashboard',
+        };
+        responseParams = params;
+      } else if (request.params.reportSourceType === 'visualization') {
+        const params: RequestParams.Search = {
+          index: '.kibana',
+          q: 'type:visualization',
+          size: DEFAULT_MAX_SIZE,
+        };
+        responseParams = params;
+      } else if (request.params.reportSourceType === 'search') {
+        const params: RequestParams.Search = {
+          index: '.kibana',
+          q: 'type:search',
+          size: DEFAULT_MAX_SIZE,
+        };
+        responseParams = params;
+      }
       try {
         const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
           'search',
-          params
+          responseParams
         );
         return response.ok({
           body: esResp,
@@ -48,7 +72,7 @@ export default function (router: IRouter) {
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
-          `Failed to get reports details: ${error}`
+          `Failed to get reports source for ${request.params.reportSourceType}: ${error}`
         );
         return response.custom({
           statusCode: error.statusCode,

@@ -18,6 +18,8 @@ import {
   IRouter,
   IKibanaResponse,
   ResponseError,
+  RequestHandlerContext,
+  KibanaRequest,
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
@@ -33,6 +35,7 @@ import {
   REPORT_DEF_STATUS,
   SCHEDULE_TYPE,
   DELIVERY_CHANNEL,
+  TRIGGER_TYPE,
 } from './utils/constants';
 
 export default function (router: IRouter) {
@@ -51,22 +54,13 @@ export default function (router: IRouter) {
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       // input validation
       try {
-        const reportDefinition = request.body;
-        validateReportDefinition(reportDefinition);
+        validateReportDefinition(request.body);
       } catch (error) {
         return response.badRequest({ body: error });
       }
 
-      // Store metadata
+      // save metadata
       try {
-        /**
-         * TODO: temporary, need to change after we figure out the correct date modeling
-         * https://github.com/elastic/kibana/blob/master/src/core/MIGRATION.md#use-scoped-services
-         * from the migration plan of kibana new platform, the usage says to get access to Elasticsearch data by
-         * await context.core.elasticsearch.adminClient.callAsInternalUser('ping');
-         * However, that doesn't work for now
-         */
-
         const definition = {
           ...request.body,
           time_created: new Date().toISOString(),
@@ -78,13 +72,25 @@ export default function (router: IRouter) {
           index: 'report_definition',
           body: definition,
         };
+
         const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
           'index',
           params
         );
 
+        // create schedule by reports-scheduler
+        const reportDefinitionId = esResp._id;
+        const res = await createScheduledJob(
+          request,
+          reportDefinitionId,
+          context
+        );
+
         return response.ok({
-          body: esResp._id,
+          body: {
+            state: 'Report definition created',
+            scheduler_response: res,
+          },
         });
       } catch (error) {
         //@ts-ignore
@@ -126,14 +132,6 @@ export default function (router: IRouter) {
 
       // Update metadata
       try {
-        /**
-         * TODO: temporary, need to change after we figure out the correct date modeling
-         * https://github.com/elastic/kibana/blob/master/src/core/MIGRATION.md#use-scoped-services
-         * from the migration plan of kibana new platform, the usage says to get access to Elasticsearch data by
-         * await context.core.elasticsearch.adminClient.callAsInternalUser('ping');
-         * However, that doesn't work for now
-         */
-
         const updatedDefinition = {
           ...request.body,
           last_updated: new Date().toISOString(),
@@ -260,6 +258,7 @@ export default function (router: IRouter) {
   );
 
   // Delete single report definition by id
+  // TODO: this api is not supported by UI, once it gets supported, also need to update this logic with de-scheduling
   router.delete(
     {
       path: `${API_PREFIX}/reportDefinitions/{reportDefinitionId}`,
@@ -317,8 +316,8 @@ function validateReportDefinition(reportDefinition: any) {
       break;
   }
 
-  // TODO: add alert
-  if (trigger.trigger_type === 'Schedule') {
+  // TODO: add alert/on-demand
+  if (trigger.trigger_type === TRIGGER_TYPE.schedule) {
     scheduleSchema.validate(triggerParams);
 
     const schedule = triggerParams.schedule;
@@ -330,11 +329,60 @@ function validateReportDefinition(reportDefinition: any) {
         cronSchema.validate(schedule);
         break;
       case SCHEDULE_TYPE.now:
-        //TODO:
+        //TODO: will do in refactor
         break;
       case SCHEDULE_TYPE.future:
-        //TODO:
+        //TODO: will add as enhancement feature
         break;
     }
+  }
+}
+
+async function createScheduledJob(
+  request: KibanaRequest,
+  reportDefinitionId: string,
+  context: RequestHandlerContext
+) {
+  const reportDefinition: any = request.body;
+  const trigger = reportDefinition.trigger;
+  const triggerType = trigger.trigger_type;
+  const triggerParams = trigger.trigger_params;
+
+  // @ts-ignore
+  const schedulerClient = context.reporting_plugin.schedulerClient.asScoped(
+    request
+  );
+
+  if (triggerType === TRIGGER_TYPE.schedule) {
+    const schedule = triggerParams.schedule;
+
+    // compose the request body
+    const scheduledJob = {
+      schedule: schedule,
+      name: reportDefinition.report_name + '_schedule',
+      enabled: true,
+      report_definition_id: reportDefinitionId,
+      enabled_time: triggerParams.enabled_time,
+    };
+    // send to reports-scheduler to create a scheduled job
+    const res = await schedulerClient.callAsInternalUser(
+      'reports_scheduler.createSchedule',
+      {
+        jobId: reportDefinitionId,
+        body: scheduledJob,
+      }
+    );
+
+    return res;
+  } else if (triggerType == TRIGGER_TYPE.alerting) {
+    //TODO: add alert-based scheduling logic [enhancement feature]
+  } else if (triggerType == TRIGGER_TYPE.onDemand) {
+    /*
+     * TODO: return nothing for on Demand report, because currently on-demand report is handled by client side,
+     * by hitting the create report http endpoint with data to get a report downloaded. Server side only saves
+     * that on-demand report definition into the index. Need further discussion on what behavior we want
+     * await createReport(reportDefinition, esClient);
+     */
+    return;
   }
 }

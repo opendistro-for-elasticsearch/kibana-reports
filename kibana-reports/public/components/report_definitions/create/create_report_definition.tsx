@@ -66,7 +66,8 @@ export function CreateReport(props) {
         },
       })
       .then(async (resp) => {
-        if (metadata['trigger']['trigger_params']['schedule_type'] === 'Now') {
+        if (metadata['trigger']['trigger_params']['schedule_type'] === 'Now'
+          || metadata['trigger']['trigger_type'] === 'On demand') {
           let onDemandDownloadMetadata = {
             report_name: metadata['report_name'],
             report_source: metadata['report_source'],
