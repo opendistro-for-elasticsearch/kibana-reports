@@ -43,7 +43,7 @@ import {
   REPORT_SOURCE_RADIOS,
   PDF_PNG_FILE_FORMAT_OPTIONS,
   SAVED_SEARCH_FORMAT_OPTIONS,
-  REPORT_SOURCE_TYPES
+  REPORT_SOURCE_TYPES,
 } from './report_settings_constants';
 import dateMath from '@elastic/datemath';
 import Showdown from 'showdown';
@@ -158,13 +158,11 @@ export function ReportSettings(props) {
   const [dashboards, setDashboards] = useState([]);
 
   const [visualizationSourceSelect, setVisualizationSourceSelect] = useState(
-    REPORT_SOURCE_VISUALIZATION_OPTIONS[0].value
+    ''
   );
   const [visualizations, setVisualizations] = useState([]);
 
-  const [savedSearchSourceSelect, setSavedSearchSourceSelect] = useState(
-    REPORT_SOURCE_SAVED_SEARCH_OPTIONS[0].value
-  );
+  const [savedSearchSourceSelect, setSavedSearchSourceSelect] = useState('');
   const [savedSearches, setSavedSearches] = useState([]);
 
   const [fileFormat, setFileFormat] = useState('pdfFormat');
@@ -183,7 +181,7 @@ export function ReportSettings(props) {
 
   const handleSavedSearches = (e) => {
     setSavedSearches(e);
-  }
+  };
 
   const handleReportName = (e: {
     target: { value: React.SetStateAction<string> };
@@ -575,21 +573,22 @@ export function ReportSettings(props) {
       .catch((error) => {
         console.log('error when fetching visualizations:', error);
       });
-    
+
     await httpClientProps
       .get('../api/reporting/getReportSource/search')
       .then(async (response) => {
-        let savedSearchOptions = getSavedSearchOptions(response['hits']['hits']);
+        let savedSearchOptions = getSavedSearchOptions(
+          response['hits']['hits']
+        );
         reportSourceOptions.savedSearch = savedSearchOptions;
         await handleSavedSearches(savedSearchOptions);
         await setSavedSearchSourceSelect(savedSearchOptions[0].value);
       })
       .catch((error) => {
         console.log('error when fetching saved searches:', error);
-      })
+      });
     return reportSourceOptions;
-  }
-
+  };
 
   const getVisualizationOptions = (data) => {
     let index;
@@ -605,18 +604,18 @@ export function ReportSettings(props) {
   };
 
   const getSavedSearchOptions = (data) => {
-    console.log("in getsavedsearchoptions, data is", data);
+    console.log('in getsavedsearchoptions, data is', data);
     let index;
     let options = [];
     for (index = 0; index < data.length; ++index) {
       let entry = {
         value: data[index]['_id'].substring(7),
-        text: data[index]['_source']['search']['title']
+        text: data[index]['_source']['search']['title'],
       };
       options.push(entry);
     }
     return options;
-  }
+  };
 
   const getVisualizationBaseUrlCreate = () => {
     let baseUrl = window.location.href;
