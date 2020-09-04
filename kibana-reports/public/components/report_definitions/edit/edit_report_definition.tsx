@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   EuiButtonEmpty,
   EuiFlexGroup,
@@ -28,7 +28,36 @@ import { ReportSettings } from '../report_settings';
 import { ReportDelivery } from '../delivery';
 import { ReportTrigger } from '../report_trigger';
 
-export function EditReportDefinition() {
+export function EditReportDefinition(props) {
+  const reportDefinitionId = props['match']['params']['reportDefinitionId'];
+  let editReportDefinitionRequest = {
+    report_name: '',
+    report_source: '',
+    report_type: '',
+    description: '',
+    report_params: {
+      url: '',
+      report_format: '',
+    },
+    delivery: {},
+    trigger: {},
+  };
+
+  const editReportDefinition = async (metadata) => {
+    const { httpClient } = props;
+    httpClient
+      .put(`../api/reporting/reportDefinitions/${reportDefinitionId}`, {
+        body: JSON.stringify(metadata),
+        params: reportDefinitionId.toString(),
+      })
+      .then(async (response) => {
+        window.location.assign(`opendistro_kibana_reports#/`);
+      })
+      .catch((error) => {
+        console.error('error in updating report definition:', error);
+      });
+  };
+
   return (
     <EuiPage>
       <EuiPageBody>
@@ -36,11 +65,26 @@ export function EditReportDefinition() {
           <h1>Edit report definition</h1>
         </EuiTitle>
         <EuiSpacer />
-        <ReportSettings />
+        <ReportSettings
+          edit={true}
+          editDefinitionId={reportDefinitionId}
+          reportDefinitionRequest={editReportDefinitionRequest}
+          httpClientProps={props['httpClient']}
+        />
         <EuiSpacer />
-        <ReportTrigger />
+        <ReportTrigger
+          edit={true}
+          editDefinitionId={reportDefinitionId}
+          reportDefinitionRequest={editReportDefinitionRequest}
+          httpClientProps={props['httpClient']}
+        />
         <EuiSpacer />
-        <ReportDelivery />
+        <ReportDelivery
+          edit={true}
+          editDefinitionId={reportDefinitionId}
+          reportDefinitionRequest={editReportDefinitionRequest}
+          httpClientProps={props['httpClient']}
+        />
         <EuiSpacer />
         <EuiFlexGroup justifyContent="flexEnd">
           <EuiFlexItem grow={false}>
@@ -53,7 +97,12 @@ export function EditReportDefinition() {
             </EuiButtonEmpty>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton fill>Save Changes</EuiButton>
+            <EuiButton
+              fill
+              onClick={() => editReportDefinition(editReportDefinitionRequest)}
+            >
+              Save Changes
+            </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiPageBody>

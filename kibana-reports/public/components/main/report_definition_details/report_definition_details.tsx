@@ -191,7 +191,7 @@ export function ReportDefinitionDetails(props) {
                 <EuiButton
                   fill={true}
                   onClick={() => {
-                    window.location.assign('opendistro_kibana_reports#/edit');
+                    window.location.assign(`opendistro_kibana_reports#/edit/${reportDefinitionId}`);
                   }}
                 >
                   Edit

@@ -120,7 +120,7 @@ export const OpendistroKibanaReportsApp = ({
                     )}
                   />
                   <Route
-                    path="/edit"
+                    path="/edit/:reportDefinitionId"
                     render={(props) => (
                       <EditReportDefinition
                         title="Edit Report Definition"

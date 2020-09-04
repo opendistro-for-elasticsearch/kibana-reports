@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   EuiFieldText,
   EuiFormRow,
@@ -76,9 +76,16 @@ let delivery_params = {
 };
 
 export function ReportDelivery(props) {
-  const { createReportDefinitionRequest } = props;
+  const {
+    edit,
+    editDefinitionId,
+    reportDefinitionRequest,
+    httpClientProps,
+  } = props;
   const [emailCheckbox, setEmailCheckbox] = useState(false);
   const [emailRecipients, setEmailRecipients] = useState([]);
+  const [emailSubject, setEmailSubject] = useState('');
+  const [emailBody, setEmailBody] = useState('');
   const [includeReportAsAttachment, setIncludeReportAsAttachment] = useState(
     true
   );
@@ -151,6 +158,20 @@ export function ReportDelivery(props) {
     setEmailRecipients([...emailRecipients, newOption]);
   };
 
+  const handleEmailSubject = (e: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
+    setEmailSubject(e.target.value);
+    delivery_params['subject'] = e.target.value.toString();
+  };
+
+  const handleEmailBody = (e: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
+    setEmailBody(e.target.value);
+    delivery_params['body'] = e.target.value.toString();
+  };
+
   const placeholderInsert = (
     <EuiText size="xs">
       <EuiLink onClick={handleInsertPlaceholderClick}>
@@ -180,12 +201,20 @@ export function ReportDelivery(props) {
     const [selectedTab, setSelectedTab] = React.useState<'write' | 'preview'>(
       'write'
     );
+    const setDefaultEditEmail = (delivery_params) => {
+      setEmailCheckbox(true);
+      let index;
+      for (index = 0; index < delivery_params.recipients.length; ++index) {
+        handleCreateEmailRecipient(delivery_params.recipients[index]);
+      }
+      setEmailSubject(delivery_params.subject);
+      setEmailBody(delivery_params.body);
+    };
 
-    const handleEmailSubject = (e: {
-      target: { value: React.SetStateAction<string> };
-    }) => {
-      setEmailSubject(e.target.value);
-      delivery_params['subject'] = e.target.value.toString();
+    const defaultConfigurationEdit = (delivery) => {
+      if (delivery.channel.includes('Email')) {
+        setDefaultEditEmail(delivery.delivery_params);
+      }
     };
 
     const handleEmailBody = (e: {
@@ -206,22 +235,22 @@ export function ReportDelivery(props) {
       tasklists: true,
     });
 
-    const emailBodyLabel = (emailFormat === 'htmlReport') 
-      ? 'Add optional message' : 'Email body';
+    const emailBodyLabel =
+      emailFormat === 'htmlReport' ? 'Add optional message' : 'Email body';
 
-    const showPlaceholder = (emailFormat === 'htmlReport')
-      ? null : (<InsertPlaceholderPopover/>); 
+    const showPlaceholder =
+      emailFormat === 'htmlReport' ? null : <InsertPlaceholderPopover />;
 
-    const showAttachmentCheckbox = (emailFormat === 'htmlReport')
-      ? null : (
+    const showAttachmentCheckbox =
+      emailFormat === 'htmlReport' ? null : (
         <EuiCheckbox
           id="includeReportAsAttachment"
           label="Include report as attachment"
           checked={includeReportAsAttachment}
           onChange={handleIncludeReportAsAttachment}
-        /> 
-      )
-      
+        />
+      );
+
     return (
       <div>
         <EuiFormRow label="Email recipients" helpText="Select or add users">
@@ -289,7 +318,7 @@ export function ReportDelivery(props) {
 
   const emailDelivery = emailCheckbox ? <EmailDelivery /> : null;
 
-  createReportDefinitionRequest['delivery'] = delivery;
+  reportDefinitionRequest['delivery'] = delivery;
 
   return (
     <EuiPageContent panelPaddingSize={'l'}>

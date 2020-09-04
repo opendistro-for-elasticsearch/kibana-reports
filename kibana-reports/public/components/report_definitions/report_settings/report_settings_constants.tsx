@@ -51,12 +51,17 @@ export const SAVED_SEARCH_FORMAT_OPTIONS = [
 ];
 
 export const HEADER_FOOTER_CHECKBOX = [
-  {  
+  {
     id: 'header',
-    label: 'Header'
+    label: 'Header',
   },
   {
     id: 'footer',
-    label: 'Footer'
-  }
-]
+    label: 'Footer',
+  },
+];
+export const REPORT_SOURCE_TYPES = {
+  dashboard: 'Dashboard',
+  visualization: 'Visualization',
+  savedSearch: 'Saved search',
+};

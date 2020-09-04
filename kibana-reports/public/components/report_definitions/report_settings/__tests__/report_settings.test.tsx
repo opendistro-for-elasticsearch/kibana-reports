@@ -39,7 +39,8 @@ describe('<ReportSettings /> panel', () => {
 
     const { container } = render(
       <ReportSettings
-        createReportDefinitionRequest={createReportDefinitionRequest}
+        edit={false}
+        reportDefinitionRequest={createReportDefinitionRequest}
         httpClientProps={httpClientMock}
       />
     );
