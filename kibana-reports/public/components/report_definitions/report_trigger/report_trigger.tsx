@@ -75,7 +75,7 @@ let temp_trigger_params = {
 export function ReportTrigger(props) {
   const { createReportDefinitionRequest } = props;
 
-  const [reportTriggerType, setReportTriggerTypes] = useState('scheduleOption');
+  const [reportTriggerType, setReportTriggerTypes] = useState('onDemandOption');
   trigger_schema['trigger_type'] = 'Schedule';
 
   const [scheduleRequestTime, setScheduleRequestTime] = useState('nowOption');

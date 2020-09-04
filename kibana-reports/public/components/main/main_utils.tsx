@@ -43,6 +43,11 @@ export const breadcrumbs = [
   },
 ];
 
+export const humanReadableDate = (date) => {
+  let readableDate = new Date(date);
+  return readableDate.toDateString() + ' @ ' + readableDate.toLocaleTimeString();
+}
+
 export const extractFilename = (filename: string) => {
   return filename.substring(0, filename.length - 4);
 };
@@ -71,7 +76,7 @@ export const addReportsTableContent = (data) => {
       kibanaRecipients: `\u2014`,
       emailRecipients: `\u2014`,
       reportSource: get(data, [index, '_source', 'report_source']),
-      lastUpdated: displayDate,
+      lastUpdated: get(data, [index, '_source', 'time_created']),
       state: get(data, [index, '_source', 'state']),
       url: get(data, [index, '_source', 'report_params', 'url']),
       format: get(data, [index, '_source', 'report_params', 'report_format']),
@@ -85,15 +90,13 @@ export const addReportDefinitionsTableContent = (data: any) => {
   let index;
   let reportDefinitionsTableItems = [];
   for (index = 0; index < data.length; ++index) {
-    let readableDate = new Date(get(data, [index, '_source', 'time_created']));
-    let displayDate = readableDate.toDateString() + ' @ ' + readableDate.toLocaleTimeString();
     let reportDefinitionsTableEntry = {
       id: get(data, [index, '_id']),
       reportName: get(data, [index, '_source', 'report_name']),
       type: get(data, [index, '_source', 'report_type']),
       owner: 'davidcui', // Todo: replace
       source: get(data, [index, '_source', 'report_source']),
-      lastUpdated: displayDate,
+      lastUpdated: get(data, [index, '_source', 'time_created']),
       details: get(data, [
         index,
         '_source',

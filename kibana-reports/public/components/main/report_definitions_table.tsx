@@ -22,6 +22,7 @@ import {
   EuiText,
   EuiIcon,
 } from '@elastic/eui';
+import { humanReadableDate } from './main_utils';
 
 
 const emptyMessageReportDefinitions = (
@@ -121,7 +122,12 @@ export function ReportDefinitions(props) {
     {
       field: 'lastUpdated',
       name: 'Last Updated',
-      truncateText: true,
+      render: (date) => {
+        let readable = humanReadableDate(date);
+        return (
+          <EuiText size="s">{readable}</EuiText>
+        )
+      }      
     },
     {
       field: 'details',

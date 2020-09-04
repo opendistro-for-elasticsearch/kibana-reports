@@ -291,35 +291,39 @@ export function ReportSettings(props) {
     };
 
     const showFooter = (checkboxIdSelectHeaderFooter.footer) ? (
-      <ReactMde
-        value={footer}
-        onChange={setFooter}
-        selectedTab={selectedTabFooter}
-        onTabChange={setSelectedTabFooter}
-        toolbarCommands={[
-          ['header', 'bold', 'italic', 'strikethrough'],
-          ['unordered-list', 'ordered-list', 'checked-list'],
-        ]}
-        generateMarkdownPreview={(markdown) =>
-          Promise.resolve(converter.makeHtml(markdown))
-        }
-      />
+      <EuiFormRow label="Footer" fullWidth={true}>
+        <ReactMde
+          value={footer}
+          onChange={setFooter}
+          selectedTab={selectedTabFooter}
+          onTabChange={setSelectedTabFooter}
+          toolbarCommands={[
+            ['header', 'bold', 'italic', 'strikethrough'],
+            ['unordered-list', 'ordered-list', 'checked-list'],
+          ]}
+          generateMarkdownPreview={(markdown) =>
+            Promise.resolve(converter.makeHtml(markdown))
+          }
+        />
+      </EuiFormRow>
     ) : null;
 
     const showHeader = (checkboxIdSelectHeaderFooter.header) ? (
-      <ReactMde
-        value={header}
-        onChange={setHeader}
-        selectedTab={selectedTabHeader}
-        onTabChange={setSelectedTabHeader}
-        toolbarCommands={[
-          ['header', 'bold', 'italic', 'strikethrough'],
-          ['unordered-list', 'ordered-list', 'checked-list'],
-        ]}
-        generateMarkdownPreview={(markdown) =>
-          Promise.resolve(converter.makeHtml(markdown))
-        }
-      />
+      <EuiFormRow label="Header" fullWidth={true}>
+        <ReactMde
+          value={header}
+          onChange={setHeader}
+          selectedTab={selectedTabHeader}
+          onTabChange={setSelectedTabHeader}
+          toolbarCommands={[
+            ['header', 'bold', 'italic', 'strikethrough'],
+            ['unordered-list', 'ordered-list', 'checked-list'],
+          ]}
+          generateMarkdownPreview={(markdown) =>
+            Promise.resolve(converter.makeHtml(markdown))
+          }
+        />
+      </EuiFormRow>
     ) : null;
 
     return (
@@ -330,7 +334,9 @@ export function ReportSettings(props) {
           onChange={handleCheckboxHeaderFooter}
           legend={{children:"Header and footer"}}
         />
+        <EuiSpacer />
         {showHeader}
+        {/* <EuiSpacer/> */}
         {showFooter}
       </div>
     );
@@ -351,9 +357,9 @@ export function ReportSettings(props) {
         <TimeRangeSelect />
         <EuiSpacer />
         <PDFandPNGFileFormats />
-        <EuiSpacer />
+        <EuiSpacer size="s"/>
         {/* <Header /> */}
-        <EuiSpacer size="s" />
+        {/* <EuiSpacer size="s" /> */}
         {/* <Footer /> */}
         {/* <EuiCheckboxGroup 
             options={HEADER_FOOTER_CHECKBOX}
@@ -362,9 +368,9 @@ export function ReportSettings(props) {
             legend={{children:"Header and footer"}}
         /> */}
         <SettingsMarkdown />
-        <EuiSpacer/>
+        {/* <EuiSpacer/> */}
         {/* <Header /> */}
-        <EuiSpacer/>
+        {/* <EuiSpacer/> */}
         {/* <Footer/> */}
       </div>
     );
@@ -385,9 +391,10 @@ export function ReportSettings(props) {
         <TimeRangeSelect />
         <EuiSpacer />
         <PDFandPNGFileFormats />
-        <EuiSpacer />
+        {/* <EuiSpacer /> */}
         {/* <Header /> */}
         <EuiSpacer size="s" />
+        <SettingsMarkdown />
         {/* <Footer /> */}
       </div>
     );
@@ -408,11 +415,12 @@ export function ReportSettings(props) {
         <TimeRangeSelect />
         <EuiSpacer />
         <EuiFormRow label="File format">
-          <EuiRadioGroup
+          {/* <EuiRadioGroup
             options={SAVED_SEARCH_FORMAT_OPTIONS}
             idSelected={savedSearchFileFormat}
             onChange={handleSavedSearchFileFormat}
-          />
+          /> */}
+          <EuiText><p>CSV</p></EuiText>
         </EuiFormRow>
       </div>
     );
@@ -536,7 +544,7 @@ export function ReportSettings(props) {
           <EuiFlexGroup style={{ maxWidth: 600 }}>
             <EuiFlexItem>
               <EuiFormRow label="Description (optional)">
-                <EuiFieldText
+                <EuiTextArea
                   placeholder="Describe this report (e.g Morning daily reports for log traffic)"
                   value={reportDescription}
                   onChange={handleReportDescription}

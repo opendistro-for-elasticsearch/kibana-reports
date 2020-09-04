@@ -80,7 +80,7 @@ export function ReportDelivery(props) {
   const [emailCheckbox, setEmailCheckbox] = useState(false);
   const [emailRecipients, setEmailRecipients] = useState([]);
   const [includeReportAsAttachment, setIncludeReportAsAttachment] = useState(
-    false
+    true
   );
   const [insertPlaceholder, setInsertPlaceholder] = useState(false);
 
@@ -206,6 +206,22 @@ export function ReportDelivery(props) {
       tasklists: true,
     });
 
+    const emailBodyLabel = (emailFormat === 'htmlReport') 
+      ? 'Add optional message' : 'Email body';
+
+    const showPlaceholder = (emailFormat === 'htmlReport')
+      ? null : (<InsertPlaceholderPopover/>); 
+
+    const showAttachmentCheckbox = (emailFormat === 'htmlReport')
+      ? null : (
+        <EuiCheckbox
+          id="includeReportAsAttachment"
+          label="Include report as attachment"
+          checked={includeReportAsAttachment}
+          onChange={handleIncludeReportAsAttachment}
+        /> 
+      )
+      
     return (
       <div>
         <EuiFormRow label="Email recipients" helpText="Select or add users">
@@ -235,8 +251,8 @@ export function ReportDelivery(props) {
         </EuiFormRow>
         <EuiSpacer />
         <EuiFormRow
-          label="Add optional message"
-          labelAppend={<InsertPlaceholderPopover />}
+          label={emailBodyLabel}
+          labelAppend={showPlaceholder}
           fullWidth={true}
         >
           {/* <EuiTextArea
@@ -260,6 +276,7 @@ export function ReportDelivery(props) {
           />
         </EuiFormRow>
         <EuiSpacer size="xs" />
+        {showAttachmentCheckbox}
         {/* <EuiCheckbox
           id="includeReportAsAttachment"
           label="Include report as attachment"

@@ -34,7 +34,7 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import { reports_list_users } from './test_data';
-import { fileFormatsUpper, generateReport } from './main_utils';
+import { fileFormatsUpper, generateReport, humanReadableDate } from './main_utils';
 import { returnStatement } from '@babel/types';
 
 const reportStatusOptions = [
@@ -211,7 +211,12 @@ export function ReportsTable(props) {
     {
       field: 'lastUpdated',
       name: 'Last updated',
-      truncateText: true,
+      render: (date) => {
+        let readable = humanReadableDate(date);
+        return (
+          <EuiText size="s">{readable}</EuiText>
+        )
+      }
     },
     {
       field: 'state',

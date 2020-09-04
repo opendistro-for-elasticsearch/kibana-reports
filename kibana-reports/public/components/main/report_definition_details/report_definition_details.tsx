@@ -66,7 +66,11 @@ export function ReportDefinitionDetails(props) {
       ' ' +
       readableUpdatedDate.toLocaleTimeString();
 
-    let timeRangeDisplay = readableTimeRange(data);
+    let timeRangeDisplay = `\u2014`;
+    if (data['trigger']['trigger_type'] === 'Schedule') {
+      readableTimeRange(data);
+    }
+
     let reportDefinitionDetails = {
       name: data['report_name'],
       description: data['description'],
@@ -110,6 +114,7 @@ export function ReportDefinitionDetails(props) {
     httpClient
       .get(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
       .then((response) => {
+        console.log("response in def details is", response);
         handleReportDefinitionDetails(
           getReportDefinitionDetailsMetadata(response)
         );
