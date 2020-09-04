@@ -43,7 +43,7 @@ import {
   REPORT_SOURCE_RADIOS,
   PDF_PNG_FILE_FORMAT_OPTIONS,
   SAVED_SEARCH_FORMAT_OPTIONS,
-  reportSourceType
+  REPORT_SOURCE_TYPES
 } from './report_settings_constants';
 import dateMath from '@elastic/datemath';
 import Showdown from 'showdown';
@@ -165,6 +165,8 @@ export function ReportSettings(props) {
   const [savedSearchSourceSelect, setSavedSearchSourceSelect] = useState(
     REPORT_SOURCE_SAVED_SEARCH_OPTIONS[0].value
   );
+  const [savedSearches, setSavedSearches] = useState([]);
+
   const [fileFormat, setFileFormat] = useState('pdfFormat');
 
   const [savedSearchFileFormat, setSavedSearchFileFormat] = useState(
@@ -178,6 +180,10 @@ export function ReportSettings(props) {
   const handleVisualizations = (e) => {
     setVisualizations(e);
   };
+
+  const handleSavedSearches = (e) => {
+    setSavedSearches(e);
+  }
 
   const handleReportName = (e: {
     target: { value: React.SetStateAction<string> };
@@ -401,7 +407,7 @@ export function ReportSettings(props) {
         <EuiFormRow label="Select saved search">
           <EuiSelect
             id="reportSourceSavedSearchSelect"
-            options={REPORT_SOURCE_SAVED_SEARCH_OPTIONS}
+            options={savedSearches}
             value={savedSearchSourceSelect}
             onChange={handleSavedSearchSelect}
           />
@@ -464,20 +470,24 @@ export function ReportSettings(props) {
 
   const setReportSourceDropdownOption = (options, reportSource, url) => {
     let index = 0;
-    if (reportSource === reportSourceType.dashboard) {
+    if (reportSource === REPORT_SOURCE_TYPES.dashboard) {
       for (index = 0; index < options.dashboard.length; ++index) {
         if (url.includes(options.dashboard[index].value)) {
           setDashboardSourceSelect(options.dashboard[index].value);
         }
       }
-    } else if (reportSource === reportSourceType.visualization) {
+    } else if (reportSource === REPORT_SOURCE_TYPES.visualization) {
       for (index = 0; index < options.visualizations.length; ++index) {
         if (url.includes(options.visualizations[index].value)) {
           setVisualizationSourceSelect(options.visualizations[index].value);
         }
       }
-    } else if (reportSource === reportSourceType.savedSearch) {
-      // todo: add logic once get Visualizations + search is merged
+    } else if (reportSource === REPORT_SOURCE_TYPES.savedSearch) {
+      for (index = 0; index < options.savedSearch.length; ++index) {
+        if (url.includes(options.savedSearch[index].value)) {
+          setSavedSearchSourceSelect(options.savedSearch[index].value);
+        }
+      }
     }
   };
 
@@ -565,7 +575,18 @@ export function ReportSettings(props) {
       .catch((error) => {
         console.log('error when fetching visualizations:', error);
       });
-
+    
+    await httpClientProps
+      .get('../api/reporting/getReportSource/search')
+      .then(async (response) => {
+        let savedSearchOptions = getSavedSearchOptions(response['hits']['hits']);
+        reportSourceOptions.savedSearch = savedSearchOptions;
+        await handleSavedSearches(savedSearchOptions);
+        await setSavedSearchSourceSelect(savedSearchOptions[0].value);
+      })
+      .catch((error) => {
+        console.log('error when fetching saved searches:', error);
+      })
     return reportSourceOptions;
   }
 
@@ -582,6 +603,20 @@ export function ReportSettings(props) {
     }
     return options;
   };
+
+  const getSavedSearchOptions = (data) => {
+    console.log("in getsavedsearchoptions, data is", data);
+    let index;
+    let options = [];
+    for (index = 0; index < data.length; ++index) {
+      let entry = {
+        value: data[index]['_id'].substring(7),
+        text: data[index]['_source']['search']['title']
+      };
+      options.push(entry);
+    }
+    return options;
+  }
 
   const getVisualizationBaseUrlCreate = () => {
     let baseUrl = window.location.href;

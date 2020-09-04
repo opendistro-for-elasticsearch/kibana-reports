@@ -36,10 +36,8 @@ export function EditReportDefinition(props) {
     report_type: '',
     description: '',
     report_params: {
-      url: ``,
+      url: '',
       report_format: '',
-      window_width: 1560,
-      window_height: 2560,
     },
     delivery: {},
     trigger: {},
