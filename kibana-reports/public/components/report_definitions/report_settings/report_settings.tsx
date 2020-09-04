@@ -35,11 +35,6 @@ import {
 } from '@elastic/eui';
 import moment from 'moment';
 import {
-  REPORT_SOURCE_VISUALIZATION_OPTIONS,
-  REPORT_SOURCE_DASHBOARD_OPTIONS,
-  REPORT_SOURCE_SAVED_SEARCH_OPTIONS,
-} from './report_settings_test_data';
-import {
   REPORT_SOURCE_RADIOS,
   PDF_PNG_FILE_FORMAT_OPTIONS,
   SAVED_SEARCH_FORMAT_OPTIONS,
