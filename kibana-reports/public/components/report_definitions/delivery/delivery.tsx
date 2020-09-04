@@ -221,7 +221,6 @@ export function ReportDelivery(props) {
       target: { value: React.SetStateAction<string> };
     }) => {
       setEmailBody(e.target.value);
-      // delivery_params['body'] = e.target.value.toString();
     };
 
     const handleEmailFormat = (e) => {
@@ -284,12 +283,6 @@ export function ReportDelivery(props) {
           labelAppend={showPlaceholder}
           fullWidth={true}
         >
-          {/* <EuiTextArea
-            fullWidth={true}
-            placeholder="Body content"
-            value={emailBody}
-            onChange={handleEmailBody}
-          /> */}
           <ReactMDE
             value={emailBody}
             onChange={setEmailBody}
@@ -306,12 +299,6 @@ export function ReportDelivery(props) {
         </EuiFormRow>
         <EuiSpacer size="xs" />
         {showAttachmentCheckbox}
-        {/* <EuiCheckbox
-          id="includeReportAsAttachment"
-          label="Include report as attachment"
-          checked={includeReportAsAttachment}
-          onChange={handleIncludeReportAsAttachment}
-        /> */}
       </div>
     );
   };

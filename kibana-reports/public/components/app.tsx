@@ -80,7 +80,6 @@ export const OpendistroKibanaReportsApp = ({
         <div style={styles}>
           <EuiPage>
             <EuiPageBody>
-              {/* <EuiPageContent> */}
               <EuiPageContentHeader>
                 <EuiPageContentHeaderSection></EuiPageContentHeaderSection>
               </EuiPageContentHeader>
@@ -142,7 +141,6 @@ export const OpendistroKibanaReportsApp = ({
                   />
                 </Switch>
               </EuiPageContentBody>
-              {/* </EuiPageContent> */}
             </EuiPageBody>
           </EuiPage>
         </div>

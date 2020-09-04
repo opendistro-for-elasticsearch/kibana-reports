@@ -21,32 +21,14 @@ export const fileFormatsUpper = {
   csv: 'CSV',
   pdf: 'PDF',
   png: 'PNG',
-  xlsx: 'XLS',
 };
-
-export const breadcrumbs = [
-  {
-    text: 'Homepage',
-    href: 'opendistro_kibana_reports#/',
-  },
-  {
-    text: 'Create report definition',
-    href: '#/create',
-  },
-  {
-    text: 'Report details',
-    href: '#/report_details/*',
-  },
-  {
-    text: 'Edit report definition',
-    href: '#/edit',
-  },
-];
 
 export const humanReadableDate = (date) => {
   let readableDate = new Date(date);
-  return readableDate.toDateString() + ' @ ' + readableDate.toLocaleTimeString();
-}
+  return (
+    readableDate.toDateString() + ' @ ' + readableDate.toLocaleTimeString()
+  );
+};
 
 export const extractFilename = (filename: string) => {
   return filename.substring(0, filename.length - 4);
@@ -67,7 +49,8 @@ export const addReportsTableContent = (data) => {
   let reportsTableItems = [];
   for (index = 0; index < data.length; ++index) {
     let readableDate = new Date(get(data, [index, '_source', 'time_created']));
-    let displayDate = readableDate.toDateString() + ' @ ' + readableDate.toLocaleTimeString();
+    let displayDate =
+      readableDate.toDateString() + ' @ ' + readableDate.toLocaleTimeString();
     let reportsTableEntry = {
       id: get(data, [index, '_id']),
       reportName: get(data, [index, '_source', 'report_name']),

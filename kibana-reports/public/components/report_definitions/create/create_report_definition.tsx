@@ -64,8 +64,10 @@ export function CreateReport(props) {
         },
       })
       .then(async (resp) => {
-        if (metadata['trigger']['trigger_params']['schedule_type'] === 'Now'
-          || metadata['trigger']['trigger_type'] === 'On demand') {
+        if (
+          metadata['trigger']['trigger_params']['schedule_type'] === 'Now' ||
+          metadata['trigger']['trigger_type'] === 'On demand'
+        ) {
           let onDemandDownloadMetadata = {
             report_name: metadata['report_name'],
             report_source: metadata['report_source'],
@@ -102,7 +104,6 @@ export function CreateReport(props) {
 
   return (
     <div>
-      {/* <EuiPage> */}
       <EuiPageBody>
         <EuiTitle>
           <h1>Create report definition</h1>
@@ -146,7 +147,6 @@ export function CreateReport(props) {
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiPageBody>
-      {/* </EuiPage> */}
     </div>
   );
 }

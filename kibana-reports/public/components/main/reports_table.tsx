@@ -34,7 +34,11 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import { reports_list_users } from './test_data';
-import { fileFormatsUpper, generateReport, humanReadableDate } from './main_utils';
+import {
+  fileFormatsUpper,
+  generateReport,
+  humanReadableDate,
+} from './main_utils';
 import { returnStatement } from '@babel/types';
 
 const reportStatusOptions = [
@@ -139,7 +143,6 @@ export function ReportsTable(props) {
   };
 
   const onDemandDownload = async (url: any) => {
-    console.log('url is', url);
     let data = getReportsTableItemContent(url);
     handleLoading(true);
     await generateReport(updateMetadata(data), httpClient);
@@ -213,10 +216,8 @@ export function ReportsTable(props) {
       name: 'Last updated',
       render: (date) => {
         let readable = humanReadableDate(date);
-        return (
-          <EuiText size="s">{readable}</EuiText>
-        )
-      }
+        return <EuiText size="s">{readable}</EuiText>;
+      },
     },
     {
       field: 'state',
@@ -235,26 +236,6 @@ export function ReportsTable(props) {
           </EuiLink>
         );
       },
-      // actions: [
-      //   {
-      //     name: 'Test',
-      //     description: 'Generates the report',
-      //     // type: 'icon',
-      //     // icon: 'importAction',
-      //     // onClick: (url: any) => onDemandDownload(url),
-      //     render: (data: { format: any; }) => {
-      //       return (
-      //       <EuiLink
-      //         disabled={false}
-      //         color="primary"
-      //         onClick={() => onDemandDownload(data)}
-      //       >
-      //         {fileFormatsUpper[data.format]} <EuiIcon type="importAction"/>
-      //       </EuiLink>
-      //       )
-      //     }
-      //   },
-      // ],
     },
   ];
 
@@ -347,7 +328,6 @@ export function ReportsTable(props) {
   const showLoadingModal = showLoading ? <GenerateReportLoadingModal /> : null;
 
   return (
-    // <div>
     <Fragment>
       <EuiInMemoryTable
         items={reportsTableItems}
@@ -359,11 +339,9 @@ export function ReportsTable(props) {
         pagination={pagination}
         sorting={sorting}
         hasActions={true}
-        // rowProps={getRowProps}
         tableLayout={'auto'}
       />
       {showLoadingModal}
     </Fragment>
-    // </div>
   );
 }

@@ -134,9 +134,7 @@ function TimeRangeSelect() {
           refreshInterval={refreshInterval}
           onRefreshChange={onRefreshChange}
           recentlyUsedRanges={recentlyUsedRanges}
-          // commonlyUsedRanges={[]}
           showUpdateButton={false}
-          // isAutoRefreshOnly={true}
         />
       </EuiFormRow>
     </div>
@@ -265,7 +263,6 @@ export function ReportSettings(props) {
   };
 
   const SettingsMarkdown = () => {
-    const [includeFooter, setIncludeFooter] = useState(false);
     const [
       checkboxIdSelectHeaderFooter,
       setCheckboxIdSelectHeaderFooter,
@@ -275,8 +272,6 @@ export function ReportSettings(props) {
     const [selectedTabFooter, setSelectedTabFooter] = React.useState<
       'write' | 'preview'
     >('write');
-
-    const [includeHeader, setIncludeHeader] = useState(false);
 
     const [header, setHeader] = useState('');
     const [selectedTabHeader, setSelectedTabHeader] = React.useState<
@@ -339,7 +334,6 @@ export function ReportSettings(props) {
         />
         <EuiSpacer />
         {showHeader}
-        {/* <EuiSpacer/> */}
         {showFooter}
       </div>
     );
@@ -361,20 +355,7 @@ export function ReportSettings(props) {
         <EuiSpacer />
         <PDFandPNGFileFormats />
         <EuiSpacer size="s" />
-        {/* <Header /> */}
-        {/* <EuiSpacer size="s" /> */}
-        {/* <Footer /> */}
-        {/* <EuiCheckboxGroup 
-            options={HEADER_FOOTER_CHECKBOX}
-            idToSelectedMap={checkboxIdSelectHeaderFooter}
-            onChange={handleCheckboxHeaderFooter}
-            legend={{children:"Header and footer"}}
-        /> */}
         <SettingsMarkdown />
-        {/* <EuiSpacer/> */}
-        {/* <Header /> */}
-        {/* <EuiSpacer/> */}
-        {/* <Footer/> */}
       </div>
     );
   };
@@ -394,11 +375,8 @@ export function ReportSettings(props) {
         <TimeRangeSelect />
         <EuiSpacer />
         <PDFandPNGFileFormats />
-        {/* <EuiSpacer /> */}
-        {/* <Header /> */}
         <EuiSpacer size="s" />
         <SettingsMarkdown />
-        {/* <Footer /> */}
       </div>
     );
   };
@@ -418,11 +396,6 @@ export function ReportSettings(props) {
         <TimeRangeSelect />
         <EuiSpacer />
         <EuiFormRow label="File format">
-          {/* <EuiRadioGroup
-            options={SAVED_SEARCH_FORMAT_OPTIONS}
-            idSelected={savedSearchFileFormat}
-            onChange={handleSavedSearchFileFormat}
-          /> */}
           <EuiText>
             <p>CSV</p>
           </EuiText>

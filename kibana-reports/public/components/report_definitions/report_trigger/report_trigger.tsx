@@ -57,7 +57,7 @@ const tempTriggerParamTime = '1553112384';
 let trigger_params = {
   schedule_type: '',
   schedule: {},
-  enabled_time: 1234567, // temp value to pass schema
+  enabled_time: 1234567, // temp value to pass schema, TODO: pass in enabled time for schedules
 };
 
 let trigger_schema = {

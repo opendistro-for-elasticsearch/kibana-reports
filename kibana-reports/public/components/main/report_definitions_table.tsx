@@ -24,7 +24,6 @@ import {
 } from '@elastic/eui';
 import { humanReadableDate } from './main_utils';
 
-
 const emptyMessageReportDefinitions = (
   <EuiEmptyPrompt
     title={<h3>No report definitions to display</h3>}
@@ -75,18 +74,24 @@ export function ReportDefinitions(props) {
   };
 
   const getDefinitionTableItemId = (name) => {
-    let index; 
-    for (index = 0; index < props.reportDefinitionsTableContent.length; ++index) {
+    let index;
+    for (
+      index = 0;
+      index < props.reportDefinitionsTableContent.length;
+      ++index
+    ) {
       if (name === reportDefinitionsTableContent[index].reportName) {
         return reportDefinitionsTableContent[index].id;
       }
     }
-  }
+  };
 
   const navigateToDefinitionDetails = (name: any) => {
     let id = getDefinitionTableItemId(name);
-    window.location.assign(`opendistro_kibana_reports#/report_definition_details/${id}`);
-  }
+    window.location.assign(
+      `opendistro_kibana_reports#/report_definition_details/${id}`
+    );
+  };
 
   const reportDefinitionsColumns = [
     {
@@ -96,7 +101,7 @@ export function ReportDefinitions(props) {
         <EuiLink onClick={() => navigateToDefinitionDetails(name)}>
           {name}
         </EuiLink>
-      )
+      ),
     },
     {
       field: 'type',
@@ -124,10 +129,8 @@ export function ReportDefinitions(props) {
       name: 'Last Updated',
       render: (date) => {
         let readable = humanReadableDate(date);
-        return (
-          <EuiText size="s">{readable}</EuiText>
-        )
-      }      
+        return <EuiText size="s">{readable}</EuiText>;
+      },
     },
     {
       field: 'details',
@@ -155,7 +158,6 @@ export function ReportDefinitions(props) {
         pagination={pagination}
         sorting={sorting}
         isSelectable={true}
-        // rowProps={getRowProps}
         tableLayout={'auto'}
       />
     </div>

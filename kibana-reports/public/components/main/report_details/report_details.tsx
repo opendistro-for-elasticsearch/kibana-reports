@@ -104,7 +104,6 @@ export function ReportDetails(props) {
       },
     ]);
     const { httpClient } = props;
-    console.log('props in reportdetails is', props);
     httpClient
       .get('../api/reporting/reports/' + reportId)
       .then((response) => {

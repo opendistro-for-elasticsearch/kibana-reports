@@ -114,7 +114,6 @@ export function ReportDefinitionDetails(props) {
     httpClient
       .get(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
       .then((response) => {
-        console.log("response in def details is", response);
         handleReportDefinitionDetails(
           getReportDefinitionDetailsMetadata(response)
         );
@@ -191,7 +190,9 @@ export function ReportDefinitionDetails(props) {
                 <EuiButton
                   fill={true}
                   onClick={() => {
-                    window.location.assign(`opendistro_kibana_reports#/edit/${reportDefinitionId}`);
+                    window.location.assign(
+                      `opendistro_kibana_reports#/edit/${reportDefinitionId}`
+                    );
                   }}
                 >
                   Edit
