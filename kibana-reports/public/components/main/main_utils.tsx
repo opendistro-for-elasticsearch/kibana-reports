@@ -48,9 +48,6 @@ export const addReportsTableContent = (data) => {
   let index;
   let reportsTableItems = [];
   for (index = 0; index < data.length; ++index) {
-    let readableDate = new Date(get(data, [index, '_source', 'time_created']));
-    let displayDate =
-      readableDate.toDateString() + ' @ ' + readableDate.toLocaleTimeString();
     let reportsTableEntry = {
       id: get(data, [index, '_id']),
       reportName: get(data, [index, '_source', 'report_name']),

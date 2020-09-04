@@ -584,7 +584,6 @@ export function ReportSettings(props) {
   };
 
   const getSavedSearchOptions = (data) => {
-    console.log('in getsavedsearchoptions, data is', data);
     let index;
     let options = [];
     for (index = 0; index < data.length; ++index) {

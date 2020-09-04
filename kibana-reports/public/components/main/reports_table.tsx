@@ -127,7 +127,7 @@ export function ReportsTable(props) {
         url: url['url'],
         window_width: 1440,
         window_height: 2560,
-        report_format: 'pdf', // current default format
+        report_format: url['format'], // current default format
       },
     };
     return onDemandDownloadMetadata;
