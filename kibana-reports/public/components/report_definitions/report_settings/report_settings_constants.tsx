@@ -49,3 +49,9 @@ export const SAVED_SEARCH_FORMAT_OPTIONS = [
     label: 'XLS',
   },
 ];
+
+export const REPORT_SOURCE_TYPES = {
+  dashboard: "Dashboard",
+  visualization: "Visualization",
+  savedSearch: "Saved search"
+}

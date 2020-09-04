@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   EuiPageHeader,
   EuiTitle,
@@ -57,6 +57,7 @@ const tempTriggerParamTime = '1553112384';
 let trigger_params = {
   schedule_type: '',
   schedule: {},
+  enabled_time: 1234567 // temp value to pass schema
 };
 
 let trigger_schema = {
@@ -73,14 +74,18 @@ let temp_trigger_params = {
 };
 
 export function ReportTrigger(props) {
-  const { createReportDefinitionRequest } = props;
+  const {
+    edit,
+    editDefinitionId,
+    reportDefinitionRequest,
+    httpClientProps,
+  } = props;
 
-  const [reportTriggerType, setReportTriggerTypes] = useState('scheduleOption');
-  trigger_schema['trigger_type'] = 'Schedule';
+  const [reportTriggerType, setReportTriggerType] = useState('onDemand');
+  trigger_schema['trigger_type'] = 'On demand';
 
   const [scheduleRequestTime, setScheduleRequestTime] = useState('nowOption');
   trigger_params['schedule_type'] = 'Now';
-  createReportDefinitionRequest['report_type'] = 'Download';
 
   const [timezone, setTimezone] = useState(TIMEZONE_OPTIONS[0].value);
   const [futureDateTimeSelect, setFutureDateTimeSelect] = useState(moment());
@@ -104,7 +109,7 @@ export function ReportTrigger(props) {
   const [trigger, setTrigger] = useState(AVAILABLE_TRIGGER_OPTIONS[0].value);
 
   const handleReportTriggerType = (e: React.SetStateAction<string>) => {
-    setReportTriggerTypes(e);
+    setReportTriggerType(e);
     trigger_schema['trigger_type'] = TRIGGER_OPTION_MAP[e];
   };
 
@@ -112,7 +117,7 @@ export function ReportTrigger(props) {
     setScheduleRequestTime(e);
     trigger_params['schedule_type'] = SCHEDULE_OPTION_MAP[e];
     if (e === 'nowOption') {
-      createReportDefinitionRequest['report_type'] = 'Download';
+      reportDefinitionRequest['report_type'] = 'Download';
     }
   };
 
@@ -463,9 +468,45 @@ export function ReportTrigger(props) {
   const alert = reportTriggerType === 'alertOption' ? <AlertTrigger /> : null;
 
   // TODO: Change schema so these values are not required depending on trigger type
-  trigger_params['schedule'] = temp_trigger_params;
   trigger_schema['trigger_params'] = trigger_params;
-  createReportDefinitionRequest['trigger'] = trigger_schema;
+  reportDefinitionRequest['trigger'] = trigger_schema;
+
+  const defaultEditTriggerType = (trigger_type) => {
+    let index = 0;
+    for (index; index < REPORT_TYPE_OPTIONS.length; ++index) {
+      if (REPORT_TYPE_OPTIONS[index].label.includes(trigger_type)) {
+        setReportTriggerType(REPORT_TYPE_OPTIONS[index].id);
+      }
+    }
+  };
+
+  const defaultEditRequestType = (trigger) => {
+    let index;
+    for (index in SCHEDULE_REQUEST_TIME_OPTIONS) {
+      if (
+        SCHEDULE_REQUEST_TIME_OPTIONS[index].label ===
+        trigger.trigger_params.schedule_type
+      ) {
+        setScheduleRequestTime(SCHEDULE_REQUEST_TIME_OPTIONS[index].id);
+      }
+    }
+  };
+
+  const defaultConfigurationEdit = (trigger) => {
+    defaultEditTriggerType(trigger['trigger_type']);
+    defaultEditRequestType(trigger);
+  };
+
+  useEffect(() => {
+    if (edit) {
+      httpClientProps
+        .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
+        .then(async (response) => {
+          defaultConfigurationEdit(response.trigger);
+        });
+    }
+    reportDefinitionRequest['report_type'] = 'Download';
+  }, []);
 
   return (
     <EuiPageContent panelPaddingSize={'l'}>

@@ -35,14 +35,10 @@ import {
 } from '@elastic/eui';
 import moment from 'moment';
 import {
-  REPORT_SOURCE_VISUALIZATION_OPTIONS,
-  REPORT_SOURCE_DASHBOARD_OPTIONS,
-  REPORT_SOURCE_SAVED_SEARCH_OPTIONS,
-} from './report_settings_test_data';
-import {
   REPORT_SOURCE_RADIOS,
   PDF_PNG_FILE_FORMAT_OPTIONS,
   SAVED_SEARCH_FORMAT_OPTIONS,
+  REPORT_SOURCE_TYPES,
 } from './report_settings_constants';
 import dateMath from '@elastic/datemath';
 import Showdown from 'showdown';
@@ -142,7 +138,12 @@ function TimeRangeSelect() {
 }
 
 export function ReportSettings(props) {
-  const { createReportDefinitionRequest, httpClientProps } = props;
+  const {
+    edit,
+    editDefinitionId,
+    reportDefinitionRequest,
+    httpClientProps,
+  } = props;
 
   const [reportName, setReportName] = useState('');
   const [reportDescription, setReportDescription] = useState('');
@@ -152,13 +153,13 @@ export function ReportSettings(props) {
   const [dashboards, setDashboards] = useState([]);
 
   const [visualizationSourceSelect, setVisualizationSourceSelect] = useState(
-    REPORT_SOURCE_VISUALIZATION_OPTIONS[0].value
+    ''
   );
   const [visualizations, setVisualizations] = useState([]);
 
-  const [savedSearchSourceSelect, setSavedSearchSourceSelect] = useState(
-    REPORT_SOURCE_SAVED_SEARCH_OPTIONS[0].value
-  );
+  const [savedSearchSourceSelect, setSavedSearchSourceSelect] = useState('');
+  const [savedSearches, setSavedSearches] = useState([]);
+
   const [fileFormat, setFileFormat] = useState('pdfFormat');
 
   const [savedSearchFileFormat, setSavedSearchFileFormat] = useState(
@@ -173,30 +174,34 @@ export function ReportSettings(props) {
     setVisualizations(e);
   };
 
+  const handleSavedSearches = (e) => {
+    setSavedSearches(e);
+  };
+
   const handleReportName = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
     setReportName(e.target.value);
-    createReportDefinitionRequest['report_name'] = e.target.value.toString();
+    reportDefinitionRequest['report_name'] = e.target.value.toString();
   };
 
   const handleReportDescription = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
     setReportDescription(e.target.value);
-    createReportDefinitionRequest['description'] = e.target.value.toString();
+    reportDefinitionRequest['description'] = e.target.value.toString();
   };
 
   const handleReportSource = (e: React.SetStateAction<string>) => {
     setReportSourceId(e);
     if (e === 'dashboardReportSource') {
-      createReportDefinitionRequest['report_source'] = 'Dashboard';
-      createReportDefinitionRequest['report_params']['url'] =
-        getDashboardBaseUrl() + dashboards[0].value;
+      reportDefinitionRequest['report_source'] = 'Dashboard';
+      reportDefinitionRequest['report_params']['url'] =
+        getDashboardBaseUrlCreate() + dashboards[0].value;
     } else if (e === 'visualizationReportSource') {
-      createReportDefinitionRequest['report_source'] = 'Visualization';
-      createReportDefinitionRequest['report_params']['url'] =
-        getVisualizationBaseUrl() + visualizations[0].value;
+      reportDefinitionRequest['report_source'] = 'Visualization';
+      reportDefinitionRequest['report_params']['url'] =
+        getVisualizationBaseUrlCreate() + visualizations[0].value;
     }
   };
 
@@ -204,16 +209,16 @@ export function ReportSettings(props) {
     target: { value: React.SetStateAction<string> };
   }) => {
     setDashboardSourceSelect(e.target.value);
-    createReportDefinitionRequest['report_params']['url'] =
-      getDashboardBaseUrl() + e.target.value;
+    reportDefinitionRequest['report_params']['url'] =
+      getDashboardBaseUrlCreate() + e.target.value;
   };
 
   const handleVisualizationSelect = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
     setVisualizationSourceSelect(e.target.value);
-    createReportDefinitionRequest['report_params']['url'] =
-      getVisualizationBaseUrl() + e.target.value;
+    reportDefinitionRequest['report_params']['url'] =
+      getVisualizationBaseUrlCreate() + e.target.value;
   };
 
   const handleSavedSearchSelect = (e: {
@@ -225,9 +230,9 @@ export function ReportSettings(props) {
   const handleFileFormat = (e: React.SetStateAction<string>) => {
     setFileFormat(e);
     if (e === 'pdfFormat') {
-      createReportDefinitionRequest['report_params']['report_format'] = 'pdf';
+      reportDefinitionRequest['report_params']['report_format'] = 'pdf';
     } else if (e === 'pngFormat') {
-      createReportDefinitionRequest['report_params']['report_format'] = 'png';
+      reportDefinitionRequest['report_params']['report_format'] = 'png';
     }
   };
 
@@ -395,7 +400,7 @@ export function ReportSettings(props) {
         <EuiFormRow label="Select saved search">
           <EuiSelect
             id="reportSourceSavedSearchSelect"
-            options={REPORT_SOURCE_SAVED_SEARCH_OPTIONS}
+            options={savedSearches}
             value={savedSearchSourceSelect}
             onChange={handleSavedSearchSelect}
           />
@@ -442,12 +447,142 @@ export function ReportSettings(props) {
     return dashboard_options;
   };
 
-  const getDashboardBaseUrl = () => {
+  const getDashboardBaseUrlCreate = () => {
     let baseUrl = window.location.href;
+    if (edit) {
+      return baseUrl.replace(
+        `opendistro_kibana_reports#/edit/${editDefinitionId}`,
+        'dashboards#/view/'
+      );
+    }
     return baseUrl.replace(
       'opendistro_kibana_reports#/create',
       'kibana#/dashboard/'
     );
+  };
+
+  const setReportSourceDropdownOption = (options, reportSource, url) => {
+    let index = 0;
+    if (reportSource === REPORT_SOURCE_TYPES.dashboard) {
+      for (index = 0; index < options.dashboard.length; ++index) {
+        if (url.includes(options.dashboard[index].value)) {
+          setDashboardSourceSelect(options.dashboard[index].value);
+        }
+      }
+    } else if (reportSource === REPORT_SOURCE_TYPES.visualization) {
+      for (index = 0; index < options.visualizations.length; ++index) {
+        if (url.includes(options.visualizations[index].value)) {
+          setVisualizationSourceSelect(options.visualizations[index].value);
+        }
+      }
+    } else if (reportSource === REPORT_SOURCE_TYPES.savedSearch) {
+      for (index = 0; index < options.savedSearch.length; ++index) {
+        if (url.includes(options.savedSearch[index].value)) {
+          setSavedSearchSourceSelect(options.savedSearch[index].value);
+        }
+      }
+    }
+  };
+
+  const setDefaultFileFormat = (fileFormat) => {
+    let index = 0;
+    for (index = 0; index < PDF_PNG_FILE_FORMAT_OPTIONS.length; ++index) {
+      if (
+        fileFormat.toUpperCase() === PDF_PNG_FILE_FORMAT_OPTIONS[index].label
+      ) {
+        setFileFormat(PDF_PNG_FILE_FORMAT_OPTIONS[index].id);
+      }
+    }
+  };
+
+  const setDefaultEditValues = async (response, reportSourceOptions) => {
+    setReportName(response.report_name);
+    setReportDescription(response.description);
+    reportDefinitionRequest.report_name = response.report_name;
+    reportDefinitionRequest.description = response.description;
+    reportDefinitionRequest.report_params = response.report_params;
+    REPORT_SOURCE_RADIOS.map((radio) => {
+      if (radio.label === response.report_source) {
+        setReportSourceId(radio.id);
+        reportDefinitionRequest.report_source = response.report_source;
+      }
+    });
+    setDefaultFileFormat(response['report_params']['report_format']);
+    setReportSourceDropdownOption(
+      reportSourceOptions,
+      response['report_source'],
+      response['report_params']['url']
+    );
+  };
+
+  const defaultConfigurationEdit = async (httpClientProps) => {
+    let editData = {};
+    await httpClientProps
+      .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
+      .then(async (response) => {
+        editData = response;
+      })
+      .catch((error) => {
+        console.error('error in fetching report definition details:', error);
+      });
+    return editData;
+  };
+
+  const defaultConfigurationCreate = async (httpClientProps) => {
+    let reportSourceOptions = {
+      dashboard: [],
+      visualizations: [],
+      savedSearch: [],
+    };
+    await httpClientProps
+      .get('../api/reporting/getReportSource/dashboard')
+      .then(async (response) => {
+        let dashboardOptions = getReportSettingDashboardOptions(
+          response['hits']['hits']
+        );
+        reportSourceOptions.dashboard = dashboardOptions;
+        handleDashboards(dashboardOptions);
+        if (!edit) {
+          setDashboardSourceSelect(dashboardOptions[0].value);
+          reportDefinitionRequest['report_params']['url'] =
+            getDashboardBaseUrlCreate() +
+            response['hits']['hits'][0]['_id'].substring(10);
+        }
+      })
+      .catch((error) => {
+        console.log('error when fetching dashboards:', error);
+      });
+    reportDefinitionRequest['report_params']['report_format'] = 'pdf';
+    reportDefinitionRequest['report_source'] = 'Dashboard';
+
+    await httpClientProps
+      .get('../api/reporting/getReportSource/visualization')
+      .then(async (response) => {
+        let visualizationOptions = getVisualizationOptions(
+          response['hits']['hits']
+        );
+        reportSourceOptions.visualizations = visualizationOptions;
+        await handleVisualizations(visualizationOptions);
+        await setVisualizationSourceSelect(visualizationOptions[0].value);
+      })
+      .catch((error) => {
+        console.log('error when fetching visualizations:', error);
+      });
+
+    await httpClientProps
+      .get('../api/reporting/getReportSource/search')
+      .then(async (response) => {
+        let savedSearchOptions = getSavedSearchOptions(
+          response['hits']['hits']
+        );
+        reportSourceOptions.savedSearch = savedSearchOptions;
+        await handleSavedSearches(savedSearchOptions);
+        await setSavedSearchSourceSelect(savedSearchOptions[0].value);
+      })
+      .catch((error) => {
+        console.log('error when fetching saved searches:', error);
+      });
+    return reportSourceOptions;
   };
 
   const getVisualizationOptions = (data) => {
@@ -463,8 +598,28 @@ export function ReportSettings(props) {
     return options;
   };
 
-  const getVisualizationBaseUrl = () => {
+  const getSavedSearchOptions = (data) => {
+    console.log('in getsavedsearchoptions, data is', data);
+    let index;
+    let options = [];
+    for (index = 0; index < data.length; ++index) {
+      let entry = {
+        value: data[index]['_id'].substring(7),
+        text: data[index]['_source']['search']['title'],
+      };
+      options.push(entry);
+    }
+    return options;
+  };
+
+  const getVisualizationBaseUrlCreate = () => {
     let baseUrl = window.location.href;
+    if (edit) {
+      return baseUrl.replace(
+        'opendistro_kibana_reports#/edit',
+        'kibana#/visualize/edit/'
+      );
+    }
     return baseUrl.replace(
       'opendistro_kibana_reports#/create',
       'kibana#/visualize/edit/'
@@ -472,37 +627,19 @@ export function ReportSettings(props) {
   };
 
   useEffect(() => {
-    // get dashboard options
-    httpClientProps
-      .get('../api/reporting/getReportSource/dashboard')
-      .then(async (response) => {
-        let dashboardOptions = getReportSettingDashboardOptions(
-          response['hits']['hits']
-        );
-        await handleDashboards(dashboardOptions);
-        await setDashboardSourceSelect(dashboardOptions[0].value);
-        createReportDefinitionRequest['report_params']['url'] =
-          getDashboardBaseUrl() +
-          response['hits']['hits'][0]['_id'].substring(10);
-      })
-      .catch((error) => {
-        console.log('error when fetching dashboards:', error);
+    let reportSourceOptions = {};
+    let editData = {};
+    if (edit) {
+      defaultConfigurationEdit(httpClientProps).then(async (response) => {
+        editData = response;
       });
-    createReportDefinitionRequest['report_params']['report_format'] = 'pdf';
-    createReportDefinitionRequest['report_source'] = 'Dashboard';
-
-    httpClientProps
-      .get('../api/reporting/getReportSource/visualization')
-      .then(async (response) => {
-        let visualizationOptions = getVisualizationOptions(
-          response['hits']['hits']
-        );
-        await handleVisualizations(visualizationOptions);
-        await setVisualizationSourceSelect(visualizationOptions[0].value);
-      })
-      .catch((error) => {
-        console.log('error when fetching visualizations:', error);
-      });
+    }
+    defaultConfigurationCreate(httpClientProps).then(async (response) => {
+      reportSourceOptions = response;
+      if (edit) {
+        setDefaultEditValues(editData, reportSourceOptions);
+      }
+    });
   }, []);
 
   return (
