@@ -30,9 +30,16 @@ import {
   EuiLink,
   EuiPopover,
   EuiListGroup,
+  EuiRadioGroup,
 } from '@elastic/eui';
 import { DeliveryRecipientsBox } from './delivery_recipients_box';
-import { EMAIL_RECIPIENT_OPTIONS } from './delivery_constants';
+import ReactMDE from 'react-mde';
+import Showdown from 'showdown';
+import {
+  EMAIL_FORMAT_OPTIONS,
+  EMAIL_RECIPIENT_OPTIONS,
+} from './delivery_constants';
+import 'react-mde/lib/styles/css/react-mde-all.css';
 
 const INSERT_PLACEHOLDER_OPTIONS = [
   {
@@ -80,7 +87,7 @@ export function ReportDelivery(props) {
   const [emailSubject, setEmailSubject] = useState('');
   const [emailBody, setEmailBody] = useState('');
   const [includeReportAsAttachment, setIncludeReportAsAttachment] = useState(
-    false
+    true
   );
   const [insertPlaceholder, setInsertPlaceholder] = useState(false);
 
@@ -187,76 +194,116 @@ export function ReportDelivery(props) {
     );
   };
 
-  const setDefaultEditEmail = (delivery_params) => {
-    setEmailCheckbox(true);
-    let index;
-    for (index = 0; index < delivery_params.recipients.length; ++index) {
-      handleCreateEmailRecipient(delivery_params.recipients[index]);
-    }
-    setEmailSubject(delivery_params.subject);
-    setEmailBody(delivery_params.body);
-  };
+  const EmailDelivery = () => {
+    const [emailSubject, setEmailSubject] = useState('');
+    const [emailBody, setEmailBody] = useState('');
+    const [emailFormat, setEmailFormat] = useState('htmlReport');
+    const [selectedTab, setSelectedTab] = React.useState<'write' | 'preview'>(
+      'write'
+    );
+    const setDefaultEditEmail = (delivery_params) => {
+      setEmailCheckbox(true);
+      let index;
+      for (index = 0; index < delivery_params.recipients.length; ++index) {
+        handleCreateEmailRecipient(delivery_params.recipients[index]);
+      }
+      setEmailSubject(delivery_params.subject);
+      setEmailBody(delivery_params.body);
+    };
 
-  const defaultConfigurationEdit = (delivery) => {
-    if (delivery.channel.includes('Email')) {
-      setDefaultEditEmail(delivery.delivery_params);
-    }
-  };
+    const defaultConfigurationEdit = (delivery) => {
+      if (delivery.channel.includes('Email')) {
+        setDefaultEditEmail(delivery.delivery_params);
+      }
+    };
 
-  useEffect(() => {
-    if (edit) {
-      httpClientProps
-        .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
-        .then(async (response) => {
-          // todo: more changes to delivery after data model update
-          defaultConfigurationEdit(response.delivery);
-        })
-        .catch((error) => {
-          console.error(
-            'error in fetching report definition delivery for edit:',
-            error
-          );
-        });
-    }
-  }, []);
+    const handleEmailBody = (e: {
+      target: { value: React.SetStateAction<string> };
+    }) => {
+      setEmailBody(e.target.value);
+    };
 
-  const emailDelivery = emailCheckbox ? (
-    <div>
-      <EuiFormRow label="Email recipients" helpText="Select or add recipients">
-        <EuiComboBox
-          placeholder={'Add users here'}
-          options={EMAIL_RECIPIENT_OPTIONS}
-          selectedOptions={emailRecipients}
-          onChange={handleEmailRecipients}
-          onCreateOption={handleCreateEmailRecipient}
+    const handleEmailFormat = (e) => {
+      setEmailFormat(e);
+    };
+
+    const converter = new Showdown.Converter({
+      tables: true,
+      simplifiedAutoLink: true,
+      strikethrough: true,
+      tasklists: true,
+    });
+
+    const emailBodyLabel =
+      emailFormat === 'htmlReport' ? 'Add optional message' : 'Email body';
+
+    const showPlaceholder =
+      emailFormat === 'htmlReport' ? null : <InsertPlaceholderPopover />;
+
+    const showAttachmentCheckbox =
+      emailFormat === 'htmlReport' ? null : (
+        <EuiCheckbox
+          id="includeReportAsAttachment"
+          label="Include report as attachment"
+          checked={includeReportAsAttachment}
+          onChange={handleIncludeReportAsAttachment}
         />
-      </EuiFormRow>
-      <EuiSpacer />
-      <EuiFormRow label="Email subject">
-        <EuiFieldText
-          placeholder="Subject line"
-          value={emailSubject}
-          onChange={handleEmailSubject}
-        />
-      </EuiFormRow>
-      <EuiSpacer />
-      <EuiFormRow label="Email body" labelAppend={<InsertPlaceholderPopover />}>
-        <EuiTextArea
+      );
+
+    return (
+      <div>
+        <EuiFormRow label="Email recipients" helpText="Select or add users">
+          <EuiComboBox
+            placeholder={'Add users here'}
+            options={EMAIL_RECIPIENT_OPTIONS}
+            selectedOptions={emailRecipients}
+            onChange={handleEmailRecipients}
+            onCreateOption={handleCreateEmailRecipient}
+          />
+        </EuiFormRow>
+        <EuiSpacer />
+        <EuiFormRow label="Email format">
+          <EuiRadioGroup
+            options={EMAIL_FORMAT_OPTIONS}
+            idSelected={emailFormat}
+            onChange={handleEmailFormat}
+          />
+        </EuiFormRow>
+        <EuiSpacer />
+        <EuiFormRow label="Email subject">
+          <EuiFieldText
+            placeholder="Subject line"
+            value={emailSubject}
+            onChange={handleEmailSubject}
+          />
+        </EuiFormRow>
+        <EuiSpacer />
+        <EuiFormRow
+          label={emailBodyLabel}
+          labelAppend={showPlaceholder}
           fullWidth={true}
-          placeholder="Body content"
-          value={emailBody}
-          onChange={handleEmailBody}
-        />
-      </EuiFormRow>
-      <EuiSpacer size="xs" />
-      <EuiCheckbox
-        id="includeReportAsAttachment"
-        label="Include report as attachment"
-        checked={includeReportAsAttachment}
-        onChange={handleIncludeReportAsAttachment}
-      />
-    </div>
-  ) : null;
+        >
+          <ReactMDE
+            value={emailBody}
+            onChange={setEmailBody}
+            selectedTab={selectedTab}
+            onTabChange={setSelectedTab}
+            toolbarCommands={[
+              ['header', 'bold', 'italic', 'strikethrough'],
+              ['unordered-list', 'ordered-list', 'checked-list'],
+            ]}
+            generateMarkdownPreview={(markdown) =>
+              Promise.resolve(converter.makeHtml(markdown))
+            }
+          />
+        </EuiFormRow>
+        <EuiSpacer size="xs" />
+        {showAttachmentCheckbox}
+      </div>
+    );
+  };
+
+  const emailDelivery = emailCheckbox ? <EmailDelivery /> : null;
 
   reportDefinitionRequest['delivery'] = delivery;
 
@@ -273,12 +320,14 @@ export function ReportDelivery(props) {
           <DeliveryRecipientsBox />
         </EuiFormRow>
         <EuiSpacer />
-        <EuiCheckbox
-          id="emailCheckboxDelivery"
-          label="Email"
-          checked={emailCheckbox}
-          onChange={handleEmailCheckbox}
-        />
+        <EuiFormRow label="Email configuration">
+          <EuiCheckbox
+            id="emailCheckboxDelivery"
+            label="Add email recipients"
+            checked={emailCheckbox}
+            onChange={handleEmailCheckbox}
+          />
+        </EuiFormRow>
         <EuiSpacer />
         {emailDelivery}
       </EuiPageContentBody>

@@ -27,8 +27,11 @@ import {
   EuiPageHeaderSection,
   EuiButton,
   EuiText,
+  EuiIcon,
+  EuiLink,
 } from '@elastic/eui';
 import { ReportDetailsComponent } from '../report_details/report_details';
+import { fileFormatsUpper } from '../main_utils';
 
 export function ReportDefinitionDetails(props) {
   const [reportDefinitionDetails, setReportDefinitionDetails] = useState({});
@@ -38,27 +41,53 @@ export function ReportDefinitionDetails(props) {
     setReportDefinitionDetails(e);
   };
 
+  const readableTimeRange = (data) => {
+    let timeRangeString = '';
+    if (
+      data['trigger']['trigger_params']['schedule']['interval']['unit'] ===
+      'DAYS'
+    ) {
+      timeRangeString +=
+        'Every ' +
+        data['trigger']['trigger_params']['schedule']['interval']['period'] +
+        ' days';
+    }
+    return timeRangeString;
+  };
+
   const getReportDefinitionDetailsMetadata = (data) => {
+    let readableDate = new Date(data['time_created']);
+    let displayCreatedDate =
+      readableDate.toDateString() + ' ' + readableDate.toLocaleTimeString();
+
+    let readableUpdatedDate = new Date(data['last_updated']);
+    let displayUpdatedDate =
+      readableUpdatedDate.toDateString() +
+      ' ' +
+      readableUpdatedDate.toLocaleTimeString();
+
+    let timeRangeDisplay = `\u2014`;
+    if (data['trigger']['trigger_type'] === 'Schedule') {
+      readableTimeRange(data);
+    }
+
     let reportDefinitionDetails = {
       name: data['report_name'],
       description: data['description'],
-      created: data['time_created'],
-      lastUpdated: data['last_updated'],
+      created: displayCreatedDate,
+      lastUpdated: displayUpdatedDate,
       source: data['report_source'],
-      timePeriod:
-        data['trigger']['trigger_params']['schedule']['interval']['period'] +
-        ' ' +
-        data['trigger']['trigger_params']['schedule']['interval']['unit'],
+      timePeriod: timeRangeDisplay,
       fileFormat: data['report_params']['report_format'],
-      reportHeader: '--',
-      reportFooter: '--',
+      reportHeader: `\u2014`,
+      reportFooter: `\u2014`,
       triggerType: data['trigger']['trigger_type'],
       scheduleDetails: data['trigger']['trigger_params']['schedule_type'],
-      alertDetails: '--',
+      alertDetails: `\u2014`,
       status: data['status'],
       deliveryChannels: data['delivery']['channel'],
       kibanaRecipients: data['delivery']['delivery_params']['recipients'],
-      emailRecipients: '--', // todo: data model needs separate field for email vs kibana recipients
+      emailRecipients: `\u2014`, // todo: data model needs separate field for email vs kibana recipients
       emailSubject: data['delivery']['delivery_params']['subject'],
       emailBody: data['delivery']['delivery_params']['body'],
       includeReportAsAttachment:
@@ -68,6 +97,19 @@ export function ReportDefinitionDetails(props) {
   };
 
   useEffect(() => {
+    props.setBreadcrumbs([
+      {
+        text: 'Reporting',
+        href: '#',
+      },
+      {
+        text: 'Report definition details',
+        href: `#/report_definition_details/${props.match['params']['reportDefinitionId']}`,
+      },
+      {
+        text: `${props.match['params']['reportDefinitionId']}`,
+      },
+    ]);
     const { httpClient } = props;
     httpClient
       .get(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
@@ -81,6 +123,36 @@ export function ReportDefinitionDetails(props) {
       });
   }, []);
 
+  const fileFormatDownload = (data) => {
+    let formatUpper = data['fileFormat'];
+    formatUpper = fileFormatsUpper[formatUpper];
+    return (
+      <EuiLink>
+        {formatUpper}
+        <EuiIcon type="importAction" />
+      </EuiLink>
+    );
+  };
+
+  const sourceURL = (data) => {
+    return <EuiLink>{data['source']}</EuiLink>;
+  };
+
+  const scheduleOrOnDemandDefinition = (data) => {
+    if (data.scheduleDetails === 'Now') {
+      return <EuiButton>Generate report</EuiButton>;
+    } else if (
+      data.triggerType === 'Schedule' ||
+      data.triggerType === 'Trigger'
+    ) {
+      if (data.status === 'Active') {
+        return <EuiButton>Disable</EuiButton>;
+      } else {
+        return <EuiButton>Enable</EuiButton>;
+      }
+    }
+  };
+
   const includeReportAsAttachmentString = reportDefinitionDetails.includeReportAsAttachment
     ? 'True'
     : 'False';
@@ -89,56 +161,43 @@ export function ReportDefinitionDetails(props) {
     <EuiPage>
       <EuiPageBody>
         <EuiTitle size="l">
-          <h1>Report definition</h1>
+          <h1>Report definition details</h1>
         </EuiTitle>
         <EuiSpacer size="m" />
         <EuiPageContent panelPaddingSize={'l'}>
           <EuiPageHeader>
-            <EuiFlexItem>
-              <EuiPageHeaderSection>
-                <EuiTitle>
-                  <h2>{reportDefinitionDetails.name}</h2>
-                </EuiTitle>
-              </EuiPageHeaderSection>
-            </EuiFlexItem>
+            <EuiFlexGroup>
+              <EuiFlexItem>
+                <EuiPageHeaderSection>
+                  <EuiTitle>
+                    <h2>{reportDefinitionDetails.name}</h2>
+                  </EuiTitle>
+                </EuiPageHeaderSection>
+              </EuiFlexItem>
+            </EuiFlexGroup>
             <EuiFlexGroup
               justifyContent="flexEnd"
               alignItems="flexEnd"
-              gutterSize="xs"
+              gutterSize="l"
             >
-              <EuiFlexItem />
-              <EuiFlexItem />
-              <EuiFlexItem />
-              <EuiFlexItem />
-              <EuiFlexItem />
-              <EuiFlexItem>
-                <EuiText size="xs">
-                  <h2>
-                    <a href="#">Disable</a>
-                  </h2>
-                  <div></div>
-                </EuiText>
+              <EuiFlexItem grow={false}>
+                <EuiButton color={'danger'}>Delete</EuiButton>
               </EuiFlexItem>
-              <EuiFlexItem>
-                <EuiText size="xs">
-                  <h2>
-                    <a href="#">Enable</a>
-                  </h2>
-                  <div></div>
-                </EuiText>
+              <EuiFlexItem grow={false}>
+                {scheduleOrOnDemandDefinition(reportDefinitionDetails)}
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
                 <EuiButton
                   fill={true}
                   onClick={() => {
-                    window.location.assign(`opendistro_kibana_reports#/edit/${reportDefinitionId}`);
+                    window.location.assign(
+                      `opendistro_kibana_reports#/edit/${reportDefinitionId}`
+                    );
                   }}
                 >
                   Edit
                 </EuiButton>
               </EuiFlexItem>
-              <EuiFlexItem />
-              <EuiFlexItem />
             </EuiFlexGroup>
           </EuiPageHeader>
           <EuiHorizontalRule />
@@ -172,23 +231,23 @@ export function ReportDefinitionDetails(props) {
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Source'}
-              reportDetailsComponentContent={reportDefinitionDetails.source}
+              reportDetailsComponentContent={sourceURL(reportDefinitionDetails)}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Time period'}
-              reportDetailsComponentContent={
-                reportDefinitionDetails.timePeriod
-              }
+              reportDetailsComponentContent={reportDefinitionDetails.timePeriod}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'File format'}
-              reportDetailsComponentContent={
-                reportDefinitionDetails.fileFormat
-              }
+              reportDetailsComponentContent={fileFormatDownload(
+                reportDefinitionDetails
+              )}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report header'}
-              ReportDefinitionDetails={reportDefinitionDetails.reportHeader}
+              reportDetailsComponentContent={
+                reportDefinitionDetails.reportHeader
+              }
             />
           </EuiFlexGroup>
           <EuiSpacer />
@@ -267,9 +326,7 @@ export function ReportDefinitionDetails(props) {
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email body'}
-              reportDetailsComponentContent={
-                reportDefinitionDetails.emailBody
-              }
+              reportDetailsComponentContent={reportDefinitionDetails.emailBody}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Include report as attachment'}

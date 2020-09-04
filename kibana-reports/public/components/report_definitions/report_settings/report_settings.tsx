@@ -32,12 +32,15 @@ import {
   EuiCheckbox,
   EuiSuperDatePicker,
   EuiTextArea,
+  EuiPage,
+  EuiCheckboxGroup,
 } from '@elastic/eui';
 import moment from 'moment';
 import {
   REPORT_SOURCE_RADIOS,
   PDF_PNG_FILE_FORMAT_OPTIONS,
   SAVED_SEARCH_FORMAT_OPTIONS,
+  HEADER_FOOTER_CHECKBOX,
   REPORT_SOURCE_TYPES,
 } from './report_settings_constants';
 import dateMath from '@elastic/datemath';
@@ -118,9 +121,10 @@ function TimeRangeSelect() {
     <div>
       <EuiFormRow
         label="Time range"
-        helpText="Time range is relative to the report creation date on the report trigger"
+        helpText="Time range is relative to the report creation date on the report trigger."
       >
         <EuiSuperDatePicker
+          isDisabled={false}
           isLoading={isLoading}
           start={start}
           end={end}
@@ -130,7 +134,7 @@ function TimeRangeSelect() {
           refreshInterval={refreshInterval}
           onRefreshChange={onRefreshChange}
           recentlyUsedRanges={recentlyUsedRanges}
-          commonlyUsedRanges={[]}
+          showUpdateButton={false}
         />
       </EuiFormRow>
     </div>
@@ -236,102 +240,12 @@ export function ReportSettings(props) {
     }
   };
 
-  const handleSavedSearchFileFormat = (e: React.SetStateAction<string>) => {
-    setSavedSearchFileFormat(e);
-  };
-
   const converter = new Showdown.Converter({
     tables: true,
     simplifiedAutoLink: true,
     strikethrough: true,
     tasklists: true,
   });
-
-  const Header = () => {
-    const [includeHeader, setIncludeHeader] = useState(false);
-
-    const [header, setHeader] = useState('');
-    const [selectedTabHeader, setSelectedTabHeader] = React.useState<
-      'write' | 'preview'
-    >('write');
-
-    const handleIncludeHeader = (e: {
-      target: { checked: React.SetStateAction<boolean> };
-    }) => {
-      setIncludeHeader(e.target.checked);
-    };
-
-    const showHeader = includeHeader ? (
-      <ReactMde
-        value={header}
-        onChange={setHeader}
-        selectedTab={selectedTabHeader}
-        onTabChange={setSelectedTabHeader}
-        toolbarCommands={[
-          ['header', 'bold', 'italic', 'strikethrough'],
-          ['unordered-list', 'ordered-list', 'checked-list'],
-        ]}
-        generateMarkdownPreview={(markdown) =>
-          Promise.resolve(converter.makeHtml(markdown))
-        }
-      />
-    ) : null;
-
-    return (
-      <div>
-        <EuiCheckbox
-          id="includeHeaderCheckbox"
-          label="Include header"
-          checked={includeHeader}
-          onChange={handleIncludeHeader}
-        />
-        {showHeader}
-      </div>
-    );
-  };
-
-  const Footer = () => {
-    const [includeFooter, setIncludeFooter] = useState(false);
-
-    const [footer, setFooter] = useState('');
-    const [selectedTabFooter, setSelectedTabFooter] = React.useState<
-      'write' | 'preview'
-    >('write');
-
-    const handleIncludeFooter = (e: {
-      target: { checked: React.SetStateAction<boolean> };
-    }) => {
-      setIncludeFooter(e.target.checked);
-    };
-
-    const showFooter = includeFooter ? (
-      <ReactMde
-        value={footer}
-        onChange={setFooter}
-        selectedTab={selectedTabFooter}
-        onTabChange={setSelectedTabFooter}
-        toolbarCommands={[
-          ['header', 'bold', 'italic', 'strikethrough'],
-          ['unordered-list', 'ordered-list', 'checked-list'],
-        ]}
-        generateMarkdownPreview={(markdown) =>
-          Promise.resolve(converter.makeHtml(markdown))
-        }
-      />
-    ) : null;
-
-    return (
-      <div>
-        <EuiCheckbox
-          id="includeFooterCheckbox"
-          label="Include footer"
-          checked={includeFooter}
-          onChange={handleIncludeFooter}
-        />
-        {showFooter}
-      </div>
-    );
-  };
 
   const PDFandPNGFileFormats = () => {
     return (
@@ -344,6 +258,83 @@ export function ReportSettings(props) {
           />
         </EuiFormRow>
         <EuiSpacer />
+      </div>
+    );
+  };
+
+  const SettingsMarkdown = () => {
+    const [
+      checkboxIdSelectHeaderFooter,
+      setCheckboxIdSelectHeaderFooter,
+    ] = useState({ ['header']: false, ['footer']: false });
+
+    const [footer, setFooter] = useState('');
+    const [selectedTabFooter, setSelectedTabFooter] = React.useState<
+      'write' | 'preview'
+    >('write');
+
+    const [header, setHeader] = useState('');
+    const [selectedTabHeader, setSelectedTabHeader] = React.useState<
+      'write' | 'preview'
+    >('write');
+
+    const handleCheckboxHeaderFooter = (optionId) => {
+      const newCheckboxIdToSelectedMap = {
+        ...checkboxIdSelectHeaderFooter,
+        ...{
+          [optionId]: !checkboxIdSelectHeaderFooter[optionId],
+        },
+      };
+      setCheckboxIdSelectHeaderFooter(newCheckboxIdToSelectedMap);
+    };
+
+    const showFooter = checkboxIdSelectHeaderFooter.footer ? (
+      <EuiFormRow label="Footer" fullWidth={true}>
+        <ReactMde
+          value={footer}
+          onChange={setFooter}
+          selectedTab={selectedTabFooter}
+          onTabChange={setSelectedTabFooter}
+          toolbarCommands={[
+            ['header', 'bold', 'italic', 'strikethrough'],
+            ['unordered-list', 'ordered-list', 'checked-list'],
+          ]}
+          generateMarkdownPreview={(markdown) =>
+            Promise.resolve(converter.makeHtml(markdown))
+          }
+        />
+      </EuiFormRow>
+    ) : null;
+
+    const showHeader = checkboxIdSelectHeaderFooter.header ? (
+      <EuiFormRow label="Header" fullWidth={true}>
+        <ReactMde
+          value={header}
+          onChange={setHeader}
+          selectedTab={selectedTabHeader}
+          onTabChange={setSelectedTabHeader}
+          toolbarCommands={[
+            ['header', 'bold', 'italic', 'strikethrough'],
+            ['unordered-list', 'ordered-list', 'checked-list'],
+          ]}
+          generateMarkdownPreview={(markdown) =>
+            Promise.resolve(converter.makeHtml(markdown))
+          }
+        />
+      </EuiFormRow>
+    ) : null;
+
+    return (
+      <div>
+        <EuiCheckboxGroup
+          options={HEADER_FOOTER_CHECKBOX}
+          idToSelectedMap={checkboxIdSelectHeaderFooter}
+          onChange={handleCheckboxHeaderFooter}
+          legend={{ children: 'Header and footer' }}
+        />
+        <EuiSpacer />
+        {showHeader}
+        {showFooter}
       </div>
     );
   };
@@ -363,10 +354,8 @@ export function ReportSettings(props) {
         <TimeRangeSelect />
         <EuiSpacer />
         <PDFandPNGFileFormats />
-        <EuiSpacer />
-        <Header />
         <EuiSpacer size="s" />
-        <Footer />
+        <SettingsMarkdown />
       </div>
     );
   };
@@ -386,10 +375,8 @@ export function ReportSettings(props) {
         <TimeRangeSelect />
         <EuiSpacer />
         <PDFandPNGFileFormats />
-        <EuiSpacer />
-        <Header />
         <EuiSpacer size="s" />
-        <Footer />
+        <SettingsMarkdown />
       </div>
     );
   };
@@ -409,11 +396,9 @@ export function ReportSettings(props) {
         <TimeRangeSelect />
         <EuiSpacer />
         <EuiFormRow label="File format">
-          <EuiRadioGroup
-            options={SAVED_SEARCH_FORMAT_OPTIONS}
-            idSelected={savedSearchFileFormat}
-            onChange={handleSavedSearchFileFormat}
-          />
+          <EuiText>
+            <p>CSV</p>
+          </EuiText>
         </EuiFormRow>
       </div>
     );
@@ -599,7 +584,6 @@ export function ReportSettings(props) {
   };
 
   const getSavedSearchOptions = (data) => {
-    console.log('in getsavedsearchoptions, data is', data);
     let index;
     let options = [];
     for (index = 0; index < data.length; ++index) {
@@ -643,56 +627,55 @@ export function ReportSettings(props) {
   }, []);
 
   return (
-    <EuiPageContent panelPaddingSize={'l'}>
-      <EuiPageHeader>
-        <EuiTitle>
-          <h2>Report Settings</h2>
-        </EuiTitle>
-      </EuiPageHeader>
-      <EuiHorizontalRule />
-      <EuiPageContentBody>
-        <EuiFlexGroup>
-          <EuiFlexItem>
-            <EuiFormRow
-              label="Name"
-              helpText="Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space)"
-            >
-              <EuiFieldText
-                placeholder="Report name"
-                value={reportName}
-                onChange={handleReportName}
-              />
-            </EuiFormRow>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-        <EuiFlexGroup style={{ maxWidth: 600 }}>
-          <EuiFlexItem>
-            <EuiFormRow label="Description" helpText="Optional">
-              <EuiFieldText
-                placeholder="Describe this report"
-                value={reportDescription}
-                onChange={handleReportDescription}
-              />
-            </EuiFormRow>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-        <EuiSpacer />
-        <EuiFormRow
-          label="Report source"
-          helpText="Where is the report generated from"
-        >
-          <EuiRadioGroup
-            options={REPORT_SOURCE_RADIOS}
-            idSelected={reportSourceId}
-            onChange={handleReportSource}
-          />
-        </EuiFormRow>
-        <EuiSpacer />
-        {displayDashboardSelect}
-        {displayVisualizationSelect}
-        {displaySavedSearchSelect}
-        <EuiSpacer />
-      </EuiPageContentBody>
-    </EuiPageContent>
+    <EuiPage>
+      <EuiPageContent panelPaddingSize={'l'}>
+        <EuiPageHeader>
+          <EuiTitle>
+            <h2>Report Settings</h2>
+          </EuiTitle>
+        </EuiPageHeader>
+        <EuiHorizontalRule />
+        <EuiPageContentBody>
+          <EuiFlexGroup>
+            <EuiFlexItem>
+              <EuiFormRow
+                label="Name"
+                helpText="Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space)."
+              >
+                <EuiFieldText
+                  placeholder="Report name (e.g Log Traffic Daily Report)"
+                  value={reportName}
+                  onChange={handleReportName}
+                />
+              </EuiFormRow>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+          <EuiFlexGroup style={{ maxWidth: 600 }}>
+            <EuiFlexItem>
+              <EuiFormRow label="Description (optional)">
+                <EuiTextArea
+                  placeholder="Describe this report (e.g Morning daily reports for log traffic)"
+                  value={reportDescription}
+                  onChange={handleReportDescription}
+                />
+              </EuiFormRow>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+          <EuiSpacer />
+          <EuiFormRow label="Report source">
+            <EuiRadioGroup
+              options={REPORT_SOURCE_RADIOS}
+              idSelected={reportSourceId}
+              onChange={handleReportSource}
+            />
+          </EuiFormRow>
+          <EuiSpacer />
+          {displayDashboardSelect}
+          {displayVisualizationSelect}
+          {displaySavedSearchSelect}
+          <EuiSpacer />
+        </EuiPageContentBody>
+      </EuiPageContent>
+    </EuiPage>
   );
 }

@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import {
   EuiFlexGroup,
   EuiFlexItem,
@@ -34,6 +34,10 @@ import {
   EuiModalHeader,
   EuiModalBody,
   EuiText,
+  EuiBreadcrumbs,
+  EuiHeader,
+  EuiHeaderBreadcrumbs,
+  EuiPanel,
 } from '@elastic/eui';
 import { ReportsTable } from './reports_table';
 import { ReportDefinitions } from './report_definitions_table';
@@ -43,11 +47,19 @@ import {
   addReportsTableContent,
   addReportDefinitionsTableContent,
   readStreamToFile,
+  breadcrumbs,
 } from './main_utils';
+import { CoreInterface } from '../app';
+import CSS from 'csstype';
 
-interface RouterHomeProps {
+interface RouterHomeProps extends CoreInterface {
   httpClient?: any;
 }
+
+const reportCountStyles: CSS.Properties = {
+  color: 'gray',
+  display: 'inline',
+};
 
 export class Main extends React.Component<RouterHomeProps, any> {
   constructor(props: any) {
@@ -83,6 +95,12 @@ export class Main extends React.Component<RouterHomeProps, any> {
   };
 
   componentDidMount = async () => {
+    this.props.setBreadcrumbs([
+      {
+        text: 'Reporting',
+        href: '#',
+      },
+    ]);
     const { httpClient } = this.props;
     // get all reports
     await httpClient
@@ -176,69 +194,72 @@ export class Main extends React.Component<RouterHomeProps, any> {
   render() {
     return (
       <div>
-        <EuiPage>
-          <EuiPageBody>
-            <EuiPageContent panelPaddingSize={'l'}>
-              <EuiFlexGroup justifyContent="spaceEvenly">
-                <EuiFlexItem>
-                  <EuiTitle>
-                    <h2>Reports ({this.state.reportsTableContent.length})</h2>
-                  </EuiTitle>
-                </EuiFlexItem>
-                <EuiFlexItem component="span" grow={false}>
-                  <EuiButton size="m" onClick={this.refreshReportsTable}>
-                    Refresh
-                  </EuiButton>
-                </EuiFlexItem>
-              </EuiFlexGroup>
-              <EuiHorizontalRule />
-              <ReportsTable
-                getRowProps={this.getReportsRowProps}
-                pagination={this.pagination}
-                reportsTableItems={this.state.reportsTableContent}
-                httpClient={this.props['httpClient']}
-              />
-            </EuiPageContent>
-            <EuiSpacer />
-            <EuiPageContent panelPaddingSize={'l'}>
-              <EuiFlexGroup justifyContent="spaceEvenly">
-                <EuiFlexItem>
-                  <EuiTitle>
-                    <h2>
-                      Report definitions (
-                      {this.state.reportDefinitionsTableContent.length})
-                    </h2>
-                  </EuiTitle>
-                </EuiFlexItem>
-                <EuiFlexItem grow={false}>
-                  <EuiButton onClick={this.refreshReportsDefinitionsTable}>
-                    Refresh
-                  </EuiButton>
-                </EuiFlexItem>
-                <EuiFlexItem component="span" grow={false}>
-                  <EuiButton
-                    fill={true}
-                    onClick={() => {
-                      window.location.assign(
-                        'opendistro_kibana_reports#/create'
-                      );
-                    }}
-                  >
-                    Create
-                  </EuiButton>
-                </EuiFlexItem>
-              </EuiFlexGroup>
-              <EuiHorizontalRule />
-              <ReportDefinitions
-                pagination={this.pagination}
-                getRowProps={this.getReportDefinitionsRowProps}
-                reportDefinitionsTableContent={
-                  this.state.reportDefinitionsTableContent
-                }
-              />
-            </EuiPageContent>
-          </EuiPageBody>
-        </EuiPage>
+        <EuiPanel paddingSize={'l'}>
+          <EuiFlexGroup justifyContent="spaceEvenly">
+            <EuiFlexItem>
+              <EuiTitle>
+                <h2>
+                  Reports{' '}
+                  <p style={reportCountStyles}>
+                    {' '}
+                    ({this.state.reportsTableContent.length})
+                  </p>
+                </h2>
+              </EuiTitle>
+            </EuiFlexItem>
+            <EuiFlexItem component="span" grow={false}>
+              <EuiButton size="m" onClick={this.refreshReportsTable}>
+                Refresh
+              </EuiButton>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+          <EuiHorizontalRule />
+          <ReportsTable
+            getRowProps={this.getReportsRowProps}
+            pagination={this.pagination}
+            reportsTableItems={this.state.reportsTableContent}
+            httpClient={this.props['httpClient']}
+          />
+        </EuiPanel>
+        <EuiSpacer />
+        <EuiPanel paddingSize={'l'}>
+          <EuiFlexGroup justifyContent="spaceEvenly">
+            <EuiFlexItem>
+              <EuiTitle>
+                <h2>
+                  Report definitions
+                  <p style={reportCountStyles}>
+                    {' '}
+                    ({this.state.reportDefinitionsTableContent.length})
+                  </p>
+                </h2>
+              </EuiTitle>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <EuiButton onClick={this.refreshReportsDefinitionsTable}>
+                Refresh
+              </EuiButton>
+            </EuiFlexItem>
+            <EuiFlexItem component="span" grow={false}>
+              <EuiButton
+                fill={true}
+                onClick={() => {
+                  window.location.assign('opendistro_kibana_reports#/create');
+                }}
+              >
+                Create
+              </EuiButton>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+          <EuiHorizontalRule />
+          <ReportDefinitions
+            pagination={this.pagination}
+            getRowProps={this.getReportDefinitionsRowProps}
+            reportDefinitionsTableContent={
+              this.state.reportDefinitionsTableContent
+            }
+          />
+        </EuiPanel>
       </div>
     );
   }

@@ -57,7 +57,7 @@ const tempTriggerParamTime = '1553112384';
 let trigger_params = {
   schedule_type: '',
   schedule: {},
-  enabled_time: 1234567 // temp value to pass schema
+  enabled_time: 1234567, // temp value to pass schema, TODO: pass in enabled time for schedules
 };
 
 let trigger_schema = {
@@ -81,7 +81,7 @@ export function ReportTrigger(props) {
     httpClientProps,
   } = props;
 
-  const [reportTriggerType, setReportTriggerType] = useState('onDemand');
+  const [reportTriggerType, setReportTriggerType] = useState('onDemandOption');
   trigger_schema['trigger_type'] = 'On demand';
 
   const [scheduleRequestTime, setScheduleRequestTime] = useState('nowOption');
@@ -227,7 +227,7 @@ export function ReportTrigger(props) {
             timeFormat="HH:mm"
           />
         </EuiFormRow>
-        <EuiSpacer size="s" />
+        <EuiSpacer />
         <TimezoneSelect />
       </div>
     );
@@ -349,9 +349,16 @@ export function ReportTrigger(props) {
 
     return (
       <div>
-        <EuiFormRow label="Custom cron expression">
-          <EuiTextArea
-            placeholder={'Enter cron expression'}
+        <EuiFormRow
+          label="Custom cron expression"
+          labelAppend={
+            <EuiText size="xs">
+              <EuiLink href="#">Cron help</EuiLink>
+            </EuiText>
+          }
+        >
+          <EuiFieldText
+            placeholder={'Ex: 0 0 12 * * ? (Fire at 12:00 PM (noon) every day)'}
             value={cronExpression}
             onChange={handleCronExpression}
           />
@@ -387,7 +394,7 @@ export function ReportTrigger(props) {
             onChange={handleScheduleRecurringFrequency}
           />
         </EuiFormRow>
-        <EuiSpacer size="s" />
+        <EuiSpacer />
         {display_daily}
         {display_interval}
         {display_weekly}
@@ -412,10 +419,7 @@ export function ReportTrigger(props) {
 
     return (
       <div>
-        <EuiFormRow
-          label="Request time"
-          helpText="Define delivery schedule and frequency"
-        >
+        <EuiFormRow label="Request time">
           <EuiRadioGroup
             options={SCHEDULE_REQUEST_TIME_OPTIONS}
             idSelected={scheduleRequestTime}
@@ -433,9 +437,9 @@ export function ReportTrigger(props) {
   const AlertTrigger = () => {
     return (
       <div>
-        <EuiFlexGroup>
-          <EuiFlexItem grow={1}>
-            <EuiFormRow label="Available monitors">
+        <EuiFlexGroup alignItems="flexStart">
+          <EuiFlexItem>
+            <EuiFormRow label="Select monitor">
               <EuiSelect
                 id="selectAlertMonitor"
                 options={AVAILABLE_MONITOR_OPTIONS}
@@ -444,8 +448,8 @@ export function ReportTrigger(props) {
               />
             </EuiFormRow>
           </EuiFlexItem>
-          <EuiFlexItem grow={1}>
-            <EuiFormRow label="Available triggers">
+          <EuiFlexItem>
+            <EuiFormRow label="Select trigger">
               <EuiSelect
                 id="selectAlertTrigger"
                 options={AVAILABLE_TRIGGER_OPTIONS}

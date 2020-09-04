@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import {
   EuiButton,
   // @ts-ignore
@@ -34,7 +34,12 @@ import {
   EuiTitle,
 } from '@elastic/eui';
 import { reports_list_users } from './test_data';
-import { generateReport } from './main_utils';
+import {
+  fileFormatsUpper,
+  generateReport,
+  humanReadableDate,
+} from './main_utils';
+import { returnStatement } from '@babel/types';
 
 const reportStatusOptions = [
   'Created',
@@ -57,7 +62,9 @@ const emptyMessageReports = (
         </EuiText>
         <EuiText>
           To learn more, see{' '}
-          <EuiLink>Get started with Kibana reporting</EuiLink>
+          <EuiLink>
+            Get started with Kibana reporting <EuiIcon type="popout" />
+          </EuiLink>
         </EuiText>
       </div>
     }
@@ -111,33 +118,72 @@ export function ReportsTable(props) {
   };
 
   const updateMetadata = (url: any) => {
+    let splitUrl = url['url'].split(" ");
     const onDemandDownloadMetadata = {
       report_name: url['reportName'],
       report_source: url['reportSource'],
       report_type: 'Download',
       description: 'On-demand download of report ' + url['reportName'],
       report_params: {
-        url: url['url'],
+        url: splitUrl[0],
         window_width: 1440,
         window_height: 2560,
-        report_format: 'pdf', // current default format
+        report_format: url['format'],
       },
     };
     return onDemandDownloadMetadata;
   };
 
+  const getReportsTableItemContent = (url) => {
+    let index;
+    for (index = 0; index < props.reportsTableItems.length; ++index) {
+      let splitUrlItem = reportsTableItems[index].url.split(" ");
+      let splitUrlInput = url.split(" ");
+      if (splitUrlInput[0] === splitUrlItem[0] && splitUrlInput[1] === splitUrlItem[1]) {
+        return reportsTableItems[index];
+      }
+    }
+  };
+
   const onDemandDownload = async (url: any) => {
+    let data = getReportsTableItemContent(url);
     handleLoading(true);
-    await generateReport(updateMetadata(url), httpClient);
+    await generateReport(updateMetadata(data), httpClient);
     handleLoading(false);
+  };
+
+  const getReportsTableItemId = (reportName) => {
+    let index;
+    for (index = 0; index < props.reportsTableItems.length; ++index) {
+      if (reportName === reportsTableItems[index].reportName) {
+        return reportsTableItems[index].id;
+      }
+    }
+  };
+
+  const getReportsTableItemFormat = (url) => {
+    let index;
+    for (index = 0; index < props.reportsTableItems.length; ++index) {
+      if (url === reportsTableItems[index].url) {
+        return reportsTableItems[index].format;
+      }
+    }
+  };
+
+  const navigateToReportDetails = (reportName: any) => {
+    let id = getReportsTableItemId(reportName);
+    window.location.assign(`opendistro_kibana_reports#/report_details/${id}`);
   };
 
   const reportsTableColumns = [
     {
       field: 'reportName',
       name: 'Name',
-      sortable: true,
-      truncateText: true,
+      render: (reportName) => (
+        <EuiLink onClick={() => navigateToReportDetails(reportName)}>
+          {reportName}
+        </EuiLink>
+      ),
     },
     {
       field: 'type',
@@ -152,19 +198,29 @@ export function ReportsTable(props) {
       truncateText: false,
     },
     {
-      field: 'recipients',
-      name: 'Recipient(s)',
+      field: 'kibanaRecipients',
+      name: 'Kibana recipient(s)',
+      sortable: true,
+      truncateText: true,
+    },
+    {
+      field: 'emailRecipients',
+      name: 'Email recipient(s)',
       sortable: true,
       truncateText: true,
     },
     {
       field: 'reportSource',
       name: 'Source',
+      render: (source) => <EuiLink>{source}</EuiLink>,
     },
     {
       field: 'lastUpdated',
       name: 'Last updated',
-      truncateText: true,
+      render: (date) => {
+        let readable = humanReadableDate(date);
+        return <EuiText size="s">{readable}</EuiText>;
+      },
     },
     {
       field: 'state',
@@ -174,17 +230,15 @@ export function ReportsTable(props) {
     },
     {
       field: 'url',
-      name: 'Download',
-      sortable: false,
-      actions: [
-        {
-          name: 'Generate report',
-          description: 'Generates the report',
-          type: 'icon',
-          icon: 'download',
-          onClick: (url: any) => onDemandDownload(url),
-        },
-      ],
+      name: 'Generate',
+      render: (data) => {
+        let format = getReportsTableItemFormat(data);
+        return (
+          <EuiLink onClick={() => onDemandDownload(data)}>
+            {fileFormatsUpper[format]} <EuiIcon type="importAction" />
+          </EuiLink>
+        );
+      },
     },
   ];
 
@@ -229,8 +283,19 @@ export function ReportsTable(props) {
       },
       {
         type: 'field_value_selection',
+        field: 'kibanaRecipients',
+        name: 'Kibana recipients',
+        multiselect: false,
+        options: uniqueRecipients.map((user) => ({
+          value: user,
+          name: user,
+          view: user,
+        })),
+      },
+      {
+        type: 'field_value_selection',
         field: 'recipients',
-        name: 'Recipients',
+        name: 'Email recipients',
         multiselect: false,
         options: uniqueRecipients.map((user) => ({
           value: user,
@@ -266,7 +331,7 @@ export function ReportsTable(props) {
   const showLoadingModal = showLoading ? <GenerateReportLoadingModal /> : null;
 
   return (
-    <div>
+    <Fragment>
       <EuiInMemoryTable
         items={reportsTableItems}
         itemId="id"
@@ -276,9 +341,10 @@ export function ReportsTable(props) {
         search={reportsListSearch}
         pagination={pagination}
         sorting={sorting}
-        rowProps={getRowProps}
+        hasActions={true}
+        tableLayout={'auto'}
       />
       {showLoadingModal}
-    </div>
+    </Fragment>
   );
 }

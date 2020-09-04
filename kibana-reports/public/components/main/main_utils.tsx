@@ -15,6 +15,20 @@
 
 import { get } from 'lodash';
 import 'babel-polyfill';
+import { DateFormat } from '../../../../../src/plugins/data/public/field_formats';
+
+export const fileFormatsUpper = {
+  csv: 'CSV',
+  pdf: 'PDF',
+  png: 'PNG',
+};
+
+export const humanReadableDate = (date) => {
+  let readableDate = new Date(date);
+  return (
+    readableDate.toDateString() + ' @ ' + readableDate.toLocaleTimeString()
+  );
+};
 
 export const extractFilename = (filename: string) => {
   return filename.substring(0, filename.length - 4);
@@ -38,12 +52,15 @@ export const addReportsTableContent = (data) => {
       id: get(data, [index, '_id']),
       reportName: get(data, [index, '_source', 'report_name']),
       type: get(data, [index, '_source', 'report_type']),
-      sender: 'N/A',
-      recipients: 'N/A',
+      sender: `\u2014`,
+      kibanaRecipients: `\u2014`,
+      emailRecipients: `\u2014`,
       reportSource: get(data, [index, '_source', 'report_source']),
       lastUpdated: get(data, [index, '_source', 'time_created']),
       state: get(data, [index, '_source', 'state']),
-      url: get(data, [index, '_source', 'report_params', 'url']),
+      url: get(data, [index, '_source', 'report_params', 'url']) + 
+        ' ' + get(data, [index, '_id']),
+      format: get(data, [index, '_source', 'report_params', 'report_format']),
     };
     reportsTableItems.push(reportsTableEntry);
   }

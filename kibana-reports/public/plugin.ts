@@ -37,7 +37,7 @@ export class OpendistroKibanaReportsPlugin
     // Register an application into the side navigation menu
     core.application.register({
       id: 'opendistro_kibana_reports',
-      title: PLUGIN_NAME,
+      title: 'Reporting',
       async mount(params: AppMountParameters) {
         // Load application bundle
         const { renderApp } = await import('./application');
