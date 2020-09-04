@@ -16,6 +16,7 @@
 export enum FORMAT {
   pdf = 'pdf',
   png = 'png',
+  csv = 'csv',
 }
 
 export enum REPORT_STATE {
@@ -37,7 +38,6 @@ export enum DELIVERY_CHANNEL {
 
 export enum SCHEDULE_TYPE {
   recurring = 'Recurring',
-  now = 'Now',
   future = 'Future date',
   cron = 'Cron based',
 }

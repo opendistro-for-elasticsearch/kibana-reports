@@ -22,11 +22,11 @@ import {
 import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
 import { createReport } from './utils/reportHelper';
-import { reportDefinitionSchema } from '../model';
+import { reportDefinitionSchema, reportSchema } from '../model';
 import { parseEsErrorResponse } from './utils/helpers';
 
 export default function (router: IRouter) {
-  // Download report
+  // Generate report
   router.post(
     {
       path: `${API_PREFIX}/generateReport`,
@@ -40,15 +40,14 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       // input validation
+      const report = request.body;
       try {
-        reportDefinitionSchema.validate(request.body);
+        reportSchema.validate(report);
       } catch (error) {
         return response.badRequest({ body: error });
       }
-      // generate report
-      try {
-        let report = request.body;
 
+      try {
         const reportData = await createReport(
           report,
           context.core.elasticsearch.adminClient

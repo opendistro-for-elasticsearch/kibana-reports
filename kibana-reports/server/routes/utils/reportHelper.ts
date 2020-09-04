@@ -21,15 +21,16 @@ import {
   IClusterClient,
   IScopedClusterClient,
 } from '../../../../../src/core/server';
+import { ReportSchemaType } from '../../model';
 
 export const createVisualReport = async (
-  reportParams: any
+  reportParams: any,
+  queryUrl: string
 ): Promise<{ timeCreated: string; dataUrl: string; fileName: string }> => {
   const coreParams = reportParams.core_params;
   // parse params
   const reportSource = reportParams.report_source;
   const name = reportParams.report_name;
-  const url = coreParams.url;
   const windowWidth = coreParams.window_width;
   const windowHeight = coreParams.window_height;
   const reportFormat = coreParams.report_format;
@@ -43,7 +44,7 @@ export const createVisualReport = async (
   });
   const page = await browser.newPage();
   await page.setDefaultNavigationTimeout(0);
-  await page.goto(url, { waitUntil: 'networkidle0' });
+  await page.goto(queryUrl, { waitUntil: 'networkidle0' });
   await page.setViewport({
     width: windowWidth,
     height: windowHeight,
@@ -106,7 +107,7 @@ export const createVisualReport = async (
 };
 
 export const createReport = async (
-  reportDefinition: any,
+  report: ReportSchemaType,
   client: IClusterClient | IScopedClusterClient
 ): Promise<{ timeCreated: string; dataUrl: string; fileName: string }> => {
   let createReportResult: {
@@ -116,6 +117,7 @@ export const createReport = async (
   };
 
   //TODO: create new report instance with pending status
+  const reportDefinition = report.report_definition;
   const reportParams = reportDefinition.report_params;
   const reportSource = reportParams.report_source;
 
@@ -126,7 +128,8 @@ export const createReport = async (
     reportSource === REPORT_TYPE.dashboard ||
     reportSource === REPORT_TYPE.visualization
   ) {
-    createReportResult = await createVisualReport(reportParams);
+    const query_url = report.query_url;
+    createReportResult = await createVisualReport(reportParams, query_url);
   }
 
   // save report instance with created state
@@ -135,9 +138,7 @@ export const createReport = async (
     report: {
       time_created: createReportResult.timeCreated,
       state: REPORT_STATE.created,
-      report_definition: {
-        ...reportDefinition,
-      },
+      ...report,
     },
   };
 

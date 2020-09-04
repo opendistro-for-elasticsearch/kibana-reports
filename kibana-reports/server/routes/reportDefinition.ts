@@ -49,6 +49,7 @@ export default function (router: IRouter) {
       }
 
       // save metadata
+      // TODO: consider create uuid manually and save report after it's scheduled with reports-scheduler
       try {
         const toSave = {
           report_definition: {
@@ -292,7 +293,7 @@ async function createScheduledJob(
   context: RequestHandlerContext
 ) {
   // TODO: use ReportDefinitionSchemaType
-  const reportDefinition: any = request.body;
+  const reportDefinition: ReportDefinitionSchemaType = request.body;
   const trigger = reportDefinition.trigger;
   const triggerType = trigger.trigger_type;
   const triggerParams = trigger.trigger_params;
@@ -308,7 +309,7 @@ async function createScheduledJob(
     // compose the request body
     const scheduledJob = {
       schedule: schedule,
-      name: reportDefinition.report_name + '_schedule',
+      name: `${reportDefinition.report_params.report_name}_schedule`,
       enabled: triggerParams.enabled,
       report_definition_id: reportDefinitionId,
       enabled_time: triggerParams.enabled_time,
@@ -323,8 +324,6 @@ async function createScheduledJob(
     );
 
     return res;
-  } else if (triggerType == TRIGGER_TYPE.alerting) {
-    //TODO: add alert-based scheduling logic [enhancement feature]
   } else if (triggerType == TRIGGER_TYPE.onDemand) {
     /*
      * TODO: return nothing for on Demand report, because currently on-demand report is handled by client side,
@@ -334,4 +333,6 @@ async function createScheduledJob(
      */
     return;
   }
+  // else if (triggerType == TRIGGER_TYPE.alerting) {
+  //TODO: add alert-based scheduling logic [enhancement feature]
 }

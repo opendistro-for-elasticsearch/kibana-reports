@@ -16,6 +16,13 @@
 import { IClusterClient, Logger } from '../../../../src/core/server';
 import { createReport } from '../routes/utils/reportHelper';
 import { POLLER_INTERVAL } from './constants';
+import {
+  ReportDefinitionSchemaType,
+  ReportSchemaType,
+  dataReportSchemaType,
+  visualReportSchemaType,
+} from '../model';
+import moment from 'moment';
 
 async function pollAndExecuteJob(
   schedulerClient: IClusterClient,
@@ -33,12 +40,18 @@ async function pollAndExecuteJob(
     // job retrieved, otherwise will be undefined because 204 No-content is returned
     if (getJobRes) {
       const reportDefinitionId = getJobRes._source.report_definition_id;
+      const triggeredTime = getJobRes._source.triggered_time;
       const jobId = getJobRes._id;
       logger.info(
         `scheduled job sent from scheduler with report definition id: ${reportDefinitionId}`
       );
 
-      await executeScheduledJob(reportDefinitionId, esClient, logger);
+      await executeScheduledJob(
+        reportDefinitionId,
+        triggeredTime,
+        esClient,
+        logger
+      );
 
       // updateJobStatus, release/delete lock of the job
       const updateJobStatusRes = await schedulerClient.callAsInternalUser(
@@ -60,6 +73,7 @@ async function pollAndExecuteJob(
 
 async function executeScheduledJob(
   reportDefinitionId: string,
+  triggeredTime: number,
   client: IClusterClient,
   logger: Logger
 ) {
@@ -70,11 +84,47 @@ async function executeScheduledJob(
   });
   const reportDefinition = esResp._source.report_definition;
 
+  // calculate query url and create report object based on report definition and trigger_time
+  const reportMetaData = createReportMetaData(reportDefinition, triggeredTime);
+
   // create report and return report data
-  const reportData = await createReport(reportDefinition, client);
+  const reportData = await createReport(reportMetaData, client);
   // TODO: Delivery: pass report data and (maybe original reportDefinition as well) to notification module
 
   logger.info(`new report created: ${reportData.fileName}`);
+}
+
+function createReportMetaData(
+  reportDefinition: ReportDefinitionSchemaType,
+  triggeredTime: number
+): ReportSchemaType {
+  // TODO: need better handle
+  const coreParams: dataReportSchemaType | visualReportSchemaType =
+    reportDefinition.report_params.core_params;
+  const { value, unit } = parseDuration(coreParams.time_duration);
+  //@ts-ignore
+  const duration = moment.duration(value, unit);
+  const refUrl = coreParams.ref_url;
+  const timeTo = moment(triggeredTime);
+  const timeFrom = moment(timeTo).subtract(duration);
+  console.log(timeFrom);
+
+  const queryUrl = `${refUrl}?_g=(time:(from:'${timeFrom.toISOString()}',to:'${timeTo.toISOString()}'))`;
+  const report: ReportSchemaType = {
+    query_url: queryUrl,
+    time_from: timeFrom.valueOf(),
+    time_to: triggeredTime,
+    report_definition: {
+      ...reportDefinition,
+    },
+  };
+  return report;
+}
+
+function parseDuration(timeDuration: string) {
+  const value = parseInt(timeDuration.slice(0, 1));
+  const unit = timeDuration.slice(1, 2);
+  return { value, unit };
 }
 
 export { pollAndExecuteJob };
