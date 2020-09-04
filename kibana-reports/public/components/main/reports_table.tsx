@@ -118,16 +118,17 @@ export function ReportsTable(props) {
   };
 
   const updateMetadata = (url: any) => {
+    let splitUrl = url['url'].split(" ");
     const onDemandDownloadMetadata = {
       report_name: url['reportName'],
       report_source: url['reportSource'],
       report_type: 'Download',
       description: 'On-demand download of report ' + url['reportName'],
       report_params: {
-        url: url['url'],
+        url: splitUrl[0],
         window_width: 1440,
         window_height: 2560,
-        report_format: url['format'], // current default format
+        report_format: url['format'],
       },
     };
     return onDemandDownloadMetadata;
@@ -136,7 +137,9 @@ export function ReportsTable(props) {
   const getReportsTableItemContent = (url) => {
     let index;
     for (index = 0; index < props.reportsTableItems.length; ++index) {
-      if (url === reportsTableItems[index].url) {
+      let splitUrlItem = reportsTableItems[index].url.split(" ");
+      let splitUrlInput = url.split(" ");
+      if (splitUrlInput[0] === splitUrlItem[0] && splitUrlInput[1] === splitUrlItem[1]) {
         return reportsTableItems[index];
       }
     }

@@ -58,7 +58,8 @@ export const addReportsTableContent = (data) => {
       reportSource: get(data, [index, '_source', 'report_source']),
       lastUpdated: get(data, [index, '_source', 'time_created']),
       state: get(data, [index, '_source', 'state']),
-      url: get(data, [index, '_source', 'report_params', 'url']),
+      url: get(data, [index, '_source', 'report_params', 'url']) + 
+        ' ' + get(data, [index, '_id']),
       format: get(data, [index, '_source', 'report_params', 'report_format']),
     };
     reportsTableItems.push(reportsTableEntry);
