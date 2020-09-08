@@ -62,7 +62,7 @@ internal class NotificationPlugin : ActionPlugin, Plugin() {
       indexNameExpressionResolver: IndexNameExpressionResolver,
       nodesInCluster: Supplier<DiscoveryNodes>
     ): List<RestHandler> {
-        log.debug("getRestHandlers called")
+        log.debug("$PLUGIN_NAME:getRestHandlers")
         return listOf(
           SendRestHandler()
         )
@@ -81,18 +81,18 @@ internal class NotificationPlugin : ActionPlugin, Plugin() {
       indexNameExpressionResolver: IndexNameExpressionResolver,
       repositoriesServiceSupplier: Supplier<RepositoriesService>
     ): Collection<Any> {
-        log.debug("createComponents called")
+        log.debug("$PLUGIN_NAME:createComponents")
         this.clusterService = clusterService
         return listOf()
     }
 
     override fun getSettings(): List<Setting<*>> {
-        log.debug("getSettings called")
+        log.debug("$PLUGIN_NAME:getSettings")
         return listOf()
     }
 
     override fun getActions(): List<ActionPlugin.ActionHandler<out ActionRequest, out ActionResponse>> {
-        log.debug("getActions called")
+        log.debug("$PLUGIN_NAME:getActions")
         return listOf()
     }
 }
