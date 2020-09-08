@@ -49,8 +49,6 @@ export function CreateReport(props) {
     report_params: {
       url: ``,
       report_format: '',
-      window_width: 1560,
-      window_height: 2560,
     },
     delivery: {},
     trigger: {},
@@ -66,7 +64,10 @@ export function CreateReport(props) {
         },
       })
       .then(async (resp) => {
-        if (metadata['trigger']['trigger_params']['schedule_type'] === 'Now') {
+        if (
+          metadata['trigger']['trigger_params']['schedule_type'] === 'Now' ||
+          metadata['trigger']['trigger_type'] === 'On demand'
+        ) {
           let onDemandDownloadMetadata = {
             report_name: metadata['report_name'],
             report_source: metadata['report_source'],
@@ -88,24 +89,40 @@ export function CreateReport(props) {
       });
   };
 
+  useEffect(() => {
+    props.setBreadcrumbs([
+      {
+        text: 'Reporting',
+        href: '#',
+      },
+      {
+        text: 'Create report definition',
+        href: '#/create',
+      },
+    ]);
+  }, []);
+
   return (
-    <EuiPage>
+    <div>
       <EuiPageBody>
         <EuiTitle>
           <h1>Create report definition</h1>
         </EuiTitle>
         <EuiSpacer />
         <ReportSettings
-          createReportDefinitionRequest={createReportDefinitionRequest}
+          edit={false}
+          reportDefinitionRequest={createReportDefinitionRequest}
           httpClientProps={props['httpClient']}
         />
         <EuiSpacer />
         <ReportTrigger
-          createReportDefinitionRequest={createReportDefinitionRequest}
+          edit={false}
+          reportDefinitionRequest={createReportDefinitionRequest}
         />
         <EuiSpacer />
         <ReportDelivery
-          createReportDefinitionRequest={createReportDefinitionRequest}
+          edit={false}
+          reportDefinitionRequest={createReportDefinitionRequest}
         />
         <EuiSpacer />
         <EuiFlexGroup justifyContent="flexEnd">
@@ -130,6 +147,6 @@ export function CreateReport(props) {
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiPageBody>
-    </EuiPage>
+    </div>
   );
 }

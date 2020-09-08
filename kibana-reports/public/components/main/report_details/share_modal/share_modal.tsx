@@ -142,13 +142,8 @@ export function ShareModal(props) {
     );
   }
   return (
-    <div>
-      <EuiText size="xs">
-        <h2>
-          <a onClick={showModal}>Share</a>
-        </h2>
-        <div>{modal}</div>
-      </EuiText>
-    </div>
+    <EuiButton onClick={showModal} fill={true}>
+      Share
+    </EuiButton>
   );
 }

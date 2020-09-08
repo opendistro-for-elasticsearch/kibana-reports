@@ -15,16 +15,16 @@
 
 export const REPORT_TYPE_OPTIONS = [
   {
+    id: 'onDemandOption',
+    label: 'On demand',
+  },
+  {
     id: 'scheduleOption',
     label: 'Schedule based',
   },
 ];
 
 export const SCHEDULE_REQUEST_TIME_OPTIONS = [
-  {
-    id: 'nowOption',
-    label: 'Now',
-  },
   {
     id: 'recurringOption',
     label: 'Recurring',

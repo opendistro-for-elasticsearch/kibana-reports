@@ -20,54 +20,9 @@ import {
   EuiButton,
   EuiEmptyPrompt,
   EuiText,
+  EuiIcon,
 } from '@elastic/eui';
-
-export const reportDefinitionsColumns = [
-  {
-    field: 'reportName',
-    name: 'Name',
-    sortable: true,
-    truncateText: true,
-  },
-  {
-    field: 'type',
-    name: 'Type',
-    sortable: true,
-    truncateText: false,
-  },
-  {
-    field: 'owner',
-    name: 'Owner',
-    sortable: true,
-    truncateText: false,
-  },
-  {
-    field: 'source',
-    name: 'Source',
-    render: (username: string) => (
-      <EuiLink href={'#'} target="_blank">
-        {username}
-      </EuiLink>
-    ),
-  },
-  {
-    field: 'lastUpdated',
-    name: 'Last Updated',
-    truncateText: true,
-  },
-  {
-    field: 'details',
-    name: 'Details',
-    sortable: false,
-    truncateText: true,
-  },
-  {
-    field: 'status',
-    name: 'Status',
-    sortable: true,
-    truncateText: false,
-  },
-];
+import { humanReadableDate } from './main_utils';
 
 const emptyMessageReportDefinitions = (
   <EuiEmptyPrompt
@@ -78,7 +33,9 @@ const emptyMessageReportDefinitions = (
         <EuiText>Create a new report definition to get started</EuiText>
         <EuiText>
           To learn more, see{' '}
-          <EuiLink>Get started with Kibana reporting</EuiLink>
+          <EuiLink>
+            Get started with Kibana reporting <EuiIcon type="popout" />
+          </EuiLink>
         </EuiText>
       </div>
     }
@@ -89,7 +46,7 @@ const emptyMessageReportDefinitions = (
             window.location.assign('opendistro-kibana-reports#/create');
           }}
         >
-          Create
+          Create report definition
         </EuiButton>
       </div>
     }
@@ -116,6 +73,79 @@ export function ReportDefinitions(props) {
     },
   };
 
+  const getDefinitionTableItemId = (name) => {
+    let index;
+    for (
+      index = 0;
+      index < props.reportDefinitionsTableContent.length;
+      ++index
+    ) {
+      if (name === reportDefinitionsTableContent[index].reportName) {
+        return reportDefinitionsTableContent[index].id;
+      }
+    }
+  };
+
+  const navigateToDefinitionDetails = (name: any) => {
+    let id = getDefinitionTableItemId(name);
+    window.location.assign(
+      `opendistro_kibana_reports#/report_definition_details/${id}`
+    );
+  };
+
+  const reportDefinitionsColumns = [
+    {
+      field: 'reportName',
+      name: 'Name',
+      render: (name) => (
+        <EuiLink onClick={() => navigateToDefinitionDetails(name)}>
+          {name}
+        </EuiLink>
+      ),
+    },
+    {
+      field: 'type',
+      name: 'Type',
+      sortable: true,
+      truncateText: false,
+    },
+    {
+      field: 'owner',
+      name: 'Owner',
+      sortable: true,
+      truncateText: false,
+    },
+    {
+      field: 'source',
+      name: 'Source',
+      render: (username: string) => (
+        <EuiLink href={'#'} target="_blank">
+          {username}
+        </EuiLink>
+      ),
+    },
+    {
+      field: 'lastUpdated',
+      name: 'Last Updated',
+      render: (date) => {
+        let readable = humanReadableDate(date);
+        return <EuiText size="s">{readable}</EuiText>;
+      },
+    },
+    {
+      field: 'details',
+      name: 'Details',
+      sortable: false,
+      truncateText: true,
+    },
+    {
+      field: 'status',
+      name: 'Status',
+      sortable: true,
+      truncateText: false,
+    },
+  ];
+
   return (
     <div>
       <EuiInMemoryTable
@@ -128,7 +158,7 @@ export function ReportDefinitions(props) {
         pagination={pagination}
         sorting={sorting}
         isSelectable={true}
-        rowProps={getRowProps}
+        tableLayout={'auto'}
       />
     </div>
   );

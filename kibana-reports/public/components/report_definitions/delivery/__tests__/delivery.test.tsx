@@ -16,6 +16,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { ReportDelivery } from '../delivery';
+import httpClientMock from '../../../../../test/httpMockClient';
 
 describe('<ReportDelivery /> panel', () => {
   test('render component', () => {
@@ -35,7 +36,9 @@ describe('<ReportDelivery /> panel', () => {
     };
     const { container } = render(
       <ReportDelivery
-        createReportDefinitionRequest={createReportDefinitionRequest}
+        edit={false}
+        reportDefinitionRequest={createReportDefinitionRequest}
+        httpClientProps={httpClientMock}
       />
     );
 
