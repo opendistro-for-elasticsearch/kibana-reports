@@ -315,7 +315,7 @@ async function createScheduledJob(
       enabled_time: triggerParams.enabled_time,
     };
     // send to reports-scheduler to create a scheduled job
-    const res = await schedulerClient.callAsInternalUser(
+    const res = await schedulerClient.callAsCurrentUser(
       'reports_scheduler.createSchedule',
       {
         jobId: reportDefinitionId,
@@ -329,7 +329,7 @@ async function createScheduledJob(
      * TODO: return nothing for on Demand report, because currently on-demand report is handled by client side,
      * by hitting the create report http endpoint with data to get a report downloaded. Server side only saves
      * that on-demand report definition into the index. Need further discussion on what behavior we want
-     * await createReport(reportDefinition, esClient);
+     * // await createReport(reportDefinition, esClient);
      */
     return;
   }

@@ -19,12 +19,15 @@ import {
   TRIGGER_TYPE,
   FORMAT,
   SCHEDULE_TYPE,
+  REPORT_STATE,
+  REPORT_DEFINITION_STATUS,
 } from '../routes/utils/constants';
 
 export const dataReportSchema = schema.object({
   ref_url: schema.uri(),
   saved_search_id: schema.string(),
-  time_duration: schema.string(), // moment.js duration format. e.g. "PT5M" (5min)
+  // "1h" will be convert to moment.duration()
+  time_duration: schema.duration(),
   report_format: schema.oneOf([schema.literal(FORMAT.csv)]), //TODO: support schema.literal('xlsx')
 });
 
@@ -36,7 +39,7 @@ const visualReportSchema = schema.object({
     schema.literal(FORMAT.pdf),
     schema.literal(FORMAT.png),
   ]),
-  time_duration: schema.string(), // moment.js duration format. e.g. "PT5M" (5min)
+  time_duration: schema.duration(),
 });
 
 export const intervalSchema = schema.object({
@@ -121,6 +124,15 @@ export const reportDefinitionSchema = schema.object({
       scheduleSchema
     ),
   }),
+
+  time_created: schema.maybe(schema.string()),
+  last_updated: schema.maybe(schema.string()),
+  status: schema.maybe(
+    schema.oneOf([
+      schema.literal(REPORT_DEFINITION_STATUS.active),
+      schema.literal(REPORT_DEFINITION_STATUS.disabled),
+    ])
+  ),
 });
 
 export const reportSchema = schema.object({
@@ -128,6 +140,14 @@ export const reportSchema = schema.object({
   time_from: schema.number(),
   time_to: schema.number(),
   report_definition: reportDefinitionSchema,
+
+  time_created: schema.maybe(schema.string()),
+  state: schema.maybe(
+    schema.oneOf([
+      schema.literal(REPORT_STATE.created),
+      schema.literal(REPORT_STATE.error),
+    ])
+  ),
 });
 
 export type ReportDefinitionSchemaType = TypeOf<typeof reportDefinitionSchema>;

@@ -128,8 +128,8 @@ export const createReport = async (
     reportSource === REPORT_TYPE.dashboard ||
     reportSource === REPORT_TYPE.visualization
   ) {
-    const query_url = report.query_url;
-    createReportResult = await createVisualReport(reportParams, query_url);
+    const queryUrl = report.query_url;
+    createReportResult = await createVisualReport(reportParams, queryUrl);
   }
 
   // save report instance with created state

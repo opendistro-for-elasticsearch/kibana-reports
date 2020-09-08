@@ -41,7 +41,7 @@
     "jest-dom": "^4.0.0",
     "jquery": "^3.5.0",
     "mocha": "^8.0.1",
-    "moment": "^2.27.0",
+    "moment": "link:../../packages/moment",
     "puppeteer": "^2.1.1",
     "react-id-generator": "^3.0.1",
     "react-markdown": "^4.3.1",

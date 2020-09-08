@@ -21,6 +21,7 @@ import {
   ReportSchemaType,
   dataReportSchemaType,
   visualReportSchemaType,
+  reportDefinitionSchema,
 } from '../model';
 import moment from 'moment';
 
@@ -82,8 +83,10 @@ async function executeScheduledJob(
     index: 'report_definition',
     id: reportDefinitionId,
   });
-  const reportDefinition = esResp._source.report_definition;
 
+  const reportDefinition = reportDefinitionSchema.validate(
+    esResp._source.report_definition
+  );
   // calculate query url and create report object based on report definition and trigger_time
   const reportMetaData = createReportMetaData(reportDefinition, triggeredTime);
 
@@ -101,14 +104,10 @@ function createReportMetaData(
   // TODO: need better handle
   const coreParams: dataReportSchemaType | visualReportSchemaType =
     reportDefinition.report_params.core_params;
-  const { value, unit } = parseDuration(coreParams.time_duration);
-  //@ts-ignore
-  const duration = moment.duration(value, unit);
+  const duration = coreParams.time_duration;
   const refUrl = coreParams.ref_url;
   const timeTo = moment(triggeredTime);
   const timeFrom = moment(timeTo).subtract(duration);
-  console.log(timeFrom);
-
   const queryUrl = `${refUrl}?_g=(time:(from:'${timeFrom.toISOString()}',to:'${timeTo.toISOString()}'))`;
   const report: ReportSchemaType = {
     query_url: queryUrl,
@@ -119,12 +118,6 @@ function createReportMetaData(
     },
   };
   return report;
-}
-
-function parseDuration(timeDuration: string) {
-  const value = parseInt(timeDuration.slice(0, 1));
-  const unit = timeDuration.slice(1, 2);
-  return { value, unit };
 }
 
 export { pollAndExecuteJob };
