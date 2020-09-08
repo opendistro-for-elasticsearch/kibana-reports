@@ -16,8 +16,11 @@
 
 package com.amazon.opendistroforelasticsearch.notification.action
 
+import com.amazon.opendistroforelasticsearch.notification.NotificationPlugin.Companion.PLUGIN_NAME
+import com.amazon.opendistroforelasticsearch.notification.core.RestRequestParser
 import org.apache.logging.log4j.LogManager
 import org.elasticsearch.client.node.NodeClient
+import org.elasticsearch.common.xcontent.XContentType
 import org.elasticsearch.rest.BytesRestResponse
 import org.elasticsearch.rest.RestChannel
 import org.elasticsearch.rest.RestRequest
@@ -26,7 +29,20 @@ import org.elasticsearch.rest.RestStatus
 class SendAction(private val request: RestRequest, private val client: NodeClient, private val restChannel: RestChannel) {
     private val log = LogManager.getLogger(javaClass)
     fun send() {
-        log.debug("send called")
-        restChannel.sendResponse(BytesRestResponse(RestStatus.OK, "Success\r\n"))
+        log.info("$PLUGIN_NAME:send")
+        val message = RestRequestParser.parse(request)
+        val response = restChannel.newBuilder(XContentType.JSON, false).startObject()
+          .field("type", "notification_response")
+          .startObject("params")
+          .field("refTag", message.refTag)
+          .startArray("recipients")
+        message.recipients.forEach { response.startObject()
+          .field("recipient", it)
+          .field("status", "Success")
+          .endObject() }
+        response.endArray()
+          .endObject()
+          .endObject()
+        restChannel.sendResponse(BytesRestResponse(RestStatus.OK, response))
     }
 }
