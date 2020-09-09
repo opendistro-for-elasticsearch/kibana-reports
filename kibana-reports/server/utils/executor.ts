@@ -17,7 +17,6 @@ import { IClusterClient, Logger } from '../../../../src/core/server';
 import { createReport } from '../routes/utils/reportHelper';
 import { POLLER_INTERVAL } from './constants';
 import {
-  ReportDefinitionSchemaType,
   ReportSchemaType,
   dataReportSchemaType,
   visualReportSchemaType,
@@ -83,13 +82,9 @@ async function executeScheduledJob(
     index: 'report_definition',
     id: reportDefinitionId,
   });
-
-  const reportDefinition = reportDefinitionSchema.validate(
-    esResp._source.report_definition
-  );
-  // calculate query url and create report object based on report definition and trigger_time
+  const reportDefinition = esResp._source.report_definition;
+  // compose query url and create report object based on report definition and triggered_time
   const reportMetaData = createReportMetaData(reportDefinition, triggeredTime);
-
   // create report and return report data
   const reportData = await createReport(reportMetaData, client);
   // TODO: Delivery: pass report data and (maybe original reportDefinition as well) to notification module
@@ -98,12 +93,15 @@ async function executeScheduledJob(
 }
 
 function createReportMetaData(
-  reportDefinition: ReportDefinitionSchemaType,
+  reportDefinition: any,
   triggeredTime: number
 ): ReportSchemaType {
-  // TODO: need better handle
+  // validate to convert time_duration from string to moment.duration object
+  const validatedReportDefinition = reportDefinitionSchema.validate(
+    reportDefinition
+  );
   const coreParams: dataReportSchemaType | visualReportSchemaType =
-    reportDefinition.report_params.core_params;
+    validatedReportDefinition.report_params.core_params;
   const duration = coreParams.time_duration;
   const refUrl = coreParams.ref_url;
   const timeTo = moment(triggeredTime);

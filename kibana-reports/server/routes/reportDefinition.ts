@@ -70,7 +70,7 @@ export default function (router: IRouter) {
           params
         );
 
-        // create schedule by reports-scheduler
+        // create scheduled job by reports-scheduler
         const reportDefinitionId = esResp._id;
         const res = await createScheduledJob(
           request,
@@ -98,7 +98,7 @@ export default function (router: IRouter) {
     }
   );
 
-  // Update definition by id
+  // Update report definition by id
   router.put(
     {
       path: `${API_PREFIX}/reportDefinitions/{reportDefinitionId}`,
@@ -114,25 +114,35 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      const reportDefinition: ReportDefinitionSchemaType = request.body;
       // input validation
       try {
-        reportDefinitionSchema.validate(request.body);
+        reportDefinitionSchema.validate(reportDefinition);
       } catch (error) {
         return response.badRequest({ body: error });
       }
 
+      let newStatus;
+      const enabled = reportDefinition.trigger.trigger_params.enabled;
+      if (enabled) {
+        newStatus = REPORT_DEFINITION_STATUS.active;
+      } else {
+        newStatus = REPORT_DEFINITION_STATUS.disabled;
+      }
+
       // Update metadata
       try {
-        const updatedDefinition = {
-          ...request.body,
+        const updatedReportDefinition = {
+          ...reportDefinition,
           last_updated: new Date().toISOString(),
+          status: newStatus,
         };
 
         const params: RequestParams.Index = {
           index: 'report_definition',
           id: request.params.reportDefinitionId,
           body: {
-            doc: updatedDefinition,
+            doc: updatedReportDefinition,
           },
         };
         const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
@@ -209,7 +219,7 @@ export default function (router: IRouter) {
     }
   );
 
-  // get single report details by id
+  // get single report definition detail by id
   router.get(
     {
       path: `${API_PREFIX}/reportDefinitions/{reportDefinitionId}`,
@@ -292,7 +302,6 @@ async function createScheduledJob(
   reportDefinitionId: string,
   context: RequestHandlerContext
 ) {
-  // TODO: use ReportDefinitionSchemaType
   const reportDefinition: ReportDefinitionSchemaType = request.body;
   const trigger = reportDefinition.trigger;
   const triggerType = trigger.trigger_type;

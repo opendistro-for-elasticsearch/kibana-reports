@@ -28,7 +28,8 @@ export const dataReportSchema = schema.object({
   saved_search_id: schema.string(),
   // "1h" will be convert to moment.duration()
   time_duration: schema.duration(),
-  report_format: schema.oneOf([schema.literal(FORMAT.csv)]), //TODO: support schema.literal('xlsx')
+  //TODO: future support schema.literal('xlsx')
+  report_format: schema.oneOf([schema.literal(FORMAT.csv)]),
 });
 
 const visualReportSchema = schema.object({
@@ -101,11 +102,17 @@ export const reportDefinitionSchema = schema.object({
     ),
   }),
 
-  delivery: schema.object({
-    recipients: schema.arrayOf(schema.string(), { minSize: 0 }),
-    title: schema.string(),
-    description: schema.string(),
-  }),
+  notification: schema.maybe(
+    schema.object({
+      recipients: schema.arrayOf(schema.string(), { minSize: 0 }),
+      title: schema.string(),
+      description: schema.oneOf([
+        schema.object({ text: schema.string() }),
+        schema.object({ html: schema.string() }),
+      ]),
+      channel_ids: schema.maybe(schema.arrayOf(schema.string())),
+    })
+  ),
 
   trigger: schema.object({
     trigger_type: schema.oneOf([

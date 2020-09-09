@@ -22,6 +22,7 @@ export enum FORMAT {
 export enum REPORT_STATE {
   created = 'Created',
   error = 'Error',
+  pending = 'Pending',
 }
 
 export enum REPORT_DEFINITION_STATUS {

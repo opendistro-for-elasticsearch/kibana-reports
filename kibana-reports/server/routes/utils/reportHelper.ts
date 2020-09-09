@@ -116,40 +116,62 @@ export const createReport = async (
     fileName: string;
   };
 
-  //TODO: create new report instance with pending status
-  const reportDefinition = report.report_definition;
-  const reportParams = reportDefinition.report_params;
-  const reportSource = reportParams.report_source;
-
-  if (reportSource === REPORT_TYPE.savedSearch) {
-    // TODO: Add createDataReport(report)
-    console.log('placeholder for createDataReport');
-  } else if (
-    reportSource === REPORT_TYPE.dashboard ||
-    reportSource === REPORT_TYPE.visualization
-  ) {
-    const queryUrl = report.query_url;
-    createReportResult = await createVisualReport(reportParams, queryUrl);
-  }
-
-  // save report instance with created state
-  // TODO: save report instance with error state
-  const toSave = {
-    report: {
-      time_created: createReportResult.timeCreated,
-      state: REPORT_STATE.created,
+  // create new report instance with "pending" state
+  const saveParams: RequestParams.Index = {
+    index: 'report',
+    body: {
+      state: REPORT_STATE.pending,
       ...report,
     },
   };
 
-  const params: RequestParams.Index = {
+  // @ts-ignore
+  const esResp = await client.callAsInternalUser('index', saveParams);
+  const reportId = esResp._id;
+
+  const reportDefinition = report.report_definition;
+  const reportParams = reportDefinition.report_params;
+  const reportSource = reportParams.report_source;
+  try {
+    if (reportSource === REPORT_TYPE.savedSearch) {
+      // TODO: Add createDataReport(report)
+      console.log('placeholder for createDataReport');
+    } else if (
+      reportSource === REPORT_TYPE.dashboard ||
+      reportSource === REPORT_TYPE.visualization
+    ) {
+      const queryUrl = report.query_url;
+      createReportResult = await createVisualReport(reportParams, queryUrl);
+    }
+  } catch (error) {
+    // update report instance with "error" state
+    const updateParams: RequestParams.Update = {
+      id: reportId,
+      index: 'report',
+      body: {
+        doc: {
+          state: REPORT_STATE.error,
+        },
+      },
+    };
+    //@ts-ignore
+    await client.callAsInternalUser('update', updateParams);
+    throw error;
+  }
+
+  // update report document with state "created" and time_created
+  const updateParams: RequestParams.Update = {
+    id: reportId,
     index: 'report',
-    body: toSave,
+    body: {
+      doc: {
+        time_created: createReportResult.timeCreated,
+        state: REPORT_STATE.created,
+      },
+    },
   };
-
   //@ts-ignore
-  await client.callAsInternalUser('index', params);
-
+  await client.callAsInternalUser('update', updateParams);
   return createReportResult;
 };
 
