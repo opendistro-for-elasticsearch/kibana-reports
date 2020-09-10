@@ -50,7 +50,10 @@ export const addReportsTableContent = (data) => {
   for (index = 0; index < data.length; ++index) {
     let reportsTableEntry = {
       id: get(data, [index, '_id']),
-      reportName: get(data, [index, '_source', 'report_name']),
+      reportName:
+        get(data, [index, '_id']) +
+        ' ' +
+        get(data, [index, '_source', 'report_name']),
       type: get(data, [index, '_source', 'report_type']),
       sender: `\u2014`,
       kibanaRecipients: `\u2014`,
@@ -58,8 +61,10 @@ export const addReportsTableContent = (data) => {
       reportSource: get(data, [index, '_source', 'report_source']),
       lastUpdated: get(data, [index, '_source', 'time_created']),
       state: get(data, [index, '_source', 'state']),
-      url: get(data, [index, '_source', 'report_params', 'url']) + 
-        ' ' + get(data, [index, '_id']),
+      url:
+        get(data, [index, '_source', 'report_params', 'url']) +
+        ' ' +
+        get(data, [index, '_id']),
       format: get(data, [index, '_source', 'report_params', 'report_format']),
     };
     reportsTableItems.push(reportsTableEntry);
