@@ -24,7 +24,7 @@ import {
 import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
 import { reportDefinitionSchema, ReportDefinitionSchemaType } from '../model';
-import { parseEsErrorResponse } from './utils/helpers';
+import { parseEsErrorResponse, errorResponse } from './utils/helpers';
 import { REPORT_DEFINITION_STATUS, TRIGGER_TYPE } from './utils/constants';
 
 export default function (router: IRouter) {
@@ -89,11 +89,7 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to create report definition: ${error}`
         );
-
-        return response.custom({
-          statusCode: error.statusCode || 500,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
@@ -158,11 +154,7 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to update report definition: ${error}`
         );
-
-        return response.custom({
-          statusCode: error.statusCode || 500,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
@@ -211,10 +203,7 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to get report definition details: ${error}`
         );
-        return response.custom({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
@@ -250,10 +239,7 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to get single report details: ${error}`
         );
-        return response.custom({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
@@ -288,10 +274,7 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to delete report definition: ${error}`
         );
-        return response.custom({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );

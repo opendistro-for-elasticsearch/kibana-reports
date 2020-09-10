@@ -29,7 +29,7 @@ import {
 } from './types';
 import registerRoutes from './routes';
 import { pollAndExecuteJob } from './utils/executor';
-import { POLLER_INTERVAL } from './utils/constants';
+import { POLL_INTERVAL } from './utils/constants';
 
 export interface ReportsPluginRequestContext {
   logger: Logger;
@@ -105,7 +105,7 @@ export class OpendistroKibanaReportsPlugin
     */
     setIntervalAsync(
       pollAndExecuteJob,
-      POLLER_INTERVAL,
+      POLL_INTERVAL,
       schedulerClient,
       esClient,
       this.logger

@@ -23,7 +23,7 @@ import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
 import { createReport } from './utils/reportHelper';
 import { reportDefinitionSchema, reportSchema } from '../model';
-import { parseEsErrorResponse } from './utils/helpers';
+import { parseEsErrorResponse, errorResponse } from './utils/helpers';
 
 export default function (router: IRouter) {
   // Generate report
@@ -64,11 +64,7 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to create report: ${error}`
         );
-
-        return response.custom({
-          statusCode: error.statusCode || 500,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
@@ -117,10 +113,7 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to get reports details: ${error}`
         );
-        return response.custom({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
@@ -156,10 +149,7 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to get single report details: ${error}`
         );
-        return response.custom({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
@@ -193,10 +183,7 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to delete report: ${error}`
         );
-        return response.custom({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );

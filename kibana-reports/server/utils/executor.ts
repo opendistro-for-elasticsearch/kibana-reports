@@ -15,7 +15,7 @@
 
 import { IClusterClient, Logger } from '../../../../src/core/server';
 import { createReport } from '../routes/utils/reportHelper';
-import { POLLER_INTERVAL } from './constants';
+import { POLL_INTERVAL } from './constants';
 import {
   ReportSchemaType,
   dataReportSchemaType,
@@ -30,7 +30,7 @@ async function pollAndExecuteJob(
   logger: Logger
 ) {
   logger.info(
-    `start polling at time: ${new Date().toISOString()} with fixed interval: ${POLLER_INTERVAL} milliseconds`
+    `start polling at time: ${new Date().toISOString()} with fixed interval: ${POLL_INTERVAL} milliseconds`
   );
   try {
     const getJobRes = await schedulerClient.callAsInternalUser(
