@@ -54,8 +54,8 @@ export default function (router: IRouter) {
         const toSave = {
           report_definition: {
             ...request.body,
-            time_created: new Date().toISOString(),
-            last_updated: new Date().toISOString(),
+            time_created: Date.now(),
+            last_updated: Date.now(),
             status: REPORT_DEFINITION_STATUS.active,
           },
         };
@@ -134,7 +134,7 @@ export default function (router: IRouter) {
       try {
         const updatedReportDefinition = {
           ...reportDefinition,
-          last_updated: new Date().toISOString(),
+          last_updated: Date.now(),
           status: newStatus,
         };
 

@@ -26,7 +26,7 @@ import { ReportSchemaType } from '../../model';
 export const createVisualReport = async (
   reportParams: any,
   queryUrl: string
-): Promise<{ timeCreated: string; dataUrl: string; fileName: string }> => {
+): Promise<{ timeCreated: number; dataUrl: string; fileName: string }> => {
   const coreParams = reportParams.core_params;
   // parse params
   const reportSource = reportParams.report_source;
@@ -97,8 +97,9 @@ export const createVisualReport = async (
     });
   }
 
-  const timeCreated = new Date().toISOString();
-  const fileName = getFileName(name, timeCreated) + '.' + reportFormat;
+  const curTime = new Date();
+  const timeCreated = curTime.valueOf();
+  const fileName = getFileName(name, curTime) + '.' + reportFormat;
   await browser.close();
 
   return { timeCreated, dataUrl: buffer.toString('base64'), fileName };
@@ -107,9 +108,9 @@ export const createVisualReport = async (
 export const createReport = async (
   report: ReportSchemaType,
   client: IClusterClient | IScopedClusterClient
-): Promise<{ timeCreated: string; dataUrl: string; fileName: string }> => {
+): Promise<{ timeCreated: number; dataUrl: string; fileName: string }> => {
   let createReportResult: {
-    timeCreated: string;
+    timeCreated: number;
     dataUrl: string;
     fileName: string;
   };
@@ -174,8 +175,8 @@ export const createReport = async (
   return createReportResult;
 };
 
-function getFileName(itemName: string, timeCreated: string): string {
-  return `${itemName}_${timeCreated}_${uuidv1()}`;
+function getFileName(itemName: string, timeCreated: Date): string {
+  return `${itemName}_${timeCreated.toISOString()}_${uuidv1()}`;
 }
 
 const accessES = async (
