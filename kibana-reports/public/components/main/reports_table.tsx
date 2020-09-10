@@ -345,7 +345,7 @@ export function ReportsTable(props) {
   return (
     <Fragment>
       <EuiInMemoryTable
-        items={reportsTableItems} // reportsTableItems
+        items={reportsTableItems}
         itemId="id"
         loading={false}
         message={emptyMessageReports}
@@ -357,7 +357,6 @@ export function ReportsTable(props) {
         tableLayout={'auto'}
       />
       {showLoadingModal}
-      {/* <GenerateReportLoadingModal/> */}
     </Fragment>
   );
 }
