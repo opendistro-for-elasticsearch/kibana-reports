@@ -107,7 +107,8 @@ export const createVisualReport = async (
 
 export const createReport = async (
   report: ReportSchemaType,
-  client: IClusterClient | IScopedClusterClient
+  client: IClusterClient | IScopedClusterClient,
+  savedReportId?: string
 ): Promise<{ timeCreated: number; dataUrl: string; fileName: string }> => {
   let createReportResult: {
     timeCreated: number;
@@ -115,16 +116,18 @@ export const createReport = async (
     fileName: string;
   };
 
-  // create new report instance with "pending" state
+  // create new report instance or update saved report instance with "pending" state
+
   const saveParams: RequestParams.Index = {
     index: 'report',
+    id: savedReportId,
     body: {
-      state: REPORT_STATE.pending,
       ...report,
+      state: REPORT_STATE.pending,
     },
   };
 
-  const esResp = await accessES(client, 'index', saveParams);
+  const esResp = await callCluster(client, 'index', saveParams);
   const reportId = esResp._id;
 
   const reportDefinition = report.report_definition;
@@ -153,7 +156,7 @@ export const createReport = async (
       },
     };
 
-    await accessES(client, 'update', updateParams);
+    await callCluster(client, 'update', updateParams);
 
     throw error;
   }
@@ -170,7 +173,7 @@ export const createReport = async (
     },
   };
 
-  await accessES(client, 'update', updateParams);
+  await callCluster(client, 'update', updateParams);
 
   return createReportResult;
 };
@@ -179,7 +182,7 @@ function getFileName(itemName: string, timeCreated: Date): string {
   return `${itemName}_${timeCreated.toISOString()}_${uuidv1()}`;
 }
 
-const accessES = async (
+const callCluster = async (
   client: IClusterClient | IScopedClusterClient,
   endpoint: string,
   params: any

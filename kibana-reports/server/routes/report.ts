@@ -22,11 +22,11 @@ import {
 import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
 import { createReport } from './utils/reportHelper';
-import { reportDefinitionSchema, reportSchema } from '../model';
-import { parseEsErrorResponse, errorResponse } from './utils/helpers';
+import { reportSchema } from '../model';
+import { errorResponse } from './utils/helpers';
 
 export default function (router: IRouter) {
-  // Generate report
+  // generate report
   router.post(
     {
       path: `${API_PREFIX}/generateReport`,
@@ -63,6 +63,54 @@ export default function (router: IRouter) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
           `Failed to create report: ${error}`
+        );
+        return errorResponse(response, error);
+      }
+    }
+  );
+
+  // generate report from id
+  router.post(
+    {
+      path: `${API_PREFIX}/generateReport/{reportId}`,
+      validate: {
+        params: schema.object({
+          reportId: schema.string(),
+        }),
+      },
+    },
+    async (
+      context,
+      request,
+      response
+    ): Promise<IKibanaResponse<any | ResponseError>> => {
+      // get report
+      try {
+        const savedReportId = request.params.reportId;
+        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
+          'get',
+          {
+            index: 'report',
+            id: request.params.reportId,
+          }
+        );
+        const report = esResp._source;
+        const reportData = await createReport(
+          report,
+          context.core.elasticsearch.dataClient,
+          savedReportId
+        );
+
+        return response.ok({
+          body: {
+            data: reportData.dataUrl,
+            filename: reportData.fileName,
+          },
+        });
+      } catch (error) {
+        //@ts-ignore
+        context.reporting_plugin.logger.error(
+          `Failed to generate report by id: ${error}`
         );
         return errorResponse(response, error);
       }

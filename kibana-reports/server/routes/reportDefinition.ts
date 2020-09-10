@@ -24,7 +24,7 @@ import {
 import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
 import { reportDefinitionSchema, ReportDefinitionSchemaType } from '../model';
-import { parseEsErrorResponse, errorResponse } from './utils/helpers';
+import { errorResponse } from './utils/helpers';
 import { REPORT_DEFINITION_STATUS, TRIGGER_TYPE } from './utils/constants';
 
 export default function (router: IRouter) {
