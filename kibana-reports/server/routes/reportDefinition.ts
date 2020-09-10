@@ -65,7 +65,7 @@ export default function (router: IRouter) {
           body: toSave,
         };
 
-        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'index',
           params
         );
@@ -145,7 +145,7 @@ export default function (router: IRouter) {
             doc: updatedReportDefinition,
           },
         };
-        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'update',
           params
         );
@@ -196,7 +196,7 @@ export default function (router: IRouter) {
         sort: `${sortField}:${sortDirection}`,
       };
       try {
-        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'search',
           params
         );
@@ -235,7 +235,7 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
-        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'get',
           {
             index: 'report_definition',
@@ -275,7 +275,7 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
-        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'delete',
           {
             index: 'report_definition',

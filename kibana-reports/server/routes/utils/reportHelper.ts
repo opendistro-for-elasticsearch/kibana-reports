@@ -99,10 +99,8 @@ export const createVisualReport = async (
 
   const timeCreated = new Date().toISOString();
   const fileName = getFileName(name, timeCreated) + '.' + reportFormat;
-
-  //TODO: Add header and footer, phase 2
-
   await browser.close();
+
   return { timeCreated, dataUrl: buffer.toString('base64'), fileName };
 };
 
@@ -125,8 +123,7 @@ export const createReport = async (
     },
   };
 
-  // @ts-ignore
-  const esResp = await client.callAsInternalUser('index', saveParams);
+  const esResp = await accessES(client, 'index', saveParams);
   const reportId = esResp._id;
 
   const reportDefinition = report.report_definition;
@@ -154,8 +151,9 @@ export const createReport = async (
         },
       },
     };
-    //@ts-ignore
-    await client.callAsInternalUser('update', updateParams);
+
+    await accessES(client, 'update', updateParams);
+
     throw error;
   }
 
@@ -170,11 +168,26 @@ export const createReport = async (
       },
     },
   };
-  //@ts-ignore
-  await client.callAsInternalUser('update', updateParams);
+
+  await accessES(client, 'update', updateParams);
+
   return createReportResult;
 };
 
 function getFileName(itemName: string, timeCreated: string): string {
   return `${itemName}_${timeCreated}_${uuidv1()}`;
 }
+
+const accessES = async (
+  client: IClusterClient | IScopedClusterClient,
+  endpoint: string,
+  params: any
+) => {
+  let esResp;
+  if ('callAsCurrentUser' in client) {
+    esResp = await client.callAsCurrentUser(endpoint, params);
+  } else {
+    esResp = await client.callAsInternalUser(endpoint, params);
+  }
+  return esResp;
+};

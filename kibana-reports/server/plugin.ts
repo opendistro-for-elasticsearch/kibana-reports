@@ -95,11 +95,14 @@ export class OpendistroKibanaReportsPlugin
       }
     );
     const esClient = core.elasticsearch.legacy.client;
-    // setIntervalAsync provides the same familiar interface as built-in setInterval for asynchronous functions,
-    // while preventing multiple executions from overlapping in time.
-    // Polling at at a 1 min fixed interval
-    // TODO: need further optimization polling with a mix approach of
-    // random delay and dynamic delay based on jobs amount
+    /*
+    setIntervalAsync provides the same familiar interface as built-in setInterval for asynchronous functions,
+    while preventing multiple executions from overlapping in time.
+    Polling at at a 5 min fixed interval
+    
+    TODO: need further optimization polling with a mix approach of
+    random delay and dynamic delay based on the amount of jobs
+    */
     setIntervalAsync(
       pollAndExecuteJob,
       POLLER_INTERVAL,

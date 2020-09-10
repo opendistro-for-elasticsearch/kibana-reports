@@ -50,7 +50,7 @@ export default function (router: IRouter) {
       try {
         const reportData = await createReport(
           report,
-          context.core.elasticsearch.adminClient
+          context.core.elasticsearch.dataClient
         );
 
         return response.ok({
@@ -102,7 +102,7 @@ export default function (router: IRouter) {
         sort: `${sortField}:${sortDirection}`,
       };
       try {
-        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'search',
           params
         );
@@ -141,7 +141,7 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
-        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'get',
           {
             index: 'report',
@@ -180,7 +180,7 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
-        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'delete',
           {
             index: 'report',
