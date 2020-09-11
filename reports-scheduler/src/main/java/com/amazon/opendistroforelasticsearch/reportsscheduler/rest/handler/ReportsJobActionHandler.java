@@ -138,14 +138,14 @@ public class ReportsJobActionHandler extends AbstractActionHandler {
                 log.debug("Failed tp acquire lock " + exception);
               }));
     } else {
-      log.info("No jobs to execute");
+      log.info("Kibana is polling, but currently no job to execute");
       channel.sendResponse(new BytesRestResponse(RestStatus.NO_CONTENT, "No jobs to execute"));
     }
   }
 
   /**
    * Once the report core(Kibana side) is done executing job, this function will be called to
-   * delete/release the lock, remove the job from job queue(ES index) TODO: update the .report index
+   * delete/release the lock, remove the job from job queue(ES index)
    *
    * @param jobId the id of the scheduled job
    */

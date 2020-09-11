@@ -17,7 +17,6 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.job;
 
 import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.JOB_QUEUE_INDEX_NAME;
 
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,7 +76,7 @@ public class ReportsSchedulerJobRunner implements ScheduledJobRunner {
           // compose json and save into job queue index
           final Map<String, Object> jsonMap = new HashMap<>();
           jsonMap.put("report_definition_id", reportDefinitionId);
-          jsonMap.put("enqueue_time", Instant.now().toEpochMilli());
+          jsonMap.put("triggered_time", context.getExpectedExecutionTime().toEpochMilli());
 
           final IndexRequest indexRequest =
               new IndexRequest().index(JOB_QUEUE_INDEX_NAME).id(reportDefinitionId).source(jsonMap);
