@@ -41,9 +41,10 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      const reportDefinition: ReportDefinitionSchemaType = request.body;
       // input validation
       try {
-        reportDefinitionSchema.validate(request.body);
+        reportDefinitionSchema.validate(reportDefinition);
       } catch (error) {
         return response.badRequest({ body: error });
       }
@@ -53,7 +54,7 @@ export default function (router: IRouter) {
       try {
         const toSave = {
           report_definition: {
-            ...request.body,
+            ...reportDefinition,
             time_created: Date.now(),
             last_updated: Date.now(),
             status: REPORT_DEFINITION_STATUS.active,
@@ -119,6 +120,11 @@ export default function (router: IRouter) {
       }
 
       let newStatus;
+      /* 
+      "enabled = false" means de-scheduling a job.
+      TODO: also remove any job in queue and release lock, consider do that
+      within the createSchedule API exposed from reports-scheduler
+      */
       const enabled = reportDefinition.trigger.trigger_params.enabled;
       if (enabled) {
         newStatus = REPORT_DEFINITION_STATUS.active;
@@ -126,28 +132,40 @@ export default function (router: IRouter) {
         newStatus = REPORT_DEFINITION_STATUS.disabled;
       }
 
-      // Update metadata
+      // Update report definition metadata
       try {
-        const updatedReportDefinition = {
-          ...reportDefinition,
-          last_updated: Date.now(),
-          status: newStatus,
+        const toUpdate = {
+          report_definition: {
+            ...reportDefinition,
+            last_updated: Date.now(),
+            status: newStatus,
+          },
         };
 
-        const params: RequestParams.Index = {
+        const params: RequestParams.Update = {
           index: 'report_definition',
           id: request.params.reportDefinitionId,
           body: {
-            doc: updatedReportDefinition,
+            doc: toUpdate,
           },
         };
         const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'update',
           params
         );
+        // update scheduled job by calling reports-scheduler
+        const reportDefinitionId = esResp._id;
+        const res = await createScheduledJob(
+          request,
+          reportDefinitionId,
+          context
+        );
 
         return response.ok({
-          body: esResp._id,
+          body: {
+            state: 'Report definition updated',
+            scheduler_response: res,
+          },
         });
       } catch (error) {
         //@ts-ignore
@@ -245,7 +263,6 @@ export default function (router: IRouter) {
   );
 
   // Delete single report definition by id
-  // TODO: this api is not supported by UI, once it gets supported, also need to update this logic with de-scheduling
   router.delete(
     {
       path: `${API_PREFIX}/reportDefinitions/{reportDefinitionId}`,
@@ -260,15 +277,41 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      // @ts-ignore
+      const schedulerClient = context.reporting_plugin.schedulerClient.asScoped(
+        request
+      );
+      const reportDefinitionId = request.params.reportDefinitionId;
+
       try {
-        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
+        // delete job from report definition index
+        await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'delete',
           {
             index: 'report_definition',
-            id: request.params.reportDefinitionId,
+            id: reportDefinitionId,
           }
         );
-        return response.ok();
+
+        // send to reports-scheduler to delete a scheduled job
+        const esResp = await schedulerClient.callAsCurrentUser(
+          'reports_scheduler.deleteSchedule',
+          {
+            // the scheduled job is using the same id as its report definition
+            jobId: reportDefinitionId,
+          }
+        );
+
+        /* 
+        TODO: also remove any job in queue and release lock, consider do that
+        within the deleteSchedule API exposed by reports-scheduler
+        */
+        return response.ok({
+          body: {
+            state: 'Report definition deleted',
+            scheduler_response: esResp,
+          },
+        });
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
