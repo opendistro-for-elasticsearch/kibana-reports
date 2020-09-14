@@ -21,6 +21,7 @@ import {
   IClusterClient,
   IScopedClusterClient,
 } from '../../../../../src/core/server';
+import { createSavedSearchReport } from '../savedSearchReportHelper';
 
 export const createVisualReport = async (
   report: any
@@ -119,8 +120,7 @@ export const createReport = async (
   const reportSource = report.report_source;
 
   if (reportSource === REPORT_TYPE.savedSearch) {
-    // TODO: Add createDataReport(report)
-    console.log('placeholder for createDataReport');
+    createReportResult = await createSavedSearchReport(report, client);
   } else if (
     reportSource === REPORT_TYPE.dashboard ||
     reportSource === REPORT_TYPE.visualization
