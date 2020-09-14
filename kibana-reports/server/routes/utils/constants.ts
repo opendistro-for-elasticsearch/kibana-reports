@@ -13,6 +13,12 @@
  * permissions and limitations under the License.
  */
 
+// TODO: need finalize the naming for plugin config index
+export enum CONFIG_INDEX_NAME {
+  report = 'report',
+  reportDefinition = 'report_definition',
+}
+
 export enum FORMAT {
   pdf = 'pdf',
   png = 'png',

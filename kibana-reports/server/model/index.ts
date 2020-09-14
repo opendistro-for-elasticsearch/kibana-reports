@@ -24,7 +24,7 @@ import {
 } from '../routes/utils/constants';
 
 export const dataReportSchema = schema.object({
-  ref_url: schema.uri(),
+  base_url: schema.uri(),
   saved_search_id: schema.string(),
   // "1h" will be convert to moment.duration()
   time_duration: schema.duration(),
@@ -33,7 +33,7 @@ export const dataReportSchema = schema.object({
 });
 
 const visualReportSchema = schema.object({
-  ref_url: schema.uri(),
+  base_url: schema.uri(),
   window_width: schema.number({ defaultValue: 1200 }),
   window_height: schema.number({ defaultValue: 800 }),
   report_format: schema.oneOf([

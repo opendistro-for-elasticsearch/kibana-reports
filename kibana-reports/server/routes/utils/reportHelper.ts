@@ -15,7 +15,12 @@
 
 import puppeteer from 'puppeteer';
 import { v1 as uuidv1 } from 'uuid';
-import { FORMAT, REPORT_TYPE, REPORT_STATE } from './constants';
+import {
+  FORMAT,
+  REPORT_TYPE,
+  REPORT_STATE,
+  CONFIG_INDEX_NAME,
+} from './constants';
 import { RequestParams } from '@elastic/elasticsearch';
 import {
   IClusterClient,
@@ -30,7 +35,7 @@ export const createVisualReport = async (
   const coreParams = reportParams.core_params;
   // parse params
   const reportSource = reportParams.report_source;
-  const name = reportParams.report_name;
+  const reportName = reportParams.report_name;
   const windowWidth = coreParams.window_width;
   const windowHeight = coreParams.window_height;
   const reportFormat = coreParams.report_format;
@@ -99,7 +104,7 @@ export const createVisualReport = async (
 
   const curTime = new Date();
   const timeCreated = curTime.valueOf();
-  const fileName = getFileName(name, curTime) + '.' + reportFormat;
+  const fileName = getFileName(reportName, curTime) + '.' + reportFormat;
   await browser.close();
 
   return { timeCreated, dataUrl: buffer.toString('base64'), fileName };
@@ -117,13 +122,14 @@ export const createReport = async (
   };
 
   // create new report instance or update saved report instance with "pending" state
-
+  const timePending = Date.now();
   const saveParams: RequestParams.Index = {
-    index: 'report',
+    index: CONFIG_INDEX_NAME.report,
     id: savedReportId,
     body: {
       ...report,
       state: REPORT_STATE.pending,
+      time_created: timePending,
     },
   };
 
@@ -146,12 +152,14 @@ export const createReport = async (
     }
   } catch (error) {
     // update report instance with "error" state
+    const timeError = Date.now();
     const updateParams: RequestParams.Update = {
       id: reportId,
-      index: 'report',
+      index: CONFIG_INDEX_NAME.report,
       body: {
         doc: {
           state: REPORT_STATE.error,
+          time_created: timeError,
         },
       },
     };
@@ -164,7 +172,7 @@ export const createReport = async (
   // update report document with state "created" and time_created
   const updateParams: RequestParams.Update = {
     id: reportId,
-    index: 'report',
+    index: CONFIG_INDEX_NAME.report,
     body: {
       doc: {
         time_created: createReportResult.timeCreated,

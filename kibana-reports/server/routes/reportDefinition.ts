@@ -25,7 +25,11 @@ import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
 import { reportDefinitionSchema, ReportDefinitionSchemaType } from '../model';
 import { errorResponse } from './utils/helpers';
-import { REPORT_DEFINITION_STATUS, TRIGGER_TYPE } from './utils/constants';
+import {
+  REPORT_DEFINITION_STATUS,
+  TRIGGER_TYPE,
+  CONFIG_INDEX_NAME,
+} from './utils/constants';
 
 export default function (router: IRouter) {
   // Create report Definition
@@ -62,7 +66,7 @@ export default function (router: IRouter) {
         };
 
         const params: RequestParams.Index = {
-          index: 'report_definition',
+          index: CONFIG_INDEX_NAME.reportDefinition,
           body: toSave,
         };
 
@@ -143,7 +147,7 @@ export default function (router: IRouter) {
         };
 
         const params: RequestParams.Update = {
-          index: 'report_definition',
+          index: CONFIG_INDEX_NAME.reportDefinition,
           id: request.params.reportDefinitionId,
           body: {
             doc: toUpdate,
@@ -201,7 +205,7 @@ export default function (router: IRouter) {
       };
       const sizeNumber = parseInt(size, 10);
       const params: RequestParams.Search = {
-        index: 'report_definition',
+        index: CONFIG_INDEX_NAME.reportDefinition,
         size: sizeNumber,
         sort: `${sortField}:${sortDirection}`,
       };
@@ -245,7 +249,7 @@ export default function (router: IRouter) {
         const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'get',
           {
-            index: 'report_definition',
+            index: CONFIG_INDEX_NAME.reportDefinition,
             id: request.params.reportDefinitionId,
           }
         );
@@ -288,7 +292,7 @@ export default function (router: IRouter) {
         await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'delete',
           {
-            index: 'report_definition',
+            index: CONFIG_INDEX_NAME.reportDefinition,
             id: reportDefinitionId,
           }
         );

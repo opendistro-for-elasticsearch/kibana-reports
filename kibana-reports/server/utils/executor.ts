@@ -23,6 +23,7 @@ import {
   reportDefinitionSchema,
 } from '../model';
 import moment from 'moment';
+import { CONFIG_INDEX_NAME } from '../routes/utils/constants';
 
 async function pollAndExecuteJob(
   schedulerClient: IClusterClient,
@@ -79,7 +80,7 @@ async function executeScheduledJob(
 ) {
   // retrieve report definition
   const esResp = await client.callAsInternalUser('get', {
-    index: 'report_definition',
+    index: CONFIG_INDEX_NAME.reportDefinition,
     id: reportDefinitionId,
   });
   const reportDefinition = esResp._source.report_definition;
@@ -103,10 +104,10 @@ function createReportMetaData(
   const coreParams: dataReportSchemaType | visualReportSchemaType =
     validatedReportDefinition.report_params.core_params;
   const duration = coreParams.time_duration;
-  const refUrl = coreParams.ref_url;
+  const base_url = coreParams.base_url;
   const timeTo = moment(triggeredTime);
   const timeFrom = moment(timeTo).subtract(duration);
-  const queryUrl = `${refUrl}?_g=(time:(from:'${timeFrom.toISOString()}',to:'${timeTo.toISOString()}'))`;
+  const queryUrl = `${base_url}?_g=(time:(from:'${timeFrom.toISOString()}',to:'${timeTo.toISOString()}'))`;
   const report: ReportSchemaType = {
     query_url: queryUrl,
     time_from: timeFrom.valueOf(),

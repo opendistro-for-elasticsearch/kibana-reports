@@ -24,6 +24,7 @@ import { RequestParams } from '@elastic/elasticsearch';
 import { createReport } from './utils/reportHelper';
 import { reportSchema } from '../model';
 import { errorResponse } from './utils/helpers';
+import { CONFIG_INDEX_NAME } from './utils/constants';
 
 export default function (router: IRouter) {
   // generate report
@@ -90,7 +91,7 @@ export default function (router: IRouter) {
         const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'get',
           {
-            index: 'report',
+            index: CONFIG_INDEX_NAME.report,
             id: request.params.reportId,
           }
         );
@@ -141,7 +142,7 @@ export default function (router: IRouter) {
       };
       const sizeNumber = parseInt(size, 10);
       const params: RequestParams.Search = {
-        index: 'report',
+        index: CONFIG_INDEX_NAME.report,
         size: sizeNumber,
         sort: `${sortField}:${sortDirection}`,
       };
@@ -185,7 +186,7 @@ export default function (router: IRouter) {
         const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'get',
           {
-            index: 'report',
+            index: CONFIG_INDEX_NAME.report,
             id: request.params.reportId,
           }
         );
@@ -221,7 +222,7 @@ export default function (router: IRouter) {
         const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'delete',
           {
-            index: 'report',
+            index: CONFIG_INDEX_NAME.report,
             id: request.params.reportId,
           }
         );
