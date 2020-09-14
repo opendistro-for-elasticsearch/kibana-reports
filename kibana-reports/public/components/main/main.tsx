@@ -47,7 +47,6 @@ import {
   addReportsTableContent,
   addReportDefinitionsTableContent,
   readStreamToFile,
-  breadcrumbs,
 } from './main_utils';
 import { CoreInterface } from '../app';
 import CSS from 'csstype';

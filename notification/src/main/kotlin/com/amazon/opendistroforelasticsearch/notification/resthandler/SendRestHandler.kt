@@ -17,6 +17,7 @@
 package com.amazon.opendistroforelasticsearch.notification.resthandler
 
 import com.amazon.opendistroforelasticsearch.notification.NotificationPlugin.Companion.PLUGIN_BASE_URI
+import com.amazon.opendistroforelasticsearch.notification.NotificationPlugin.Companion.PLUGIN_NAME
 import com.amazon.opendistroforelasticsearch.notification.action.SendAction
 import org.apache.logging.log4j.LogManager
 import org.elasticsearch.client.node.NodeClient
@@ -44,7 +45,7 @@ class SendRestHandler : BaseRestHandler() {
     @Throws(IOException::class)
     @Suppress("SpreadOperator") // There is no way around dealing with java vararg without spread operator.
     override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
-        log.debug("prepareRequest called")
+        log.debug("$PLUGIN_NAME:prepareRequest")
         return RestChannelConsumer {
             SendAction(request, client, it).send()
         }
