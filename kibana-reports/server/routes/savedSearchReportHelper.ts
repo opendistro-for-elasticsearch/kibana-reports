@@ -102,7 +102,7 @@ async function generateReport(client: IClusterClient | IScopedClusterClient) {
     index: indexPattern,
     includeDefaults: true,
   });
-  const defaultMaxSize: number =
+  const maxResultSize: number =
     settings[indexPattern].settings.index.max_result_window != null
       ? settings[indexPattern].settings.index.max_result_window
       : settings[indexPattern].defaults.index.max_result_window;
@@ -124,12 +124,12 @@ async function generateReport(client: IClusterClient | IScopedClusterClient) {
   // build the ES query
   const reqBody = buildQuery(report, 0);
 
-  if (total > defaultMaxSize) {
+  if (total > maxResultSize) {
     // fetch the data
-    esData = await fetchData(report, reqBody, defaultMaxSize);
+    esData = await fetchData(report, reqBody, maxResultSize);
     arrayHits.push(esData.hits);
 
-    const nbScroll = Math.floor(total / defaultMaxSize);
+    const nbScroll = Math.floor(total / maxResultSize);
 
     for (let i = 0; i < nbScroll - 1; i++) {
       const resScroll = await client.callAsInternalUser('scroll', {
@@ -140,7 +140,7 @@ async function generateReport(client: IClusterClient | IScopedClusterClient) {
         arrayHits.push(resScroll.hits);
       }
     }
-    const extraFetch = total % defaultMaxSize;
+    const extraFetch = total % maxResultSize;
     if (extraFetch > 0) {
       const extraEsData = await fetchData(report, reqBody, extraFetch);
       arrayHits.push(extraEsData.hits);
