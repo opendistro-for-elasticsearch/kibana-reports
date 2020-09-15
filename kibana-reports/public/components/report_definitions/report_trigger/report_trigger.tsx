@@ -353,7 +353,7 @@ export function ReportTrigger(props) {
           label="Custom cron expression"
           labelAppend={
             <EuiText size="xs">
-              <EuiLink href="#">Cron help</EuiLink>
+              <EuiLink href="https://opendistro.github.io/for-elasticsearch-docs/docs/alerting/cron/">Cron help</EuiLink>
             </EuiText>
           }
         >
