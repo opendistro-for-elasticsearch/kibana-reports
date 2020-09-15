@@ -32,6 +32,11 @@ const input = {
   },
 };
 
+/**
+ * Max result window size in ES index settings.
+ */
+const maxResultSize = 5;
+
 describe('test create saved search report', () => {
   test('create report by single search', async () => {
     const hits = [
@@ -125,16 +130,21 @@ function mockEsClient(mockHits: Array<{ _source: any }>) {
         case 'search':
           return {
             hits: {
-              hits: mockHits.slice(0, 5),
+              hits: mockHits.slice(0, maxResultSize),
             },
           };
         case 'scroll':
           call++;
           return {
             hits: {
-              hits: mockHits.slice(5 * call, 5 * (call + 1)),
+              hits: mockHits.slice(
+                maxResultSize * call,
+                maxResultSize * (call + 1)
+              ),
             },
           };
+        case 'clearScroll':
+          return null;
         default:
           fail('Fail due to unexpected function call on client', endpoint);
       }
@@ -203,7 +213,7 @@ function mockIndexSettings() {
           "number_of_shards": "1",
           "auto_expand_replicas": "0-1",
           "provided_name": "kibana_sample_data_ecommerce",
-          "max_result_window": "5",
+          "max_result_window": "${maxResultSize}",
           "creation_date": "1594417718898",
           "number_of_replicas": "0",
           "uuid": "0KnfmEsaTYKg39ONcrA5Eg",

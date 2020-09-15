@@ -45,26 +45,21 @@ async function populateMetaData(
   metaData.report_format = reportParams.report_format;
   metaData.start = reportParams.start;
   metaData.end = reportParams.end;
+
+  // Get saved search info
   let resIndexPattern: any = {};
-  // get the saved search infos
   const ssParams = {
     index: '.kibana',
     id: 'search:' + reportParams.saved_search_id,
   };
-
   const ssInfos = await client.callAsInternalUser('get', ssParams);
 
-  // get the sorting
   metaData.sorting = ssInfos._source.search.sort;
-
-  // get the saved search type
   metaData.type = ssInfos._source.type;
-
-  // get the filters
   metaData.filters =
     ssInfos._source.search.kibanaSavedObjectMeta.searchSourceJSON;
 
-  // get the list of selected columns in the saved search.Otherwise select all the fields under the _source
+  // Get the list of selected columns in the saved search.Otherwise select all the fields under the _source
   await getSelectedFields(ssInfos._source.search.columns);
 
   // Get index name
@@ -91,12 +86,11 @@ async function populateMetaData(
 
 async function generateReport(client: IClusterClient | IScopedClusterClient) {
   const report = { _source: metaData };
-
   const dataset: any = [];
   const arrayHits: any = [];
   let esData: any = {};
 
-  // fetch ES query max size windows
+  // Fetch ES query max size windows to decide search or scroll
   const indexPattern: string = report._source.paternName;
   const settings = await client.callAsInternalUser('indices.getSettings', {
     index: indexPattern,
@@ -107,30 +101,32 @@ async function generateReport(client: IClusterClient | IScopedClusterClient) {
       ? settings[indexPattern].settings.index.max_result_window
       : settings[indexPattern].defaults.index.max_result_window;
 
-  // build the ES Count query
+  // Build the ES Count query to count the size of result
   const countReq = buildQuery(report, 1);
-  // Count the Data in ES
   const esCount = await client.callAsInternalUser('count', {
     index: indexPattern,
     body: countReq.toJSON(),
   });
 
-  // If No data in elasticsearch
+  // Return nothing if No data in elasticsearch
   const total = esCount.count;
   if (total === 0) {
     return {};
   }
 
-  // build the ES query
-  const reqBody = buildQuery(report, 0);
-
+  const reqBody = buildRequestBody(buildQuery(report, 0));
   if (total > maxResultSize) {
-    // fetch the data
-    esData = await fetchData(report, reqBody, maxResultSize);
+    // Open scroll context by fetching first batch
+    esData = await client.callAsInternalUser('search', {
+      index: report._source.paternName,
+      scroll: '1m',
+      body: reqBody,
+      size: maxResultSize,
+    });
     arrayHits.push(esData.hits);
 
+    // Start scrolling till the end
     const nbScroll = Math.floor(total / maxResultSize);
-
     for (let i = 0; i < nbScroll; i++) {
       const resScroll = await client.callAsInternalUser('scroll', {
         scrollId: esData._scroll_id,
@@ -140,25 +136,25 @@ async function generateReport(client: IClusterClient | IScopedClusterClient) {
         arrayHits.push(resScroll.hits);
       }
     }
-    /*
-    const extraFetch = total % maxResultSize;
-    if (extraFetch > 0) {
-      const extraEsData = await fetchData(report, reqBody, extraFetch);
-      arrayHits.push(extraEsData.hits);
-    }
-    */
+
+    // Clear scroll context
+    await client.callAsInternalUser('clearScroll', {
+      scrollId: esData._scroll_id,
+    });
   } else {
-    esData = await fetchData(report, reqBody, total);
+    esData = await client.callAsInternalUser('search', {
+      index: report._source.paternName,
+      body: reqBody,
+      size: total,
+    });
     arrayHits.push(esData.hits);
   }
 
-  // Get data
+  // Parse ES data and convert to CSV
   dataset.push(getEsData(arrayHits, report));
-  // Convert To csv
   return await convertToCSV(dataset);
 
-  // Fetch the data from ES
-  async function fetchData(report, reqBody, fetchSize) {
+  function buildRequestBody(query: any) {
     const docvalues = [];
     for (const dateType of report._source.dateFields) {
       docvalues.push({
@@ -167,16 +163,9 @@ async function generateReport(client: IClusterClient | IScopedClusterClient) {
       });
     }
 
-    const newBody = {
-      query: reqBody.toJSON().query,
+    return {
+      query: query.toJSON().query,
       docvalue_fields: docvalues,
     };
-
-    return await client.callAsInternalUser('search', {
-      index: report._source.paternName,
-      scroll: '1m',
-      body: newBody,
-      size: fetchSize,
-    });
   }
 }
