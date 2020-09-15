@@ -20,6 +20,8 @@ import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Cons
 import java.io.IOException;
 import java.util.Locale;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.DocWriteResponse;
@@ -37,6 +39,7 @@ import org.elasticsearch.rest.RestResponse;
 import org.elasticsearch.rest.RestStatus;
 
 public class ReportsScheduleActionHandler extends AbstractActionHandler {
+  private static final Logger log = LogManager.getLogger(ReportsScheduleActionHandler.class);
   private final NodeClient client;
   private final RestChannel channel;
 
@@ -102,7 +105,7 @@ public class ReportsScheduleActionHandler extends AbstractActionHandler {
               channel.sendResponse(
                   new BytesRestResponse(
                       RestStatus.OK,
-                      String.format(Locale.ROOT, "Job de-scheduled. Job id: %s", jobId)));
+                      String.format(Locale.ROOT, "Job deleted. Job id: %s", jobId)));
             }
           }
 

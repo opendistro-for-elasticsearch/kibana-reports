@@ -13,17 +13,25 @@
  * permissions and limitations under the License.
  */
 
+// TODO: need finalize the naming for plugin config index
+export enum CONFIG_INDEX_NAME {
+  report = 'report',
+  reportDefinition = 'report_definition',
+}
+
 export enum FORMAT {
   pdf = 'pdf',
   png = 'png',
+  csv = 'csv',
 }
 
 export enum REPORT_STATE {
   created = 'Created',
   error = 'Error',
+  pending = 'Pending',
 }
 
-export enum REPORT_DEF_STATUS {
+export enum REPORT_DEFINITION_STATUS {
   active = 'Active',
   disabled = 'Disabled',
 }
@@ -37,7 +45,6 @@ export enum DELIVERY_CHANNEL {
 
 export enum SCHEDULE_TYPE {
   recurring = 'Recurring',
-  now = 'Now',
   future = 'Future date',
   cron = 'Cron based',
 }

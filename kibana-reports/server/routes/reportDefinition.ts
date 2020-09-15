@@ -23,19 +23,12 @@ import {
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
+import { reportDefinitionSchema, ReportDefinitionSchemaType } from '../model';
+import { errorResponse } from './utils/helpers';
 import {
-  reportSchema,
-  emailSchema,
-  scheduleSchema,
-  intervalSchema,
-  cronSchema,
-} from '../model';
-import { parseEsErrorResponse } from './utils/helpers';
-import {
-  REPORT_DEF_STATUS,
-  SCHEDULE_TYPE,
-  DELIVERY_CHANNEL,
+  REPORT_DEFINITION_STATUS,
   TRIGGER_TYPE,
+  CONFIG_INDEX_NAME,
 } from './utils/constants';
 
 export default function (router: IRouter) {
@@ -52,33 +45,37 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      let reportDefinition = request.body;
       // input validation
       try {
-        validateReportDefinition(request.body);
+        reportDefinition = reportDefinitionSchema.validate(reportDefinition);
       } catch (error) {
         return response.badRequest({ body: error });
       }
 
       // save metadata
+      // TODO: consider create uuid manually and save report after it's scheduled with reports-scheduler
       try {
-        const definition = {
-          ...request.body,
-          time_created: new Date().toISOString(),
-          last_updated: new Date().toISOString(),
-          status: REPORT_DEF_STATUS.active,
+        const toSave = {
+          report_definition: {
+            ...reportDefinition,
+            time_created: Date.now(),
+            last_updated: Date.now(),
+            status: REPORT_DEFINITION_STATUS.active,
+          },
         };
 
         const params: RequestParams.Index = {
-          index: 'report_definition',
-          body: definition,
+          index: CONFIG_INDEX_NAME.reportDefinition,
+          body: toSave,
         };
 
-        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'index',
           params
         );
 
-        // create schedule by reports-scheduler
+        // create scheduled job by reports-scheduler
         const reportDefinitionId = esResp._id;
         const res = await createScheduledJob(
           request,
@@ -97,16 +94,12 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to create report definition: ${error}`
         );
-
-        return response.custom({
-          statusCode: error.statusCode || 500,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
 
-  // Update definition by id
+  // Update report definition by id
   router.put(
     {
       path: `${API_PREFIX}/reportDefinitions/{reportDefinitionId}`,
@@ -122,46 +115,68 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      const reportDefinition: ReportDefinitionSchemaType = request.body;
       // input validation
       try {
-        const reportDefinition = request.body;
-        validateReportDefinition(reportDefinition);
+        reportDefinitionSchema.validate(reportDefinition);
       } catch (error) {
         return response.badRequest({ body: error });
       }
 
-      // Update metadata
-      try {
-        const updatedDefinition = {
-          ...request.body,
-          last_updated: new Date().toISOString(),
-        };
+      let newStatus;
+      /* 
+      "enabled = false" means de-scheduling a job.
+      TODO: also remove any job in queue and release lock, consider do that
+      within the createSchedule API exposed from reports-scheduler
+      */
+      const enabled = reportDefinition.trigger.trigger_params.enabled;
+      if (enabled) {
+        newStatus = REPORT_DEFINITION_STATUS.active;
+      } else {
+        newStatus = REPORT_DEFINITION_STATUS.disabled;
+      }
 
-        const params: RequestParams.Index = {
-          index: 'report_definition',
-          id: request.params.reportDefinitionId,
-          body: {
-            doc: updatedDefinition,
+      // Update report definition metadata
+      try {
+        const toUpdate = {
+          report_definition: {
+            ...reportDefinition,
+            last_updated: Date.now(),
+            status: newStatus,
           },
         };
-        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
+
+        const params: RequestParams.Update = {
+          index: CONFIG_INDEX_NAME.reportDefinition,
+          id: request.params.reportDefinitionId,
+          body: {
+            doc: toUpdate,
+          },
+        };
+        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'update',
           params
         );
+        // update scheduled job by calling reports-scheduler
+        const reportDefinitionId = esResp._id;
+        const res = await createScheduledJob(
+          request,
+          reportDefinitionId,
+          context
+        );
 
         return response.ok({
-          body: esResp._id,
+          body: {
+            state: 'Report definition updated',
+            scheduler_response: res,
+          },
         });
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
           `Failed to update report definition: ${error}`
         );
-
-        return response.custom({
-          statusCode: error.statusCode || 500,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
@@ -190,12 +205,12 @@ export default function (router: IRouter) {
       };
       const sizeNumber = parseInt(size, 10);
       const params: RequestParams.Search = {
-        index: 'report_definition',
+        index: CONFIG_INDEX_NAME.reportDefinition,
         size: sizeNumber,
         sort: `${sortField}:${sortDirection}`,
       };
       try {
-        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'search',
           params
         );
@@ -210,15 +225,12 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to get report definition details: ${error}`
         );
-        return response.custom({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
 
-  // get single report details by id
+  // get single report definition detail by id
   router.get(
     {
       path: `${API_PREFIX}/reportDefinitions/{reportDefinitionId}`,
@@ -234,10 +246,10 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
-        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'get',
           {
-            index: 'report_definition',
+            index: CONFIG_INDEX_NAME.reportDefinition,
             id: request.params.reportDefinitionId,
           }
         );
@@ -249,16 +261,12 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to get single report details: ${error}`
         );
-        return response.custom({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
 
   // Delete single report definition by id
-  // TODO: this api is not supported by UI, once it gets supported, also need to update this logic with de-scheduling
   router.delete(
     {
       path: `${API_PREFIX}/reportDefinitions/{reportDefinitionId}`,
@@ -273,69 +281,50 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      // @ts-ignore
+      const schedulerClient = context.reporting_plugin.schedulerClient.asScoped(
+        request
+      );
+      const reportDefinitionId = request.params.reportDefinitionId;
+
       try {
-        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
+        // delete job from report definition index
+        await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'delete',
           {
-            index: 'report_definition',
-            id: request.params.reportDefinitionId,
+            index: CONFIG_INDEX_NAME.reportDefinition,
+            id: reportDefinitionId,
           }
         );
-        return response.ok();
+
+        // send to reports-scheduler to delete a scheduled job
+        const esResp = await schedulerClient.callAsCurrentUser(
+          'reports_scheduler.deleteSchedule',
+          {
+            // the scheduled job is using the same id as its report definition
+            jobId: reportDefinitionId,
+          }
+        );
+
+        /* 
+        TODO: also remove any job in queue and release lock, consider do that
+        within the deleteSchedule API exposed by reports-scheduler
+        */
+        return response.ok({
+          body: {
+            state: 'Report definition deleted',
+            scheduler_response: esResp,
+          },
+        });
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
           `Failed to delete report definition: ${error}`
         );
-        return response.custom({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
-}
-
-function validateReportDefinition(reportDefinition: any) {
-  reportSchema.validate(reportDefinition);
-  const delivery = reportDefinition.delivery;
-  const trigger = reportDefinition.trigger;
-  const deliveryParams = delivery.delivery_params;
-  const triggerParams = trigger.trigger_params;
-
-  switch (delivery.channel) {
-    case DELIVERY_CHANNEL.email:
-      emailSchema.validate(deliveryParams);
-      break;
-    //TODO: Add logic for the following
-    case DELIVERY_CHANNEL.slack:
-      break;
-    case DELIVERY_CHANNEL.chime:
-      break;
-    case DELIVERY_CHANNEL.kibana:
-      break;
-  }
-
-  // TODO: add alert/on-demand
-  if (trigger.trigger_type === TRIGGER_TYPE.schedule) {
-    scheduleSchema.validate(triggerParams);
-
-    const schedule = triggerParams.schedule;
-    switch (triggerParams.schedule_type) {
-      case SCHEDULE_TYPE.recurring:
-        intervalSchema.validate(schedule);
-        break;
-      case SCHEDULE_TYPE.cron:
-        cronSchema.validate(schedule);
-        break;
-      case SCHEDULE_TYPE.now:
-        //TODO: will do in refactor
-        break;
-      case SCHEDULE_TYPE.future:
-        //TODO: will add as enhancement feature
-        break;
-    }
-  }
 }
 
 async function createScheduledJob(
@@ -343,7 +332,7 @@ async function createScheduledJob(
   reportDefinitionId: string,
   context: RequestHandlerContext
 ) {
-  const reportDefinition: any = request.body;
+  const reportDefinition: ReportDefinitionSchemaType = request.body;
   const trigger = reportDefinition.trigger;
   const triggerType = trigger.trigger_type;
   const triggerParams = trigger.trigger_params;
@@ -359,13 +348,13 @@ async function createScheduledJob(
     // compose the request body
     const scheduledJob = {
       schedule: schedule,
-      name: reportDefinition.report_name + '_schedule',
-      enabled: true,
+      name: `${reportDefinition.report_params.report_name}_schedule`,
+      enabled: triggerParams.enabled,
       report_definition_id: reportDefinitionId,
       enabled_time: triggerParams.enabled_time,
     };
     // send to reports-scheduler to create a scheduled job
-    const res = await schedulerClient.callAsInternalUser(
+    const res = await schedulerClient.callAsCurrentUser(
       'reports_scheduler.createSchedule',
       {
         jobId: reportDefinitionId,
@@ -374,8 +363,6 @@ async function createScheduledJob(
     );
 
     return res;
-  } else if (triggerType == TRIGGER_TYPE.alerting) {
-    //TODO: add alert-based scheduling logic [enhancement feature]
   } else if (triggerType == TRIGGER_TYPE.onDemand) {
     /*
      * TODO: return nothing for on Demand report, because currently on-demand report is handled by client side,
@@ -385,4 +372,6 @@ async function createScheduledJob(
      */
     return;
   }
+  // else if (triggerType == TRIGGER_TYPE.alerting) {
+  //TODO: add alert-based scheduling logic [enhancement feature]
 }
