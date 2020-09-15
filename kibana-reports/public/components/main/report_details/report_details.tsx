@@ -152,9 +152,6 @@ export function ReportDetails(props) {
               alignItems="flexEnd"
               gutterSize="l"
             >
-              {/* <EuiFlexItem grow={false}>
-                <EuiButton>Archive</EuiButton>
-              </EuiFlexItem> */}
               <EuiFlexItem grow={false}>
                 <ShareModal />
               </EuiFlexItem>
