@@ -118,9 +118,9 @@ export function ReportDefinitions(props) {
     {
       field: 'source',
       name: 'Source',
-      render: (username: string) => (
-        <EuiLink href={'#'} target="_blank">
-          {username}
+      render: (value, item) => (
+        <EuiLink href={item.baseUrl} target="_blank">
+          {value}
         </EuiLink>
       ),
     },

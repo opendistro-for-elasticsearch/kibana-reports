@@ -38,6 +38,7 @@ import {
   fileFormatsUpper,
   generateReport,
   humanReadableDate,
+  generateReportById,
 } from './main_utils';
 import { returnStatement } from '@babel/types';
 
@@ -132,70 +133,27 @@ export function ReportsTable(props) {
     );
   };
 
-  const updateMetadata = (url: any) => {
-    let splitUrl = url['url'].split(' ');
-    const onDemandDownloadMetadata = {
-      report_name: url['reportName'],
-      report_source: url['reportSource'],
-      report_type: 'Download',
-      description: 'On-demand download of report ' + url['reportName'],
-      report_params: {
-        url: splitUrl[0],
-        window_width: 1440,
-        window_height: 2560,
-        report_format: url['format'],
-      },
-    };
-    return onDemandDownloadMetadata;
-  };
-
-  const getReportsTableItemContent = (url) => {
-    let index;
-    for (index = 0; index < props.reportsTableItems.length; ++index) {
-      let splitUrlItem = reportsTableItems[index].url.split(' ');
-      let splitUrlInput = url.split(' ');
-      if (
-        splitUrlInput[0] === splitUrlItem[0] &&
-        splitUrlInput[1] === splitUrlItem[1]
-      ) {
-        return reportsTableItems[index];
-      }
-    }
-  };
-
-  const onDemandDownload = async (url: any) => {
-    let data = getReportsTableItemContent(url);
+  const onDemandDownload = async (id: any) => {
     handleLoading(true);
-    await generateReport(updateMetadata(data), httpClient);
+    await generateReportById(id, httpClient);
     handleLoading(false);
-  };
-
-  const getReportsTableItemFormat = (url) => {
-    let index;
-    for (index = 0; index < props.reportsTableItems.length; ++index) {
-      if (url === reportsTableItems[index].url) {
-        return reportsTableItems[index].format;
-      }
-    }
-  };
-
-  const navigateToReportDetails = (id: any) => {
-    window.location.assign(`opendistro_kibana_reports#/report_details/${id}`);
   };
 
   const reportsTableColumns = [
     {
       field: 'reportName',
       name: 'Name',
-      render: (reportName) => {
-        let [reportId, ...reportNameDisplay] = reportName.split(' ');
-        reportNameDisplay = reportNameDisplay.join(' ');
-        return (
-          <EuiLink onClick={() => navigateToReportDetails(reportId)}>
-            {reportNameDisplay}
-          </EuiLink>
-        );
-      },
+      render: (reportName, item) => (
+        <EuiLink
+          onClick={() => {
+            window.location.assign(
+              `opendistro_kibana_reports#/report_details/${item.id}`
+            );
+          }}
+        >
+          {reportName}
+        </EuiLink>
+      ),
     },
     {
       field: 'type',
@@ -222,9 +180,14 @@ export function ReportsTable(props) {
       truncateText: true,
     },
     {
+      // TODO: link to dashboard/visualization snapshot, use "queryUrl" field. Display dashboard name?
       field: 'reportSource',
       name: 'Source',
-      render: (source) => <EuiLink>{source}</EuiLink>,
+      render: (source, item) => (
+        <EuiLink href={item.url} target="_blank">
+          {source}
+        </EuiLink>
+      ),
     },
     {
       field: 'lastUpdated',
@@ -241,13 +204,12 @@ export function ReportsTable(props) {
       truncateText: false,
     },
     {
-      field: 'url',
-      name: 'Generate',
-      render: (data) => {
-        let format = getReportsTableItemFormat(data);
+      field: 'id',
+      name: 'Download',
+      render: (id, item) => {
         return (
-          <EuiLink onClick={() => onDemandDownload(data)}>
-            {fileFormatsUpper[format]} <EuiIcon type="importAction" />
+          <EuiLink onClick={() => onDemandDownload(id)}>
+            {fileFormatsUpper[item.format]} <EuiIcon type="importAction" />
           </EuiLink>
         );
       },

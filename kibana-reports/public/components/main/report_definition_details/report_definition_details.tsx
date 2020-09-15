@@ -26,12 +26,13 @@ import {
   EuiSpacer,
   EuiPageHeaderSection,
   EuiButton,
-  EuiText,
   EuiIcon,
   EuiLink,
 } from '@elastic/eui';
 import { ReportDetailsComponent } from '../report_details/report_details';
 import { fileFormatsUpper } from '../main_utils';
+import { ReportDefinitionSchemaType } from '../../../../server/model';
+import moment from 'moment';
 
 export function ReportDefinitionDetails(props) {
   const [reportDefinitionDetails, setReportDefinitionDetails] = useState({});
@@ -56,42 +57,50 @@ export function ReportDefinitionDetails(props) {
   };
 
   const getReportDefinitionDetailsMetadata = (data) => {
-    let readableDate = new Date(data['time_created']);
+    const reportDefinition: ReportDefinitionSchemaType = data.report_definition;
+    const reportParams = reportDefinition.report_params;
+    const trigger = reportDefinition.trigger;
+    const triggerParams = trigger.trigger_params;
+    const coreParams = reportParams.core_params;
+
+    let readableDate = new Date(reportDefinition.time_created);
     let displayCreatedDate =
       readableDate.toDateString() + ' ' + readableDate.toLocaleTimeString();
 
-    let readableUpdatedDate = new Date(data['last_updated']);
+    let readableUpdatedDate = new Date(reportDefinition.last_updated);
     let displayUpdatedDate =
       readableUpdatedDate.toDateString() +
       ' ' +
       readableUpdatedDate.toLocaleTimeString();
 
     let timeRangeDisplay = `\u2014`;
-    if (data['trigger']['trigger_type'] === 'Schedule') {
+    if (trigger.trigger_type === 'Schedule') {
       readableTimeRange(data);
     }
 
     let reportDefinitionDetails = {
-      name: data['report_name'],
-      description: data['description'],
+      name: reportParams.report_name,
+      description: reportParams.description,
       created: displayCreatedDate,
       lastUpdated: displayUpdatedDate,
-      source: data['report_source'],
-      timePeriod: timeRangeDisplay,
-      fileFormat: data['report_params']['report_format'],
+      source: reportParams.report_source,
+      baseUrl: coreParams.base_url,
+      // TODO: need better display
+      timePeriod: moment.duration(coreParams.time_duration).humanize(),
+      fileFormat: coreParams.report_format,
+      // TODO: to be added to schema, currently hardcoded in backend
       reportHeader: `\u2014`,
       reportFooter: `\u2014`,
-      triggerType: data['trigger']['trigger_type'],
-      scheduleDetails: data['trigger']['trigger_params']['schedule_type'],
+      triggerType: trigger.trigger_type,
+      scheduleDetails: triggerParams ? triggerParams.schedule_type : `\u2014`,
       alertDetails: `\u2014`,
-      status: data['status'],
-      deliveryChannels: data['delivery']['channel'],
-      kibanaRecipients: data['delivery']['delivery_params']['recipients'],
+      status: reportDefinition.status,
+      deliveryChannels: `\u2014`,
+      kibanaRecipients: `\u2014`,
       emailRecipients: `\u2014`, // todo: data model needs separate field for email vs kibana recipients
-      emailSubject: data['delivery']['delivery_params']['subject'],
-      emailBody: data['delivery']['delivery_params']['body'],
-      includeReportAsAttachment:
-        data['delivery']['delivery_params']['has_attachment'],
+      emailSubject: `\u2014`,
+      emailBody: `\u2014`,
+      includeReportAsAttachment: `\u2014`,
     };
     return reportDefinitionDetails;
   };
@@ -135,7 +144,11 @@ export function ReportDefinitionDetails(props) {
   };
 
   const sourceURL = (data) => {
-    return <EuiLink>{data['source']}</EuiLink>;
+    return (
+      <EuiLink href={data.baseUrl} target="_blank">
+        {data['source']}
+      </EuiLink>
+    );
   };
 
   const scheduleOrOnDemandDefinition = (data) => {
@@ -235,7 +248,7 @@ export function ReportDefinitionDetails(props) {
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Time period'}
-              reportDetailsComponentContent={reportDefinitionDetails.timePeriod}
+              reportDetailsComponentContent={`Last ${reportDefinitionDetails.timePeriod}`}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'File format'}
