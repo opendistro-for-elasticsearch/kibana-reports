@@ -17,6 +17,11 @@ import { v1 as uuidv1 } from 'uuid';
 import { buildQuery, convertToCSV, getEsData, getSelectedFields, metaData } from './utils/dataReportHelpers';
 import { IClusterClient, IScopedClusterClient } from '../../../../src/core/server';
 
+/**
+ * Specify how long scroll context should be maintained for scrolled search
+ */
+const scrollTimeout = '1m';
+
 export async function createSavedSearchReport(
   report: any,
   client: IClusterClient | IScopedClusterClient
@@ -37,6 +42,11 @@ export async function createSavedSearchReport(
   }
 }
 
+/**
+ * Populate parameters and saved search info related to meta data object.
+ * @param client        ES client
+ * @param reportParams  CSV export specific parameters
+ */
 async function populateMetaData(
   client: IClusterClient | IScopedClusterClient,
   reportParams: any
@@ -84,16 +94,18 @@ async function populateMetaData(
   }
 }
 
+/**
+ * Generate CSV data by query and convert ES data set.
+ * @param client  ES client
+ */
 async function generateCsvData(client: IClusterClient | IScopedClusterClient) {
   let esData: any = {};
   const arrayHits: any = [];
-  const dataset: any = [];
   const report = { _source: metaData };
   const indexPattern: string = report._source.paternName;
   const maxResultSize: number = await getMaxResultSize();
   const esCount = await getEsDataSize();
 
-  // Return nothing if No data in elasticsearch
   const total = esCount.count;
   if (total === 0) {
     return {};
@@ -105,10 +117,7 @@ async function generateCsvData(client: IClusterClient | IScopedClusterClient) {
   } else {
     await getEsDataBySearch();
   }
-
-  // Parse ES data and convert to CSV
-  dataset.push(getEsData(arrayHits, report));
-  return await convertToCSV(dataset);
+  return convertEsDataToCsv();
 
   // Fetch ES query max size windows to decide search or scroll
   async function getMaxResultSize() {
@@ -116,7 +125,7 @@ async function generateCsvData(client: IClusterClient | IScopedClusterClient) {
       index: indexPattern,
       includeDefaults: true,
     });
-    // The location of max result window differs if set by user.
+    // The location of max result window differs if default overridden.
     return settings[indexPattern].settings.index.max_result_window != null
       ? settings[indexPattern].settings.index.max_result_window
       : settings[indexPattern].defaults.index.max_result_window;
@@ -135,7 +144,7 @@ async function generateCsvData(client: IClusterClient | IScopedClusterClient) {
     // Open scroll context by fetching first batch
     esData = await client.callAsInternalUser('search', {
       index: report._source.paternName,
-      scroll: '1m',
+      scroll: scrollTimeout,
       body: reqBody,
       size: maxResultSize,
     });
@@ -146,7 +155,7 @@ async function generateCsvData(client: IClusterClient | IScopedClusterClient) {
     for (let i = 0; i < nbScroll; i++) {
       const resScroll = await client.callAsInternalUser('scroll', {
         scrollId: esData._scroll_id,
-        scroll: '1m',
+        scroll: scrollTimeout,
       });
       if (Object.keys(resScroll.hits.hits).length > 0) {
         arrayHits.push(resScroll.hits);
@@ -181,5 +190,12 @@ async function generateCsvData(client: IClusterClient | IScopedClusterClient) {
       query: query.toJSON().query,
       docvalue_fields: docvalues,
     };
+  }
+
+  // Parse ES data and convert to CSV
+  async function convertEsDataToCsv() {
+    const dataset: any = [];
+    dataset.push(getEsData(arrayHits, report));
+    return await convertToCSV(dataset);
   }
 }
