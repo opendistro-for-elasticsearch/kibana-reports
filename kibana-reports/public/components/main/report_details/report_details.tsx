@@ -90,24 +90,20 @@ export function ReportDetails(props) {
   };
 
   useEffect(() => {
-    props.setBreadcrumbs([
-      {
-        text: 'Reporting',
-        href: '#',
-      },
-      {
-        text: 'Report details',
-        href: `#/report_details/${props.match['params']['reportId']}`,
-      },
-      {
-        text: `${props.match['params']['reportId']}`,
-      },
-    ]);
     const { httpClient } = props;
     httpClient
       .get('../api/reporting/reports/' + reportId)
       .then((response) => {
         handleReportDetails(getReportDetailsData(response));
+        props.setBreadcrumbs([
+          {
+            text: 'Reporting',
+            href: '#',
+          },
+          {
+            text: 'Report details: ' + response['report_name'],
+          },
+        ]);
       })
       .catch((error) => {
         console.log('Error when fetching report details: ', error);
@@ -119,7 +115,7 @@ export function ReportDetails(props) {
     formatUpper = fileFormatsUpper[formatUpper];
     return (
       <EuiLink>
-        {formatUpper}
+        {formatUpper + ' '}
         <EuiIcon type="importAction" />
       </EuiLink>
     );
@@ -156,9 +152,6 @@ export function ReportDetails(props) {
               alignItems="flexEnd"
               gutterSize="l"
             >
-              <EuiFlexItem grow={false}>
-                <EuiButton>Archive</EuiButton>
-              </EuiFlexItem>
               <EuiFlexItem grow={false}>
                 <ShareModal />
               </EuiFlexItem>
