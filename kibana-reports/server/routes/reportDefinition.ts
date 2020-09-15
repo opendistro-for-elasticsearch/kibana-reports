@@ -45,10 +45,10 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
-      const reportDefinition: ReportDefinitionSchemaType = request.body;
+      let reportDefinition = request.body;
       // input validation
       try {
-        reportDefinitionSchema.validate(reportDefinition);
+        reportDefinition = reportDefinitionSchema.validate(reportDefinition);
       } catch (error) {
         return response.badRequest({ body: error });
       }

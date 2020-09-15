@@ -97,13 +97,9 @@ function createReportMetaData(
   reportDefinition: any,
   triggeredTime: number
 ): ReportSchemaType {
-  // validate to convert time_duration from string to moment.duration object
-  const validatedReportDefinition = reportDefinitionSchema.validate(
-    reportDefinition
-  );
   const coreParams: dataReportSchemaType | visualReportSchemaType =
-    validatedReportDefinition.report_params.core_params;
-  const duration = coreParams.time_duration;
+    reportDefinition.report_params.core_params;
+  const duration = moment.duration(coreParams.time_duration);
   const base_url = coreParams.base_url;
   const timeTo = moment(triggeredTime);
   const timeFrom = moment(timeTo).subtract(duration);

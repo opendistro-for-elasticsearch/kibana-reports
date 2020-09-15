@@ -26,8 +26,8 @@ import {
 export const dataReportSchema = schema.object({
   base_url: schema.uri(),
   saved_search_id: schema.string(),
-  // "1h" will be convert to moment.duration()
-  time_duration: schema.duration(),
+  //ISO duration string. 'PT10M' means 10 min
+  time_duration: schema.string(),
   //TODO: future support schema.literal('xlsx')
   report_format: schema.oneOf([schema.literal(FORMAT.csv)]),
 });
@@ -40,7 +40,7 @@ const visualReportSchema = schema.object({
     schema.literal(FORMAT.pdf),
     schema.literal(FORMAT.png),
   ]),
-  time_duration: schema.duration(),
+  time_duration: schema.string(),
 });
 
 export const intervalSchema = schema.object({
@@ -102,7 +102,7 @@ export const reportDefinitionSchema = schema.object({
     ),
   }),
 
-  notification: schema.maybe(
+  delivery: schema.maybe(
     schema.object({
       recipients: schema.arrayOf(schema.string(), { minSize: 0 }),
       title: schema.string(),

@@ -41,9 +41,9 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       // input validation
-      const report = request.body;
+      let report = request.body;
       try {
-        reportSchema.validate(report);
+        report = reportSchema.validate(report);
       } catch (error) {
         return response.badRequest({ body: error });
       }
