@@ -106,19 +106,6 @@ export function ReportDefinitionDetails(props) {
   };
 
   useEffect(() => {
-    props.setBreadcrumbs([
-      {
-        text: 'Reporting',
-        href: '#',
-      },
-      {
-        text: 'Report definition details',
-        href: `#/report_definition_details/${props.match['params']['reportDefinitionId']}`,
-      },
-      {
-        text: `${props.match['params']['reportDefinitionId']}`,
-      },
-    ]);
     const { httpClient } = props;
     httpClient
       .get(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
@@ -126,6 +113,15 @@ export function ReportDefinitionDetails(props) {
         handleReportDefinitionDetails(
           getReportDefinitionDetailsMetadata(response)
         );
+        props.setBreadcrumbs([
+          {
+            text: 'Reporting',
+            href: '#',
+          },
+          {
+            text: `Report definition details: ${response.report_definition.report_params.report_name}`,
+          },
+        ]);
       })
       .catch((error) => {
         console.error('error when getting report definition details:', error);
@@ -137,7 +133,7 @@ export function ReportDefinitionDetails(props) {
     formatUpper = fileFormatsUpper[formatUpper];
     return (
       <EuiLink>
-        {formatUpper}
+        {formatUpper + ' '}
         <EuiIcon type="importAction" />
       </EuiLink>
     );
@@ -165,6 +161,18 @@ export function ReportDefinitionDetails(props) {
       }
     }
   };
+
+  const deleteReportDefinition = () => {
+    const { httpClient } = props;
+    httpClient
+      .delete(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
+      .then((response) => {
+        window.location.assign(`opendistro_kibana_reports#/`);
+      })
+      .catch((error) => {
+        console.log("error when deleting report definition:", error);
+      })
+  }
 
   const includeReportAsAttachmentString = reportDefinitionDetails.includeReportAsAttachment
     ? 'True'
@@ -194,7 +202,7 @@ export function ReportDefinitionDetails(props) {
               gutterSize="l"
             >
               <EuiFlexItem grow={false}>
-                <EuiButton color={'danger'}>Delete</EuiButton>
+                <EuiButton color={'danger'} onClick={deleteReportDefinition}>Delete</EuiButton>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
                 {scheduleOrOnDemandDefinition(reportDefinitionDetails)}
