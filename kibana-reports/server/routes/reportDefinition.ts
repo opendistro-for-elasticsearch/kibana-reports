@@ -289,13 +289,15 @@ export default function (router: IRouter) {
 
       try {
         // retrieve report definition
-        const reportDefinition: ReportDefinitionSchemaType = await context.core.elasticsearch.dataClient.callAsCurrentUser(
+        const getReportDefinitionResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'get',
           {
             index: CONFIG_INDEX_NAME.reportDefinition,
             id: reportDefinitionId,
           }
         );
+        const reportDefinition: ReportDefinitionSchemaType =
+          getReportDefinitionResp._source.report_definition;
         const triggerType = reportDefinition.trigger.trigger_type;
         let esResp;
 
