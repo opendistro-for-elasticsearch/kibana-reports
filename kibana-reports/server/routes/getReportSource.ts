@@ -62,7 +62,7 @@ export default function (router: IRouter) {
         responseParams = params;
       }
       try {
-        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'search',
           responseParams
         );
