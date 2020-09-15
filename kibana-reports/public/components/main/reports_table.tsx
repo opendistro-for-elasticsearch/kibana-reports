@@ -345,7 +345,7 @@ export function ReportsTable(props) {
   return (
     <Fragment>
       <EuiInMemoryTable
-        items={reportsTableItems}
+        items={reportsTableItems} // reportsTableItems
         itemId="id"
         loading={false}
         message={emptyMessageReports}
