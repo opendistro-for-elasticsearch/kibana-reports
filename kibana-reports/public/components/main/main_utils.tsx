@@ -15,7 +15,6 @@
 
 import { get } from 'lodash';
 import 'babel-polyfill';
-import { DateFormat } from '../../../../../src/plugins/data/public/field_formats';
 
 export const fileFormatsUpper = {
   csv: 'CSV',
@@ -45,27 +44,27 @@ export const getFileFormatPrefix = (fileFormat: string) => {
 };
 
 export const addReportsTableContent = (data) => {
-  let index;
   let reportsTableItems = [];
-  for (index = 0; index < data.length; ++index) {
+  for (let index = 0; index < data.length; ++index) {
+    let item = data[index];
+    let report = item._source;
+    let reportDefinition = report.report_definition;
+    let reportParams = reportDefinition.report_params;
+    let trigger = reportDefinition.trigger;
+
     let reportsTableEntry = {
-      id: get(data, [index, '_id']),
-      reportName:
-        get(data, [index, '_id']) +
-        ' ' +
-        get(data, [index, '_source', 'report_name']),
-      type: get(data, [index, '_source', 'report_type']),
+      id: item._id,
+      reportName: reportParams.report_name,
+      type: trigger.trigger_type,
       sender: `\u2014`,
       kibanaRecipients: `\u2014`,
       emailRecipients: `\u2014`,
-      reportSource: get(data, [index, '_source', 'report_source']),
-      lastUpdated: get(data, [index, '_source', 'time_created']),
-      state: get(data, [index, '_source', 'state']),
-      url:
-        get(data, [index, '_source', 'report_params', 'url']) +
-        ' ' +
-        get(data, [index, '_id']),
-      format: get(data, [index, '_source', 'report_params', 'report_format']),
+      reportSource: reportParams.report_source,
+      //TODO: wrong name
+      lastUpdated: report.time_created,
+      state: report.state,
+      url: report.query_url,
+      format: reportParams.core_params.report_format,
     };
     reportsTableItems.push(reportsTableEntry);
   }
@@ -73,24 +72,24 @@ export const addReportsTableContent = (data) => {
 };
 
 export const addReportDefinitionsTableContent = (data: any) => {
-  let index;
   let reportDefinitionsTableItems = [];
-  for (index = 0; index < data.length; ++index) {
+  for (let index = 0; index < data.length; ++index) {
+    let item = data[index];
+    let reportDefinition = item._source.report_definition;
+    let reportParams = reportDefinition.report_params;
+    let trigger = reportDefinition.trigger;
+    let triggerParams = trigger.trigger_params;
+
     let reportDefinitionsTableEntry = {
-      id: get(data, [index, '_id']),
-      reportName: get(data, [index, '_source', 'report_name']),
-      type: get(data, [index, '_source', 'report_type']),
+      id: item._id,
+      reportName: reportParams.report_name,
+      type: trigger.trigger_type,
       owner: 'davidcui', // Todo: replace
-      source: get(data, [index, '_source', 'report_source']),
-      lastUpdated: get(data, [index, '_source', 'time_created']),
-      details: get(data, [
-        index,
-        '_source',
-        'trigger',
-        'trigger_params',
-        'schedule_type',
-      ]),
-      status: get(data, [index, '_source', 'status']),
+      source: reportParams.report_source,
+      baseUrl: reportParams.core_params.base_url,
+      lastUpdated: reportDefinition.last_updated,
+      details: triggerParams ? triggerParams.schedule_type : `\u2014`, // e.g. recurring, cron based
+      status: reportDefinition.status,
     };
     reportDefinitionsTableItems.push(reportDefinitionsTableEntry);
   }
@@ -149,5 +148,20 @@ export const generateReport = async (metadata, httpClient) => {
     })
     .catch((error) => {
       console.log('error on generating report:', error);
+    });
+};
+
+export const generateReportById = async (reportId, httpClient) => {
+  await httpClient
+    .post(`../api/reporting/generateReport/${reportId}`)
+    .then(async (response) => {
+      //TODO: duplicate code, extract to be a function that can reuse. e.g. handleResponse(response)
+      const fileFormat = extractFileFormat(response['filename']);
+      const fileName = response['filename'];
+      await readStreamToFile(await response['data'], fileFormat, fileName);
+      return response;
+    })
+    .catch((error) => {
+      console.log('error on generating report by id:', error);
     });
 };

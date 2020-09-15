@@ -18,18 +18,11 @@ import { FormattedMessage, I18nProvider } from '@kbn/i18n/react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 
 import {
-  EuiButton,
-  EuiHorizontalRule,
   EuiPage,
   EuiPageBody,
-  EuiPageContent,
   EuiPageContentBody,
   EuiPageContentHeader,
-  EuiPageHeader,
-  EuiTitle,
-  EuiText,
   EuiPageContentHeaderSection,
-  EuiHeader,
 } from '@elastic/eui';
 import CSS from 'csstype';
 import {
@@ -40,7 +33,6 @@ import {
 } from '../../../../src/core/public';
 import { NavigationPublicPluginStart } from '../../../../src/plugins/navigation/public';
 
-import { PLUGIN_ID, PLUGIN_NAME } from '../../common';
 import { CreateReport } from './report_definitions/create/create_report_definition';
 import { Main } from './main/main';
 import { ReportDetails } from './main/report_details/report_details';

@@ -29,12 +29,12 @@ import {
   EuiDescriptionListDescription,
   EuiPageHeaderSection,
   EuiButton,
-  EuiText,
   EuiLink,
   EuiIcon,
 } from '@elastic/eui';
 import { ShareModal } from './share_modal/share_modal';
 import { fileFormatsUpper } from '../main_utils';
+import { ReportSchemaType } from '../../../../server/model';
 
 export const ReportDetailsComponent = (props) => {
   const { reportDetailsComponentTitle, reportDetailsComponentContent } = props;
@@ -61,21 +61,29 @@ export function ReportDetails(props) {
     setReportDetails(e);
   };
 
-  const getReportDetailsData = (data) => {
-    let readableDate = new Date(data['time_created']);
-    let displayDate =
-      readableDate.toDateString() + ' ' + readableDate.toLocaleTimeString();
+  const getReportDetailsData = (report: ReportSchemaType) => {
+    const reportDefinition = report.report_definition;
+    const reportParams = reportDefinition.report_params;
+    const coreParams = reportParams.core_params;
+    const trigger = reportDefinition.trigger;
+    // covert timestamp to local date-time string
+    let readableDate = new Date(report.time_created);
+    let displayDate = readableDate.toLocaleString();
+
     let reportDetails = {
-      reportName: data['report_name'],
-      description: data['description'],
+      reportName: reportParams.report_name,
+      description: reportParams.description,
       created: displayDate,
       lastUpdated: `\u2014`,
-      sourceType: data['report_type'],
-      source: data['report_source'],
-      defaultFileFormat: data['report_params']['report_format'],
+      source: reportParams.report_source,
+      // TODO:  we have all data needed, time_from, time_to, time_duration,
+      // think of a way to better display
+      time_period: `\u2014`,
+      defaultFileFormat: coreParams.report_format,
+      state: report.state,
       reportHeader: `\u2014`,
       reportFooter: `\u2014`,
-      reportType: data['report_type'],
+      reportType: trigger.trigger_type,
       scheduleType: `\u2014`,
       scheduleDetails: `\u2014`,
       alertDetails: `\u2014`,
@@ -85,6 +93,7 @@ export function ReportDetails(props) {
       emailSubject: `\u2014`,
       emailBody: `\u2014`,
       reportAsAttachment: false,
+      queryUrl: report.query_url,
     };
     return reportDetails;
   };
@@ -122,7 +131,11 @@ export function ReportDetails(props) {
   };
 
   const sourceURL = (data) => {
-    return <EuiLink>{data['source']}</EuiLink>;
+    return (
+      <EuiLink href={data.queryUrl} target="_blank">
+        {data['source']}
+      </EuiLink>
+    );
   };
 
   const includeReportAsAttachmentString = reportDetails['reportAsAttachment']
