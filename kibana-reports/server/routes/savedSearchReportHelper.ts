@@ -22,7 +22,7 @@ export async function createSavedSearchReport(
   client: IClusterClient | IScopedClusterClient
 ) {
   await populateMetaData(client, report.report_params);
-  const data = await generateReport(client);
+  const data = await generateCsvData(client);
 
   const timeCreated = new Date().toISOString();
   const fileName = getFileName() + '.csv';
@@ -84,29 +84,14 @@ async function populateMetaData(
   }
 }
 
-async function generateReport(client: IClusterClient | IScopedClusterClient) {
-  const report = { _source: metaData };
-  const dataset: any = [];
-  const arrayHits: any = [];
+async function generateCsvData(client: IClusterClient | IScopedClusterClient) {
   let esData: any = {};
-
-  // Fetch ES query max size windows to decide search or scroll
+  const arrayHits: any = [];
+  const dataset: any = [];
+  const report = { _source: metaData };
   const indexPattern: string = report._source.paternName;
-  const settings = await client.callAsInternalUser('indices.getSettings', {
-    index: indexPattern,
-    includeDefaults: true,
-  });
-  const maxResultSize: number =
-    settings[indexPattern].settings.index.max_result_window != null
-      ? settings[indexPattern].settings.index.max_result_window
-      : settings[indexPattern].defaults.index.max_result_window;
-
-  // Build the ES Count query to count the size of result
-  const countReq = buildQuery(report, 1);
-  const esCount = await client.callAsInternalUser('count', {
-    index: indexPattern,
-    body: countReq.toJSON(),
-  });
+  const maxResultSize: number = await getMaxResultSize();
+  const esCount = await getEsDataSize();
 
   // Return nothing if No data in elasticsearch
   const total = esCount.count;
@@ -116,6 +101,37 @@ async function generateReport(client: IClusterClient | IScopedClusterClient) {
 
   const reqBody = buildRequestBody(buildQuery(report, 0));
   if (total > maxResultSize) {
+    await getEsDataByScroll();
+  } else {
+    await getEsDataBySearch();
+  }
+
+  // Parse ES data and convert to CSV
+  dataset.push(getEsData(arrayHits, report));
+  return await convertToCSV(dataset);
+
+  // Fetch ES query max size windows to decide search or scroll
+  async function getMaxResultSize() {
+    const settings = await client.callAsInternalUser('indices.getSettings', {
+      index: indexPattern,
+      includeDefaults: true,
+    });
+    // The location of max result window differs if set by user.
+    return settings[indexPattern].settings.index.max_result_window != null
+      ? settings[indexPattern].settings.index.max_result_window
+      : settings[indexPattern].defaults.index.max_result_window;
+  }
+
+  // Build the ES Count query to count the size of result
+  async function getEsDataSize() {
+    const countReq = buildQuery(report, 1);
+    return await client.callAsInternalUser('count', {
+      index: indexPattern,
+      body: countReq.toJSON(),
+    });
+  }
+
+  async function getEsDataByScroll() {
     // Open scroll context by fetching first batch
     esData = await client.callAsInternalUser('search', {
       index: report._source.paternName,
@@ -141,7 +157,9 @@ async function generateReport(client: IClusterClient | IScopedClusterClient) {
     await client.callAsInternalUser('clearScroll', {
       scrollId: esData._scroll_id,
     });
-  } else {
+  }
+
+  async function getEsDataBySearch() {
     esData = await client.callAsInternalUser('search', {
       index: report._source.paternName,
       body: reqBody,
@@ -149,10 +167,6 @@ async function generateReport(client: IClusterClient | IScopedClusterClient) {
     });
     arrayHits.push(esData.hits);
   }
-
-  // Parse ES data and convert to CSV
-  dataset.push(getEsData(arrayHits, report));
-  return await convertToCSV(dataset);
 
   function buildRequestBody(query: any) {
     const docvalues = [];
