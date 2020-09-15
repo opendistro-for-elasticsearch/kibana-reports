@@ -110,7 +110,9 @@ export function ReportDetails(props) {
             href: '#',
           },
           {
-            text: 'Report details: ' + response['report_name'],
+            text:
+              'Report details: ' +
+              response.report_definition.report_params.report_name,
           },
         ]);
       })
@@ -196,16 +198,16 @@ export function ReportDetails(props) {
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Source type'}
-              reportDetailsComponentContent={reportDetails['sourceType']}
-            />
-            <ReportDetailsComponent
               reportDetailsComponentTitle={'Source'}
               reportDetailsComponentContent={sourceURL(reportDetails)}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'File format'}
               reportDetailsComponentContent={fileFormatDownload(reportDetails)}
+            />
+            <ReportDetailsComponent
+              reportDetailsComponentTitle={'State'}
+              reportDetailsComponentContent={reportDetails['state']}
             />
             <ReportDetailsComponent />
           </EuiFlexGroup>

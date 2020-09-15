@@ -32,6 +32,7 @@ import {
 import { ReportDetailsComponent } from '../report_details/report_details';
 import { fileFormatsUpper } from '../main_utils';
 import { ReportDefinitionSchemaType } from '../../../../server/model';
+import moment from 'moment';
 
 export function ReportDefinitionDetails(props) {
   const [reportDefinitionDetails, setReportDefinitionDetails] = useState({});
@@ -72,9 +73,10 @@ export function ReportDefinitionDetails(props) {
       ' ' +
       readableUpdatedDate.toLocaleTimeString();
 
-    // if (data['trigger']['trigger_type'] === 'Schedule') {
-    //   readableTimeRange(data);
-    // }
+    let timeRangeDisplay = `\u2014`;
+    if (trigger.trigger_type === 'Schedule') {
+      readableTimeRange(data);
+    }
 
     let reportDefinitionDetails = {
       name: reportParams.report_name,
@@ -84,7 +86,7 @@ export function ReportDefinitionDetails(props) {
       source: reportParams.report_source,
       baseUrl: coreParams.base_url,
       // TODO: need better display
-      timePeriod: coreParams.time_duration,
+      timePeriod: moment.duration(coreParams.time_duration).humanize(),
       fileFormat: coreParams.report_format,
       // TODO: to be added to schema, currently hardcoded in backend
       reportHeader: `\u2014`,
@@ -246,7 +248,7 @@ export function ReportDefinitionDetails(props) {
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Time period'}
-              reportDetailsComponentContent={reportDefinitionDetails.timePeriod}
+              reportDetailsComponentContent={`Last ${reportDefinitionDetails.timePeriod}`}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'File format'}

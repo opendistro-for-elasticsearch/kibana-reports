@@ -180,7 +180,7 @@ export function ReportsTable(props) {
       truncateText: true,
     },
     {
-      // TODO: link to dashboard/visulization snapshot, use "queryUrl" field. Display dashboard name?
+      // TODO: link to dashboard/visualization snapshot, use "queryUrl" field. Display dashboard name?
       field: 'reportSource',
       name: 'Source',
       render: (source, item) => (
