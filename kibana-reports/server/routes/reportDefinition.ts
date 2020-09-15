@@ -288,32 +288,44 @@ export default function (router: IRouter) {
       const reportDefinitionId = request.params.reportDefinitionId;
 
       try {
+        // retrieve report definition
+        const reportDefinition: ReportDefinitionSchemaType = await context.core.elasticsearch.dataClient.callAsCurrentUser(
+          'get',
+          {
+            index: CONFIG_INDEX_NAME.reportDefinition,
+            id: reportDefinitionId,
+          }
+        );
+        const triggerType = reportDefinition.trigger.trigger_type;
+        let esResp;
+
         // delete job from report definition index
-        await context.core.elasticsearch.dataClient.callAsCurrentUser(
+        esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'delete',
           {
             index: CONFIG_INDEX_NAME.reportDefinition,
             id: reportDefinitionId,
           }
         );
+        if (triggerType === TRIGGER_TYPE.schedule) {
+          // send to reports-scheduler to delete a scheduled job
+          esResp = await schedulerClient.callAsCurrentUser(
+            'reports_scheduler.deleteSchedule',
+            {
+              // the scheduled job is using the same id as its report definition
+              jobId: reportDefinitionId,
+            }
+          );
+          /* 
+          TODO: also remove any job in queue and release lock, consider do that
+          within the deleteSchedule API exposed by reports-scheduler
+          */
+        }
 
-        // send to reports-scheduler to delete a scheduled job
-        const esResp = await schedulerClient.callAsCurrentUser(
-          'reports_scheduler.deleteSchedule',
-          {
-            // the scheduled job is using the same id as its report definition
-            jobId: reportDefinitionId,
-          }
-        );
-
-        /* 
-        TODO: also remove any job in queue and release lock, consider do that
-        within the deleteSchedule API exposed by reports-scheduler
-        */
         return response.ok({
           body: {
             state: 'Report definition deleted',
-            scheduler_response: esResp,
+            es_response: esResp,
           },
         });
       } catch (error) {
