@@ -11,25 +11,17 @@
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
+ *
  */
 
-import { KibanaResponseFactory } from '../../../../../src/core/server';
+package com.amazon.opendistroforelasticsearch.notification.core
 
-export function parseEsErrorResponse(error: any) {
-  if (error.response) {
-    try {
-      const esErrorResponse = JSON.parse(error.response);
-      return esErrorResponse.reason || error.response;
-    } catch (parsingError) {
-      return error.response;
-    }
-  }
-  return error.message;
-}
-
-export function errorResponse(response: KibanaResponseFactory, error: any) {
-  return response.custom({
-    statusCode: error.statusCode,
-    body: parseEsErrorResponse(error),
-  });
-}
+class NotificationMessage(
+  val refTag: String,
+  val title: String,
+  val recipients: List<String>,
+  val textDescription: String?,
+  val htmlDescription: String?,
+  val binaryData: String?,
+  val textData: String?
+)

@@ -31,8 +31,13 @@ describe('test create visual report', () => {
         report_format: 'png',
       },
     };
+    const queryUrl =
+      'https://demo.elastic.co/app/kibana#/dashboard/welcome_dashboard';
 
-    const { timeCreated, dataUrl, fileName } = await createVisualReport(input);
+    const { timeCreated, dataUrl, fileName } = await createVisualReport(
+      input,
+      queryUrl
+    );
     expect(fileName).toContain(`${input.report_name}_${timeCreated}`);
     expect(fileName).toContain(`.${input.report_params.report_format}`);
     expect(dataUrl).toBeDefined();
@@ -52,8 +57,13 @@ describe('test create visual report', () => {
         report_format: 'pdf',
       },
     };
+    const queryUrl =
+      'https://demo.elastic.co/app/kibana#/dashboard/welcome_dashboard';
 
-    const { timeCreated, dataUrl, fileName } = await createVisualReport(input);
+    const { timeCreated, dataUrl, fileName } = await createVisualReport(
+      input,
+      queryUrl
+    );
     expect(fileName).toContain(`${input.report_name}_${timeCreated}`);
     expect(fileName).toContain(`.${input.report_params.report_format}`);
     expect(dataUrl).toBeDefined();

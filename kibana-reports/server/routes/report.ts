@@ -22,11 +22,12 @@ import {
 import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
 import { createReport } from './utils/reportHelper';
-import { reportSchema, ReportSchemaType } from '../model';
-import { parseEsErrorResponse } from './utils/helpers';
+import { reportSchema } from '../model';
+import { errorResponse } from './utils/helpers';
+import { CONFIG_INDEX_NAME } from './utils/constants';
 
 export default function (router: IRouter) {
-  // Download report
+  // generate report
   router.post(
     {
       path: `${API_PREFIX}/generateReport`,
@@ -40,18 +41,17 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       // input validation
+      let report = request.body;
       try {
-        reportSchema.validate(request.body);
+        report = reportSchema.validate(report);
       } catch (error) {
         return response.badRequest({ body: error });
       }
-      // generate report
-      try {
-        let report = request.body;
 
+      try {
         const reportData = await createReport(
           report,
-          context.core.elasticsearch.adminClient
+          context.core.elasticsearch.dataClient
         );
 
         return response.ok({
@@ -65,11 +65,55 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to create report: ${error}`
         );
+        return errorResponse(response, error);
+      }
+    }
+  );
 
-        return response.custom({
-          statusCode: error.statusCode || 500,
-          body: parseEsErrorResponse(error),
+  // generate report from id
+  router.post(
+    {
+      path: `${API_PREFIX}/generateReport/{reportId}`,
+      validate: {
+        params: schema.object({
+          reportId: schema.string(),
+        }),
+      },
+    },
+    async (
+      context,
+      request,
+      response
+    ): Promise<IKibanaResponse<any | ResponseError>> => {
+      // get report
+      try {
+        const savedReportId = request.params.reportId;
+        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
+          'get',
+          {
+            index: CONFIG_INDEX_NAME.report,
+            id: request.params.reportId,
+          }
+        );
+        const report = esResp._source;
+        const reportData = await createReport(
+          report,
+          context.core.elasticsearch.dataClient,
+          savedReportId
+        );
+
+        return response.ok({
+          body: {
+            data: reportData.dataUrl,
+            filename: reportData.fileName,
+          },
         });
+      } catch (error) {
+        //@ts-ignore
+        context.reporting_plugin.logger.error(
+          `Failed to generate report by id: ${error}`
+        );
+        return errorResponse(response, error);
       }
     }
   );
@@ -98,12 +142,12 @@ export default function (router: IRouter) {
       };
       const sizeNumber = parseInt(size, 10);
       const params: RequestParams.Search = {
-        index: 'report',
+        index: CONFIG_INDEX_NAME.report,
         size: sizeNumber,
         sort: `${sortField}:${sortDirection}`,
       };
       try {
-        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'search',
           params
         );
@@ -118,10 +162,7 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to get reports details: ${error}`
         );
-        return response.custom({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
@@ -142,10 +183,10 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
-        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'get',
           {
-            index: 'report',
+            index: CONFIG_INDEX_NAME.report,
             id: request.params.reportId,
           }
         );
@@ -157,10 +198,7 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to get single report details: ${error}`
         );
-        return response.custom({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
@@ -181,10 +219,10 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
-        const esResp = await context.core.elasticsearch.adminClient.callAsInternalUser(
+        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
           'delete',
           {
-            index: 'report',
+            index: CONFIG_INDEX_NAME.report,
             id: request.params.reportId,
           }
         );
@@ -194,10 +232,7 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to delete report: ${error}`
         );
-        return response.custom({
-          statusCode: error.statusCode,
-          body: parseEsErrorResponse(error),
-        });
+        return errorResponse(response, error);
       }
     }
   );
