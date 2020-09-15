@@ -107,7 +107,6 @@ export function ReportDefinitionDetails(props) {
 
   useEffect(() => {
     const { httpClient } = props;
-    console.log("props is", props);
     httpClient
       .get(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
       .then((response) => {
@@ -168,7 +167,6 @@ export function ReportDefinitionDetails(props) {
     httpClient
       .delete(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
       .then((response) => {
-        console.log("report definition deleted successfully");
         window.location.assign(`opendistro_kibana_reports#/`);
       })
       .catch((error) => {
