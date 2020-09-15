@@ -131,7 +131,7 @@ async function generateReport(client: IClusterClient | IScopedClusterClient) {
 
     const nbScroll = Math.floor(total / maxResultSize);
 
-    for (let i = 0; i < nbScroll - 1; i++) {
+    for (let i = 0; i < nbScroll; i++) {
       const resScroll = await client.callAsInternalUser('scroll', {
         scrollId: esData._scroll_id,
         scroll: '1m',
@@ -140,11 +140,13 @@ async function generateReport(client: IClusterClient | IScopedClusterClient) {
         arrayHits.push(resScroll.hits);
       }
     }
+    /*
     const extraFetch = total % maxResultSize;
     if (extraFetch > 0) {
       const extraEsData = await fetchData(report, reqBody, extraFetch);
       arrayHits.push(extraEsData.hits);
     }
+    */
   } else {
     esData = await fetchData(report, reqBody, total);
     arrayHits.push(esData.hits);

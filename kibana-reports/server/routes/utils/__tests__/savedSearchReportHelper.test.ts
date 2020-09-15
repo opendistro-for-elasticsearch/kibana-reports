@@ -16,6 +16,22 @@
 import 'regenerator-runtime/runtime';
 import { createSavedSearchReport } from '../../savedSearchReportHelper';
 
+/**
+ * The mock and sample input for saved search export function.
+ */
+const input = {
+  report_name: 'Test',
+  report_source: 'Saved search',
+  report_type: 'Download',
+  description: 'Hi this is your saved search',
+  report_params: {
+    saved_search_id: 'ddd8f430-f2ef-11ea-8c86-81a0b21b4b67',
+    start: '1343576635300',
+    end: '1596037435301',
+    report_format: 'csv',
+  },
+};
+
 describe('test create saved search report', () => {
   test('create report by single search', async () => {
     const hits = [
@@ -24,26 +40,40 @@ describe('test create saved search report', () => {
       hit({ category: 'c3', customer_gender: 'Male' }),
       hit({ category: 'c4', customer_gender: 'Male' }),
       hit({ category: 'c5', customer_gender: 'Male' }),
-      hit({ category: 'c6', customer_gender: 'Male' }),
-      hit({ category: 'c7', customer_gender: 'Male' }),
-      hit({ category: 'c8', customer_gender: 'Male' }),
-      hit({ category: 'c9', customer_gender: 'Male' }),
-      hit({ category: 'c10', customer_gender: 'Male' }),
     ];
     const client = mockEsClient(hits);
-    const input = {
-      report_name: 'Test',
-      report_source: 'Saved search',
-      report_type: 'Download',
-      description: 'Hi this is your saved search',
-      report_params: {
-        saved_search_id: 'ddd8f430-f2ef-11ea-8c86-81a0b21b4b67',
-        start: '1343576635300',
-        end: '1596037435301',
-        report_format: 'csv',
-      },
-    };
+    const { timeCreated, dataUrl, fileName } = await createSavedSearchReport(
+      input,
+      client
+    );
 
+    expect(fileName).toContain(`${input.report_name}_${timeCreated}`);
+    expect(fileName).toContain(`.${input.report_params.report_format}`);
+    expect(dataUrl).toEqual(
+      '0.category,0.customer_gender,' +
+        '1.category,1.customer_gender,' +
+        '2.category,2.customer_gender,' +
+        '3.category,3.customer_gender,' +
+        '4.category,4.customer_gender\n' +
+        'c1,Male,c2,Male,c3,Male,c4,Male,c5,Male'
+    );
+  }, 20000);
+
+  test('create report by scroll', async () => {
+    const hits = [
+      hit({ category: 'c1', customer_gender: 'Male' }),
+      hit({ category: 'c2', customer_gender: 'Male' }),
+      hit({ category: 'c3', customer_gender: 'Male' }),
+      hit({ category: 'c4', customer_gender: 'Male' }),
+      hit({ category: 'c5', customer_gender: 'Male' }),
+      hit({ category: 'c6', customer_gender: 'Female' }),
+      hit({ category: 'c7', customer_gender: 'Female' }),
+      hit({ category: 'c8', customer_gender: 'Female' }),
+      hit({ category: 'c9', customer_gender: 'Female' }),
+      hit({ category: 'c10', customer_gender: 'Female' }),
+      hit({ category: 'c11', customer_gender: 'Male' }),
+    ];
+    const client = mockEsClient(hits);
     const { timeCreated, dataUrl, fileName } = await createSavedSearchReport(
       input,
       client
@@ -61,8 +91,11 @@ describe('test create saved search report', () => {
         '6.category,6.customer_gender,' +
         '7.category,7.customer_gender,' +
         '8.category,8.customer_gender,' +
-        '9.category,9.customer_gender\n' +
-        'c1,Male,c2,Male,c3,Male,c4,Male,c5,Male,c6,Male,c7,Male,c8,Male,c9,Male,c10,Male'
+        '9.category,9.customer_gender,' +
+        '10.category,10.customer_gender\n' +
+        'c1,Male,c2,Male,c3,Male,c4,Male,c5,Male,' +
+        'c6,Female,c7,Female,c8,Female,c9,Female,c10,Female,' +
+        'c11,Male'
     );
   }, 20000);
 });
@@ -71,6 +104,7 @@ describe('test create saved search report', () => {
  * Mock Elasticsearch client and return different mock objects based on endpoint and parameters.
  */
 function mockEsClient(mockHits: Array<{ _source: any }>) {
+  let call = 0;
   const client = jest.fn();
   client.callAsInternalUser = jest
     .fn()
@@ -86,12 +120,19 @@ function mockEsClient(mockHits: Array<{ _source: any }>) {
           return mockIndexSettings();
         case 'count':
           return {
-            count: 10,
+            count: mockHits.length,
           };
         case 'search':
           return {
             hits: {
-              hits: mockHits,
+              hits: mockHits.slice(0, 5),
+            },
+          };
+        case 'scroll':
+          call++;
+          return {
+            hits: {
+              hits: mockHits.slice(5 * call, 5 * (call + 1)),
             },
           };
         default:
@@ -101,9 +142,8 @@ function mockEsClient(mockHits: Array<{ _source: any }>) {
   return client;
 }
 
-
 /**
- * Mock a saved search for kibana_sample_data_ecommerce with 2 selected fields: category and customer_gender
+ * Mock a saved search for kibana_sample_data_ecommerce with 2 selected fields: category and customer_gender.
  */
 function mockSavedSearch() {
   return JSON.parse(`
@@ -163,7 +203,7 @@ function mockIndexSettings() {
           "number_of_shards": "1",
           "auto_expand_replicas": "0-1",
           "provided_name": "kibana_sample_data_ecommerce",
-          "max_result_window": "10",
+          "max_result_window": "5",
           "creation_date": "1594417718898",
           "number_of_replicas": "0",
           "uuid": "0KnfmEsaTYKg39ONcrA5Eg",
