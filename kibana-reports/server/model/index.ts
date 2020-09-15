@@ -67,10 +67,9 @@ export const cronSchema = schema.object({
 export const scheduleSchema = schema.object({
   schedule_type: schema.oneOf([
     /*
-    TODO: Alerting will be added in the future.
+    TODO: Future Date will be added in the future.
     Currently @kbn/config-schema has no support for more than 2 conditions, keep an eye on library update
     */
-    // schema.literal('Future Date'),
     schema.literal(SCHEDULE_TYPE.recurring),
     schema.literal(SCHEDULE_TYPE.cron),
   ]),
@@ -120,7 +119,6 @@ export const reportDefinitionSchema = schema.object({
         TODO: Alerting will be added in the future.
         Currently @kbn/config-schema has no support for more than 2 conditions, keep an eye on library update
       */
-      // schema.literal(TRIGGER_TYPE.alerting)
       schema.literal(TRIGGER_TYPE.schedule),
       schema.literal(TRIGGER_TYPE.onDemand),
     ]),
