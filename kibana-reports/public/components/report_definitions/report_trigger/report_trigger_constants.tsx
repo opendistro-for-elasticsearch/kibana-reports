@@ -31,7 +31,7 @@ export const SCHEDULE_REQUEST_TIME_OPTIONS = [
   },
   {
     id: 'cronBasedOption',
-    label: 'Cron based',
+    label: 'Cron-based',
   },
 ];
 

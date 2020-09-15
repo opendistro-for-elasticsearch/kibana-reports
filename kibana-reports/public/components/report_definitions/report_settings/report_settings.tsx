@@ -627,7 +627,6 @@ export function ReportSettings(props) {
   }, []);
 
   return (
-    <EuiPage>
       <EuiPageContent panelPaddingSize={'l'}>
         <EuiPageHeader>
           <EuiTitle>
@@ -676,6 +675,5 @@ export function ReportSettings(props) {
           <EuiSpacer />
         </EuiPageContentBody>
       </EuiPageContent>
-    </EuiPage>
   );
 }
