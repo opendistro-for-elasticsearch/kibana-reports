@@ -214,7 +214,7 @@ async function generateCsvData(
   // Parse ES data and convert to CSV
   async function convertEsDataToCsv() {
     const dataset: any = [];
-    dataset.push(getEsData(arrayHits, report));
+    dataset.push(getEsData(arrayHits, report, limit));
     return await convertToCSV(dataset);
   }
 }

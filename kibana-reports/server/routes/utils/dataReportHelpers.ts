@@ -152,7 +152,7 @@ export const buildQuery = (report, is_count) => {
 };
 
 // Fetch the data from ES
-export const getEsData = (arrayHits, report) => {
+export const getEsData = (arrayHits, report, limit: number) => {
   let hits: any = [];
   for (let valueRes of arrayHits) {
     for (let data of valueRes.hits) {
@@ -171,6 +171,11 @@ export const getEsData = (arrayHits, report) => {
         hits.push(result);
       } else {
         hits.push(data);
+      }
+
+      // Truncate to expected limit size
+      if (hits.length >= limit) {
+        return hits;
       }
     }
   }

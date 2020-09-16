@@ -76,7 +76,7 @@ describe('test create saved search report', () => {
     expect(fileName).toContain('.csv');
   }, 20000);
 
-  test('create report for empty result', async () => {
+  test('create report for empty data set', async () => {
     const hits: Array<{ _source: any }> = [];
     const client = mockEsClient(hits);
     const { timeCreated, dataUrl, fileName } = await createSavedSearchReport(
@@ -86,7 +86,7 @@ describe('test create saved search report', () => {
     expect(dataUrl).toEqual('');
   }, 20000);
 
-  test('create report by single search', async () => {
+  test('create report for small data set by single search', async () => {
     const hits = [
       hit({ category: 'c1', customer_gender: 'Male' }),
       hit({ category: 'c2', customer_gender: 'Male' }),
@@ -110,7 +110,7 @@ describe('test create saved search report', () => {
     );
   }, 20000);
 
-  test('create report by scroll', async () => {
+  test('create report for large data set by scroll', async () => {
     const hits = [
       hit({ category: 'c1', customer_gender: 'Male' }),
       hit({ category: 'c2', customer_gender: 'Male' }),
@@ -148,7 +148,61 @@ describe('test create saved search report', () => {
     );
   }, 20000);
 
-  test('create report with limit', async () => {
+  test('create report with limit smaller than max result size', async () => {
+    // Assign a smaller limit than default to test
+    input.report_definition.report_params.core_params.limit = 1;
+
+    const hits = [
+      hit({ category: 'c1', customer_gender: 'Male' }),
+      hit({ category: 'c2', customer_gender: 'Male' }),
+      hit({ category: 'c3', customer_gender: 'Male' }),
+      hit({ category: 'c4', customer_gender: 'Male' }),
+      hit({ category: 'c5', customer_gender: 'Male' }),
+    ];
+    const client = mockEsClient(hits);
+    const { timeCreated, dataUrl, fileName } = await createSavedSearchReport(
+      input,
+      client
+    );
+
+    expect(dataUrl).toEqual('0.category,0.customer_gender\nc1,Male');
+  }, 20000);
+
+  test('create report with limit greater than max result size', async () => {
+    // Assign a limit just a little greater than max result size (5)
+    input.report_definition.report_params.core_params.limit = 6;
+
+    const hits = [
+      hit({ category: 'c1', customer_gender: 'Male' }),
+      hit({ category: 'c2', customer_gender: 'Male' }),
+      hit({ category: 'c3', customer_gender: 'Male' }),
+      hit({ category: 'c4', customer_gender: 'Male' }),
+      hit({ category: 'c5', customer_gender: 'Male' }),
+      hit({ category: 'c6', customer_gender: 'Female' }),
+      hit({ category: 'c7', customer_gender: 'Female' }),
+      hit({ category: 'c8', customer_gender: 'Female' }),
+      hit({ category: 'c9', customer_gender: 'Female' }),
+      hit({ category: 'c10', customer_gender: 'Female' }),
+    ];
+    const client = mockEsClient(hits);
+    const { dataUrl } = await createSavedSearchReport(input, client);
+
+    expect(dataUrl).toEqual(
+      '0.category,0.customer_gender,' +
+        '1.category,1.customer_gender,' +
+        '2.category,2.customer_gender,' +
+        '3.category,3.customer_gender,' +
+        '4.category,4.customer_gender,' +
+        '5.category,5.customer_gender\n' +
+        'c1,Male,c2,Male,c3,Male,c4,Male,c5,Male,' +
+        'c6,Female'
+    );
+  }, 20000);
+
+  test('create report with limit greater than total result size', async () => {
+    // Assign a limit even greater than the result size
+    input.report_definition.report_params.core_params.limit = 10;
+
     const hits = [
       hit({ category: 'c1', customer_gender: 'Male' }),
       hit({ category: 'c2', customer_gender: 'Male' }),
@@ -157,17 +211,22 @@ describe('test create saved search report', () => {
       hit({ category: 'c5', customer_gender: 'Male' }),
       hit({ category: 'c6', customer_gender: 'Female' }),
     ];
-
-    // Assign a smaller limit than default to test
-    input.report_definition.report_params.core_params.limit = 1;
-
     const client = mockEsClient(hits);
     const { timeCreated, dataUrl, fileName } = await createSavedSearchReport(
       input,
       client
     );
 
-    expect(dataUrl).toEqual('0.category,0.customer_gender\nc1,Male');
+    expect(dataUrl).toEqual(
+      '0.category,0.customer_gender,' +
+        '1.category,1.customer_gender,' +
+        '2.category,2.customer_gender,' +
+        '3.category,3.customer_gender,' +
+        '4.category,4.customer_gender,' +
+        '5.category,5.customer_gender\n' +
+        'c1,Male,c2,Male,c3,Male,c4,Male,c5,Male,' +
+        'c6,Female'
+    );
   }, 20000);
 });
 
