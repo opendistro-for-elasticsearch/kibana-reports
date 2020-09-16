@@ -30,11 +30,11 @@ export const REPORT_SOURCE_RADIOS = [
 
 export const PDF_PNG_FILE_FORMAT_OPTIONS = [
   {
-    id: 'pdfFormat',
+    id: 'pdf',
     label: 'PDF',
   },
   {
-    id: 'pngFormat',
+    id: 'png',
     label: 'PNG',
   },
 ];
