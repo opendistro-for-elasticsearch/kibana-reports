@@ -13,18 +13,18 @@
  * permissions and limitations under the License.
  */
 
-export const REPORT_TYPE_OPTIONS = [
+export const TRIGGER_TYPE_OPTIONS = [
   {
     id: 'onDemandOption',
     label: 'On demand',
   },
   {
     id: 'scheduleOption',
-    label: 'Schedule based',
+    label: 'Schedule',
   },
 ];
 
-export const SCHEDULE_REQUEST_TIME_OPTIONS = [
+export const SCHEDULE_TYPE_OPTIONS = [
   {
     id: 'recurringOption',
     label: 'Recurring',
@@ -56,12 +56,16 @@ export const SCHEDULE_RECURRING_OPTIONS = [
 
 export const INTERVAL_TIME_PERIODS = [
   {
-    value: 'minutes',
+    value: 'MINUTES',
     text: 'Minutes',
   },
   {
-    value: 'hours',
+    value: 'HOURS',
     text: 'Hours',
+  },
+  {
+    value: 'DAYS',
+    text: 'Days',
   },
 ];
 
@@ -167,13 +171,19 @@ export const MONTHLY_DAY_SELECT_OPTIONS = [
 ];
 
 export const SCHEDULE_OPTION_MAP = {
-  nowOption: 'Now',
   futureDateOption: 'Future date',
   recurringOption: 'Recurring',
   cronBasedOption: 'Cron',
 };
 
-export const TRIGGER_OPTION_MAP = {
+export const TRIGGER_TYPE = {
   scheduleOption: 'Schedule',
   alertOption: 'Alert',
+  onDemandOption: 'On demand',
 };
+
+//TODO: need to figure out what kind of timezone to use for both display and scheduler
+export const TIMEZONE_OPTIONS = [
+  { value: 'EST', text: 'EST US/Eastern' },
+  { value: 'PST8PDT', text: 'PST US/Pacific' },
+];
