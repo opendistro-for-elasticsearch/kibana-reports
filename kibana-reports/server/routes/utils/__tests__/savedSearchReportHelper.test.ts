@@ -20,15 +20,33 @@ import { createSavedSearchReport } from '../../savedSearchReportHelper';
  * The mock and sample input for saved search export function.
  */
 const input = {
-  report_name: 'Test',
-  report_source: 'Saved search',
-  report_type: 'Download',
-  description: 'Hi this is your saved search',
-  report_params: {
-    saved_search_id: 'ddd8f430-f2ef-11ea-8c86-81a0b21b4b67',
-    start: '1343576635300',
-    end: '1596037435301',
-    report_format: 'csv',
+  query_url:
+    'http://localhost:5601/app/kibana#/search/7adfa750-4c81-11e8-b3d7-01146121b73d',
+  time_from: 1343576635300,
+  time_to: 1596037435301,
+  report_definition: {
+    report_params: {
+      report_name: 'test report table order',
+      report_source: 'Saved search',
+      description: 'Hi this is your saved search on demand',
+      core_params: {
+        base_url:
+          'http://localhost:5601/app/kibana#/search/7adfa750-4c81-11e8-b3d7-01146121b73d',
+        saved_search_id: 'ddd8f430-f2ef-11ea-8c86-81a0b21b4b67',
+        report_format: 'csv',
+        time_duration: 'PT5M',
+      },
+    },
+    delivery: {
+      recipients: ['kibanaUser:dfajfopdasf'],
+      title: 'fake title',
+      description: {
+        text: 'dasdasdasd',
+      },
+    },
+    trigger: {
+      trigger_type: 'On demand',
+    },
   },
 };
 
@@ -38,6 +56,29 @@ const input = {
 const maxResultSize = 5;
 
 describe('test create saved search report', () => {
+
+  test('create report with expected file name', async () => {
+    const hits: Array<{ _source: any }> = [];
+    const client = mockEsClient(hits);
+    const { timeCreated, dataUrl, fileName } = await createSavedSearchReport(
+      input,
+      client
+    );
+
+    expect(fileName).toContain(`test report table order_${timeCreated}`);
+    expect(fileName).toContain('.csv');
+  }, 20000);
+
+  test('create report for empty result', async () => {
+    const hits: Array<{ _source: any }> = [];
+    const client = mockEsClient(hits);
+    const { timeCreated, dataUrl, fileName } = await createSavedSearchReport(
+      input,
+      client
+    );
+    expect(dataUrl).toEqual('');
+  }, 20000);
+
   test('create report by single search', async () => {
     const hits = [
       hit({ category: 'c1', customer_gender: 'Male' }),
@@ -52,8 +93,6 @@ describe('test create saved search report', () => {
       client
     );
 
-    expect(fileName).toContain(`${input.report_name}_${timeCreated}`);
-    expect(fileName).toContain(`.${input.report_params.report_format}`);
     expect(dataUrl).toEqual(
       '0.category,0.customer_gender,' +
         '1.category,1.customer_gender,' +
@@ -84,8 +123,6 @@ describe('test create saved search report', () => {
       client
     );
 
-    expect(fileName).toContain(`${input.report_name}_${timeCreated}`);
-    expect(fileName).toContain(`.${input.report_params.report_format}`);
     expect(dataUrl).toEqual(
       '0.category,0.customer_gender,' +
         '1.category,1.customer_gender,' +

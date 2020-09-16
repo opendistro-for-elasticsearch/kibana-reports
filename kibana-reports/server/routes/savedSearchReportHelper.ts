@@ -35,7 +35,7 @@ export async function createSavedSearchReport(
   report: any,
   client: IClusterClient | IScopedClusterClient
 ) {
-  await populateMetaData(client, report.report_params);
+  await populateMetaData(client, report);
   const data = await generateCsvData(client);
 
   const timeCreated = new Date().toISOString();
@@ -47,29 +47,33 @@ export async function createSavedSearchReport(
   };
 
   function getFileName(): string {
-    return `${report.report_name}_${timeCreated}_${uuidv1()}`;
+    return `${
+      report.report_definition.report_params.report_name
+    }_${timeCreated}_${uuidv1()}`;
   }
 }
 
 /**
  * Populate parameters and saved search info related to meta data object.
- * @param client        ES client
- * @param reportParams  CSV export specific parameters
+ * @param client  ES client
+ * @param report  Report input
  */
 async function populateMetaData(
   client: IClusterClient | IScopedClusterClient,
-  reportParams: any
+  report: any
 ) {
-  metaData.saved_search_id = reportParams.saved_search_id;
-  metaData.report_format = reportParams.report_format;
-  metaData.start = reportParams.start;
-  metaData.end = reportParams.end;
+  metaData.saved_search_id =
+    report.report_definition.report_params.core_params.saved_search_id;
+  metaData.report_format =
+    report.report_definition.report_params.core_params.report_format;
+  metaData.start = report.time_from;
+  metaData.end = report.time_to;
 
   // Get saved search info
   let resIndexPattern: any = {};
   const ssParams = {
     index: '.kibana',
-    id: 'search:' + reportParams.saved_search_id,
+    id: 'search:' + metaData.saved_search_id,
   };
   const ssInfos = await client.callAsInternalUser('get', ssParams);
 
@@ -117,7 +121,7 @@ async function generateCsvData(client: IClusterClient | IScopedClusterClient) {
 
   const total = esCount.count;
   if (total === 0) {
-    return {};
+    return '';
   }
 
   const reqBody = buildRequestBody(buildQuery(report, 0));
