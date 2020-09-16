@@ -15,22 +15,22 @@
 
 export const TRIGGER_TYPE_OPTIONS = [
   {
-    id: 'onDemandOption',
+    id: 'On demand',
     label: 'On demand',
   },
   {
-    id: 'scheduleOption',
+    id: 'Schedule',
     label: 'Schedule',
   },
 ];
 
 export const SCHEDULE_TYPE_OPTIONS = [
   {
-    id: 'recurringOption',
+    id: 'Recurring',
     label: 'Recurring',
   },
   {
-    id: 'cronBasedOption',
+    id: 'Cron based',
     label: 'Cron based',
   },
 ];
@@ -170,19 +170,8 @@ export const MONTHLY_DAY_SELECT_OPTIONS = [
   },
 ];
 
-export const SCHEDULE_OPTION_MAP = {
-  recurringOption: 'Recurring',
-  cronBasedOption: 'Cron',
-};
-
-export const TRIGGER_TYPE = {
-  scheduleOption: 'Schedule',
-  alertOption: 'Alert',
-  onDemandOption: 'On demand',
-};
-
 //TODO: need to figure out what kind of timezone to use for both display and scheduler
 export const TIMEZONE_OPTIONS = [
-  { value: 'EST', text: 'EST US/Eastern' },
   { value: 'PST8PDT', text: 'PST US/Pacific' },
+  { value: 'EST', text: 'EST US/Eastern' },
 ];

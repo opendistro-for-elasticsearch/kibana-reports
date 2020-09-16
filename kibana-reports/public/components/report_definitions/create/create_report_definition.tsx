@@ -124,7 +124,6 @@ export function CreateReport(props) {
     ) {
       delete metadata.trigger.trigger_params;
     }
-
     httpClient
       .post('../api/reporting/reportDefinition', {
         body: JSON.stringify(metadata),

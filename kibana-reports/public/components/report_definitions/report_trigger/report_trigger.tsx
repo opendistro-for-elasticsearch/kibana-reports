@@ -46,7 +46,6 @@ import {
   WEEKLY_CHECKBOX_OPTIONS,
   MONTHLY_ON_THE_OPTIONS,
   MONTHLY_DAY_SELECT_OPTIONS,
-  SCHEDULE_OPTION_MAP,
   TRIGGER_TYPE_OPTIONS,
   SCHEDULE_TYPE_OPTIONS,
   TIMEZONE_OPTIONS,
@@ -67,9 +66,9 @@ export function ReportTrigger(props: ReportTriggerProps) {
     httpClientProps,
   } = props;
 
-  const [reportTriggerType, setReportTriggerType] = useState('onDemandOption');
+  const [reportTriggerType, setReportTriggerType] = useState('On demand');
 
-  const [scheduleType, setScheduleType] = useState('recurringOption');
+  const [scheduleType, setScheduleType] = useState('Recurring');
   //TODO: should read local timezone and display
   const [timezone, setTimezone] = useState(TIMEZONE_OPTIONS[0].value);
   const [scheduleRecurringFrequency, setScheduleRecurringFrequency] = useState(
@@ -417,10 +416,10 @@ export function ReportTrigger(props: ReportTriggerProps) {
 
   const ScheduleTrigger = () => {
     const display_recurring =
-      scheduleType === 'recurringOption' ? <ScheduleTriggerRecurring /> : null;
+      scheduleType === 'Recurring' ? <ScheduleTriggerRecurring /> : null;
 
     const display_cron =
-      scheduleType === 'cronBasedOption' ? <CronExpression /> : null;
+      scheduleType === 'Cron based' ? <CronExpression /> : null;
 
     useEffect(() => {
       // Set default trigger_type
@@ -485,9 +484,9 @@ export function ReportTrigger(props: ReportTriggerProps) {
   };
 
   const schedule =
-    reportTriggerType === 'scheduleOption' ? <ScheduleTrigger /> : null;
+    reportTriggerType === 'Schedule' ? <ScheduleTrigger /> : null;
 
-  const alert = reportTriggerType === 'alertOption' ? <AlertTrigger /> : null;
+  const alert = reportTriggerType === 'Alerting' ? <AlertTrigger /> : null;
 
   const defaultEditTriggerType = (trigger_type) => {
     let index = 0;
