@@ -101,8 +101,6 @@ function TimeRangeSelect(props) {
     );
     setIsLoading(true);
     startLoading();
-
-    // parseTimeRange(start, end, reportDefinitionRequest);
   };
 
   const parseTimeRange = (start, end, reportDefinitionRequest) => {

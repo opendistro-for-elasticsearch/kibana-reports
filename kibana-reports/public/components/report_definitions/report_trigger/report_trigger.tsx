@@ -72,7 +72,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
   const [scheduleType, setScheduleType] = useState('recurringOption');
   //TODO: should read local timezone and display
   const [timezone, setTimezone] = useState(TIMEZONE_OPTIONS[0].value);
-  // const [futureDateTimeSelect, setFutureDateTimeSelect] = useState(moment());
   const [scheduleRecurringFrequency, setScheduleRecurringFrequency] = useState(
     'daily'
   );
@@ -97,12 +96,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
   const handleScheduleType = (e: React.SetStateAction<string>) => {
     setScheduleType(e);
   };
-
-  // const handleFutureDateTimeSelect = (
-  //   e: React.SetStateAction<moment.Moment>
-  // ) => {
-  //   setFutureDateTimeSelect(e);
-  // };
 
   const handleTimezone = (e) => {
     setTimezone(e.target.value);
@@ -166,22 +159,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
       </div>
     );
   };
-
-  // const ScheduleTriggerFutureDate = () => {
-  //   return (
-  //     <div>
-  //       <EuiFormRow label="Request time">
-  //         <EuiDatePicker
-  //           showTimeSelect
-  //           selected={futureDateTimeSelect}
-  //           onChange={handleFutureDateTimeSelect}
-  //         />
-  //       </EuiFormRow>
-  //       <EuiSpacer />
-  //       <TimezoneSelect />
-  //     </div>
-  //   );
-  // };
 
   const RequestTime = () => {
     useEffect(() => {
@@ -439,11 +416,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
   };
 
   const ScheduleTrigger = () => {
-    // const display_future_date =
-    //   scheduleRequestTime === 'futureDateOption' ? (
-    //     <ScheduleTriggerFutureDate />
-    //   ) : null;
-
     const display_recurring =
       scheduleType === 'recurringOption' ? <ScheduleTriggerRecurring /> : null;
 
@@ -474,7 +446,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
           />
         </EuiFormRow>
         <EuiSpacer />
-        {/* {display_future_date} */}
         {display_recurring}
         {display_cron}
       </div>

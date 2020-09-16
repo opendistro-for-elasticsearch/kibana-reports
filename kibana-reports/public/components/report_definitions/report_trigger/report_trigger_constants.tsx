@@ -171,7 +171,6 @@ export const MONTHLY_DAY_SELECT_OPTIONS = [
 ];
 
 export const SCHEDULE_OPTION_MAP = {
-  futureDateOption: 'Future date',
   recurringOption: 'Recurring',
   cronBasedOption: 'Cron',
 };

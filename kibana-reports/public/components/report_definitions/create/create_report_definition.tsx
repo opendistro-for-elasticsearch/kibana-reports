@@ -113,7 +113,10 @@ export function CreateReport(props) {
     metadata: reportDefinitionParams,
     timeRange: timeRangeParams
   ) => {
+    // TODO: temporarily remove delivery from request body, since integration with notification module is needed
+    delete metadata.delivery;
     const { httpClient } = props;
+
     //TODO: need better handle
     if (
       metadata.trigger.trigger_type === 'On demand' &&
@@ -122,7 +125,6 @@ export function CreateReport(props) {
       delete metadata.trigger.trigger_params;
     }
 
-    console.log(metadata);
     httpClient
       .post('../api/reporting/reportDefinition', {
         body: JSON.stringify(metadata),
@@ -182,10 +184,10 @@ export function CreateReport(props) {
           reportDefinitionRequest={createReportDefinitionRequest}
         />
         <EuiSpacer />
-        {/* <ReportDelivery
+        <ReportDelivery
           edit={false}
           reportDefinitionRequest={createReportDefinitionRequest}
-        /> */}
+        />
         <EuiSpacer />
         <EuiFlexGroup justifyContent="flexEnd">
           <EuiFlexItem grow={false}>

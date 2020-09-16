@@ -42,20 +42,6 @@ export function ReportDefinitionDetails(props) {
     setReportDefinitionDetails(e);
   };
 
-  // const readableTimeRange = (data) => {
-  //   let timeRangeString = '';
-  //   if (
-  //     data['trigger']['trigger_params']['schedule']['interval']['unit'] ===
-  //     'DAYS'
-  //   ) {
-  //     timeRangeString +=
-  //       'Every ' +
-  //       data['trigger']['trigger_params']['schedule']['interval']['period'] +
-  //       ' days';
-  //   }
-  //   return timeRangeString;
-  // };
-
   const getReportDefinitionDetailsMetadata = (data) => {
     const reportDefinition: ReportDefinitionSchemaType = data.report_definition;
     const reportParams = reportDefinition.report_params;
@@ -72,11 +58,6 @@ export function ReportDefinitionDetails(props) {
       readableUpdatedDate.toDateString() +
       ' ' +
       readableUpdatedDate.toLocaleTimeString();
-
-    // let timeRangeDisplay = `\u2014`;
-    // if (trigger.trigger_type === 'Schedule') {
-    //   readableTimeRange(data);
-    // }
 
     let reportDefinitionDetails = {
       name: reportParams.report_name,
