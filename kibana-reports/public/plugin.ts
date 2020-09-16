@@ -33,7 +33,7 @@ export class OpendistroKibanaReportsPlugin
       OpendistroKibanaReportsPluginSetup,
       OpendistroKibanaReportsPluginStart
     > {
-  public setup(core: CoreSetup): OpendistroKibanaReportsPluginSetup {
+  public setup(core: CoreSetup, plugins): OpendistroKibanaReportsPluginSetup {
     // Register an application into the side navigation menu
     core.application.register({
       id: 'opendistro_kibana_reports',
@@ -51,6 +51,13 @@ export class OpendistroKibanaReportsPlugin
         );
       },
     });
+    if (plugins.share) {
+      console.log("in plugins share")
+      plugins.share.register({
+        id: 'reporting_context_share_menu',
+        title: 'Share'
+      });
+    }
 
     // Return methods that should be available to other plugins
     return {};
