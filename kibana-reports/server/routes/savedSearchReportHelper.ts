@@ -14,8 +14,17 @@
  */
 
 import { v1 as uuidv1 } from 'uuid';
-import { buildQuery, convertToCSV, getEsData, getSelectedFields, metaData } from './utils/dataReportHelpers';
-import { IClusterClient, IScopedClusterClient } from '../../../../src/core/server';
+import {
+  buildQuery,
+  convertToCSV,
+  getEsData,
+  getSelectedFields,
+  metaData,
+} from './utils/dataReportHelpers';
+import {
+  IClusterClient,
+  IScopedClusterClient,
+} from '../../../../src/core/server';
 
 /**
  * Specify how long scroll context should be maintained for scrolled search
