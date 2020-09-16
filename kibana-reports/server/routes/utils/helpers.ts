@@ -13,17 +13,23 @@
  * permissions and limitations under the License.
  */
 
+import { KibanaResponseFactory } from '../../../../../src/core/server';
+
 export function parseEsErrorResponse(error: any) {
   if (error.response) {
     try {
       const esErrorResponse = JSON.parse(error.response);
-      if (!esErrorResponse.found) {
-        return "Saved Search doesn't exist !";
-      }
       return esErrorResponse.reason || error.response;
     } catch (parsingError) {
       return error.response;
     }
   }
   return error.message;
+}
+
+export function errorResponse(response: KibanaResponseFactory, error: any) {
+  return response.custom({
+    statusCode: error.statusCode,
+    body: parseEsErrorResponse(error),
+  });
 }

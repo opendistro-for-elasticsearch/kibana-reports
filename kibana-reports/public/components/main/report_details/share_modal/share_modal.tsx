@@ -143,7 +143,7 @@ export function ShareModal(props) {
   }
   return (
     <EuiButton onClick={showModal} fill={true}>
-      Share
+      Share latest report
     </EuiButton>
   );
 }

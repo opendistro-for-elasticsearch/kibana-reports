@@ -13,4 +13,4 @@
  * permissions and limitations under the License.
  */
 
-export const POLLER_INTERVAL = 1000 * 60 * 5; // in milliseconds (5 min)
+export const POLL_INTERVAL = 1000 * 60 * 5; // in milliseconds (5 min)

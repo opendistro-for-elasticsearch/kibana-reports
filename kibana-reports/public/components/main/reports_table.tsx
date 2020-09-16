@@ -38,6 +38,7 @@ import {
   fileFormatsUpper,
   generateReport,
   humanReadableDate,
+  generateReportById,
 } from './main_utils';
 import { returnStatement } from '@babel/types';
 
@@ -57,8 +58,8 @@ const emptyMessageReports = (
     body={
       <div>
         <EuiText>
-          To get started, share or download a report from a dashboard,
-          visualization or saved search, or create a report definition
+          Create a report definition, or share/download a report from a
+          dashboard, saved search or visualization.
         </EuiText>
         <EuiText>
           To learn more, see{' '}
@@ -94,7 +95,10 @@ export function ReportsTable(props) {
     return (
       <div>
         <EuiOverlayMask>
-          <EuiModal onClose={closeModal}>
+          <EuiModal
+            onClose={closeModal}
+            style={{ maxWidth: 350, minWidth: 300 }}
+          >
             <EuiModalHeader>
               <EuiTitle>
                 <EuiText textAlign="right">
@@ -103,11 +107,23 @@ export function ReportsTable(props) {
               </EuiTitle>
             </EuiModalHeader>
             <EuiModalBody>
-              <EuiText>Preparing your file for download...</EuiText>
+              <EuiText>Preparing your file for download.</EuiText>
+              <EuiText>
+                You can close this dialog while we continue in the background.
+              </EuiText>
               <EuiSpacer />
-              <EuiFlexGroup justifyContent="spaceAround" alignItems="center">
-                <EuiFlexItem>
-                  <EuiLoadingSpinner size="xl" />
+              <EuiFlexGroup justifyContent="center" alignItems="center">
+                <EuiFlexItem grow={false}>
+                  <EuiLoadingSpinner
+                    size="xl"
+                    style={{ minWidth: 75, minHeight: 75 }}
+                  />
+                </EuiFlexItem>
+              </EuiFlexGroup>
+              <EuiSpacer size="l" />
+              <EuiFlexGroup alignItems="flexEnd" justifyContent="flexEnd">
+                <EuiFlexItem grow={false}>
+                  <EuiButton onClick={closeModal}>Close</EuiButton>
                 </EuiFlexItem>
               </EuiFlexGroup>
             </EuiModalBody>
@@ -117,70 +133,24 @@ export function ReportsTable(props) {
     );
   };
 
-  const updateMetadata = (url: any) => {
-    let splitUrl = url['url'].split(" ");
-    const onDemandDownloadMetadata = {
-      report_name: url['reportName'],
-      report_source: url['reportSource'],
-      report_type: 'Download',
-      description: 'On-demand download of report ' + url['reportName'],
-      report_params: {
-        url: splitUrl[0],
-        window_width: 1440,
-        window_height: 2560,
-        report_format: url['format'],
-      },
-    };
-    return onDemandDownloadMetadata;
-  };
-
-  const getReportsTableItemContent = (url) => {
-    let index;
-    for (index = 0; index < props.reportsTableItems.length; ++index) {
-      let splitUrlItem = reportsTableItems[index].url.split(" ");
-      let splitUrlInput = url.split(" ");
-      if (splitUrlInput[0] === splitUrlItem[0] && splitUrlInput[1] === splitUrlItem[1]) {
-        return reportsTableItems[index];
-      }
-    }
-  };
-
-  const onDemandDownload = async (url: any) => {
-    let data = getReportsTableItemContent(url);
+  const onDemandDownload = async (id: any) => {
     handleLoading(true);
-    await generateReport(updateMetadata(data), httpClient);
+    await generateReportById(id, httpClient);
     handleLoading(false);
-  };
-
-  const getReportsTableItemId = (reportName) => {
-    let index;
-    for (index = 0; index < props.reportsTableItems.length; ++index) {
-      if (reportName === reportsTableItems[index].reportName) {
-        return reportsTableItems[index].id;
-      }
-    }
-  };
-
-  const getReportsTableItemFormat = (url) => {
-    let index;
-    for (index = 0; index < props.reportsTableItems.length; ++index) {
-      if (url === reportsTableItems[index].url) {
-        return reportsTableItems[index].format;
-      }
-    }
-  };
-
-  const navigateToReportDetails = (reportName: any) => {
-    let id = getReportsTableItemId(reportName);
-    window.location.assign(`opendistro_kibana_reports#/report_details/${id}`);
   };
 
   const reportsTableColumns = [
     {
       field: 'reportName',
       name: 'Name',
-      render: (reportName) => (
-        <EuiLink onClick={() => navigateToReportDetails(reportName)}>
+      render: (reportName, item) => (
+        <EuiLink
+          onClick={() => {
+            window.location.assign(
+              `opendistro_kibana_reports#/report_details/${item.id}`
+            );
+          }}
+        >
           {reportName}
         </EuiLink>
       ),
@@ -210,13 +180,18 @@ export function ReportsTable(props) {
       truncateText: true,
     },
     {
+      // TODO: link to dashboard/visualization snapshot, use "queryUrl" field. Display dashboard name?
       field: 'reportSource',
       name: 'Source',
-      render: (source) => <EuiLink>{source}</EuiLink>,
+      render: (source, item) => (
+        <EuiLink href={item.url} target="_blank">
+          {source}
+        </EuiLink>
+      ),
     },
     {
       field: 'lastUpdated',
-      name: 'Last updated',
+      name: 'Creation time',
       render: (date) => {
         let readable = humanReadableDate(date);
         return <EuiText size="s">{readable}</EuiText>;
@@ -229,13 +204,12 @@ export function ReportsTable(props) {
       truncateText: false,
     },
     {
-      field: 'url',
-      name: 'Generate',
-      render: (data) => {
-        let format = getReportsTableItemFormat(data);
+      field: 'id',
+      name: 'Download',
+      render: (id, item) => {
         return (
-          <EuiLink onClick={() => onDemandDownload(data)}>
-            {fileFormatsUpper[format]} <EuiIcon type="importAction" />
+          <EuiLink onClick={() => onDemandDownload(id)}>
+            {fileFormatsUpper[item.format]} <EuiIcon type="importAction" />
           </EuiLink>
         );
       },
@@ -270,6 +244,17 @@ export function ReportsTable(props) {
       incremental: true,
     },
     filters: [
+      {
+        type: 'field_value_selection',
+        field: 'type',
+        name: 'Type',
+        multiselect: false,
+        options: reportTypeOptions.map((type) => ({
+          value: type,
+          name: type,
+          view: type,
+        })),
+      },
       {
         type: 'field_value_selection',
         field: 'sender',
@@ -312,17 +297,6 @@ export function ReportsTable(props) {
           value: state,
           name: state,
           view: state,
-        })),
-      },
-      {
-        type: 'field_value_selection',
-        field: 'type',
-        name: 'Type',
-        multiselect: false,
-        options: reportTypeOptions.map((type) => ({
-          value: type,
-          name: type,
-          view: type,
         })),
       },
     ],

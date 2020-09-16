@@ -29,12 +29,12 @@ import {
   EuiDescriptionListDescription,
   EuiPageHeaderSection,
   EuiButton,
-  EuiText,
   EuiLink,
   EuiIcon,
 } from '@elastic/eui';
 import { ShareModal } from './share_modal/share_modal';
 import { fileFormatsUpper } from '../main_utils';
+import { ReportSchemaType } from '../../../../server/model';
 
 export const ReportDetailsComponent = (props) => {
   const { reportDetailsComponentTitle, reportDetailsComponentContent } = props;
@@ -61,21 +61,29 @@ export function ReportDetails(props) {
     setReportDetails(e);
   };
 
-  const getReportDetailsData = (data) => {
-    let readableDate = new Date(data['time_created']);
-    let displayDate =
-      readableDate.toDateString() + ' ' + readableDate.toLocaleTimeString();
+  const getReportDetailsData = (report: ReportSchemaType) => {
+    const reportDefinition = report.report_definition;
+    const reportParams = reportDefinition.report_params;
+    const coreParams = reportParams.core_params;
+    const trigger = reportDefinition.trigger;
+    // covert timestamp to local date-time string
+    let readableDate = new Date(report.time_created);
+    let displayDate = readableDate.toLocaleString();
+
     let reportDetails = {
-      reportName: data['report_name'],
-      description: data['description'],
+      reportName: reportParams.report_name,
+      description: reportParams.description,
       created: displayDate,
       lastUpdated: `\u2014`,
-      sourceType: data['report_type'],
-      source: data['report_source'],
-      defaultFileFormat: data['report_params']['report_format'],
+      source: reportParams.report_source,
+      // TODO:  we have all data needed, time_from, time_to, time_duration,
+      // think of a way to better display
+      time_period: `\u2014`,
+      defaultFileFormat: coreParams.report_format,
+      state: report.state,
       reportHeader: `\u2014`,
       reportFooter: `\u2014`,
-      reportType: data['report_type'],
+      reportType: trigger.trigger_type,
       scheduleType: `\u2014`,
       scheduleDetails: `\u2014`,
       alertDetails: `\u2014`,
@@ -85,29 +93,28 @@ export function ReportDetails(props) {
       emailSubject: `\u2014`,
       emailBody: `\u2014`,
       reportAsAttachment: false,
+      queryUrl: report.query_url,
     };
     return reportDetails;
   };
 
   useEffect(() => {
-    props.setBreadcrumbs([
-      {
-        text: 'Reporting',
-        href: '#',
-      },
-      {
-        text: 'Report details',
-        href: `#/report_details/${props.match['params']['reportId']}`,
-      },
-      {
-        text: `${props.match['params']['reportId']}`,
-      },
-    ]);
     const { httpClient } = props;
     httpClient
       .get('../api/reporting/reports/' + reportId)
       .then((response) => {
         handleReportDetails(getReportDetailsData(response));
+        props.setBreadcrumbs([
+          {
+            text: 'Reporting',
+            href: '#',
+          },
+          {
+            text:
+              'Report details: ' +
+              response.report_definition.report_params.report_name,
+          },
+        ]);
       })
       .catch((error) => {
         console.log('Error when fetching report details: ', error);
@@ -119,14 +126,18 @@ export function ReportDetails(props) {
     formatUpper = fileFormatsUpper[formatUpper];
     return (
       <EuiLink>
-        {formatUpper}
+        {formatUpper + ' '}
         <EuiIcon type="importAction" />
       </EuiLink>
     );
   };
 
   const sourceURL = (data) => {
-    return <EuiLink>{data['source']}</EuiLink>;
+    return (
+      <EuiLink href={data.queryUrl} target="_blank">
+        {data['source']}
+      </EuiLink>
+    );
   };
 
   const includeReportAsAttachmentString = reportDetails['reportAsAttachment']
@@ -156,9 +167,6 @@ export function ReportDetails(props) {
               alignItems="flexEnd"
               gutterSize="l"
             >
-              <EuiFlexItem grow={false}>
-                <EuiButton>Archive</EuiButton>
-              </EuiFlexItem>
               <EuiFlexItem grow={false}>
                 <ShareModal />
               </EuiFlexItem>
@@ -190,16 +198,16 @@ export function ReportDetails(props) {
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Source type'}
-              reportDetailsComponentContent={reportDetails['sourceType']}
-            />
-            <ReportDetailsComponent
               reportDetailsComponentTitle={'Source'}
               reportDetailsComponentContent={sourceURL(reportDetails)}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'File format'}
               reportDetailsComponentContent={fileFormatDownload(reportDetails)}
+            />
+            <ReportDetailsComponent
+              reportDetailsComponentTitle={'State'}
+              reportDetailsComponentContent={reportDetails['state']}
             />
             <ReportDetailsComponent />
           </EuiFlexGroup>

@@ -18,36 +18,17 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiButton,
-  // @ts-ignore
-  EuiPage,
   EuiTitle,
-  // @ts-ignore
-  EuiPageBody,
-  // @ts-ignore
-  EuiPageContent,
   // @ts-ignore
   EuiHorizontalRule,
   EuiSpacer,
-  EuiLoadingSpinner,
-  EuiModal,
-  EuiOverlayMask,
-  EuiModalHeader,
-  EuiModalBody,
-  EuiText,
-  EuiBreadcrumbs,
-  EuiHeader,
-  EuiHeaderBreadcrumbs,
   EuiPanel,
 } from '@elastic/eui';
 import { ReportsTable } from './reports_table';
 import { ReportDefinitions } from './report_definitions_table';
 import {
-  extractFileFormat,
-  getFileFormatPrefix,
   addReportsTableContent,
   addReportDefinitionsTableContent,
-  readStreamToFile,
-  breadcrumbs,
 } from './main_utils';
 import { CoreInterface } from '../app';
 import CSS from 'csstype';
@@ -109,7 +90,6 @@ export class Main extends React.Component<RouterHomeProps, any> {
         this.setState({
           reportsTableContent: addReportsTableContent(response.data),
         });
-        addReportsTableContent(response.data);
       })
       .catch((error) => {
         console.log('error when fetching all reports: ', error);

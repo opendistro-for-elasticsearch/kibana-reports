@@ -15,25 +15,31 @@
 
 import puppeteer from 'puppeteer';
 import { v1 as uuidv1 } from 'uuid';
-import { FORMAT, REPORT_TYPE, REPORT_STATE } from './constants';
+import {
+  FORMAT,
+  REPORT_TYPE,
+  REPORT_STATE,
+  CONFIG_INDEX_NAME,
+} from './constants';
 import { RequestParams } from '@elastic/elasticsearch';
 import {
   IClusterClient,
   IScopedClusterClient,
 } from '../../../../../src/core/server';
 import { createSavedSearchReport } from '../savedSearchReportHelper';
+import { ReportSchemaType } from '../../model';
 
 export const createVisualReport = async (
-  report: any
-): Promise<{ timeCreated: string; dataUrl: string; fileName: string }> => {
-  const reportParams = report.report_params;
+  reportParams: any,
+  queryUrl: string
+): Promise<{ timeCreated: number; dataUrl: string; fileName: string }> => {
+  const coreParams = reportParams.core_params;
   // parse params
-  const url = reportParams.url;
-  const name = report.report_name;
-  const windowWidth = reportParams.window_width;
-  const windowHeight = reportParams.window_height;
-  const reportFormat = reportParams.report_format;
-  const reportSource = report.report_source;
+  const reportSource = reportParams.report_source;
+  const reportName = reportParams.report_name;
+  const windowWidth = coreParams.window_width;
+  const windowHeight = coreParams.window_height;
+  const reportFormat = coreParams.report_format;
 
   // TODO: replace placeholders with actual schema data fields
   const header = 'Test report header sample text';
@@ -44,7 +50,7 @@ export const createVisualReport = async (
   });
   const page = await browser.newPage();
   await page.setDefaultNavigationTimeout(0);
-  await page.goto(url, { waitUntil: 'networkidle0' });
+  await page.goto(queryUrl, { waitUntil: 'networkidle0' });
   await page.setViewport({
     width: windowWidth,
     height: windowHeight,
@@ -64,7 +70,8 @@ export const createVisualReport = async (
   const screenshot = await element.screenshot({ fullPage: false });
 
   /**
-   * Sets the content of the page to have the header be above the trimmed screenshot and the footer be below it
+   * Sets the content of the page to have the header be above the trimmed screenshot
+   * and the footer be below it
    */
   await page.setContent(`
     <!DOCTYPE html>
@@ -96,57 +103,103 @@ export const createVisualReport = async (
     });
   }
 
-  const timeCreated = new Date().toISOString();
-  const fileName = getFileName(name, timeCreated) + '.' + reportFormat;
-
-  //TODO: Add header and footer, phase 2
-
+  const curTime = new Date();
+  const timeCreated = curTime.valueOf();
+  const fileName = getFileName(reportName, curTime) + '.' + reportFormat;
   await browser.close();
+
   return { timeCreated, dataUrl: buffer.toString('base64'), fileName };
 };
 
 export const createReport = async (
-  report: any,
-  client: IClusterClient | IScopedClusterClient
-): Promise<{ timeCreated: string; dataUrl: string; fileName: string }> => {
+  report: ReportSchemaType,
+  client: IClusterClient | IScopedClusterClient,
+  savedReportId?: string
+): Promise<{ timeCreated: number; dataUrl: string; fileName: string }> => {
   let createReportResult: {
-    timeCreated: string;
+    timeCreated: number;
     dataUrl: string;
     fileName: string;
   };
 
-  //TODO: create new report instance with pending status
+  // create new report instance or update saved report instance with "pending" state
+  const timePending = Date.now();
+  const saveParams: RequestParams.Index = {
+    index: CONFIG_INDEX_NAME.report,
+    id: savedReportId,
+    body: {
+      ...report,
+      state: REPORT_STATE.pending,
+      time_created: timePending,
+    },
+  };
 
-  const reportSource = report.report_source;
+  const esResp = await callCluster(client, 'index', saveParams);
+  const reportId = esResp._id;
 
-  if (reportSource === REPORT_TYPE.savedSearch) {
-    createReportResult = await createSavedSearchReport(report, client);
-  } else if (
-    reportSource === REPORT_TYPE.dashboard ||
-    reportSource === REPORT_TYPE.visualization
-  ) {
-    createReportResult = await createVisualReport(report);
+  const reportDefinition = report.report_definition;
+  const reportParams = reportDefinition.report_params;
+  const reportSource = reportParams.report_source;
+  try {
+    if (reportSource === REPORT_TYPE.savedSearch) {
+      createReportResult = await createSavedSearchReport(report, client);
+    } else if (
+      reportSource === REPORT_TYPE.dashboard ||
+      reportSource === REPORT_TYPE.visualization
+    ) {
+      const queryUrl = report.query_url;
+      createReportResult = await createVisualReport(reportParams, queryUrl);
+    }
+  } catch (error) {
+    // update report instance with "error" state
+    const timeError = Date.now();
+    const updateParams: RequestParams.Update = {
+      id: reportId,
+      index: CONFIG_INDEX_NAME.report,
+      body: {
+        doc: {
+          state: REPORT_STATE.error,
+          time_created: timeError,
+        },
+      },
+    };
+
+    await callCluster(client, 'update', updateParams);
+
+    throw error;
   }
 
-  // save report instance with created state
-  // TODO: save report instance with error state
-  report = {
-    ...report,
-    time_created: createReportResult.timeCreated,
-    state: REPORT_STATE.created,
+  // update report document with state "created" and time_created
+  const updateParams: RequestParams.Update = {
+    id: reportId,
+    index: CONFIG_INDEX_NAME.report,
+    body: {
+      doc: {
+        time_created: createReportResult.timeCreated,
+        state: REPORT_STATE.created,
+      },
+    },
   };
 
-  const params: RequestParams.Index = {
-    index: 'report',
-    body: report,
-  };
-
-  //@ts-ignore
-  await client.callAsInternalUser('index', params);
+  await callCluster(client, 'update', updateParams);
 
   return createReportResult;
 };
 
-function getFileName(itemName: string, timeCreated: string): string {
-  return `${itemName}_${timeCreated}_${uuidv1()}`;
+function getFileName(itemName: string, timeCreated: Date): string {
+  return `${itemName}_${timeCreated.toISOString()}_${uuidv1()}`;
 }
+
+const callCluster = async (
+  client: IClusterClient | IScopedClusterClient,
+  endpoint: string,
+  params: any
+) => {
+  let esResp;
+  if ('callAsCurrentUser' in client) {
+    esResp = await client.callAsCurrentUser(endpoint, params);
+  } else {
+    esResp = await client.callAsInternalUser(endpoint, params);
+  }
+  return esResp;
+};

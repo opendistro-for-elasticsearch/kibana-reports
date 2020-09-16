@@ -14,30 +14,33 @@
  */
 
 import { schema, TypeOf } from '@kbn/config-schema';
+import {
+  REPORT_TYPE,
+  TRIGGER_TYPE,
+  FORMAT,
+  SCHEDULE_TYPE,
+  REPORT_STATE,
+  REPORT_DEFINITION_STATUS,
+} from '../routes/utils/constants';
 
 export const dataReportSchema = schema.object({
+  base_url: schema.uri(),
   saved_search_id: schema.string(),
-  start: schema.string(),
-  end: schema.string(),
-  report_format: schema.oneOf([schema.literal('csv'), schema.literal('xlsx')]),
+  //ISO duration string. 'PT10M' means 10 min
+  time_duration: schema.string(),
+  //TODO: future support schema.literal('xlsx')
+  report_format: schema.oneOf([schema.literal(FORMAT.csv)]),
 });
 
 const visualReportSchema = schema.object({
-  url: schema.uri(),
+  base_url: schema.uri(),
   window_width: schema.number({ defaultValue: 1200 }),
   window_height: schema.number({ defaultValue: 800 }),
-  report_format: schema.oneOf([schema.literal('pdf'), schema.literal('png')]),
-});
-
-export const scheduleSchema = schema.object({
-  schedule_type: schema.oneOf([
-    schema.literal('Now'),
-    schema.literal('Future Date'),
-    schema.literal('Recurring'),
-    schema.literal('Cron Based'),
+  report_format: schema.oneOf([
+    schema.literal(FORMAT.pdf),
+    schema.literal(FORMAT.png),
   ]),
-  schedule: schema.any(),
-  enabled_time: schema.number(),
+  time_duration: schema.string(),
 });
 
 export const intervalSchema = schema.object({
@@ -49,7 +52,7 @@ export const intervalSchema = schema.object({
       schema.literal('HOURS'),
       schema.literal('DAYS'),
     ]),
-    // timeStamp
+    // timestamp
     start_time: schema.number(),
   }),
 });
@@ -61,62 +64,98 @@ export const cronSchema = schema.object({
   }),
 });
 
-export const emailSchema = schema.object({
-  subject: schema.string(),
-  body: schema.string(),
-  has_attachment: schema.boolean({ defaultValue: true }),
-  recipients: schema.arrayOf(schema.string(), { minSize: 1 }),
+export const scheduleSchema = schema.object({
+  schedule_type: schema.oneOf([
+    /*
+    TODO: Future Date will be added in the future.
+    Currently @kbn/config-schema has no support for more than 2 conditions, keep an eye on library update
+    */
+    schema.literal(SCHEDULE_TYPE.recurring),
+    schema.literal(SCHEDULE_TYPE.cron),
+  ]),
+  schedule: schema.conditional(
+    schema.siblingRef('schedule_type'),
+    SCHEDULE_TYPE.recurring,
+    intervalSchema,
+    cronSchema
+  ),
+  enabled_time: schema.number(),
+  enabled: schema.boolean(),
 });
 
-export const reportSchema = schema.object({
-  report_name: schema.string(),
-  report_source: schema.oneOf([
-    schema.literal('Dashboard'),
-    schema.literal('Visualization'),
-    schema.literal('Saved search'),
-  ]),
-  report_type: schema.oneOf([
-    schema.literal('Download'),
-    schema.literal('Alert'),
-    schema.literal('Schedule'),
-  ]),
-  description: schema.string(),
-  report_params: schema.conditional(
-    schema.siblingRef('report_source'),
-    'Saved search',
-    dataReportSchema,
-    visualReportSchema
-  ),
+export const reportDefinitionSchema = schema.object({
+  report_params: schema.object({
+    report_name: schema.string(),
+    report_source: schema.oneOf([
+      schema.literal(REPORT_TYPE.dashboard),
+      schema.literal(REPORT_TYPE.visualization),
+      schema.literal(REPORT_TYPE.savedSearch),
+    ]),
+    description: schema.string(),
+
+    core_params: schema.conditional(
+      schema.siblingRef('report_source'),
+      REPORT_TYPE.savedSearch,
+      dataReportSchema,
+      visualReportSchema
+    ),
+  }),
 
   delivery: schema.maybe(
     schema.object({
-      channel: schema.oneOf([
-        schema.literal('Email'),
-        schema.literal('Slack'),
-        schema.literal('Chime'),
-        schema.literal('Kibana User'),
+      recipients: schema.arrayOf(schema.string(), { minSize: 0 }),
+      title: schema.string(),
+      description: schema.oneOf([
+        schema.object({ text: schema.string() }),
+        schema.object({ html: schema.string() }),
       ]),
-      //TODO: no validation on delivery settings for now, because @kbn/config-schema has no support for more than 2 conditions
-      delivery_params: schema.any(),
+      channel_ids: schema.maybe(schema.arrayOf(schema.string())),
     })
   ),
 
-  trigger: schema.maybe(
-    schema.object({
-      trigger_type: schema.oneOf([
-        schema.literal('Alert'),
-        schema.literal('Schedule'),
-        schema.literal('On demand'),
-      ]),
-      trigger_params: schema.conditional(
-        schema.siblingRef('trigger_type'),
-        'Alert',
-        // TODO: add alerting schema here once we finished the design for alerting integration
-        schema.any(),
-        scheduleSchema
-      ),
-    })
+  trigger: schema.object({
+    trigger_type: schema.oneOf([
+      /*
+        TODO: Alerting will be added in the future.
+        Currently @kbn/config-schema has no support for more than 2 conditions, keep an eye on library update
+      */
+      schema.literal(TRIGGER_TYPE.schedule),
+      schema.literal(TRIGGER_TYPE.onDemand),
+    ]),
+    trigger_params: schema.conditional(
+      schema.siblingRef('trigger_type'),
+      TRIGGER_TYPE.onDemand,
+      schema.never(),
+      scheduleSchema
+    ),
+  }),
+
+  time_created: schema.maybe(schema.number()),
+  last_updated: schema.maybe(schema.number()),
+  status: schema.maybe(
+    schema.oneOf([
+      schema.literal(REPORT_DEFINITION_STATUS.active),
+      schema.literal(REPORT_DEFINITION_STATUS.disabled),
+    ])
   ),
 });
 
+export const reportSchema = schema.object({
+  query_url: schema.uri(),
+  time_from: schema.number(),
+  time_to: schema.number(),
+  report_definition: reportDefinitionSchema,
+
+  time_created: schema.maybe(schema.number()),
+  state: schema.maybe(
+    schema.oneOf([
+      schema.literal(REPORT_STATE.created),
+      schema.literal(REPORT_STATE.error),
+    ])
+  ),
+});
+
+export type ReportDefinitionSchemaType = TypeOf<typeof reportDefinitionSchema>;
 export type ReportSchemaType = TypeOf<typeof reportSchema>;
+export type dataReportSchemaType = TypeOf<typeof dataReportSchema>;
+export type visualReportSchemaType = TypeOf<typeof visualReportSchema>;

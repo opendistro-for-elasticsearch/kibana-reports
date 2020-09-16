@@ -1,7 +1,0 @@
-failFast: false
-
-style:
-  ForbiddenComment:
-    active: false
-  MaxLineLength:
-    maxLineLength: 150
