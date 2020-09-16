@@ -36,7 +36,10 @@ export async function createSavedSearchReport(
   client: IClusterClient | IScopedClusterClient
 ) {
   await populateMetaData(client, report);
-  const data = await generateCsvData(client);
+  const data = await generateCsvData(
+    client,
+    report.report_definition.report_params.core_params.limit
+  );
 
   const timeCreated = new Date().toISOString();
   const fileName = getFileName() + '.csv';
@@ -111,7 +114,10 @@ async function populateMetaData(
  * Generate CSV data by query and convert ES data set.
  * @param client  ES client
  */
-async function generateCsvData(client: IClusterClient | IScopedClusterClient) {
+async function generateCsvData(
+  client: IClusterClient | IScopedClusterClient,
+  limit: number
+) {
   let esData: any = {};
   const arrayHits: any = [];
   const report = { _source: metaData };
@@ -119,7 +125,7 @@ async function generateCsvData(client: IClusterClient | IScopedClusterClient) {
   const maxResultSize: number = await getMaxResultSize();
   const esCount = await getEsDataSize();
 
-  const total = esCount.count;
+  const total = Math.min(esCount.count, limit);
   if (total === 0) {
     return '';
   }

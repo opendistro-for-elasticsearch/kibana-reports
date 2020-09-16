@@ -15,6 +15,7 @@
 
 import 'regenerator-runtime/runtime';
 import { createSavedSearchReport } from '../../savedSearchReportHelper';
+import { reportSchema } from '../../../model';
 
 /**
  * The mock and sample input for saved search export function.
@@ -35,6 +36,7 @@ const input = {
         saved_search_id: 'ddd8f430-f2ef-11ea-8c86-81a0b21b4b67',
         report_format: 'csv',
         time_duration: 'PT5M',
+        limit: 10000,
       },
     },
     delivery: {
@@ -56,6 +58,11 @@ const input = {
 const maxResultSize = 5;
 
 describe('test create saved search report', () => {
+
+  test('create report with valid input', async () => {
+    // Check if the assumption of input is up-to-date
+    reportSchema.validate(input);
+  }, 20000);
 
   test('create report with expected file name', async () => {
     const hits: Array<{ _source: any }> = [];
@@ -140,6 +147,28 @@ describe('test create saved search report', () => {
         'c11,Male'
     );
   }, 20000);
+
+  test('create report with limit', async () => {
+    const hits = [
+      hit({ category: 'c1', customer_gender: 'Male' }),
+      hit({ category: 'c2', customer_gender: 'Male' }),
+      hit({ category: 'c3', customer_gender: 'Male' }),
+      hit({ category: 'c4', customer_gender: 'Male' }),
+      hit({ category: 'c5', customer_gender: 'Male' }),
+      hit({ category: 'c6', customer_gender: 'Female' }),
+    ];
+
+    // Assign a smaller limit than default to test
+    input.report_definition.report_params.core_params.limit = 1;
+
+    const client = mockEsClient(hits);
+    const { timeCreated, dataUrl, fileName } = await createSavedSearchReport(
+      input,
+      client
+    );
+
+    expect(dataUrl).toEqual('0.category,0.customer_gender\nc1,Male');
+  }, 20000);
 });
 
 /**
@@ -167,7 +196,7 @@ function mockEsClient(mockHits: Array<{ _source: any }>) {
         case 'search':
           return {
             hits: {
-              hits: mockHits.slice(0, maxResultSize),
+              hits: mockHits.slice(0, params.size),
             },
           };
         case 'scroll':
