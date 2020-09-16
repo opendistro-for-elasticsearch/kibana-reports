@@ -40,8 +40,6 @@ import {
   EMAIL_RECIPIENT_OPTIONS,
 } from './delivery_constants';
 import 'react-mde/lib/styles/css/react-mde-all.css';
-// import 'babel-loader';
-// import './style/css/react-mde-custom-style.css';
 
 const INSERT_PLACEHOLDER_OPTIONS = [
   {
