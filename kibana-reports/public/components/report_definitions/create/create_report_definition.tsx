@@ -59,10 +59,9 @@ export function CreateReport(props) {
 
   const addErrorToastHandler = () => {
     const errorToast = {
-      title: 'Error',
+      title: 'Error creating report definition',
       color: 'danger',
       iconType: 'alert',
-      text: <p>There was an error in creating your report definition</p>,
       id: 'errorToast'
     };
     setToasts(toasts.concat(errorToast));

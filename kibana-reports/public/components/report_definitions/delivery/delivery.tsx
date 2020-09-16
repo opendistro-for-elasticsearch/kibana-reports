@@ -226,16 +226,6 @@ export function ReportDelivery(props) {
     const showPlaceholder =
       emailFormat === 'htmlReport' ? null : <InsertPlaceholderPopover />;
 
-    const showAttachmentCheckbox =
-      emailFormat === 'htmlReport' ? null : (
-        <EuiCheckbox
-          id="includeReportAsAttachment"
-          label="Include report as attachment"
-          checked={includeReportAsAttachment}
-          onChange={handleIncludeReportAsAttachment}
-        />
-      );
-
     return (
       <div>
         <EuiFormRow label="Email recipients" helpText="Select or add users">
@@ -284,7 +274,6 @@ export function ReportDelivery(props) {
           />
         </EuiFormRow>
         <EuiSpacer size="xs" />
-        {showAttachmentCheckbox}
       </div>
     );
   };
