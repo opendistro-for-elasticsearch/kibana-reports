@@ -18,6 +18,7 @@ import {
   EuiButtonEmpty,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiGlobalToastList,
   EuiButton,
   EuiPage,
   EuiTitle,
@@ -54,6 +55,40 @@ export function CreateReport(props) {
     trigger: {},
   };
 
+  const [toasts, setToasts] = useState([]);
+
+  const addErrorToastHandler = () => {
+    const errorToast = {
+      title: 'Error',
+      color: 'danger',
+      iconType: 'alert',
+      text: <p>There was an error in creating your report definition</p>,
+      id: 'errorToast'
+    };
+    setToasts(toasts.concat(errorToast));
+  };
+
+  const handleErrorToast = () => {
+    addErrorToastHandler();
+  }
+
+  const addSuccessToastHandler = () => {
+    const successToast = {
+      title: 'Success',
+      color: 'success',
+      text: <p>Report definition successfully created!</p>
+    }
+    setToasts(toasts.concat(successToast));
+  }
+
+  const handleSuccessToast = () => {
+    addSuccessToastHandler();
+  }
+
+  const removeToast = removedToast => {
+    setToasts(toasts.filter(toast => toast.id !== removedToast.id));
+  };
+
   const createNewReportDefinition = async (metadata) => {
     const { httpClient } = props;
     httpClient
@@ -82,10 +117,12 @@ export function CreateReport(props) {
           };
           generateReport(onDemandDownloadMetadata, httpClient);
         }
+        await handleSuccessToast();
         window.location.assign(`opendistro_kibana_reports#/`);
       })
       .catch((error) => {
         console.log('error in creating report definition:', error);
+        handleErrorToast();
       });
   };
 
@@ -146,6 +183,11 @@ export function CreateReport(props) {
             </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
+        <EuiGlobalToastList
+          toasts={toasts}
+          dismissToast={removeToast}
+          toastLifeTimeMs={6000}
+        />
       </EuiPageBody>
     </div>
   );

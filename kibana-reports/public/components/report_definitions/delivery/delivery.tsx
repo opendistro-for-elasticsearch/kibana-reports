@@ -40,6 +40,8 @@ import {
   EMAIL_RECIPIENT_OPTIONS,
 } from './delivery_constants';
 import 'react-mde/lib/styles/css/react-mde-all.css';
+// import 'babel-loader';
+// import './style/css/react-mde-custom-style.css';
 
 const INSERT_PLACEHOLDER_OPTIONS = [
   {
@@ -83,9 +85,6 @@ export function ReportDelivery(props) {
     httpClientProps,
   } = props;
   const [emailCheckbox, setEmailCheckbox] = useState(false);
-  const [emailRecipients, setEmailRecipients] = useState([]);
-  const [emailSubject, setEmailSubject] = useState('');
-  const [emailBody, setEmailBody] = useState('');
   const [includeReportAsAttachment, setIncludeReportAsAttachment] = useState(
     true
   );
@@ -112,11 +111,6 @@ export function ReportDelivery(props) {
     delivery['delivery_params'] = delivery_params;
   };
 
-  const handleEmailRecipients = (e: React.SetStateAction<any[]>) => {
-    setEmailRecipients(e);
-    delivery_params['recipients'].push(e.toString());
-  };
-
   const handleIncludeReportAsAttachment = (e: {
     target: { checked: React.SetStateAction<boolean> };
   }) => {
@@ -130,47 +124,6 @@ export function ReportDelivery(props) {
     setInsertPlaceholder((insertPlaceholder) => !insertPlaceholder);
   };
   const closeInsertPlaceholder = () => setInsertPlaceholder(false);
-
-  const handleCreateEmailRecipient = (
-    searchValue: string,
-    flattenedOptions = []
-  ) => {
-    const normalizedSearchValue = searchValue.trim().toLowerCase();
-
-    if (!normalizedSearchValue) {
-      return;
-    }
-
-    const newOption = {
-      label: searchValue,
-    };
-
-    // Create the option if it doesn't exist.
-    if (
-      flattenedOptions.findIndex(
-        (option) => option.label.trim().toLowerCase() === normalizedSearchValue
-      ) === -1
-    ) {
-      EMAIL_RECIPIENT_OPTIONS.push(newOption);
-    }
-
-    // Select the option.
-    setEmailRecipients([...emailRecipients, newOption]);
-  };
-
-  const handleEmailSubject = (e: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    setEmailSubject(e.target.value);
-    delivery_params['subject'] = e.target.value.toString();
-  };
-
-  const handleEmailBody = (e: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    setEmailBody(e.target.value);
-    delivery_params['body'] = e.target.value.toString();
-  };
 
   const placeholderInsert = (
     <EuiText size="xs">
@@ -195,12 +148,46 @@ export function ReportDelivery(props) {
   };
 
   const EmailDelivery = () => {
+    const [emailRecipients, setEmailRecipients] = useState([]);
     const [emailSubject, setEmailSubject] = useState('');
     const [emailBody, setEmailBody] = useState('');
     const [emailFormat, setEmailFormat] = useState('htmlReport');
     const [selectedTab, setSelectedTab] = React.useState<'write' | 'preview'>(
       'write'
     );
+
+    const handleCreateEmailRecipient = (
+      searchValue: string,
+      flattenedOptions = []
+    ) => {
+      const normalizedSearchValue = searchValue.trim().toLowerCase();
+  
+      if (!normalizedSearchValue) {
+        return;
+      }
+  
+      const newOption = {
+        label: searchValue,
+      };
+  
+      // Create the option if it doesn't exist.
+      if (
+        flattenedOptions.findIndex(
+          (option) => option.label.trim().toLowerCase() === normalizedSearchValue
+        ) === -1
+      ) {
+        EMAIL_RECIPIENT_OPTIONS.push(newOption);
+      }
+  
+      // Select the option.
+      setEmailRecipients([...emailRecipients, newOption]);
+    };
+
+    const handleEmailRecipients = (e: React.SetStateAction<any[]>) => {
+      setEmailRecipients(e);
+      delivery_params['recipients'].push(e.toString());
+    };
+
     const setDefaultEditEmail = (delivery_params) => {
       setEmailCheckbox(true);
       let index;
@@ -217,10 +204,8 @@ export function ReportDelivery(props) {
       }
     };
 
-    const handleEmailBody = (e: {
-      target: { value: React.SetStateAction<string> };
-    }) => {
-      setEmailBody(e.target.value);
+    const handleEmailSubject = (e) => {
+      setEmailSubject(e.target.value);
     };
 
     const handleEmailFormat = (e) => {
@@ -235,7 +220,8 @@ export function ReportDelivery(props) {
     });
 
     const emailBodyLabel =
-      emailFormat === 'htmlReport' ? 'Add optional message' : 'Email body';
+      emailFormat === 'htmlReport' ? `Add optional message (${selectedTab} mode)`
+       : `Email body (${selectedTab} mode)`;
 
     const showPlaceholder =
       emailFormat === 'htmlReport' ? null : <InsertPlaceholderPopover />;

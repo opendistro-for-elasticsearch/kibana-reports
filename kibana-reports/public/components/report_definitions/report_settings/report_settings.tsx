@@ -257,7 +257,6 @@ export function ReportSettings(props) {
             onChange={handleFileFormat}
           />
         </EuiFormRow>
-        <EuiSpacer />
       </div>
     );
   };
@@ -354,7 +353,7 @@ export function ReportSettings(props) {
         <TimeRangeSelect />
         <EuiSpacer />
         <PDFandPNGFileFormats />
-        <EuiSpacer size="s" />
+        <EuiSpacer />
         <SettingsMarkdown />
       </div>
     );
@@ -375,7 +374,7 @@ export function ReportSettings(props) {
         <TimeRangeSelect />
         <EuiSpacer />
         <PDFandPNGFileFormats />
-        <EuiSpacer size="s" />
+        <EuiSpacer />
         <SettingsMarkdown />
       </div>
     );
@@ -627,53 +626,53 @@ export function ReportSettings(props) {
   }, []);
 
   return (
-      <EuiPageContent panelPaddingSize={'l'}>
-        <EuiPageHeader>
-          <EuiTitle>
-            <h2>Report Settings</h2>
-          </EuiTitle>
-        </EuiPageHeader>
-        <EuiHorizontalRule />
-        <EuiPageContentBody>
-          <EuiFlexGroup>
-            <EuiFlexItem>
-              <EuiFormRow
-                label="Name"
-                helpText="Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space)."
-              >
-                <EuiFieldText
-                  placeholder="Report name (e.g Log Traffic Daily Report)"
-                  value={reportName}
-                  onChange={handleReportName}
-                />
-              </EuiFormRow>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-          <EuiFlexGroup style={{ maxWidth: 600 }}>
-            <EuiFlexItem>
-              <EuiFormRow label="Description (optional)">
-                <EuiTextArea
-                  placeholder="Describe this report (e.g Morning daily reports for log traffic)"
-                  value={reportDescription}
-                  onChange={handleReportDescription}
-                />
-              </EuiFormRow>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-          <EuiSpacer />
-          <EuiFormRow label="Report source">
-            <EuiRadioGroup
-              options={REPORT_SOURCE_RADIOS}
-              idSelected={reportSourceId}
-              onChange={handleReportSource}
-            />
-          </EuiFormRow>
-          <EuiSpacer />
-          {displayDashboardSelect}
-          {displayVisualizationSelect}
-          {displaySavedSearchSelect}
-          <EuiSpacer />
-        </EuiPageContentBody>
-      </EuiPageContent>
+    <EuiPageContent panelPaddingSize={'l'}>
+      <EuiPageHeader>
+        <EuiTitle>
+          <h2>Report Settings</h2>
+        </EuiTitle>
+      </EuiPageHeader>
+      <EuiHorizontalRule />
+      <EuiPageContentBody>
+        <EuiFlexGroup>
+          <EuiFlexItem>
+            <EuiFormRow
+              label="Name"
+              helpText="Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space)."
+            >
+              <EuiFieldText
+                placeholder="Report name (e.g Log Traffic Daily Report)"
+                value={reportName}
+                onChange={handleReportName}
+              />
+            </EuiFormRow>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiFlexGroup style={{ maxWidth: 600 }}>
+          <EuiFlexItem>
+            <EuiFormRow label="Description (optional)">
+              <EuiTextArea
+                placeholder="Describe this report (e.g Morning daily reports for log traffic)"
+                value={reportDescription}
+                onChange={handleReportDescription}
+              />
+            </EuiFormRow>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiSpacer />
+        <EuiFormRow label="Report source">
+          <EuiRadioGroup
+            options={REPORT_SOURCE_RADIOS}
+            idSelected={reportSourceId}
+            onChange={handleReportSource}
+          />
+        </EuiFormRow>
+        <EuiSpacer />
+        {displayDashboardSelect}
+        {displayVisualizationSelect}
+        {displaySavedSearchSelect}
+        <EuiSpacer />
+      </EuiPageContentBody>
+    </EuiPageContent>
   );
 }
