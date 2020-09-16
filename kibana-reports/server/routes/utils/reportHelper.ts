@@ -26,7 +26,7 @@ import {
   IClusterClient,
   IScopedClusterClient,
 } from '../../../../../src/core/server';
-import { createSavedSearchReport } from '../savedSearchReportHelper';
+import { createSavedSearchReport } from './savedSearchReportHelper';
 import { ReportSchemaType } from '../../model';
 
 export const createVisualReport = async (

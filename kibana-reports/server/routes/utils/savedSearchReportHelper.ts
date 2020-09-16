@@ -20,11 +20,11 @@ import {
   getEsData,
   getSelectedFields,
   metaData,
-} from './utils/dataReportHelpers';
+} from './dataReportHelpers';
 import {
   IClusterClient,
   IScopedClusterClient,
-} from '../../../../src/core/server';
+} from '../../../../../src/core/server';
 
 /**
  * Specify how long scroll context should be maintained for scrolled search

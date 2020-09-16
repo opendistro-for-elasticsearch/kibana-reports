@@ -14,7 +14,7 @@
  */
 
 import 'regenerator-runtime/runtime';
-import { createSavedSearchReport } from '../../savedSearchReportHelper';
+import { createSavedSearchReport } from '../savedSearchReportHelper';
 import { reportSchema } from '../../../model';
 
 /**
