@@ -67,7 +67,7 @@ describe('test create saved search report', () => {
   test('create report with expected file name', async () => {
     const hits: Array<{ _source: any }> = [];
     const client = mockEsClient(hits);
-    const { timeCreated, dataUrl, fileName } = await createSavedSearchReport(
+    const { timeCreated, fileName } = await createSavedSearchReport(
       input,
       client
     );
@@ -86,10 +86,7 @@ describe('test create saved search report', () => {
   test('create report for empty data set', async () => {
     const hits: Array<{ _source: any }> = [];
     const client = mockEsClient(hits);
-    const { timeCreated, dataUrl, fileName } = await createSavedSearchReport(
-      input,
-      client
-    );
+    const { dataUrl } = await createSavedSearchReport(input, client);
     expect(dataUrl).toEqual('');
   }, 20000);
 
@@ -102,10 +99,7 @@ describe('test create saved search report', () => {
       hit({ category: 'c5', customer_gender: 'Male' }),
     ];
     const client = mockEsClient(hits);
-    const { timeCreated, dataUrl, fileName } = await createSavedSearchReport(
-      input,
-      client
-    );
+    const { dataUrl } = await createSavedSearchReport(input, client);
 
     expect(dataUrl).toEqual(
       '0.category,0.customer_gender,' +
@@ -132,10 +126,7 @@ describe('test create saved search report', () => {
       hit({ category: 'c11', customer_gender: 'Male' }),
     ];
     const client = mockEsClient(hits);
-    const { timeCreated, dataUrl, fileName } = await createSavedSearchReport(
-      input,
-      client
-    );
+    const { dataUrl } = await createSavedSearchReport(input, client);
 
     expect(dataUrl).toEqual(
       '0.category,0.customer_gender,' +
@@ -167,10 +158,7 @@ describe('test create saved search report', () => {
       hit({ category: 'c5', customer_gender: 'Male' }),
     ];
     const client = mockEsClient(hits);
-    const { timeCreated, dataUrl, fileName } = await createSavedSearchReport(
-      input,
-      client
-    );
+    const { dataUrl } = await createSavedSearchReport(input, client);
 
     expect(dataUrl).toEqual('0.category,0.customer_gender\nc1,Male');
   }, 20000);
@@ -219,10 +207,7 @@ describe('test create saved search report', () => {
       hit({ category: 'c6', customer_gender: 'Female' }),
     ];
     const client = mockEsClient(hits);
-    const { timeCreated, dataUrl, fileName } = await createSavedSearchReport(
-      input,
-      client
-    );
+    const { dataUrl } = await createSavedSearchReport(input, client);
 
     expect(dataUrl).toEqual(
       '0.category,0.customer_gender,' +
