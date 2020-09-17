@@ -47,6 +47,10 @@ import dateMath from '@elastic/datemath';
 import Showdown from 'showdown';
 import ReactMde from 'react-mde';
 import 'react-mde/lib/styles/css/react-mde-all.css';
+import {
+  reportDefinitionParams,
+  timeRangeParams,
+} from '../create/create_report_definition';
 
 const isValidTimeRange = (
   timeRangeMoment: number | moment.Moment,
@@ -67,13 +71,19 @@ const isValidTimeRange = (
   }
 };
 
-function TimeRangeSelect() {
+function TimeRangeSelect(props) {
+  const { reportDefinitionRequest, timeRange } = props;
+
   const [recentlyUsedRanges, setRecentlyUsedRanges] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [start, setStart] = useState('now-30m');
   const [end, setEnd] = useState('now');
   const [isPaused, setIsPaused] = useState(true);
   const [refreshInterval, setRefreshInterval] = useState();
+
+  useEffect(() => {
+    parseTimeRange(start, end, reportDefinitionRequest);
+  }, [start, end]);
 
   const onTimeChange = ({ start, end }) => {
     const recentlyUsedRange = recentlyUsedRanges.filter((recentlyUsedRange) => {
@@ -91,6 +101,15 @@ function TimeRangeSelect() {
     );
     setIsLoading(true);
     startLoading();
+  };
+
+  const parseTimeRange = (start, end, reportDefinitionRequest) => {
+    timeRange.timeFrom = dateMath.parse(start);
+    timeRange.timeTo = dateMath.parse(end);
+    const timeDuration = moment.duration(
+      dateMath.parse(end).diff(dateMath.parse(start))
+    );
+    reportDefinitionRequest.report_params.core_params.time_duration = timeDuration.toISOString();
   };
 
   const onRefresh = ({ start, end, refreshInterval }) => {
@@ -141,12 +160,21 @@ function TimeRangeSelect() {
   );
 }
 
-export function ReportSettings(props) {
+type ReportSettingProps = {
+  edit: boolean;
+  editDefinitionId: string;
+  reportDefinitionRequest: reportDefinitionParams;
+  httpClientProps: any;
+  timeRange: timeRangeParams;
+};
+
+export function ReportSettings(props: ReportSettingProps) {
   const {
     edit,
     editDefinitionId,
     reportDefinitionRequest,
     httpClientProps,
+    timeRange,
   } = props;
 
   const [reportName, setReportName] = useState('');
@@ -164,7 +192,7 @@ export function ReportSettings(props) {
   const [savedSearchSourceSelect, setSavedSearchSourceSelect] = useState('');
   const [savedSearches, setSavedSearches] = useState([]);
 
-  const [fileFormat, setFileFormat] = useState('pdfFormat');
+  const [fileFormat, setFileFormat] = useState('pdf');
 
   const [savedSearchFileFormat, setSavedSearchFileFormat] = useState(
     'csvFormat'
@@ -186,34 +214,35 @@ export function ReportSettings(props) {
     target: { value: React.SetStateAction<string> };
   }) => {
     setReportName(e.target.value);
-    reportDefinitionRequest['report_name'] = e.target.value.toString();
+    reportDefinitionRequest.report_params.report_name = e.target.value.toString();
   };
 
   const handleReportDescription = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
     setReportDescription(e.target.value);
-    reportDefinitionRequest['description'] = e.target.value.toString();
+    reportDefinitionRequest.report_params.description = e.target.value.toString();
   };
 
   const handleReportSource = (e: React.SetStateAction<string>) => {
     setReportSourceId(e);
     if (e === 'dashboardReportSource') {
-      reportDefinitionRequest['report_source'] = 'Dashboard';
-      reportDefinitionRequest['report_params']['url'] =
+      reportDefinitionRequest.report_params.report_source = 'Dashboard';
+      reportDefinitionRequest.report_params.core_params.base_url =
         getDashboardBaseUrlCreate() + dashboards[0].value;
     } else if (e === 'visualizationReportSource') {
-      reportDefinitionRequest['report_source'] = 'Visualization';
-      reportDefinitionRequest['report_params']['url'] =
+      reportDefinitionRequest.report_params.report_source = 'Visualization';
+      reportDefinitionRequest.report_params.core_params.base_url =
         getVisualizationBaseUrlCreate() + visualizations[0].value;
     }
+    // TODO: handle data report
   };
 
   const handleDashboardSelect = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
     setDashboardSourceSelect(e.target.value);
-    reportDefinitionRequest['report_params']['url'] =
+    reportDefinitionRequest.report_params.core_params.base_url =
       getDashboardBaseUrlCreate() + e.target.value;
   };
 
@@ -221,7 +250,7 @@ export function ReportSettings(props) {
     target: { value: React.SetStateAction<string> };
   }) => {
     setVisualizationSourceSelect(e.target.value);
-    reportDefinitionRequest['report_params']['url'] =
+    reportDefinitionRequest.report_params.core_params.base_url =
       getVisualizationBaseUrlCreate() + e.target.value;
   };
 
@@ -233,11 +262,7 @@ export function ReportSettings(props) {
 
   const handleFileFormat = (e: React.SetStateAction<string>) => {
     setFileFormat(e);
-    if (e === 'pdfFormat') {
-      reportDefinitionRequest['report_params']['report_format'] = 'pdf';
-    } else if (e === 'pngFormat') {
-      reportDefinitionRequest['report_params']['report_format'] = 'png';
-    }
+    reportDefinitionRequest.report_params.core_params.report_format = e.toString();
   };
 
   const converter = new Showdown.Converter({
@@ -257,7 +282,6 @@ export function ReportSettings(props) {
             onChange={handleFileFormat}
           />
         </EuiFormRow>
-        <EuiSpacer />
       </div>
     );
   };
@@ -351,10 +375,13 @@ export function ReportSettings(props) {
           />
         </EuiFormRow>
         <EuiSpacer />
-        <TimeRangeSelect />
+        <TimeRangeSelect
+          timeRange={timeRange}
+          reportDefinitionRequest={reportDefinitionRequest}
+        />
         <EuiSpacer />
         <PDFandPNGFileFormats />
-        <EuiSpacer size="s" />
+        <EuiSpacer />
         <SettingsMarkdown />
       </div>
     );
@@ -372,10 +399,13 @@ export function ReportSettings(props) {
           />
         </EuiFormRow>
         <EuiSpacer />
-        <TimeRangeSelect />
+        <TimeRangeSelect
+          timeRange={timeRange}
+          reportDefinitionRequest={reportDefinitionRequest}
+        />
         <EuiSpacer />
         <PDFandPNGFileFormats />
-        <EuiSpacer size="s" />
+        <EuiSpacer />
         <SettingsMarkdown />
       </div>
     );
@@ -393,7 +423,10 @@ export function ReportSettings(props) {
           />
         </EuiFormRow>
         <EuiSpacer />
-        <TimeRangeSelect />
+        <TimeRangeSelect
+          timeRange={timeRange}
+          reportDefinitionRequest={reportDefinitionRequest}
+        />
         <EuiSpacer />
         <EuiFormRow label="File format">
           <EuiText>
@@ -404,7 +437,7 @@ export function ReportSettings(props) {
     );
   };
 
-  let displayDashboardSelect =
+  const displayDashboardSelect =
     reportSourceId === 'dashboardReportSource' ? (
       <ReportSourceDashboard />
     ) : null;
@@ -483,13 +516,14 @@ export function ReportSettings(props) {
   const setDefaultEditValues = async (response, reportSourceOptions) => {
     setReportName(response.report_name);
     setReportDescription(response.description);
-    reportDefinitionRequest.report_name = response.report_name;
-    reportDefinitionRequest.description = response.description;
+    reportDefinitionRequest.report_params.report_name = response.report_name;
+    reportDefinitionRequest.report_params.description = response.description;
     reportDefinitionRequest.report_params = response.report_params;
     REPORT_SOURCE_RADIOS.map((radio) => {
       if (radio.label === response.report_source) {
         setReportSourceId(radio.id);
-        reportDefinitionRequest.report_source = response.report_source;
+        reportDefinitionRequest.report_params.report_source =
+          response.report_source;
       }
     });
     setDefaultFileFormat(response['report_params']['report_format']);
@@ -519,6 +553,7 @@ export function ReportSettings(props) {
       visualizations: [],
       savedSearch: [],
     };
+    reportDefinitionRequest.report_params.core_params.report_format = fileFormat;
     await httpClientProps
       .get('../api/reporting/getReportSource/dashboard')
       .then(async (response) => {
@@ -529,7 +564,8 @@ export function ReportSettings(props) {
         handleDashboards(dashboardOptions);
         if (!edit) {
           setDashboardSourceSelect(dashboardOptions[0].value);
-          reportDefinitionRequest['report_params']['url'] =
+          reportDefinitionRequest.report_params.report_source = 'Dashboard';
+          reportDefinitionRequest['report_params']['core_params']['base_url'] =
             getDashboardBaseUrlCreate() +
             response['hits']['hits'][0]['_id'].substring(10);
         }
@@ -537,8 +573,6 @@ export function ReportSettings(props) {
       .catch((error) => {
         console.log('error when fetching dashboards:', error);
       });
-    reportDefinitionRequest['report_params']['report_format'] = 'pdf';
-    reportDefinitionRequest['report_source'] = 'Dashboard';
 
     await httpClientProps
       .get('../api/reporting/getReportSource/visualization')
@@ -627,55 +661,53 @@ export function ReportSettings(props) {
   }, []);
 
   return (
-    <EuiPage>
-      <EuiPageContent panelPaddingSize={'l'}>
-        <EuiPageHeader>
-          <EuiTitle>
-            <h2>Report Settings</h2>
-          </EuiTitle>
-        </EuiPageHeader>
-        <EuiHorizontalRule />
-        <EuiPageContentBody>
-          <EuiFlexGroup>
-            <EuiFlexItem>
-              <EuiFormRow
-                label="Name"
-                helpText="Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space)."
-              >
-                <EuiFieldText
-                  placeholder="Report name (e.g Log Traffic Daily Report)"
-                  value={reportName}
-                  onChange={handleReportName}
-                />
-              </EuiFormRow>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-          <EuiFlexGroup style={{ maxWidth: 600 }}>
-            <EuiFlexItem>
-              <EuiFormRow label="Description (optional)">
-                <EuiTextArea
-                  placeholder="Describe this report (e.g Morning daily reports for log traffic)"
-                  value={reportDescription}
-                  onChange={handleReportDescription}
-                />
-              </EuiFormRow>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-          <EuiSpacer />
-          <EuiFormRow label="Report source">
-            <EuiRadioGroup
-              options={REPORT_SOURCE_RADIOS}
-              idSelected={reportSourceId}
-              onChange={handleReportSource}
-            />
-          </EuiFormRow>
-          <EuiSpacer />
-          {displayDashboardSelect}
-          {displayVisualizationSelect}
-          {displaySavedSearchSelect}
-          <EuiSpacer />
-        </EuiPageContentBody>
-      </EuiPageContent>
-    </EuiPage>
+    <EuiPageContent panelPaddingSize={'l'}>
+      <EuiPageHeader>
+        <EuiTitle>
+          <h2>Report Settings</h2>
+        </EuiTitle>
+      </EuiPageHeader>
+      <EuiHorizontalRule />
+      <EuiPageContentBody>
+        <EuiFlexGroup>
+          <EuiFlexItem>
+            <EuiFormRow
+              label="Name"
+              helpText="Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space)."
+            >
+              <EuiFieldText
+                placeholder="Report name (e.g Log Traffic Daily Report)"
+                value={reportName}
+                onChange={handleReportName}
+              />
+            </EuiFormRow>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiFlexGroup style={{ maxWidth: 600 }}>
+          <EuiFlexItem>
+            <EuiFormRow label="Description (optional)">
+              <EuiTextArea
+                placeholder="Describe this report (e.g Morning daily reports for log traffic)"
+                value={reportDescription}
+                onChange={handleReportDescription}
+              />
+            </EuiFormRow>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiSpacer />
+        <EuiFormRow label="Report source">
+          <EuiRadioGroup
+            options={REPORT_SOURCE_RADIOS}
+            idSelected={reportSourceId}
+            onChange={handleReportSource}
+          />
+        </EuiFormRow>
+        <EuiSpacer />
+        {displayDashboardSelect}
+        {displayVisualizationSelect}
+        {displaySavedSearchSelect}
+        <EuiSpacer />
+      </EuiPageContentBody>
+    </EuiPageContent>
   );
 }

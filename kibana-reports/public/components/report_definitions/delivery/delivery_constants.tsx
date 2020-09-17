@@ -24,14 +24,10 @@ export const EMAIL_RECIPIENT_OPTIONS = [
 export const EMAIL_FORMAT_OPTIONS = [
   {
     id: 'htmlReport',
-    label: 'HTML report',
+    label: 'Embedded HTML report',
   },
   {
     id: 'htmlEmailWithAttachment',
-    label: 'HTML email with attachment',
-  },
-  {
-    id: 'plainTextWithAttachment',
-    label: 'Plain text with attachment',
+    label: 'Email with report as attached file',
   },
 ];
