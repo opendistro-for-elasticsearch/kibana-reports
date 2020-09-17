@@ -112,14 +112,14 @@ export function CreateReport(props) {
       title: 'Error creating report definition',
       color: 'danger',
       iconType: 'alert',
-      id: 'errorToast'
+      id: 'errorToast',
     };
     setToasts(toasts.concat(errorToast));
   };
 
   const handleErrorToast = () => {
     addErrorToastHandler();
-  }
+  };
 
   const addSuccessToastHandler = () => {
     const successToast = {
@@ -127,16 +127,16 @@ export function CreateReport(props) {
       color: 'success',
       text: <p>Report definition successfully created!</p>,
       id: 'successToast',
-    }
+    };
     setToasts(toasts.concat(successToast));
-  }
+  };
 
   const handleSuccessToast = () => {
     addSuccessToastHandler();
-  }
+  };
 
-  const removeToast = removedToast => {
-    setToasts(toasts.filter(toast => toast.id !== removedToast.id));
+  const removeToast = (removedToast) => {
+    setToasts(toasts.filter((toast) => toast.id !== removedToast.id));
   };
 
   let timeRange = {

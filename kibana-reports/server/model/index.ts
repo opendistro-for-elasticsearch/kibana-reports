@@ -147,6 +147,7 @@ export const reportSchema = schema.object({
   report_definition: reportDefinitionSchema,
 
   time_created: schema.maybe(schema.number()),
+  last_updated: schema.maybe(schema.number()),
   state: schema.maybe(
     schema.oneOf([
       schema.literal(REPORT_STATE.created),

@@ -129,7 +129,9 @@ export const createReport = async (
     body: {
       ...report,
       state: REPORT_STATE.pending,
-      time_created: timePending,
+      ...(savedReportId
+        ? { last_updated: timePending }
+        : { time_created: timePending }),
     },
   };
 
@@ -159,7 +161,9 @@ export const createReport = async (
       body: {
         doc: {
           state: REPORT_STATE.error,
-          time_created: timeError,
+          ...(savedReportId
+            ? { last_updated: timeError }
+            : { time_created: timeError }),
         },
       },
     };
@@ -175,8 +179,10 @@ export const createReport = async (
     index: CONFIG_INDEX_NAME.report,
     body: {
       doc: {
-        time_created: createReportResult.timeCreated,
         state: REPORT_STATE.created,
+        ...(savedReportId
+          ? { last_updated: createReportResult.timeCreated }
+          : { time_created: createReportResult.timeCreated }),
       },
     },
   };
