@@ -14,7 +14,6 @@
  */
 
 import puppeteer from 'puppeteer';
-import { v1 as uuidv1 } from 'uuid';
 import {
   FORMAT,
   REPORT_TYPE,
@@ -22,6 +21,7 @@ import {
   CONFIG_INDEX_NAME,
 } from './constants';
 import { RequestParams } from '@elastic/elasticsearch';
+import { getFileName, callCluster } from './helpers';
 import {
   IClusterClient,
   IScopedClusterClient,
@@ -184,22 +184,4 @@ export const createReport = async (
   await callCluster(client, 'update', updateParams);
 
   return createReportResult;
-};
-
-function getFileName(itemName: string, timeCreated: Date): string {
-  return `${itemName}_${timeCreated.toISOString()}_${uuidv1()}`;
-}
-
-const callCluster = async (
-  client: IClusterClient | IScopedClusterClient,
-  endpoint: string,
-  params: any
-) => {
-  let esResp;
-  if ('callAsCurrentUser' in client) {
-    esResp = await client.callAsCurrentUser(endpoint, params);
-  } else {
-    esResp = await client.callAsInternalUser(endpoint, params);
-  }
-  return esResp;
 };

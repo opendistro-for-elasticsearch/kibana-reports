@@ -13,7 +13,6 @@
  * permissions and limitations under the License.
  */
 
-import { v1 as uuidv1 } from 'uuid';
 import {
   buildQuery,
   convertToCSV,
@@ -25,6 +24,7 @@ import {
   IClusterClient,
   IScopedClusterClient,
 } from '../../../../../src/core/server';
+import { getFileName, callCluster } from './helpers';
 
 /**
  * Specify how long scroll context should be maintained for scrolled search
@@ -34,26 +34,23 @@ const scrollTimeout = '1m';
 export async function createSavedSearchReport(
   report: any,
   client: IClusterClient | IScopedClusterClient
-) {
+): Promise<{ timeCreated: number; dataUrl: string; fileName: string }> {
   const params = report.report_definition.report_params;
   const limit = params.core_params.limit;
-  const format = params.core_params.report_format;
-  const name = params.report_name;
+  const reportFormat = params.core_params.report_format;
+  const reportName = params.report_name;
 
   await populateMetaData(client, report);
   const data = await generateCsvData(client, limit);
 
-  const timeCreated = new Date().toISOString();
-  const fileName = getFileName() + '.' + format;
+  const curTime = new Date();
+  const timeCreated = curTime.valueOf();
+  const fileName = getFileName(reportName, curTime) + '.' + reportFormat;
   return {
     timeCreated,
     dataUrl: data,
     fileName,
   };
-
-  function getFileName(): string {
-    return `${name}_${timeCreated}_${uuidv1()}`;
-  }
 }
 
 /**
@@ -113,6 +110,7 @@ async function populateMetaData(
 /**
  * Generate CSV data by query and convert ES data set.
  * @param client  ES client
+ * @param limit   limit size of result data set
  */
 async function generateCsvData(
   client: IClusterClient | IScopedClusterClient,

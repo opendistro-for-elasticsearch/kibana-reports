@@ -71,7 +71,7 @@ describe('test create saved search report', () => {
       input,
       client
     );
-    expect(fileName).toContain(`test report table order_${timeCreated}`);
+    expect(fileName).toContain(`test report table order_`);
   }, 20000);
 
   test('create report with expected file name extension', async () => {
