@@ -48,6 +48,12 @@ export function getFileName(itemName: string, timeCreated: Date): string {
   return `${itemName}_${timeCreated.toISOString()}_${uuidv1()}`;
 }
 
+/**
+ * Call ES cluster function.
+ * @param client    ES client
+ * @param endpoint  ES API method
+ * @param params    ES API parameters
+ */
 export const callCluster = async (
   client: IClusterClient | IScopedClusterClient,
   endpoint: string,

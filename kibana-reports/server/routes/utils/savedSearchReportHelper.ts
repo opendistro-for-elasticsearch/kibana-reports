@@ -75,7 +75,7 @@ async function populateMetaData(
     index: '.kibana',
     id: 'search:' + metaData.saved_search_id,
   };
-  const ssInfos = await client.callAsInternalUser('get', ssParams);
+  const ssInfos = await callCluster(client, 'get', ssParams);
 
   metaData.sorting = ssInfos._source.search.sort;
   metaData.type = ssInfos._source.type;
@@ -89,7 +89,7 @@ async function populateMetaData(
   for (const item of ssInfos._source.references) {
     if (item.name === JSON.parse(metaData.filters).indexRefName) {
       // Get index-pattern information
-      const indexPattern = await client.callAsInternalUser('get', {
+      const indexPattern = await callCluster(client, 'get', {
         index: '.kibana',
         id: 'index-pattern:' + item.id,
       });
@@ -138,7 +138,7 @@ async function generateCsvData(
 
   // Fetch ES query max size windows to decide search or scroll
   async function getMaxResultSize() {
-    const settings = await client.callAsInternalUser('indices.getSettings', {
+    const settings = await callCluster(client, 'indices.getSettings', {
       index: indexPattern,
       includeDefaults: true,
     });
@@ -151,7 +151,7 @@ async function generateCsvData(
   // Build the ES Count query to count the size of result
   async function getEsDataSize() {
     const countReq = buildQuery(report, 1);
-    return await client.callAsInternalUser('count', {
+    return await callCluster(client, 'count', {
       index: indexPattern,
       body: countReq.toJSON(),
     });
@@ -159,7 +159,7 @@ async function generateCsvData(
 
   async function getEsDataByScroll() {
     // Open scroll context by fetching first batch
-    esData = await client.callAsInternalUser('search', {
+    esData = await callCluster(client, 'search', {
       index: report._source.paternName,
       scroll: scrollTimeout,
       body: reqBody,
@@ -170,7 +170,7 @@ async function generateCsvData(
     // Start scrolling till the end
     const nbScroll = Math.floor(total / maxResultSize);
     for (let i = 0; i < nbScroll; i++) {
-      const resScroll = await client.callAsInternalUser('scroll', {
+      const resScroll = await callCluster(client, 'scroll', {
         scrollId: esData._scroll_id,
         scroll: scrollTimeout,
       });
@@ -180,13 +180,13 @@ async function generateCsvData(
     }
 
     // Clear scroll context
-    await client.callAsInternalUser('clearScroll', {
+    await callCluster(client, 'clearScroll', {
       scrollId: esData._scroll_id,
     });
   }
 
   async function getEsDataBySearch() {
-    esData = await client.callAsInternalUser('search', {
+    esData = await callCluster(client, 'search', {
       index: report._source.paternName,
       body: reqBody,
       size: total,
