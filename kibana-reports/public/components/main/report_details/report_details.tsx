@@ -61,29 +61,36 @@ export function ReportDetails(props) {
     setReportDetails(e);
   };
 
+  const convertTimestamp = (timestamp: number) => {
+    let displayDate = `\u2014`;
+    if (timestamp) {
+      let readableDate = new Date(timestamp);
+      displayDate = readableDate.toLocaleString();
+    }
+    return displayDate;
+  };
+
   const getReportDetailsData = (report: ReportSchemaType) => {
     const reportDefinition = report.report_definition;
     const reportParams = reportDefinition.report_params;
     const coreParams = reportParams.core_params;
     const trigger = reportDefinition.trigger;
     // covert timestamp to local date-time string
-    let readableDate = new Date(report.time_created);
-    let displayDate = readableDate.toLocaleString();
 
     let reportDetails = {
       reportName: reportParams.report_name,
       description: reportParams.description,
-      created: displayDate,
-      lastUpdated: `\u2014`,
+      created: convertTimestamp(report.time_created),
+      lastUpdated: convertTimestamp(report.last_updated),
       source: reportParams.report_source,
       // TODO:  we have all data needed, time_from, time_to, time_duration,
       // think of a way to better display
-      time_period: `\u2014`,
+      time_period: report.last_updated,
       defaultFileFormat: coreParams.report_format,
       state: report.state,
       reportHeader: `\u2014`,
       reportFooter: `\u2014`,
-      reportType: trigger.trigger_type,
+      triggerType: trigger.trigger_type,
       scheduleType: `\u2014`,
       scheduleDetails: `\u2014`,
       alertDetails: `\u2014`,
@@ -92,7 +99,7 @@ export function ReportDetails(props) {
       emailRecipients: `\u2014`,
       emailSubject: `\u2014`,
       emailBody: `\u2014`,
-      reportAsAttachment: false,
+      reportAsAttachment: `\u2014`,
       queryUrl: report.query_url,
     };
     return reportDetails;
@@ -139,10 +146,6 @@ export function ReportDetails(props) {
       </EuiLink>
     );
   };
-
-  const includeReportAsAttachmentString = reportDetails['reportAsAttachment']
-    ? 'True'
-    : 'False';
 
   return (
     <EuiPage>
@@ -231,8 +234,8 @@ export function ReportDetails(props) {
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Report type'}
-              reportDetailsComponentContent={reportDetails['reportType']}
+              reportDetailsComponentTitle={'Trigger type'}
+              reportDetailsComponentContent={reportDetails['triggerType']}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Schedule type'}
@@ -278,7 +281,9 @@ export function ReportDetails(props) {
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Include report as attachment'}
-              reportDetailsComponentContent={includeReportAsAttachmentString}
+              reportDetailsComponentContent={
+                reportDetails['reportAsAttachment']
+              }
             />
             <ReportDetailsComponent />
             <ReportDetailsComponent />

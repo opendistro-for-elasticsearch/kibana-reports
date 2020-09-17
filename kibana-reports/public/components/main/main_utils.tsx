@@ -61,7 +61,7 @@ export const addReportsTableContent = (data) => {
       emailRecipients: `\u2014`,
       reportSource: reportParams.report_source,
       //TODO: wrong name
-      lastUpdated: report.time_created,
+      timeCreated: report.time_created,
       state: report.state,
       url: report.query_url,
       format: reportParams.core_params.report_format,
