@@ -90,7 +90,7 @@ export function ReportDetails(props) {
       state: report.state,
       reportHeader: `\u2014`,
       reportFooter: `\u2014`,
-      reportType: trigger.trigger_type,
+      triggerType: trigger.trigger_type,
       scheduleType: `\u2014`,
       scheduleDetails: `\u2014`,
       alertDetails: `\u2014`,
@@ -234,8 +234,8 @@ export function ReportDetails(props) {
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Report type'}
-              reportDetailsComponentContent={reportDetails['reportType']}
+              reportDetailsComponentTitle={'Trigger type'}
+              reportDetailsComponentContent={reportDetails['triggerType']}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Schedule type'}
