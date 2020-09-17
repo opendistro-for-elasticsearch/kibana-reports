@@ -126,7 +126,7 @@ export function CreateReport(props) {
       title: 'Success',
       color: 'success',
       text: <p>Report definition successfully created!</p>,
-      id: 'successToast'
+      id: 'successToast',
     }
     setToasts(toasts.concat(successToast));
   }
@@ -229,7 +229,7 @@ export function CreateReport(props) {
           <EuiFlexItem grow={false}>
             <EuiButtonEmpty
               onClick={() => {
-                window.location.assign('opendistro_kibana_reports#/');
+                window.location.assign(`opendistro_kibana_reports#/${true}`);
               }}
             >
               Cancel

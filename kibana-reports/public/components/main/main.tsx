@@ -35,6 +35,7 @@ import CSS from 'csstype';
 
 interface RouterHomeProps extends CoreInterface {
   httpClient?: any;
+  reportDefinitionCreateSuccess?: boolean
 }
 
 const reportCountStyles: CSS.Properties = {
