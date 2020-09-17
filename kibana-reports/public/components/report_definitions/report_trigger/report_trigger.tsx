@@ -35,45 +35,30 @@ import {
   EuiButton,
 } from '@elastic/eui';
 import moment, { Moment } from 'moment';
-import { TIMEZONE_OPTIONS } from '../create/create_report_definition';
+import { reportDefinitionParams } from '../create/create_report_definition';
 import {
   AVAILABLE_MONITOR_OPTIONS,
   AVAILABLE_TRIGGER_OPTIONS,
 } from './report_trigger_test_data';
 import {
-  REPORT_TYPE_OPTIONS,
-  SCHEDULE_REQUEST_TIME_OPTIONS,
   SCHEDULE_RECURRING_OPTIONS,
   INTERVAL_TIME_PERIODS,
   WEEKLY_CHECKBOX_OPTIONS,
   MONTHLY_ON_THE_OPTIONS,
   MONTHLY_DAY_SELECT_OPTIONS,
-  SCHEDULE_OPTION_MAP,
-  TRIGGER_OPTION_MAP,
+  TRIGGER_TYPE_OPTIONS,
+  SCHEDULE_TYPE_OPTIONS,
+  TIMEZONE_OPTIONS,
 } from './report_trigger_constants';
 
-const tempTriggerParamTime = '1553112384';
-
-let trigger_params = {
-  schedule_type: '',
-  schedule: {},
-  enabled_time: 1234567, // temp value to pass schema, TODO: pass in enabled time for schedules
+type ReportTriggerProps = {
+  edit: boolean;
+  editDefinitionId: string;
+  reportDefinitionRequest: reportDefinitionParams;
+  httpClientProps: any;
 };
 
-let trigger_schema = {
-  trigger_type: '',
-  trigger_params: {},
-};
-
-let temp_trigger_params = {
-  interval: {
-    period: '7',
-    unit: 'DAYS',
-    start_time: tempTriggerParamTime,
-  },
-};
-
-export function ReportTrigger(props) {
+export function ReportTrigger(props: ReportTriggerProps) {
   const {
     edit,
     editDefinitionId,
@@ -81,21 +66,16 @@ export function ReportTrigger(props) {
     httpClientProps,
   } = props;
 
-  const [reportTriggerType, setReportTriggerType] = useState('onDemandOption');
-  trigger_schema['trigger_type'] = 'On demand';
+  const [reportTriggerType, setReportTriggerType] = useState('On demand');
 
-  const [scheduleRequestTime, setScheduleRequestTime] = useState('nowOption');
-  trigger_params['schedule_type'] = 'Now';
-
+  const [scheduleType, setScheduleType] = useState('Recurring');
+  //TODO: should read local timezone and display
   const [timezone, setTimezone] = useState(TIMEZONE_OPTIONS[0].value);
-  const [futureDateTimeSelect, setFutureDateTimeSelect] = useState(moment());
   const [scheduleRecurringFrequency, setScheduleRecurringFrequency] = useState(
     'daily'
   );
   const [recurringDailyTime, setRecurringDailyTime] = useState(moment());
-  const [intervalTimePeriod, setIntervalTimePeriod] = useState(
-    INTERVAL_TIME_PERIODS[0].value
-  );
+
   const [weeklyCheckbox, setWeeklyCheckbox] = useState({
     ['monCheckbox']: true,
   });
@@ -108,28 +88,15 @@ export function ReportTrigger(props) {
   const [monitor, setMonitor] = useState(AVAILABLE_MONITOR_OPTIONS[0].value);
   const [trigger, setTrigger] = useState(AVAILABLE_TRIGGER_OPTIONS[0].value);
 
-  const handleReportTriggerType = (e: React.SetStateAction<string>) => {
+  const handleReportTriggerType = (e: string) => {
     setReportTriggerType(e);
-    trigger_schema['trigger_type'] = TRIGGER_OPTION_MAP[e];
   };
 
-  const handleScheduleRequestTime = (e: React.SetStateAction<string>) => {
-    setScheduleRequestTime(e);
-    trigger_params['schedule_type'] = SCHEDULE_OPTION_MAP[e];
-    if (e === 'nowOption') {
-      reportDefinitionRequest['report_type'] = 'Download';
-    }
+  const handleScheduleType = (e: React.SetStateAction<string>) => {
+    setScheduleType(e);
   };
 
-  const handleFutureDateTimeSelect = (
-    e: React.SetStateAction<moment.Moment>
-  ) => {
-    setFutureDateTimeSelect(e);
-  };
-
-  const handleTimezone = (e: {
-    target: { value: React.SetStateAction<number> };
-  }) => {
+  const handleTimezone = (e) => {
     setTimezone(e.target.value);
   };
 
@@ -141,12 +108,6 @@ export function ReportTrigger(props) {
 
   const handleRecurringDailyTime = (e: React.SetStateAction<moment.Moment>) => {
     setRecurringDailyTime(e);
-  };
-
-  const handleIntervalTimePeriod = (e: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    setIntervalTimePeriod(e.target.value);
   };
 
   const handleWeeklyCheckbox = (e) => {
@@ -198,23 +159,22 @@ export function ReportTrigger(props) {
     );
   };
 
-  const ScheduleTriggerFutureDate = () => {
-    return (
-      <div>
-        <EuiFormRow label="Request time">
-          <EuiDatePicker
-            showTimeSelect
-            selected={futureDateTimeSelect}
-            onChange={handleFutureDateTimeSelect}
-          />
-        </EuiFormRow>
-        <EuiSpacer />
-        <TimezoneSelect />
-      </div>
-    );
-  };
-
   const RequestTime = () => {
+    useEffect(() => {
+      let recurringDaily = {
+        interval: {
+          period: 1,
+          unit: 'DAYS',
+          start_time: recurringDailyTime.valueOf(),
+        },
+      };
+      reportDefinitionRequest.trigger.trigger_params = {
+        ...reportDefinitionRequest.trigger.trigger_params,
+        enabled_time: recurringDailyTime.valueOf(),
+        schedule: recurringDaily,
+      };
+    }, []);
+
     return (
       <div>
         <EuiFormRow label="Request time">
@@ -235,34 +195,71 @@ export function ReportTrigger(props) {
 
   const RecurringInterval = () => {
     const [intervalText, setIntervalText] = useState('');
+    const [intervalTimePeriod, setIntervalTimePeriod] = useState(
+      INTERVAL_TIME_PERIODS[0].value
+    );
 
     const handleIntervalText = (e: {
       target: { value: React.SetStateAction<string> };
     }) => {
       setIntervalText(e.target.value);
     };
+
+    const handleIntervalTimePeriod = (e: {
+      target: { value: React.SetStateAction<string> };
+    }) => {
+      setIntervalTimePeriod(e.target.value);
+    };
+
+    useEffect(() => {
+      let interval = {
+        interval: {
+          period: parseInt(intervalText, 10),
+          unit: intervalTimePeriod,
+          start_time: recurringDailyTime.valueOf(),
+        },
+      };
+      reportDefinitionRequest.trigger.trigger_params = {
+        ...reportDefinitionRequest.trigger.trigger_params,
+        enabled_time: recurringDailyTime.valueOf(),
+        schedule: interval,
+      };
+    }, [intervalTimePeriod, intervalText]);
+
     return (
-      <EuiFormRow label="Every">
-        <EuiFlexGroup>
-          <EuiFlexItem grow={false}>
-            <EuiFieldText
-              placeholder="Must be a number"
-              value={intervalText}
-              onChange={handleIntervalText}
-            />
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
-            <EuiFormRow>
-              <EuiSelect
-                id="intervalTimeUnit"
-                options={INTERVAL_TIME_PERIODS}
-                value={intervalTimePeriod}
-                onChange={handleIntervalTimePeriod}
+      <div>
+        <EuiFormRow label="Every">
+          <EuiFlexGroup>
+            <EuiFlexItem grow={false}>
+              <EuiFieldText
+                placeholder="Must be a number"
+                value={intervalText}
+                onChange={handleIntervalText}
               />
-            </EuiFormRow>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-      </EuiFormRow>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <EuiFormRow>
+                <EuiSelect
+                  id="intervalTimeUnit"
+                  options={INTERVAL_TIME_PERIODS}
+                  value={intervalTimePeriod}
+                  onChange={handleIntervalTimePeriod}
+                />
+              </EuiFormRow>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+        </EuiFormRow>
+        <EuiFormRow label="Start time">
+          <EuiDatePicker
+            showTimeSelect
+            showTimeSelectOnly
+            selected={recurringDailyTime}
+            onChange={handleRecurringDailyTime}
+            dateFormat="HH:mm"
+            timeFormat="HH:mm"
+          />
+        </EuiFormRow>
+      </div>
     );
   };
 
@@ -347,6 +344,20 @@ export function ReportTrigger(props) {
       setCronExpression(e.target.value);
     };
 
+    useEffect(() => {
+      let cron = {
+        cron: {
+          expression: cronExpression,
+          timezone: timezone,
+        },
+      };
+      reportDefinitionRequest.trigger.trigger_params = {
+        ...reportDefinitionRequest.trigger.trigger_params,
+        enabled_time: Date.now().valueOf(),
+        schedule: cron,
+      };
+    }, [cronExpression, timezone]);
+
     return (
       <div>
         <EuiFormRow
@@ -404,30 +415,36 @@ export function ReportTrigger(props) {
   };
 
   const ScheduleTrigger = () => {
-    const display_future_date =
-      scheduleRequestTime === 'futureDateOption' ? (
-        <ScheduleTriggerFutureDate />
-      ) : null;
-
     const display_recurring =
-      scheduleRequestTime === 'recurringOption' ? (
-        <ScheduleTriggerRecurring />
-      ) : null;
+      scheduleType === 'Recurring' ? <ScheduleTriggerRecurring /> : null;
 
     const display_cron =
-      scheduleRequestTime === 'cronBasedOption' ? <CronExpression /> : null;
+      scheduleType === 'Cron based' ? <CronExpression /> : null;
+
+    useEffect(() => {
+      // Set default trigger_type
+      SCHEDULE_TYPE_OPTIONS.map((item) => {
+        if (item.id === scheduleType) {
+          reportDefinitionRequest.trigger.trigger_params = {
+            ...reportDefinitionRequest.trigger.trigger_params,
+            schedule_type: item.label,
+            //TODO: need better handle
+            enabled: true,
+          };
+        }
+      });
+    }, [scheduleType]);
 
     return (
       <div>
         <EuiFormRow label="Request time">
           <EuiRadioGroup
-            options={SCHEDULE_REQUEST_TIME_OPTIONS}
-            idSelected={scheduleRequestTime}
-            onChange={handleScheduleRequestTime}
+            options={SCHEDULE_TYPE_OPTIONS}
+            idSelected={scheduleType}
+            onChange={handleScheduleType}
           />
         </EuiFormRow>
         <EuiSpacer />
-        {display_future_date}
         {display_recurring}
         {display_cron}
       </div>
@@ -467,13 +484,9 @@ export function ReportTrigger(props) {
   };
 
   const schedule =
-    reportTriggerType === 'scheduleOption' ? <ScheduleTrigger /> : null;
+    reportTriggerType === 'Schedule' ? <ScheduleTrigger /> : null;
 
-  const alert = reportTriggerType === 'alertOption' ? <AlertTrigger /> : null;
-
-  // TODO: Change schema so these values are not required depending on trigger type
-  trigger_schema['trigger_params'] = trigger_params;
-  reportDefinitionRequest['trigger'] = trigger_schema;
+  const alert = reportTriggerType === 'Alerting' ? <AlertTrigger /> : null;
 
   const defaultEditTriggerType = (trigger_type) => {
     let index = 0;
@@ -509,8 +522,13 @@ export function ReportTrigger(props) {
           defaultConfigurationEdit(response.trigger);
         });
     }
-    reportDefinitionRequest['report_type'] = 'Download';
-  }, []);
+    // Set default trigger_type
+    TRIGGER_TYPE_OPTIONS.map((item) => {
+      if (item.id === reportTriggerType) {
+        reportDefinitionRequest.trigger.trigger_type = item.label;
+      }
+    });
+  }, [reportTriggerType]);
 
   return (
     <EuiPageContent panelPaddingSize={'l'}>
@@ -523,7 +541,7 @@ export function ReportTrigger(props) {
       <EuiPageContentBody>
         <EuiFormRow label="Trigger type">
           <EuiRadioGroup
-            options={REPORT_TYPE_OPTIONS}
+            options={TRIGGER_TYPE_OPTIONS}
             idSelected={reportTriggerType}
             onChange={handleReportTriggerType}
           />

@@ -84,7 +84,7 @@ export const addReportDefinitionsTableContent = (data: any) => {
       id: item._id,
       reportName: reportParams.report_name,
       type: trigger.trigger_type,
-      owner: 'davidcui', // Todo: replace
+      owner: `\u2014`, // Todo: replace
       source: reportParams.report_source,
       baseUrl: reportParams.core_params.base_url,
       lastUpdated: reportDefinition.last_updated,
