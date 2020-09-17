@@ -30,7 +30,7 @@ export const dataReportSchema = schema.object({
   time_duration: schema.string(),
   //TODO: future support schema.literal('xlsx')
   report_format: schema.oneOf([schema.literal(FORMAT.csv)]),
-  limit: schema.number({ defaultValue: 10000 }),
+  limit: schema.maybe(schema.number({ defaultValue: 10000 })),
 });
 
 const visualReportSchema = schema.object({

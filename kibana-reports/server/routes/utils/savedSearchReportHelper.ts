@@ -35,14 +35,16 @@ export async function createSavedSearchReport(
   report: any,
   client: IClusterClient | IScopedClusterClient
 ) {
+  const params = report.report_definition.report_params;
+  const limit = params.core_params.limit;
+  const format = params.core_params.report_format;
+  const name = params.report_name;
+
   await populateMetaData(client, report);
-  const data = await generateCsvData(
-    client,
-    report.report_definition.report_params.core_params.limit
-  );
+  const data = await generateCsvData(client, limit);
 
   const timeCreated = new Date().toISOString();
-  const fileName = getFileName() + '.csv';
+  const fileName = getFileName() + '.' + format;
   return {
     timeCreated,
     dataUrl: data,
@@ -50,9 +52,7 @@ export async function createSavedSearchReport(
   };
 
   function getFileName(): string {
-    return `${
-      report.report_definition.report_params.report_name
-    }_${timeCreated}_${uuidv1()}`;
+    return `${name}_${timeCreated}_${uuidv1()}`;
   }
 }
 

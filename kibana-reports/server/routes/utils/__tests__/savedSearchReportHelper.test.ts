@@ -71,9 +71,16 @@ describe('test create saved search report', () => {
       input,
       client
     );
-
     expect(fileName).toContain(`test report table order_${timeCreated}`);
-    expect(fileName).toContain('.csv');
+  }, 20000);
+
+  test('create report with expected file name extension', async () => {
+    const csvReport = await createSavedSearchReport(input, mockEsClient([]));
+    expect(csvReport.fileName).toContain('.csv');
+
+    input.report_definition.report_params.core_params.report_format = 'xlsx';
+    const xlsxReport = await createSavedSearchReport(input, mockEsClient([]));
+    expect(xlsxReport.fileName).toContain('.xlsx');
   }, 20000);
 
   test('create report for empty data set', async () => {
