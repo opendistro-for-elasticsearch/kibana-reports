@@ -37,6 +37,7 @@ const input = {
         report_format: 'csv',
         time_duration: 'PT5M',
         limit: 10000,
+        excel: true,
       },
     },
     delivery: {
@@ -218,6 +219,68 @@ describe('test create saved search report', () => {
         '5.category,5.customer_gender\n' +
         'c1,Male,c2,Male,c3,Male,c4,Male,c5,Male,' +
         'c6,Female'
+    );
+  }, 20000);
+
+  test('create report for data set with comma', async () => {
+    const hits = [
+      hit({ category: ',c1', customer_gender: 'Ma,le' }),
+      hit({ category: 'c2,', customer_gender: 'M,ale' }),
+      hit({ category: ',,c3', customer_gender: 'Male,,,' }),
+    ];
+    const client = mockEsClient(hits);
+    const { dataUrl } = await createSavedSearchReport(input, client);
+
+    expect(dataUrl).toEqual(
+      '0.category,0.customer_gender,' +
+        '1.category,1.customer_gender,' +
+        '2.category,2.customer_gender\n' +
+        '",c1","Ma,le","c2,","M,ale",",,c3","Male,,,"'
+    );
+  }, 20000);
+
+  test('create report by sanitizing data set for Excel', async () => {
+    const hits = [
+      hit({ category: 'c1', customer_gender: '=Male' }),
+      hit({ category: 'c2', customer_gender: 'Male=' }),
+      hit({ category: 'c3', customer_gender: '+Ma,le' }),
+      hit({ category: ',-c4', customer_gender: 'Male' }),
+      hit({ category: ',,,@c5', customer_gender: 'Male' }),
+    ];
+    const client = mockEsClient(hits);
+    const { dataUrl } = await createSavedSearchReport(input, client);
+
+    expect(dataUrl).toEqual(
+      '0.category,0.customer_gender,' +
+        '1.category,1.customer_gender,' +
+        '2.category,2.customer_gender,' +
+        '3.category,3.customer_gender,' +
+        '4.category,4.customer_gender\n' +
+        `c1,'=Male,c2,Male=,c3,"'+Ma,le",",-c4",Male,",,,@c5",Male`
+    );
+  }, 20000);
+
+  test('create report by not sanitizing data set for Excel', async () => {
+    // Enable Excel escape option
+    input.report_definition.report_params.core_params.excel = false;
+
+    const hits = [
+      hit({ category: 'c1', customer_gender: '=Male' }),
+      hit({ category: 'c2', customer_gender: 'Male=' }),
+      hit({ category: 'c3', customer_gender: '+Ma,le' }),
+      hit({ category: ',-c4', customer_gender: 'Male' }),
+      hit({ category: ',,,@c5', customer_gender: 'Male' }),
+    ];
+    const client = mockEsClient(hits);
+    const { dataUrl } = await createSavedSearchReport(input, client);
+
+    expect(dataUrl).toEqual(
+      '0.category,0.customer_gender,' +
+        '1.category,1.customer_gender,' +
+        '2.category,2.customer_gender,' +
+        '3.category,3.customer_gender,' +
+        '4.category,4.customer_gender\n' +
+        `c1,=Male,c2,Male=,c3,"+Ma,le",",-c4",Male,",,,@c5",Male`
     );
   }, 20000);
 });

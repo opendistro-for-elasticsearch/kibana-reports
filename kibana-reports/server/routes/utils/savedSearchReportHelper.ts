@@ -36,12 +36,11 @@ export async function createSavedSearchReport(
   client: IClusterClient | IScopedClusterClient
 ): Promise<{ timeCreated: number; dataUrl: string; fileName: string }> {
   const params = report.report_definition.report_params;
-  const limit = params.core_params.limit;
   const reportFormat = params.core_params.report_format;
   const reportName = params.report_name;
 
   await populateMetaData(client, report);
-  const data = await generateCsvData(client, limit);
+  const data = await generateCsvData(client, params.core_params);
 
   const curTime = new Date();
   const timeCreated = curTime.valueOf();
@@ -114,7 +113,7 @@ async function populateMetaData(
  */
 async function generateCsvData(
   client: IClusterClient | IScopedClusterClient,
-  limit: number
+  params: any
 ) {
   let esData: any = {};
   const arrayHits: any = [];
@@ -123,7 +122,7 @@ async function generateCsvData(
   const maxResultSize: number = await getMaxResultSize();
   const esCount = await getEsDataSize();
 
-  const total = Math.min(esCount.count, limit);
+  const total = Math.min(esCount.count, params.limit);
   if (total === 0) {
     return '';
   }
@@ -212,7 +211,7 @@ async function generateCsvData(
   // Parse ES data and convert to CSV
   async function convertEsDataToCsv() {
     const dataset: any = [];
-    dataset.push(getEsData(arrayHits, report, limit));
+    dataset.push(getEsData(arrayHits, report, params));
     return await convertToCSV(dataset);
   }
 }

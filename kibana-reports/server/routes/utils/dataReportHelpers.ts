@@ -152,7 +152,7 @@ export const buildQuery = (report, is_count) => {
 };
 
 // Fetch the data from ES
-export const getEsData = (arrayHits, report, limit: number) => {
+export const getEsData = (arrayHits, report, params) => {
   let hits: any = [];
   for (let valueRes of arrayHits) {
     for (let data of valueRes.hits) {
@@ -168,13 +168,13 @@ export const getEsData = (arrayHits, report, limit: number) => {
       delete data['fields'];
       if (report._source.fields_exist === true) {
         let result = traverse(data, report._source.selectedFields);
-        hits.push(result);
+        hits.push(params.excel ? sanitize(result) : result);
       } else {
-        hits.push(data);
+        hits.push(params.excel ? sanitize(data) : data);
       }
 
       // Truncate to expected limit size
-      if (hits.length >= limit) {
+      if (hits.length >= params.limit) {
         return hits;
       }
     }
@@ -213,4 +213,23 @@ function traverse(data, keys, result = {}) {
     }
   }
   return result;
+}
+
+/**
+ * Escape special characters if field value prefixed with.
+ * This is intend to avoid CSV injection in Microsoft Excel.
+ * @param doc   document
+ */
+function sanitize(doc: any) {
+  for (const field in doc) {
+    if (
+      doc[field].startsWith('+') ||
+      doc[field].startsWith('-') ||
+      doc[field].startsWith('=') ||
+      doc[field].startsWith('@')
+    ) {
+      doc[field] = "'" + doc[field];
+    }
+  }
+  return doc;
 }
