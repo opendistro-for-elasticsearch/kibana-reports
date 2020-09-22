@@ -20,6 +20,7 @@ module.exports = {
     require('@babel/preset-typescript'),
   ],
   plugins: [
+    [require('@babel/plugin-transform-runtime'), { regenerator: true }],
     require('@babel/plugin-proposal-class-properties'),
     require('@babel/plugin-proposal-object-rest-spread'),
   ],

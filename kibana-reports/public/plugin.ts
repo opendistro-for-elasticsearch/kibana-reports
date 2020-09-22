@@ -13,7 +13,6 @@
  * permissions and limitations under the License.
  */
 
-import { i18n } from '@kbn/i18n';
 import {
   AppMountParameters,
   CoreSetup,
@@ -36,7 +35,7 @@ export class OpendistroKibanaReportsPlugin
   public setup(core: CoreSetup): OpendistroKibanaReportsPluginSetup {
     // Register an application into the side navigation menu
     core.application.register({
-      id: 'opendistro_kibana_reports',
+      id: PLUGIN_NAME,
       title: 'Reporting',
       async mount(params: AppMountParameters) {
         // Load application bundle

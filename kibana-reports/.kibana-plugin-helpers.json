@@ -3,10 +3,11 @@
   "buildSourcePatterns": [
     "package.json",
     "tsconfig.json",
+    "kibana.json",
     "yarn.lock",
     ".yarnrc",
     "index.js",
-    "{lib,public,server,webpackShims,translations,utils,models,test}/**/*",
+    "{lib,public,server,webpackShims,translations,utils,models,test,common}/**/*",
     "!__tests__"
   ]
 }
