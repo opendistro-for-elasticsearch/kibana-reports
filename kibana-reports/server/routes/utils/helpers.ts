@@ -14,6 +14,11 @@
  */
 
 import { KibanaResponseFactory } from '../../../../../src/core/server';
+import { v1 as uuidv1 } from 'uuid';
+import {
+  IClusterClient,
+  IScopedClusterClient,
+} from '../../../../../src/core/server';
 
 export function parseEsErrorResponse(error: any) {
   if (error.response) {
@@ -33,3 +38,32 @@ export function errorResponse(response: KibanaResponseFactory, error: any) {
     body: parseEsErrorResponse(error),
   });
 }
+
+/**
+ * Generate report file name based on name and timestamp.
+ * @param itemName      report item name
+ * @param timeCreated   timestamp when this is being created
+ */
+export function getFileName(itemName: string, timeCreated: Date): string {
+  return `${itemName}_${timeCreated.toISOString()}_${uuidv1()}`;
+}
+
+/**
+ * Call ES cluster function.
+ * @param client    ES client
+ * @param endpoint  ES API method
+ * @param params    ES API parameters
+ */
+export const callCluster = async (
+  client: IClusterClient | IScopedClusterClient,
+  endpoint: string,
+  params: any
+) => {
+  let esResp;
+  if ('callAsCurrentUser' in client) {
+    esResp = await client.callAsCurrentUser(endpoint, params);
+  } else {
+    esResp = await client.callAsInternalUser(endpoint, params);
+  }
+  return esResp;
+};
