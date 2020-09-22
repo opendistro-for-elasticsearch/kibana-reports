@@ -14,7 +14,6 @@
  */
 
 import puppeteer from 'puppeteer';
-import { v1 as uuidv1 } from 'uuid';
 import {
   FORMAT,
   REPORT_TYPE,
@@ -22,10 +21,12 @@ import {
   CONFIG_INDEX_NAME,
 } from './constants';
 import { RequestParams } from '@elastic/elasticsearch';
+import { getFileName, callCluster } from './helpers';
 import {
   IClusterClient,
   IScopedClusterClient,
 } from '../../../../../src/core/server';
+import { createSavedSearchReport } from './savedSearchReportHelper';
 import { ReportSchemaType } from '../../model';
 
 export const createVisualReport = async (
@@ -143,8 +144,7 @@ export const createReport = async (
   const reportSource = reportParams.report_source;
   try {
     if (reportSource === REPORT_TYPE.savedSearch) {
-      // TODO: Add createDataReport(report)
-      console.log('placeholder for createDataReport');
+      createReportResult = await createSavedSearchReport(report, client);
     } else if (
       reportSource === REPORT_TYPE.dashboard ||
       reportSource === REPORT_TYPE.visualization
@@ -190,22 +190,4 @@ export const createReport = async (
   await callCluster(client, 'update', updateParams);
 
   return createReportResult;
-};
-
-function getFileName(itemName: string, timeCreated: Date): string {
-  return `${itemName}_${timeCreated.toISOString()}_${uuidv1()}`;
-}
-
-const callCluster = async (
-  client: IClusterClient | IScopedClusterClient,
-  endpoint: string,
-  params: any
-) => {
-  let esResp;
-  if ('callAsCurrentUser' in client) {
-    esResp = await client.callAsCurrentUser(endpoint, params);
-  } else {
-    esResp = await client.callAsInternalUser(endpoint, params);
-  }
-  return esResp;
 };
