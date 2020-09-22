@@ -7,7 +7,7 @@
     "yarn.lock",
     ".yarnrc",
     "index.js",
-    "{lib,public,server,webpackShims,translations,utils,models,test,common}/**/*",
+    "{lib,public,server,webpackShims,translations,utils,models,test,common,target}/**/*",
     "!__tests__"
   ]
 }
