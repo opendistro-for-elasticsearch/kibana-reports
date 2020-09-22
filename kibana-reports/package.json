@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Kibana Reporting Plugin",
   "license": "Apache-2.0",
-  "main": "target/plugins/opendistro_kibana_reports",
+  "main": "index.js",
   "kibana": {
     "version": "7.8.0",
     "templateVersion": "1.0.0"
