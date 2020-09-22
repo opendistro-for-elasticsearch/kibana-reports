@@ -40,7 +40,7 @@ export async function createSavedSearchReport(
   const reportName = params.report_name;
 
   await populateMetaData(client, report);
-  const data = await generateCsvData(client, params.core_params);
+  const data = await generateReportData(client, params.core_params);
 
   const curTime = new Date();
   const timeCreated = curTime.valueOf();
@@ -111,7 +111,7 @@ async function populateMetaData(
  * @param client  ES client
  * @param limit   limit size of result data set
  */
-async function generateCsvData(
+async function generateReportData(
   client: IClusterClient | IScopedClusterClient,
   params: any
 ) {
