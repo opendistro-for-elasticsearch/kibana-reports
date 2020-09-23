@@ -1,26 +1,29 @@
 {
+  // extend Kibana's tsconfig, or use your own settings
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "jsx": "react",
     "allowJs": true,
     "baseUrl": ".",
-    "target": "esnext", 
-    "module": "commonjs",                     
-    "outDir": "",                             
-    "noEmit": true,                  
+    "target": "esnext",
+    "module": "commonjs",
+    "outDir": "./target",
+    "noEmit": true,
     "types": ["node", "jest", "react"],
-    "typeRoots": [
-      "../node_modules/@types"
-    ],   
-    "strict": true,                          
-    "esModuleInterop": true,                  
-    "skipLibCheck": true,                     
-    "forceConsistentCasingInFileNames": true  
+    "typeRoots": ["../node_modules/@types"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": [
     "test/**/*",
+    "index.ts",
+    "public/**/*.ts",
+    "public/**/*.tsx",
+    "server/**/*.ts",
+    "common/**/*.ts",
+    "../../typings/**/*"
   ],
-  "exclude": [
-    "node_modules",
-    "*/node_modules/",
-  ]
+  "exclude": ["node_modules", "*/node_modules/"]
 }
