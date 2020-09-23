@@ -47,6 +47,11 @@ export const createVisualReport = async (
   // set up puppeteer
   const browser = await puppeteer.launch({
     headless: true,
+    /**
+     * TODO: temp fix to disable sandbox when launching chromium on Linux instance
+     * https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#setting-up-chrome-linux-sandbox
+     */
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
   const page = await browser.newPage();
   await page.setDefaultNavigationTimeout(0);
