@@ -25,6 +25,7 @@ import {
   OpendistroKibanaReportsPluginStart,
   AppPluginStartDependencies,
 } from './types';
+import './components/context_menu/context_menu';
 import { PLUGIN_NAME } from '../common';
 
 export class OpendistroKibanaReportsPlugin
@@ -33,7 +34,7 @@ export class OpendistroKibanaReportsPlugin
       OpendistroKibanaReportsPluginSetup,
       OpendistroKibanaReportsPluginStart
     > {
-  public setup(core: CoreSetup, plugins): OpendistroKibanaReportsPluginSetup {
+  public setup(core: CoreSetup): OpendistroKibanaReportsPluginSetup {
     // Register an application into the side navigation menu
     core.application.register({
       id: 'opendistro_kibana_reports',
@@ -51,13 +52,6 @@ export class OpendistroKibanaReportsPlugin
         );
       },
     });
-    if (plugins.share) {
-      console.log("in plugins share")
-      plugins.share.register({
-        id: 'reporting_context_share_menu',
-        title: 'Share'
-      });
-    }
 
     // Return methods that should be available to other plugins
     return {};
