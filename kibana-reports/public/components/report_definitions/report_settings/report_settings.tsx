@@ -82,22 +82,6 @@ function TimeRangeSelect(props) {
   const [refreshInterval, setRefreshInterval] = useState();
 
   useEffect(() => {
-    // if (window.location.href.indexOf("?") > -1) {
-    //   const url = window.location.href;
-    //   const reportSourceInfo = url.split("?");
-    //   const timeFrom = reportSourceInfo[2].substring(
-    //     reportSourceInfo[2].indexOf("=") + 1,
-    //     reportSourceInfo[2].length
-    //   );
-    //   const timeTo = reportSourceInfo[3].substring(
-    //     reportSourceInfo[3].indexOf("=") + 1,
-    //     reportSourceInfo[3].length
-    //   )
-    //   setStart(timeFrom);
-    //   setEnd(timeTo);
-    // }
-    // parseTimeRange(start, end, reportDefinitionRequest);
-
     // if we are coming from the in-context menu
     if (window.location.href.indexOf("?") > -1) {
       const url = window.location.href;
@@ -110,8 +94,6 @@ function TimeRangeSelect(props) {
         reportSourceInfo[3].indexOf("=") + 1,
         reportSourceInfo[3].length
       )
-      console.log("in here");
-      console.log("time from is", timeFrom);
       parseTimeRange(timeFrom, timeTo, reportDefinitionRequest);
       onTimeChange({start: timeFrom, end: timeTo});
     }
@@ -706,20 +688,9 @@ export function ReportSettings(props: ReportSettingProps) {
         reportSourceInfo[1].indexOf(":") + 1, 
         reportSourceInfo[1].length
       );
-      // const timeFrom = reportSourceInfo[2].substring(
-      //   reportSourceInfo[2].indexOf("=") + 1,
-      //   reportSourceInfo[2].length
-      // );
-      // const timeTo = reportSourceInfo[3].substring(
-      //   reportSourceInfo[3].indexOf("=") + 1,
-      //   reportSourceInfo[3].length
-      // )
       if (reportSourceInfo[1].includes("dashboard")) {
         setReportSourceId('dashboardReportSource');
-        console.log("in dashboard source");
         setDashboardSourceSelect(id);
-        // timeRange.timeFrom = new Date(timeFrom);
-        // timeRange.timeTo = new Date(timeTo);
       }
     }
   }, []);
