@@ -82,7 +82,7 @@ import {
     time_to: timeRanges.time_to.valueOf(),
     report_definition: {
       report_params: {
-        report_name: "On_demand_report " + moment().toISOString(),
+        report_name: "On_demand_report",
         report_source: reportSource,
         description: "In-context report download",
         core_params: {
