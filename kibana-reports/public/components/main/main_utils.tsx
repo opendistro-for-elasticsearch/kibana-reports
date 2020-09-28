@@ -113,7 +113,20 @@ export const removeDuplicatePdfFileFormat = (filename) => {
   return filename.substring(0, filename.length - 4);
 };
 
-// const readDataReportToFile = async (stream: string, fileFormat:string, fileName: string)
+const readDataReportToFile = async (
+  stream: string, 
+  fileFormat:string, 
+  fileName: string
+) => {
+  const blob = new Blob([stream])
+  const url = URL.createObjectURL(blob);
+  let link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', fileName);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
 
 export const readStreamToFile = async (
   stream: string,
@@ -122,13 +135,7 @@ export const readStreamToFile = async (
 ) => {
   let link = document.createElement('a');
   if (fileName.includes('csv')) {
-    const blob = new Blob([stream])
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', fileName);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    readDataReportToFile(stream, fileFormat, fileName);
     return;
   }
   let fileFormatPrefix = getFileFormatPrefix(fileFormat);
