@@ -186,10 +186,10 @@ export const getEsData = (arrayHits, report, params) => {
 export const convertToCSV = async (dataset) => {
   let convertedData: any = [];
   const options = {
-    delimiter: { field: ',' },
+    delimiter: { field: ',', eol: '\n' },
     emptyFieldValue: ' ',
   };
-  await converter.json2csvAsync(dataset, options).then((csv) => {
+  await converter.json2csvAsync(dataset[0], options).then((csv) => {
     convertedData = csv;
   });
   return convertedData;
@@ -223,10 +223,10 @@ function traverse(data, keys, result = {}) {
 function sanitize(doc: any) {
   for (const field in doc) {
     if (
-      doc[field].startsWith('+') ||
-      doc[field].startsWith('-') ||
-      doc[field].startsWith('=') ||
-      doc[field].startsWith('@')
+      doc[field].toString().startsWith('+') ||
+      doc[field].toString().startsWith('-') ||
+      doc[field].toString().startsWith('=') ||
+      doc[field].toString().startsWith('@')
     ) {
       doc[field] = "'" + doc[field];
     }

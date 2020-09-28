@@ -39,7 +39,6 @@ import moment from 'moment';
 import {
   REPORT_SOURCE_RADIOS,
   PDF_PNG_FILE_FORMAT_OPTIONS,
-  SAVED_SEARCH_FORMAT_OPTIONS,
   HEADER_FOOTER_CHECKBOX,
   REPORT_SOURCE_TYPES,
 } from './report_settings_constants';
@@ -194,10 +193,6 @@ export function ReportSettings(props: ReportSettingProps) {
 
   const [fileFormat, setFileFormat] = useState('pdf');
 
-  const [savedSearchFileFormat, setSavedSearchFileFormat] = useState(
-    'csvFormat'
-  );
-
   const handleDashboards = (e) => {
     setDashboards(e);
   };
@@ -234,8 +229,15 @@ export function ReportSettings(props: ReportSettingProps) {
       reportDefinitionRequest.report_params.report_source = 'Visualization';
       reportDefinitionRequest.report_params.core_params.base_url =
         getVisualizationBaseUrlCreate() + visualizations[0].value;
+    } else if (e === 'savedSearchReportSource') {
+      reportDefinitionRequest.report_params.report_source = 'Saved search';
+      reportDefinitionRequest.report_params.core_params.base_url = 
+        getSavedSearchBaseUrlCreate() + savedSearches[0].value;
+      reportDefinitionRequest.report_params.core_params.saved_search_id = savedSearches[0].value;
+      reportDefinitionRequest.report_params.core_params.report_format = "csv";
+      reportDefinitionRequest.report_params.core_params.limit = 10000;
+      reportDefinitionRequest.report_params.core_params.excel = true;
     }
-    // TODO: handle data report
   };
 
   const handleDashboardSelect = (e: {
@@ -258,6 +260,7 @@ export function ReportSettings(props: ReportSettingProps) {
     target: { value: React.SetStateAction<string> };
   }) => {
     setSavedSearchSourceSelect(e.target.value);
+    reportDefinitionRequest.report_params.core_params.saved_search_id = e.target.value;
   };
 
   const handleFileFormat = (e: React.SetStateAction<string>) => {
@@ -643,6 +646,20 @@ export function ReportSettings(props: ReportSettingProps) {
       'kibana#/visualize/edit/'
     );
   };
+
+  const getSavedSearchBaseUrlCreate = () => {
+    let baseUrl = window.location.href;
+    if (edit) {
+      return baseUrl.replace(
+        'opendistro_kibana_reports#/edit',
+        'kibana#/discover/',
+      )
+    }
+    return baseUrl.replace(
+      'opendistro_kibana_reports#/create',
+      'kibana#/discover/'
+    );
+  }
 
   useEffect(() => {
     let reportSourceOptions = {};

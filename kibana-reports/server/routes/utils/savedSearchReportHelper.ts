@@ -41,7 +41,6 @@ export async function createSavedSearchReport(
 
   await populateMetaData(client, report);
   const data = await generateReportData(client, params.core_params);
-
   const curTime = new Date();
   const timeCreated = curTime.valueOf();
   const fileName = getFileName(reportName, curTime) + '.' + reportFormat;
@@ -67,7 +66,6 @@ async function populateMetaData(
     report.report_definition.report_params.core_params.report_format;
   metaData.start = report.time_from;
   metaData.end = report.time_to;
-
   // Get saved search info
   let resIndexPattern: any = {};
   const ssParams = {
@@ -121,7 +119,6 @@ async function generateReportData(
   const indexPattern: string = report._source.paternName;
   const maxResultSize: number = await getMaxResultSize();
   const esCount = await getEsDataSize();
-
   const total = Math.min(esCount.count, params.limit);
   if (total === 0) {
     return '';
@@ -201,7 +198,6 @@ async function generateReportData(
         format: 'date_hour_minute',
       });
     }
-
     return {
       query: query.toJSON().query,
       docvalue_fields: docvalues,
