@@ -20,7 +20,6 @@ import {
   EuiLink,
   EuiText,
   EuiIcon,
-  EuiButtonIcon,
   EuiEmptyPrompt,
   EuiInMemoryTable,
   EuiFlexGroup,
@@ -36,11 +35,10 @@ import {
 import { reports_list_users } from './test_data';
 import {
   fileFormatsUpper,
-  generateReport,
   humanReadableDate,
   generateReportById,
 } from './main_utils';
-import { returnStatement } from '@babel/types';
+import { SortDirection } from '../../../../../src/plugins/data/public';
 
 const reportStatusOptions = [
   'Created',
@@ -75,8 +73,8 @@ const emptyMessageReports = (
 export function ReportsTable(props) {
   const { getRowProps, pagination, reportsTableItems, httpClient } = props;
 
-  const [sortField, setSortField] = useState('lastUpdated');
-  const [sortDirection, setSortDirection] = useState('des');
+  const [sortField, setSortField] = useState('timeCreated');
+  const [sortDirection, setSortDirection] = useState(SortDirection.desc);
   const [showLoading, setShowLoading] = useState(false);
 
   const handleLoading = (e) => {
@@ -190,7 +188,7 @@ export function ReportsTable(props) {
       ),
     },
     {
-      field: 'lastUpdated',
+      field: 'timeCreated',
       name: 'Creation time',
       render: (date) => {
         let readable = humanReadableDate(date);

@@ -49,6 +49,15 @@ ext {
     projectSubstitutions = [:]
     licenseFile = rootProject.file('LICENSE.txt')
     noticeFile = rootProject.file('NOTICE.txt')
+    opendistroVersion = "${version}"
+}
+
+allprojects {
+    version = "${opendistroVersion}.0"
+
+    plugins.withId('java') {
+        sourceCompatibility = targetCompatibility = "1.8"
+    }
 }
 
 dependencies {

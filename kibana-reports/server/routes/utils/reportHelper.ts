@@ -14,7 +14,6 @@
  */
 
 import puppeteer from 'puppeteer';
-import { v1 as uuidv1 } from 'uuid';
 import {
   FORMAT,
   REPORT_TYPE,
@@ -22,10 +21,12 @@ import {
   CONFIG_INDEX_NAME,
 } from './constants';
 import { RequestParams } from '@elastic/elasticsearch';
+import { getFileName, callCluster } from './helpers';
 import {
   IClusterClient,
   IScopedClusterClient,
 } from '../../../../../src/core/server';
+import { createSavedSearchReport } from './savedSearchReportHelper';
 import { ReportSchemaType } from '../../model';
 
 export const createVisualReport = async (
@@ -46,6 +47,11 @@ export const createVisualReport = async (
   // set up puppeteer
   const browser = await puppeteer.launch({
     headless: true,
+    /**
+     * TODO: temp fix to disable sandbox when launching chromium on Linux instance
+     * https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#setting-up-chrome-linux-sandbox
+     */
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
   const page = await browser.newPage();
   await page.setDefaultNavigationTimeout(0);
@@ -129,7 +135,9 @@ export const createReport = async (
     body: {
       ...report,
       state: REPORT_STATE.pending,
-      time_created: timePending,
+      ...(savedReportId
+        ? { last_updated: timePending }
+        : { time_created: timePending }),
     },
   };
 
@@ -141,8 +149,7 @@ export const createReport = async (
   const reportSource = reportParams.report_source;
   try {
     if (reportSource === REPORT_TYPE.savedSearch) {
-      // TODO: Add createDataReport(report)
-      console.log('placeholder for createDataReport');
+      createReportResult = await createSavedSearchReport(report, client);
     } else if (
       reportSource === REPORT_TYPE.dashboard ||
       reportSource === REPORT_TYPE.visualization
@@ -159,7 +166,9 @@ export const createReport = async (
       body: {
         doc: {
           state: REPORT_STATE.error,
-          time_created: timeError,
+          ...(savedReportId
+            ? { last_updated: timeError }
+            : { time_created: timeError }),
         },
       },
     };
@@ -175,8 +184,10 @@ export const createReport = async (
     index: CONFIG_INDEX_NAME.report,
     body: {
       doc: {
-        time_created: createReportResult.timeCreated,
         state: REPORT_STATE.created,
+        ...(savedReportId
+          ? { last_updated: createReportResult.timeCreated }
+          : { time_created: createReportResult.timeCreated }),
       },
     },
   };
@@ -184,22 +195,4 @@ export const createReport = async (
   await callCluster(client, 'update', updateParams);
 
   return createReportResult;
-};
-
-function getFileName(itemName: string, timeCreated: Date): string {
-  return `${itemName}_${timeCreated.toISOString()}_${uuidv1()}`;
-}
-
-const callCluster = async (
-  client: IClusterClient | IScopedClusterClient,
-  endpoint: string,
-  params: any
-) => {
-  let esResp;
-  if ('callAsCurrentUser' in client) {
-    esResp = await client.callAsCurrentUser(endpoint, params);
-  } else {
-    esResp = await client.callAsInternalUser(endpoint, params);
-  }
-  return esResp;
 };
