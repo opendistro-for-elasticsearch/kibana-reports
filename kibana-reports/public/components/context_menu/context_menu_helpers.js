@@ -46,7 +46,7 @@ export const contextMenuCreateReportDefinition = (baseURI) => {
 }
 
 export const getTimeFieldsFromUrl = () => {
-  const url = window.location.href;
+  let url = window.location.href;
   let timeString = url.substring(
     url.lastIndexOf("time:"),
     url.lastIndexOf("))")
@@ -84,12 +84,12 @@ export const getTimeFieldsFromUrl = () => {
 }
 
 export const displayLoadingModal = () => {
-  const kibanaBody = document.querySelectorAll("#kibana-app");
+  const kibanaBody = document.getElementById("kibana-app");
   if (kibanaBody) {
     try {
       const loadingModal = document.createElement("div");
       loadingModal.innerHTML = reportGenerationInProgressModal();
-      kibanaBody[0].appendChild(loadingModal.children[0]);
+      kibanaBody.appendChild(loadingModal.children[0]);
     } catch (e) {
       console.log("error displaying loading modal:", e);
     }
