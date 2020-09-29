@@ -1,4 +1,3 @@
-import { async } from 'rxjs/internal/scheduler/async';
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -16,9 +15,9 @@ import { async } from 'rxjs/internal/scheduler/async';
 
 import { DATA_REPORT_CONFIG } from './constants';
 
-const esb = require('elastic-builder');
-const moment = require('moment');
-const converter = require('json-2-csv');
+import esb from 'elastic-builder';
+import moment from 'moment';
+import converter from 'json-2-csv';
 
 export var metaData = {
   saved_search_id: <string>null,

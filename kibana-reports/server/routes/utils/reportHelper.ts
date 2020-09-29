@@ -19,6 +19,7 @@ import {
   REPORT_TYPE,
   REPORT_STATE,
   CONFIG_INDEX_NAME,
+  LOCAL_HOST,
 } from './constants';
 import { RequestParams } from '@elastic/elasticsearch';
 import { getFileName, callCluster } from './helpers';
@@ -154,7 +155,8 @@ export const createReport = async (
       reportSource === REPORT_TYPE.dashboard ||
       reportSource === REPORT_TYPE.visualization
     ) {
-      const queryUrl = report.query_url;
+      const { origin } = new URL(report.query_url);
+      const queryUrl = report.query_url.replace(origin, LOCAL_HOST);
       createReportResult = await createVisualReport(reportParams, queryUrl);
     }
   } catch (error) {
