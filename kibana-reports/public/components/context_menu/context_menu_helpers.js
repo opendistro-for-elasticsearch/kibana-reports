@@ -50,7 +50,13 @@ export const getTimeFieldsFromUrl = () => {
   let timeString = url.substring(
     url.lastIndexOf("time:"),
     url.lastIndexOf("))")
-  );
+  );  
+  if (url.includes("visualize")) {
+    timeString = url.substring(
+      url.lastIndexOf("time:"),
+      url.indexOf("))")
+    );
+  }
 
   let fromDateString = timeString.substring(
     timeString.lastIndexOf("from:") + 5,
@@ -69,7 +75,6 @@ export const getTimeFieldsFromUrl = () => {
   );
   
   toDateString = toDateString.replace(/[']+/g, '');
-
   let toDateFormat = dateMath.parse(toDateString);
 
   const timeDuration = moment.duration(

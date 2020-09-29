@@ -192,8 +192,11 @@ import {
       $('#reportFailureToast').remove();
     })
   });
-  
-  locationHashChanged();
+
+  // do not render the Reporting menu on "Discover"
+  if (window.location.href.includes('discover') === -1) {
+    locationHashChanged();
+  }
  })
 
  function locationHashChanged() {
