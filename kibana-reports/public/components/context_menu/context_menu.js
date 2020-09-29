@@ -110,7 +110,6 @@ import {
     },
     method: 'POST',
     body: JSON.stringify(contextMenuOnDemandReport),      
-    "referrer": "http://localhost:5601/app/opendistro_kibana_reports",
     "referrerPolicy": "strict-origin-when-cross-origin",
     "mode": "cors",
     "credentials": "include"
@@ -147,14 +146,14 @@ import {
 
   // generate PDF onclick
   $(document).on('click', '#generatePDF', function() {
-    let timeRanges = getTimeFieldsFromUrl();
+    const timeRanges = getTimeFieldsFromUrl();
     const queryUrl = replaceQueryURL();
     generateInContextReport(timeRanges, queryUrl, 'pdf');
   })
 
   // generate PNG onclick
   $(document).on('click', '#generatePNG', function() {
-    let timeRanges = getTimeFieldsFromUrl();
+    const timeRanges = getTimeFieldsFromUrl();
     const queryUrl = replaceQueryURL();
     generateInContextReport(timeRanges, queryUrl, 'png');
   })
@@ -172,7 +171,7 @@ import {
   })
 
   // close modal/toast 
-  $(document).ready(function() {
+  $(function() {
     // close modal with 'x' in upper-right modal
     $(document).on('click', '#closeReportGenerationModal', function() {
       $('#reportGenerationProgressModal').remove();

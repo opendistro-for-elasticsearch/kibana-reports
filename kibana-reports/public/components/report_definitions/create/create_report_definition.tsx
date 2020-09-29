@@ -178,7 +178,6 @@ export function CreateReport(props) {
             time_to: timeRange.timeTo.valueOf(),
             report_definition: metadata,
           };
-          // return;
           generateReport(onDemandDownloadMetadata, httpClient);
         }
         await handleSuccessToast();

@@ -51,6 +51,7 @@ import {
   reportDefinitionParams,
   timeRangeParams,
 } from '../create/create_report_definition';
+import { parseInContextUrl } from './report_settings_helpers';
 
 const isValidTimeRange = (
   timeRangeMoment: number | moment.Moment,
@@ -85,15 +86,8 @@ function TimeRangeSelect(props) {
     // if we are coming from the in-context menu
     if (window.location.href.indexOf("?") > -1) {
       const url = window.location.href;
-      const reportSourceInfo = url.split("?");
-      const timeFrom = reportSourceInfo[2].substring(
-        reportSourceInfo[2].indexOf("=") + 1,
-        reportSourceInfo[2].length
-      );
-      const timeTo = reportSourceInfo[3].substring(
-        reportSourceInfo[3].indexOf("=") + 1,
-        reportSourceInfo[3].length
-      )
+      const timeFrom = parseInContextUrl(url, 'timeFrom');
+      const timeTo = parseInContextUrl(url, 'timeTo');
       parseTimeRange(timeFrom, timeTo, reportDefinitionRequest);
       onTimeChange({start: timeFrom, end: timeTo});
     }
@@ -123,7 +117,6 @@ function TimeRangeSelect(props) {
   const parseTimeRange = (start, end, reportDefinitionRequest) => {
     timeRange.timeFrom = dateMath.parse(start);
     timeRange.timeTo = dateMath.parse(end);
-    console.log("time range time from is", timeRange.timeFrom);
     const timeDuration = moment.duration(
       dateMath.parse(end).diff(dateMath.parse(start))
     );
@@ -662,10 +655,6 @@ export function ReportSettings(props: ReportSettingProps) {
     );
   };
 
-  const inContextCreateParse = () => {
-    
-  }
-
   useEffect(() => {
     let reportSourceOptions = {};
     let editData = {};
@@ -683,14 +672,14 @@ export function ReportSettings(props: ReportSettingProps) {
 
     if (window.location.href.indexOf("?") > -1) {
       const url = window.location.href;
-      const reportSourceInfo = url.split("?");
-      const id = reportSourceInfo[1].substring(
-        reportSourceInfo[1].indexOf(":") + 1, 
-        reportSourceInfo[1].length
-      );
-      if (reportSourceInfo[1].includes("dashboard")) {
+      const id = parseInContextUrl(url, "id");
+      if (url.includes("dashboard")) {
         setReportSourceId('dashboardReportSource');
         setDashboardSourceSelect(id);
+      }
+      else if (url.includes("visualize")) {
+        setReportSourceId('visualizationReportSource');
+        setVisualizationSourceSelect(id);
       }
     }
   }, []);

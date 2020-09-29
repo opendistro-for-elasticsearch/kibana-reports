@@ -46,7 +46,7 @@ export const contextMenuCreateReportDefinition = (baseURI) => {
 }
 
 export const getTimeFieldsFromUrl = () => {
-  let url = window.location.href;
+  const url = window.location.href;
   let timeString = url.substring(
     url.lastIndexOf("time:"),
     url.lastIndexOf("))")
