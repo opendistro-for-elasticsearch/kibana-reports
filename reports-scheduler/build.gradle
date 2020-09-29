@@ -16,7 +16,7 @@
 buildscript {
     ext {
         es_group = "org.elasticsearch"
-        es_version = '7.8.0'
+        es_version = '7.9.1'
     }
 
     repositories {
@@ -62,7 +62,7 @@ allprojects {
 
 dependencies {
     compile "org.elasticsearch:elasticsearch:${es_version}"
-    compileOnly "com.amazon.opendistroforelasticsearch:opendistro-job-scheduler-spi:1.9.0.0"
+    compileOnly "com.amazon.opendistroforelasticsearch:opendistro-job-scheduler-spi:1.10.1.0"
     compile group: 'com.google.guava', name: 'guava', version:'15.0'
 }
 
