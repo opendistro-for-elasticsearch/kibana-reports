@@ -227,4 +227,8 @@ import {
    });
  }
 
- window.onhashchange = locationHashChanged;
+ window.onhashchange = function() {
+   if (!window.location.href.includes('discover')) {
+     locationHashChanged();
+   }
+ }
