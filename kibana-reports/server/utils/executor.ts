@@ -13,21 +13,20 @@
  * permissions and limitations under the License.
  */
 
-import { IClusterClient, Logger } from '../../../../src/core/server';
+import { ILegacyClusterClient, Logger } from '../../../../src/core/server';
 import { createReport } from '../routes/utils/reportHelper';
 import { POLL_INTERVAL } from './constants';
 import {
   ReportSchemaType,
   dataReportSchemaType,
   visualReportSchemaType,
-  reportDefinitionSchema,
 } from '../model';
 import moment from 'moment';
 import { CONFIG_INDEX_NAME } from '../routes/utils/constants';
 
 async function pollAndExecuteJob(
-  schedulerClient: IClusterClient,
-  esClient: IClusterClient,
+  schedulerClient: ILegacyClusterClient,
+  esClient: ILegacyClusterClient,
   logger: Logger
 ) {
   logger.info(
@@ -75,7 +74,7 @@ async function pollAndExecuteJob(
 async function executeScheduledJob(
   reportDefinitionId: string,
   triggeredTime: number,
-  client: IClusterClient,
+  client: ILegacyClusterClient,
   logger: Logger
 ) {
   // retrieve report definition
