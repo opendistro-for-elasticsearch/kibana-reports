@@ -103,12 +103,12 @@ describe('test create saved search report', () => {
     const { dataUrl } = await createSavedSearchReport(input, client);
 
     expect(dataUrl).toEqual(
-      '0.category,0.customer_gender,' +
-        '1.category,1.customer_gender,' +
-        '2.category,2.customer_gender,' +
-        '3.category,3.customer_gender,' +
-        '4.category,4.customer_gender\n' +
-        'c1,Male,c2,Male,c3,Male,c4,Male,c5,Male'
+      'category,customer_gender\n' +
+      'c1,Male\n' +
+      'c2,Male\n' +
+      'c3,Male\n' + 
+      'c4,Male\n' +
+      'c5,Male' 
     );
   }, 20000);
 
@@ -130,20 +130,18 @@ describe('test create saved search report', () => {
     const { dataUrl } = await createSavedSearchReport(input, client);
 
     expect(dataUrl).toEqual(
-      '0.category,0.customer_gender,' +
-        '1.category,1.customer_gender,' +
-        '2.category,2.customer_gender,' +
-        '3.category,3.customer_gender,' +
-        '4.category,4.customer_gender,' +
-        '5.category,5.customer_gender,' +
-        '6.category,6.customer_gender,' +
-        '7.category,7.customer_gender,' +
-        '8.category,8.customer_gender,' +
-        '9.category,9.customer_gender,' +
-        '10.category,10.customer_gender\n' +
-        'c1,Male,c2,Male,c3,Male,c4,Male,c5,Male,' +
-        'c6,Female,c7,Female,c8,Female,c9,Female,c10,Female,' +
-        'c11,Male'
+      'category,customer_gender\n' +
+      'c1,Male\n' +
+      'c2,Male\n' +
+      'c3,Male\n' + 
+      'c4,Male\n' +
+      'c5,Male\n' +
+      'c6,Female\n' +
+      'c7,Female\n' +
+      'c8,Female\n' +
+      'c9,Female\n' +
+      'c10,Female\n' +
+      'c11,Male'
     );
   }, 20000);
 
@@ -161,7 +159,10 @@ describe('test create saved search report', () => {
     const client = mockEsClient(hits);
     const { dataUrl } = await createSavedSearchReport(input, client);
 
-    expect(dataUrl).toEqual('0.category,0.customer_gender\nc1,Male');
+    expect(dataUrl).toEqual(
+      'category,customer_gender\n' +
+      'c1,Male'
+    );
   }, 20000);
 
   test('create report with limit greater than max result size', async () => {
@@ -184,14 +185,13 @@ describe('test create saved search report', () => {
     const { dataUrl } = await createSavedSearchReport(input, client);
 
     expect(dataUrl).toEqual(
-      '0.category,0.customer_gender,' +
-        '1.category,1.customer_gender,' +
-        '2.category,2.customer_gender,' +
-        '3.category,3.customer_gender,' +
-        '4.category,4.customer_gender,' +
-        '5.category,5.customer_gender\n' +
-        'c1,Male,c2,Male,c3,Male,c4,Male,c5,Male,' +
-        'c6,Female'
+      'category,customer_gender\n' +
+      'c1,Male\n' +
+      'c2,Male\n' +
+      'c3,Male\n' +
+      'c4,Male\n' +
+      'c5,Male\n' +
+      'c6,Female'
     );
   }, 20000);
 
@@ -211,14 +211,13 @@ describe('test create saved search report', () => {
     const { dataUrl } = await createSavedSearchReport(input, client);
 
     expect(dataUrl).toEqual(
-      '0.category,0.customer_gender,' +
-        '1.category,1.customer_gender,' +
-        '2.category,2.customer_gender,' +
-        '3.category,3.customer_gender,' +
-        '4.category,4.customer_gender,' +
-        '5.category,5.customer_gender\n' +
-        'c1,Male,c2,Male,c3,Male,c4,Male,c5,Male,' +
-        'c6,Female'
+      'category,customer_gender\n' +
+      'c1,Male\n' +
+      'c2,Male\n' +
+      'c3,Male\n' +
+      'c4,Male\n' +
+      'c5,Male\n' +
+      'c6,Female'
     );
   }, 20000);
 
@@ -232,10 +231,10 @@ describe('test create saved search report', () => {
     const { dataUrl } = await createSavedSearchReport(input, client);
 
     expect(dataUrl).toEqual(
-      '0.category,0.customer_gender,' +
-        '1.category,1.customer_gender,' +
-        '2.category,2.customer_gender\n' +
-        '",c1","Ma,le","c2,","M,ale",",,c3","Male,,,"'
+      'category,customer_gender\n' +
+      '",c1","Ma,le"\n' +
+      '"c2,","M,ale"\n' +
+      '",,c3","Male,,,"'
     );
   }, 20000);
 
@@ -251,12 +250,12 @@ describe('test create saved search report', () => {
     const { dataUrl } = await createSavedSearchReport(input, client);
 
     expect(dataUrl).toEqual(
-      '0.category,0.customer_gender,' +
-        '1.category,1.customer_gender,' +
-        '2.category,2.customer_gender,' +
-        '3.category,3.customer_gender,' +
-        '4.category,4.customer_gender\n' +
-        `c1,'=Male,c2,Male=,c3,"'+Ma,le",",-c4",Male,",,,@c5",Male`
+      'category,customer_gender\n' +
+      `c1,'=Male\n` +
+      `c2,Male=\n` +
+      `c3,"'+Ma,le"\n` +
+      `",-c4",Male\n` +
+      `",,,@c5",Male`
     );
   }, 20000);
 
@@ -275,12 +274,12 @@ describe('test create saved search report', () => {
     const { dataUrl } = await createSavedSearchReport(input, client);
 
     expect(dataUrl).toEqual(
-      '0.category,0.customer_gender,' +
-        '1.category,1.customer_gender,' +
-        '2.category,2.customer_gender,' +
-        '3.category,3.customer_gender,' +
-        '4.category,4.customer_gender\n' +
-        `c1,=Male,c2,Male=,c3,"+Ma,le",",-c4",Male,",,,@c5",Male`
+      'category,customer_gender\n' +
+      'c1,=Male\n' +
+      'c2,Male=\n' +
+      'c3,"+Ma,le"\n' +
+      '",-c4",Male\n' +
+      '",,,@c5",Male'
     );
   }, 20000);
 });
