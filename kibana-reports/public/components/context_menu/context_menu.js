@@ -194,7 +194,7 @@ import {
   });
 
   // do not render the Reporting menu on "Discover"
-  if (window.location.href.includes('discover') === -1) {
+  if (!window.location.href.includes('discover')) {
     locationHashChanged();
   }
  })
