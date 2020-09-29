@@ -1,4 +1,3 @@
-import { async } from 'rxjs/internal/scheduler/async';
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -16,9 +15,9 @@ import { async } from 'rxjs/internal/scheduler/async';
 
 import { DATA_REPORT_CONFIG } from './constants';
 
-const esb = require('elastic-builder');
-const moment = require('moment');
-const converter = require('json-2-csv');
+import esb from 'elastic-builder';
+import moment from 'moment';
+import converter from 'json-2-csv';
 
 export var metaData = {
   saved_search_id: <string>null,
@@ -186,10 +185,10 @@ export const getEsData = (arrayHits, report, params) => {
 export const convertToCSV = async (dataset) => {
   let convertedData: any = [];
   const options = {
-    delimiter: { field: ',' },
+    delimiter: { field: ',', eol: '\n' },
     emptyFieldValue: ' ',
   };
-  await converter.json2csvAsync(dataset, options).then((csv) => {
+  await converter.json2csvAsync(dataset[0], options).then((csv) => {
     convertedData = csv;
   });
   return convertedData;
@@ -223,10 +222,10 @@ function traverse(data, keys, result = {}) {
 function sanitize(doc: any) {
   for (const field in doc) {
     if (
-      doc[field].startsWith('+') ||
-      doc[field].startsWith('-') ||
-      doc[field].startsWith('=') ||
-      doc[field].startsWith('@')
+      doc[field].toString().startsWith('+') ||
+      doc[field].toString().startsWith('-') ||
+      doc[field].toString().startsWith('=') ||
+      doc[field].toString().startsWith('@')
     ) {
       doc[field] = "'" + doc[field];
     }
