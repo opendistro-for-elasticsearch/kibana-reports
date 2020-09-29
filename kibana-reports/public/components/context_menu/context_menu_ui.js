@@ -36,7 +36,7 @@ export const popoverMenu = () => {
           <div class="euiPopover__panelArrow euiPopover__panelArrow--bottom" style="left: 15.9417px; top: 0px;">
         </div>
           <div>
-             <div class="euiContextMenu" data-test-subj="shareContextMenu" style="height: 280px; width: 235px;">
+             <div class="euiContextMenu" data-test-subj="shareContextMenu" style="height: 305px; width: 235px;">
                 <div class="euiContextMenuPanel euiContextMenu__panel" tabindex="0">
                    <div class="euiPopoverTitle">
                       <span class="euiContextMenu__itemLayout">
@@ -44,7 +44,7 @@ export const popoverMenu = () => {
                       </span>
                    </div>
                    <div>
-                    <span class="euiContextMenuItem__text" style="padding-left: 10px; padding-right: 10px; padding-top: 10px;">
+                    <span class="euiContextMenuItem__text" style="padding-left: 10px; padding-right: 10px; margin-top: 10px; box-decoration-break: clone; display: inline-block;">
                       Files can take a minute or two 
                       to generate depending on the 
                       size of your dashboard
