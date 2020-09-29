@@ -193,29 +193,7 @@ import {
     })
   });
   
-   const observer = new MutationObserver(function (mutations) {
- 
-    const navMenu = document.querySelectorAll("span.kbnTopNavMenu__wrapper > div.euiFlexGroup");
-    if(navMenu && navMenu.length && navMenu[0].children.length > 1) {
-      try {
-        const menuItem = document.createElement("div");
-        menuItem.innerHTML = getMenuItem("Reporting");
-        navMenu[0].appendChild(menuItem.children[0])
-        
-      } catch (e) {
-        console.log(e);
-      } finally {
-        observer.disconnect();
-      }
-    }
-   });
- 
-   // Start observing
-   observer.observe(document.body, { //document.body is node target to observe
-     childList: true, //This is a must have for the observer with subtree
-     subtree: true //Set to true if changes must also be observed in descendants.
-   });
-
+  locationHashChanged();
  })
 
  function locationHashChanged() {
@@ -225,7 +203,6 @@ import {
     if(navMenu && navMenu.length && navMenu[0].children.length > 1) {
       try {
         const menuItem = document.createElement("div");
-        const menuItemExists = document.getElementById("#downloadReport");
         if ($("#downloadReport").length) {
           return;
         }
