@@ -70,7 +70,7 @@ export default function (router: IRouter) {
           body: toSave,
         };
 
-        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
+        const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
           'index',
           params
         );
@@ -153,7 +153,7 @@ export default function (router: IRouter) {
             doc: toUpdate,
           },
         };
-        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
+        const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
           'update',
           params
         );
@@ -199,7 +199,7 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       const { size, sortField, sortDirection } = request.query as {
-        size?: string;
+        size: string;
         sortField: string;
         sortDirection: string;
       };
@@ -210,7 +210,7 @@ export default function (router: IRouter) {
         sort: `${sortField}:${sortDirection}`,
       };
       try {
-        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
+        const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
           'search',
           params
         );
@@ -246,7 +246,7 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
-        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
+        const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
           'get',
           {
             index: CONFIG_INDEX_NAME.reportDefinition,
@@ -289,7 +289,7 @@ export default function (router: IRouter) {
 
       try {
         // retrieve report definition
-        const getReportDefinitionResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
+        const getReportDefinitionResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
           'get',
           {
             index: CONFIG_INDEX_NAME.reportDefinition,
@@ -302,7 +302,7 @@ export default function (router: IRouter) {
         let esResp;
 
         // delete job from report definition index
-        esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
+        esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
           'delete',
           {
             index: CONFIG_INDEX_NAME.reportDefinition,

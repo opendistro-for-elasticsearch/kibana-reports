@@ -24,8 +24,8 @@ import {
 import { RequestParams } from '@elastic/elasticsearch';
 import { getFileName, callCluster } from './helpers';
 import {
-  IClusterClient,
-  IScopedClusterClient,
+  ILegacyClusterClient,
+  ILegacyScopedClusterClient,
 } from '../../../../../src/core/server';
 import { createSavedSearchReport } from './savedSearchReportHelper';
 import { ReportSchemaType } from '../../model';
@@ -119,7 +119,7 @@ export const createVisualReport = async (
 
 export const createReport = async (
   report: ReportSchemaType,
-  client: IClusterClient | IScopedClusterClient,
+  client: ILegacyClusterClient | ILegacyScopedClusterClient,
   savedReportId?: string
 ): Promise<{ timeCreated: number; dataUrl: string; fileName: string }> => {
   let createReportResult: {
