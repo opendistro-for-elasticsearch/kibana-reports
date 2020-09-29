@@ -21,8 +21,8 @@ import {
   metaData,
 } from './dataReportHelpers';
 import {
-  IClusterClient,
-  IScopedClusterClient,
+  ILegacyClusterClient,
+  ILegacyScopedClusterClient,
 } from '../../../../../src/core/server';
 import { getFileName, callCluster } from './helpers';
 
@@ -33,7 +33,7 @@ const scrollTimeout = '1m';
 
 export async function createSavedSearchReport(
   report: any,
-  client: IClusterClient | IScopedClusterClient
+  client: ILegacyClusterClient | ILegacyScopedClusterClient
 ): Promise<{ timeCreated: number; dataUrl: string; fileName: string }> {
   const params = report.report_definition.report_params;
   const reportFormat = params.core_params.report_format;
@@ -58,7 +58,7 @@ export async function createSavedSearchReport(
  * @param report  Report input
  */
 async function populateMetaData(
-  client: IClusterClient | IScopedClusterClient,
+  client: ILegacyClusterClient | ILegacyScopedClusterClient,
   report: any
 ) {
   metaData.saved_search_id =
@@ -112,7 +112,7 @@ async function populateMetaData(
  * @param limit   limit size of result data set
  */
 async function generateReportData(
-  client: IClusterClient | IScopedClusterClient,
+  client: ILegacyClusterClient | ILegacyScopedClusterClient,
   params: any
 ) {
   let esData: any = {};

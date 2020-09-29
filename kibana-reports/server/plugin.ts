@@ -19,7 +19,7 @@ import {
   CoreStart,
   Plugin,
   Logger,
-  IClusterClient,
+  ILegacyClusterClient,
 } from '../../../src/core/server';
 import { setIntervalAsync } from 'set-interval-async/dynamic';
 import reportsSchedulerPlugin from './backend/opendistro-reports-scheduler-plugin';
@@ -33,7 +33,7 @@ import { POLL_INTERVAL } from './utils/constants';
 
 export interface ReportsPluginRequestContext {
   logger: Logger;
-  esClient: IClusterClient;
+  esClient: ILegacyClusterClient;
 }
 //@ts-ignore
 declare module 'kibana/server' {
@@ -60,7 +60,7 @@ export class OpendistroKibanaReportsPlugin
 
     // TODO: create Elasticsearch client that aware of reports-scheduler API endpoints
     // Deprecated API. Switch to the new elasticsearch client as soon as https://github.com/elastic/kibana/issues/35508 done.
-    const schedulerClient: IClusterClient = core.elasticsearch.createClient(
+    const schedulerClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
       'reports_scheduler',
       {
         plugins: [reportsSchedulerPlugin],
@@ -88,7 +88,7 @@ export class OpendistroKibanaReportsPlugin
   public start(core: CoreStart) {
     this.logger.debug('opendistro_kibana_reports: Started');
 
-    const schedulerClient = core.elasticsearch.legacy.createClient(
+    const schedulerClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
       'reports_scheduler',
       {
         plugins: [reportsSchedulerPlugin],

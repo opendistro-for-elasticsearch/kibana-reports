@@ -51,7 +51,7 @@ export default function (router: IRouter) {
       try {
         const reportData = await createReport(
           report,
-          context.core.elasticsearch.dataClient
+          context.core.elasticsearch.legacy.client
         );
 
         return response.ok({
@@ -88,7 +88,7 @@ export default function (router: IRouter) {
       // get report
       try {
         const savedReportId = request.params.reportId;
-        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
+        const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
           'get',
           {
             index: CONFIG_INDEX_NAME.report,
@@ -98,7 +98,7 @@ export default function (router: IRouter) {
         const report = esResp._source;
         const reportData = await createReport(
           report,
-          context.core.elasticsearch.dataClient,
+          context.core.elasticsearch.legacy.client,
           savedReportId
         );
 
@@ -136,7 +136,7 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       const { size, sortField, sortDirection } = request.query as {
-        size?: string;
+        size: string;
         sortField: string;
         sortDirection: string;
       };
@@ -147,7 +147,7 @@ export default function (router: IRouter) {
         sort: `${sortField}:${sortDirection}`,
       };
       try {
-        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
+        const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
           'search',
           params
         );
@@ -183,7 +183,7 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
-        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
+        const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
           'get',
           {
             index: CONFIG_INDEX_NAME.report,
@@ -219,7 +219,7 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
-        const esResp = await context.core.elasticsearch.dataClient.callAsCurrentUser(
+        const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
           'delete',
           {
             index: CONFIG_INDEX_NAME.report,

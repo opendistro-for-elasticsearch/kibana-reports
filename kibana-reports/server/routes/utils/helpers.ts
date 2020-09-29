@@ -16,8 +16,8 @@
 import { KibanaResponseFactory } from '../../../../../src/core/server';
 import { v1 as uuidv1 } from 'uuid';
 import {
-  IClusterClient,
-  IScopedClusterClient,
+  ILegacyClusterClient,
+  ILegacyScopedClusterClient,
 } from '../../../../../src/core/server';
 
 export function parseEsErrorResponse(error: any) {
@@ -55,7 +55,7 @@ export function getFileName(itemName: string, timeCreated: Date): string {
  * @param params    ES API parameters
  */
 export const callCluster = async (
-  client: IClusterClient | IScopedClusterClient,
+  client: ILegacyClusterClient | ILegacyScopedClusterClient,
   endpoint: string,
   params: any
 ) => {
