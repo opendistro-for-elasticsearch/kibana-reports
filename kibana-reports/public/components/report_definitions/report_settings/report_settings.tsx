@@ -50,6 +50,7 @@ import {
   reportDefinitionParams,
   timeRangeParams,
 } from '../create/create_report_definition';
+import { parseInContextUrl } from './report_settings_helpers';
 
 const isValidTimeRange = (
   timeRangeMoment: number | moment.Moment,
@@ -81,7 +82,17 @@ function TimeRangeSelect(props) {
   const [refreshInterval, setRefreshInterval] = useState();
 
   useEffect(() => {
-    parseTimeRange(start, end, reportDefinitionRequest);
+    // if we are coming from the in-context menu
+    if (window.location.href.indexOf("?") > -1) {
+      const url = window.location.href;
+      const timeFrom = parseInContextUrl(url, 'timeFrom');
+      const timeTo = parseInContextUrl(url, 'timeTo');
+      parseTimeRange(timeFrom, timeTo, reportDefinitionRequest);
+      onTimeChange({start: timeFrom, end: timeTo});
+    }
+    else {
+      parseTimeRange(start, end, reportDefinitionRequest);
+    }
   }, [start, end]);
 
   const onTimeChange = ({ start, end }) => {
@@ -675,6 +686,19 @@ export function ReportSettings(props: ReportSettingProps) {
         setDefaultEditValues(editData, reportSourceOptions);
       }
     });
+
+    if (window.location.href.indexOf("?") > -1) {
+      const url = window.location.href;
+      const id = parseInContextUrl(url, "id");
+      if (url.includes("dashboard")) {
+        setReportSourceId('dashboardReportSource');
+        setDashboardSourceSelect(id);
+      }
+      else if (url.includes("visualize")) {
+        setReportSourceId('visualizationReportSource');
+        setVisualizationSourceSelect(id);
+      }
+    }
   }, []);
 
   return (

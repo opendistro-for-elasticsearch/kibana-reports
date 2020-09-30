@@ -28,6 +28,7 @@ import { ReportSettings } from '../report_settings';
 import { ReportDelivery } from '../delivery';
 import { ReportTrigger } from '../report_trigger';
 import { generateReport } from '../../main/main_utils';
+import { Request } from 'selenium-webdriver/http';
 
 export let defaultUrl;
 interface reportParamsType {
