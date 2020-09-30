@@ -47,7 +47,7 @@ const reportStatusOptions = [
   'Shared',
   'Archived',
 ];
-const reportTypeOptions = ['Schedule', 'Download', 'Alert'];
+const reportTypeOptions = ['Schedule', 'On demand'];
 
 const emptyMessageReports = (
   <EuiEmptyPrompt

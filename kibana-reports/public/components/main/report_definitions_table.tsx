@@ -43,7 +43,7 @@ const emptyMessageReportDefinitions = (
       <div>
         <EuiButton
           onClick={() => {
-            window.location.assign('opendistro-kibana-reports#/create');
+            window.location.assign('opendistro_kibana_reports#/create');
           }}
         >
           Create report definition
