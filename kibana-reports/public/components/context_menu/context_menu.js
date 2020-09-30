@@ -100,7 +100,7 @@ import {
   fetch('/api/reporting/generateReport', {
     headers: {
       "Content-Type": "application/json",
-      "kbn-version": "7.8.0",
+      "kbn-version": "7.9.1",
       "accept": "*/*",
       "accept-language": "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7,zh-TW;q=0.6",
       "pragma": "no-cache",
@@ -131,7 +131,7 @@ import {
  // open Download drop-down
  $(function(){
   $(document).on('click', '#downloadReport', function() {
-    const popoverScreen = document.querySelectorAll("#kibana-app");
+    const popoverScreen = document.querySelectorAll("body");
     if (popoverScreen) {
       try {
         const reportPopover = document.createElement("div");

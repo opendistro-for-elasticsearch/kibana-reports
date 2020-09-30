@@ -89,7 +89,7 @@ export const getTimeFieldsFromUrl = () => {
 }
 
 export const displayLoadingModal = () => {
-  const kibanaBody = document.getElementById("kibana-app");
+  const kibanaBody = document.getElementById("kibana-body");
   if (kibanaBody) {
     try {
       const loadingModal = document.createElement("div");
