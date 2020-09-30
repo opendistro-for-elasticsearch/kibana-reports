@@ -123,17 +123,19 @@ export default function (router: IRouter) {
         return response.badRequest({ body: error });
       }
 
-      let newStatus;
+      let newStatus = REPORT_DEFINITION_STATUS.active;
       /* 
       "enabled = false" means de-scheduling a job.
       TODO: also remove any job in queue and release lock, consider do that
       within the createSchedule API exposed from reports-scheduler
       */
-      const enabled = reportDefinition.trigger.trigger_params.enabled;
-      if (enabled) {
-        newStatus = REPORT_DEFINITION_STATUS.active;
-      } else {
-        newStatus = REPORT_DEFINITION_STATUS.disabled;
+      if (reportDefinition.trigger.trigger_type == 'Schedule') {
+        const enabled = reportDefinition.trigger.trigger_params.enabled;
+        if (enabled) {
+          newStatus = REPORT_DEFINITION_STATUS.active;
+        } else {
+          newStatus = REPORT_DEFINITION_STATUS.disabled;
+        }
       }
 
       // Update report definition metadata

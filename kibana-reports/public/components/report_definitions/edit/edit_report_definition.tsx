@@ -31,19 +31,30 @@ import { ReportTrigger } from '../report_trigger';
 export function EditReportDefinition(props) {
   const reportDefinitionId = props['match']['params']['reportDefinitionId'];
   let editReportDefinitionRequest = {
-    report_name: '',
-    report_source: '',
-    report_type: '',
-    description: '',
     report_params: {
-      url: '',
-      report_format: '',
+      report_name: '',
+      report_source: '',
+      description: '',
+      core_params: {
+        base_url: '',
+        report_format: '',
+        time_duration: '',
+      },
     },
-    delivery: {},
-    trigger: {},
+    //TODO: add this field back when the notification module became available
+    // delivery: {},
+    trigger: {
+      trigger_type: '',
+    },
+  };
+
+  let timeRange = {
+    timeFrom: new Date(),
+    timeTo: new Date(),
   };
 
   const editReportDefinition = async (metadata) => {
+    delete metadata.delivery;
     const { httpClient } = props;
     httpClient
       .put(`../api/reporting/reportDefinitions/${reportDefinitionId}`, {
@@ -58,6 +69,33 @@ export function EditReportDefinition(props) {
       });
   };
 
+  useEffect(() => {
+    const { httpClient } = props;
+    httpClient
+      .get(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
+      .then((response) => {
+        props.setBreadcrumbs([
+          {
+            text: 'Reporting',
+            href: '#',
+          },
+          {
+            text: `Report definition details: ${response.report_definition.report_params.report_name}`,
+            href: `#/report_definition_details/${reportDefinitionId}`,
+          },
+          {
+            text: `Edit report definition: ${response.report_definition.report_params.report_name}`,
+          },
+        ]);
+      })
+      .catch((error) => {
+        console.error(
+          'error when loading edit report definition page: ',
+          error
+        );
+      });
+  }, []);
+
   return (
     <EuiPage>
       <EuiPageBody>
@@ -70,6 +108,7 @@ export function EditReportDefinition(props) {
           editDefinitionId={reportDefinitionId}
           reportDefinitionRequest={editReportDefinitionRequest}
           httpClientProps={props['httpClient']}
+          timeRange={timeRange}
         />
         <EuiSpacer />
         <ReportTrigger
@@ -77,6 +116,7 @@ export function EditReportDefinition(props) {
           editDefinitionId={reportDefinitionId}
           reportDefinitionRequest={editReportDefinitionRequest}
           httpClientProps={props['httpClient']}
+          timeRange={timeRange}
         />
         <EuiSpacer />
         <ReportDelivery
@@ -84,6 +124,7 @@ export function EditReportDefinition(props) {
           editDefinitionId={reportDefinitionId}
           reportDefinitionRequest={editReportDefinitionRequest}
           httpClientProps={props['httpClient']}
+          timeRange={timeRange}
         />
         <EuiSpacer />
         <EuiFlexGroup justifyContent="flexEnd">
