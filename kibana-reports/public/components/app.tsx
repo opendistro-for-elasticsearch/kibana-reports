@@ -55,7 +55,8 @@ interface OpendistroKibanaReportsAppDeps {
 
 const styles: CSS.Properties = {
   float: 'left',
-  width: '1500px',
+  width: "100%",
+  maxWidth: '1600px',
 };
 
 export const OpendistroKibanaReportsApp = ({
