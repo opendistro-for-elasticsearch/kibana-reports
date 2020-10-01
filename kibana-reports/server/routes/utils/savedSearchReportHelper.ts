@@ -25,6 +25,7 @@ import {
   ILegacyScopedClusterClient,
 } from '../../../../../src/core/server';
 import { getFileName, callCluster } from './helpers';
+import { CreateReportResultType } from './types';
 
 /**
  * Specify how long scroll context should be maintained for scrolled search
@@ -34,7 +35,7 @@ const scrollTimeout = '1m';
 export async function createSavedSearchReport(
   report: any,
   client: ILegacyClusterClient | ILegacyScopedClusterClient
-): Promise<{ timeCreated: number; dataUrl: string; fileName: string }> {
+): Promise<CreateReportResultType> {
   const params = report.report_definition.report_params;
   const reportFormat = params.core_params.report_format;
   const reportName = params.report_name;

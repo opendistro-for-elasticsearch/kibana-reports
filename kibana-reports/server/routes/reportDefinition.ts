@@ -20,6 +20,7 @@ import {
   ResponseError,
   RequestHandlerContext,
   KibanaRequest,
+  ILegacyScopedClusterClient,
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
@@ -352,7 +353,7 @@ async function createScheduledJob(
   const triggerParams = trigger.trigger_params;
 
   // @ts-ignore
-  const schedulerClient = context.reporting_plugin.schedulerClient.asScoped(
+  const schedulerClient: ILegacyScopedClusterClient = context.reporting_plugin.schedulerClient.asScoped(
     request
   );
 

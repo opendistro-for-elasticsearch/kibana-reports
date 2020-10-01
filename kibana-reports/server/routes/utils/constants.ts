@@ -29,6 +29,7 @@ export enum REPORT_STATE {
   created = 'Created',
   error = 'Error',
   pending = 'Pending',
+  shared = 'Shared',
 }
 
 export enum REPORT_DEFINITION_STATUS {
@@ -64,6 +65,12 @@ export enum TRIGGER_TYPE {
   onDemand = 'On demand',
   alerting = 'Alerting',
 }
+
+export enum DELIVERY_TYPE {
+  kibanaUser = 'Kibana user',
+  channel = 'Channel',
+}
+
 // https://www.elastic.co/guide/en/elasticsearch/reference/6.8/search-request-from-size.html
 export const DEFAULT_MAX_SIZE = 10000;
 
