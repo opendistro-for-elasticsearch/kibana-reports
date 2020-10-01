@@ -132,18 +132,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
     setMonthlyDaySelect(e.target.value);
   };
 
-  const handleMonitor = (e: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    setMonitor(e.target.value);
-  };
-
-  const handleTrigger = (e: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    setTrigger(e.target.value);
-  };
-
   const TimezoneSelect = () => {
     return (
       <div>
@@ -364,7 +352,9 @@ export function ReportTrigger(props: ReportTriggerProps) {
           label="Custom cron expression"
           labelAppend={
             <EuiText size="xs">
-              <EuiLink href="https://opendistro.github.io/for-elasticsearch-docs/docs/alerting/cron/">Cron help</EuiLink>
+              <EuiLink href="https://opendistro.github.io/for-elasticsearch-docs/docs/alerting/cron/">
+                Cron help
+              </EuiLink>
             </EuiText>
           }
         >
@@ -451,60 +441,23 @@ export function ReportTrigger(props: ReportTriggerProps) {
     );
   };
 
-  const AlertTrigger = () => {
-    return (
-      <div>
-        <EuiFlexGroup alignItems="flexStart">
-          <EuiFlexItem>
-            <EuiFormRow label="Select monitor">
-              <EuiSelect
-                id="selectAlertMonitor"
-                options={AVAILABLE_MONITOR_OPTIONS}
-                value={monitor}
-                onChange={handleMonitor}
-              />
-            </EuiFormRow>
-          </EuiFlexItem>
-          <EuiFlexItem>
-            <EuiFormRow label="Select trigger">
-              <EuiSelect
-                id="selectAlertTrigger"
-                options={AVAILABLE_TRIGGER_OPTIONS}
-                value={trigger}
-                onChange={handleTrigger}
-              />
-            </EuiFormRow>
-          </EuiFlexItem>
-          <EuiFlexItem></EuiFlexItem>
-          <EuiFlexItem></EuiFlexItem>
-          <EuiFlexItem></EuiFlexItem>
-        </EuiFlexGroup>
-      </div>
-    );
-  };
-
   const schedule =
     reportTriggerType === 'Schedule' ? <ScheduleTrigger /> : null;
 
-  const alert = reportTriggerType === 'Alerting' ? <AlertTrigger /> : null;
-
   const defaultEditTriggerType = (trigger_type) => {
     let index = 0;
-    for (index; index < REPORT_TYPE_OPTIONS.length; ++index) {
-      if (REPORT_TYPE_OPTIONS[index].label.includes(trigger_type)) {
-        setReportTriggerType(REPORT_TYPE_OPTIONS[index].id);
+    for (index; index < TRIGGER_TYPE_OPTIONS.length; ++index) {
+      if (TRIGGER_TYPE_OPTIONS[index].label.includes(trigger_type)) {
+        setReportTriggerType(TRIGGER_TYPE_OPTIONS[index].id);
       }
     }
   };
 
   const defaultEditRequestType = (trigger) => {
     let index;
-    for (index in SCHEDULE_REQUEST_TIME_OPTIONS) {
-      if (
-        SCHEDULE_REQUEST_TIME_OPTIONS[index].label ===
-        trigger.trigger_params.schedule_type
-      ) {
-        setScheduleRequestTime(SCHEDULE_REQUEST_TIME_OPTIONS[index].id);
+    for (index in SCHEDULE_TYPE_OPTIONS) {
+      if (SCHEDULE_TYPE_OPTIONS[index].label === trigger.trigger_type) {
+        setScheduleType(SCHEDULE_TYPE_OPTIONS[index].id);
       }
     }
   };
@@ -519,7 +472,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
       httpClientProps
         .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
         .then(async (response) => {
-          defaultConfigurationEdit(response.trigger);
+          defaultConfigurationEdit(response.report_definition.trigger);
         });
     }
     // Set default trigger_type
@@ -548,7 +501,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
         </EuiFormRow>
         <EuiSpacer />
         {schedule}
-        {alert}
       </EuiPageContentBody>
     </EuiPageContent>
   );

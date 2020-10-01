@@ -19,7 +19,6 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiFormRow,
-  EuiButton,
   EuiPageHeader,
   EuiTitle,
   EuiPageContent,
@@ -29,20 +28,15 @@ import {
   EuiSpacer,
   EuiRadioGroup,
   EuiSelect,
-  EuiCheckbox,
-  EuiSuperDatePicker,
   EuiTextArea,
-  EuiPage,
   EuiCheckboxGroup,
 } from '@elastic/eui';
-import moment from 'moment';
 import {
   REPORT_SOURCE_RADIOS,
   PDF_PNG_FILE_FORMAT_OPTIONS,
   HEADER_FOOTER_CHECKBOX,
   REPORT_SOURCE_TYPES,
 } from './report_settings_constants';
-import dateMath from '@elastic/datemath';
 import Showdown from 'showdown';
 import ReactMde from 'react-mde';
 import 'react-mde/lib/styles/css/react-mde-all.css';
@@ -50,125 +44,16 @@ import {
   reportDefinitionParams,
   timeRangeParams,
 } from '../create/create_report_definition';
-import { parseInContextUrl } from './report_settings_helpers';
-
-const isValidTimeRange = (
-  timeRangeMoment: number | moment.Moment,
-  limit: string
-) => {
-  if (limit === 'start') {
-    if (!timeRangeMoment || !timeRangeMoment.isValid()) {
-      throw new Error('Unable to parse start string');
-    }
-  } else if (limit === 'end') {
-    if (
-      !timeRangeMoment ||
-      !timeRangeMoment.isValid() ||
-      timeRangeMoment > moment()
-    ) {
-      throw new Error('Unable to parse end string');
-    }
-  }
-};
-
-function TimeRangeSelect(props) {
-  const { reportDefinitionRequest, timeRange } = props;
-
-  const [recentlyUsedRanges, setRecentlyUsedRanges] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [start, setStart] = useState('now-30m');
-  const [end, setEnd] = useState('now');
-  const [isPaused, setIsPaused] = useState(true);
-  const [refreshInterval, setRefreshInterval] = useState();
-
-  useEffect(() => {
-    // if we are coming from the in-context menu
-    if (window.location.href.indexOf("?") > -1) {
-      const url = window.location.href;
-      const timeFrom = parseInContextUrl(url, 'timeFrom');
-      const timeTo = parseInContextUrl(url, 'timeTo');
-      parseTimeRange(timeFrom, timeTo, reportDefinitionRequest);
-      onTimeChange({start: timeFrom, end: timeTo});
-    }
-    else {
-      parseTimeRange(start, end, reportDefinitionRequest);
-    }
-  }, [start, end]);
-
-  const onTimeChange = ({ start, end }) => {
-    const recentlyUsedRange = recentlyUsedRanges.filter((recentlyUsedRange) => {
-      const isDuplicate =
-        recentlyUsedRange.start === start && recentlyUsedRange.end === end;
-      return !isDuplicate;
-    });
-    recentlyUsedRange.unshift({ start, end });
-    setStart(start);
-    setEnd(end);
-    setRecentlyUsedRanges(
-      recentlyUsedRange.length > 10
-        ? recentlyUsedRange.slice(0, 9)
-        : recentlyUsedRange
-    );
-    setIsLoading(true);
-    startLoading();
-  };
-
-  const parseTimeRange = (start, end, reportDefinitionRequest) => {
-    timeRange.timeFrom = dateMath.parse(start);
-    timeRange.timeTo = dateMath.parse(end);
-    const timeDuration = moment.duration(
-      dateMath.parse(end).diff(dateMath.parse(start))
-    );
-    reportDefinitionRequest.report_params.core_params.time_duration = timeDuration.toISOString();
-  };
-
-  const onRefresh = ({ start, end, refreshInterval }) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, 100);
-    }).then(() => {
-      console.log(start, end, refreshInterval);
-    });
-  };
-
-  const startLoading = () => {
-    setTimeout(stopLoading, 1000);
-  };
-
-  const stopLoading = () => {
-    setIsLoading(false);
-  };
-
-  const onRefreshChange = ({ isPaused, refreshInterval }) => {
-    setIsPaused(isPaused);
-    setRefreshInterval(refreshInterval);
-  };
-
-  isValidTimeRange(dateMath.parse(start), 'start');
-  isValidTimeRange(dateMath.parse(end, { roundUp: true }), 'end');
-
-  return (
-    <div>
-      <EuiFormRow
-        label="Time range"
-        helpText="Time range is relative to the report creation date on the report trigger."
-      >
-        <EuiSuperDatePicker
-          isDisabled={false}
-          isLoading={isLoading}
-          start={start}
-          end={end}
-          onTimeChange={onTimeChange}
-          onRefresh={onRefresh}
-          isPaused={isPaused}
-          refreshInterval={refreshInterval}
-          onRefreshChange={onRefreshChange}
-          recentlyUsedRanges={recentlyUsedRanges}
-          showUpdateButton={false}
-        />
-      </EuiFormRow>
-    </div>
-  );
-}
+import {
+  parseInContextUrl,
+  getSavedSearchBaseUrlCreate,
+  getVisualizationBaseUrlCreate,
+  getSavedSearchOptions,
+  getVisualizationOptions,
+  getDashboardBaseUrlCreate,
+  getDashboardOptions,
+} from './report_settings_helpers';
+import { TimeRangeSelect } from './time_range';
 
 type ReportSettingProps = {
   edit: boolean;
@@ -235,17 +120,18 @@ export function ReportSettings(props: ReportSettingProps) {
     if (e === 'dashboardReportSource') {
       reportDefinitionRequest.report_params.report_source = 'Dashboard';
       reportDefinitionRequest.report_params.core_params.base_url =
-        getDashboardBaseUrlCreate() + dashboards[0].value;
+        getDashboardBaseUrlCreate(edit, editDefinitionId) + dashboards[0].value;
     } else if (e === 'visualizationReportSource') {
       reportDefinitionRequest.report_params.report_source = 'Visualization';
       reportDefinitionRequest.report_params.core_params.base_url =
-        getVisualizationBaseUrlCreate() + visualizations[0].value;
+        getVisualizationBaseUrlCreate(edit) + visualizations[0].value;
     } else if (e === 'savedSearchReportSource') {
       reportDefinitionRequest.report_params.report_source = 'Saved search';
-      reportDefinitionRequest.report_params.core_params.base_url = 
-        getSavedSearchBaseUrlCreate() + savedSearches[0].value;
-      reportDefinitionRequest.report_params.core_params.saved_search_id = savedSearches[0].value;
-      reportDefinitionRequest.report_params.core_params.report_format = "csv";
+      reportDefinitionRequest.report_params.core_params.base_url =
+        getSavedSearchBaseUrlCreate(edit) + savedSearches[0].value;
+      reportDefinitionRequest.report_params.core_params.saved_search_id =
+        savedSearches[0].value;
+      reportDefinitionRequest.report_params.core_params.report_format = 'csv';
       reportDefinitionRequest.report_params.core_params.limit = 10000;
       reportDefinitionRequest.report_params.core_params.excel = true;
     }
@@ -271,7 +157,8 @@ export function ReportSettings(props: ReportSettingProps) {
     target: { value: React.SetStateAction<string> };
   }) => {
     setSavedSearchSourceSelect(e.target.value);
-    reportDefinitionRequest.report_params.core_params.saved_search_id = e.target.value;
+    reportDefinitionRequest.report_params.core_params.saved_search_id =
+      e.target.value;
   };
 
   const handleFileFormat = (e: React.SetStateAction<string>) => {
@@ -390,8 +277,11 @@ export function ReportSettings(props: ReportSettingProps) {
         </EuiFormRow>
         <EuiSpacer />
         <TimeRangeSelect
-          timeRange={timeRange}
           reportDefinitionRequest={reportDefinitionRequest}
+          timeRange={timeRange}
+          edit={edit}
+          id={editDefinitionId}
+          httpClientProps={httpClientProps}
         />
         <EuiSpacer />
         <PDFandPNGFileFormats />
@@ -416,6 +306,9 @@ export function ReportSettings(props: ReportSettingProps) {
         <TimeRangeSelect
           timeRange={timeRange}
           reportDefinitionRequest={reportDefinitionRequest}
+          edit={edit}
+          id={editDefinitionId}
+          httpClientProps={httpClientProps}
         />
         <EuiSpacer />
         <PDFandPNGFileFormats />
@@ -440,6 +333,9 @@ export function ReportSettings(props: ReportSettingProps) {
         <TimeRangeSelect
           timeRange={timeRange}
           reportDefinitionRequest={reportDefinitionRequest}
+          edit={edit}
+          id={editDefinitionId}
+          httpClientProps={httpClientProps}
         />
         <EuiSpacer />
         <EuiFormRow label="File format">
@@ -465,33 +361,6 @@ export function ReportSettings(props: ReportSettingProps) {
     reportSourceId === 'savedSearchReportSource' ? (
       <ReportSourceSavedSearch />
     ) : null;
-
-  const getReportSettingDashboardOptions = (data) => {
-    let index;
-    let dashboard_options = [];
-    for (index = 0; index < data.length; ++index) {
-      let entry = {
-        value: data[index]['_id'].substring(10),
-        text: data[index]['_source']['dashboard']['title'],
-      };
-      dashboard_options.push(entry);
-    }
-    return dashboard_options;
-  };
-
-  const getDashboardBaseUrlCreate = () => {
-    let baseUrl = window.location.href;
-    if (edit) {
-      return baseUrl.replace(
-        `opendistro_kibana_reports#/edit/${editDefinitionId}`,
-        'dashboards#/view/'
-      );
-    }
-    return baseUrl.replace(
-      'opendistro_kibana_reports#/create',
-      'kibana#/dashboard/'
-    );
-  };
 
   const setReportSourceDropdownOption = (options, reportSource, url) => {
     let index = 0;
@@ -528,23 +397,28 @@ export function ReportSettings(props: ReportSettingProps) {
   };
 
   const setDefaultEditValues = async (response, reportSourceOptions) => {
-    setReportName(response.report_name);
-    setReportDescription(response.description);
-    reportDefinitionRequest.report_params.report_name = response.report_name;
-    reportDefinitionRequest.report_params.description = response.description;
-    reportDefinitionRequest.report_params = response.report_params;
+    setReportName(response.report_definition.report_params.report_name);
+    setReportDescription(response.report_definition.report_params.description);
+    reportDefinitionRequest.report_params.report_name =
+      response.report_definition.report_params.report_name;
+    reportDefinitionRequest.report_params.description =
+      response.report_definition.report_params.description;
+    reportDefinitionRequest.report_params =
+      response.report_definition.report_params;
+    const reportSource = response.report_definition.report_params.report_source;
     REPORT_SOURCE_RADIOS.map((radio) => {
-      if (radio.label === response.report_source) {
+      if (radio.label === reportSource) {
         setReportSourceId(radio.id);
-        reportDefinitionRequest.report_params.report_source =
-          response.report_source;
+        reportDefinitionRequest.report_params.report_source = reportSource;
       }
     });
-    setDefaultFileFormat(response['report_params']['report_format']);
+    setDefaultFileFormat(
+      response.report_definition.report_params.core_params.report_format
+    );
     setReportSourceDropdownOption(
       reportSourceOptions,
-      response['report_source'],
-      response['report_params']['url']
+      reportSource,
+      response.report_definition.report_params.core_params.base_url
     );
   };
 
@@ -552,10 +426,10 @@ export function ReportSettings(props: ReportSettingProps) {
     let editData = {};
     await httpClientProps
       .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
-      .then(async (response) => {
+      .then(async (response: {}) => {
         editData = response;
       })
-      .catch((error) => {
+      .catch((error: any) => {
         console.error('error in fetching report definition details:', error);
       });
     return editData;
@@ -571,9 +445,7 @@ export function ReportSettings(props: ReportSettingProps) {
     await httpClientProps
       .get('../api/reporting/getReportSource/dashboard')
       .then(async (response) => {
-        let dashboardOptions = getReportSettingDashboardOptions(
-          response['hits']['hits']
-        );
+        let dashboardOptions = getDashboardOptions(response['hits']['hits']);
         reportSourceOptions.dashboard = dashboardOptions;
         handleDashboards(dashboardOptions);
         if (!edit) {
@@ -618,60 +490,6 @@ export function ReportSettings(props: ReportSettingProps) {
     return reportSourceOptions;
   };
 
-  const getVisualizationOptions = (data) => {
-    let index;
-    let options = [];
-    for (index = 0; index < data.length; ++index) {
-      let entry = {
-        value: data[index]['_id'].substring(14),
-        text: data[index]['_source']['visualization']['title'],
-      };
-      options.push(entry);
-    }
-    return options;
-  };
-
-  const getSavedSearchOptions = (data) => {
-    let index;
-    let options = [];
-    for (index = 0; index < data.length; ++index) {
-      let entry = {
-        value: data[index]['_id'].substring(7),
-        text: data[index]['_source']['search']['title'],
-      };
-      options.push(entry);
-    }
-    return options;
-  };
-
-  const getVisualizationBaseUrlCreate = () => {
-    let baseUrl = window.location.href;
-    if (edit) {
-      return baseUrl.replace(
-        'opendistro_kibana_reports#/edit',
-        'kibana#/visualize/edit/'
-      );
-    }
-    return baseUrl.replace(
-      'opendistro_kibana_reports#/create',
-      'kibana#/visualize/edit/'
-    );
-  };
-
-  const getSavedSearchBaseUrlCreate = () => {
-    let baseUrl = window.location.href;
-    if (edit) {
-      return baseUrl.replace(
-        'opendistro_kibana_reports#/edit',
-        'kibana#/discover/',
-      )
-    }
-    return baseUrl.replace(
-      'opendistro_kibana_reports#/create',
-      'kibana#/discover/'
-    );
-  }
-
   useEffect(() => {
     let reportSourceOptions = {};
     let editData = {};
@@ -687,14 +505,13 @@ export function ReportSettings(props: ReportSettingProps) {
       }
     });
 
-    if (window.location.href.indexOf("?") > -1) {
+    if (window.location.href.indexOf('?') > -1) {
       const url = window.location.href;
-      const id = parseInContextUrl(url, "id");
-      if (url.includes("dashboard")) {
+      const id = parseInContextUrl(url, 'id');
+      if (url.includes('dashboard')) {
         setReportSourceId('dashboardReportSource');
         setDashboardSourceSelect(id);
-      }
-      else if (url.includes("visualize")) {
+      } else if (url.includes('visualize')) {
         setReportSourceId('visualizationReportSource');
         setVisualizationSourceSelect(id);
       }
