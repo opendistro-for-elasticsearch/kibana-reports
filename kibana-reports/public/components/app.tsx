@@ -117,6 +117,7 @@ export const OpendistroKibanaReportsApp = ({
                         title="Edit Report Definition"
                         httpClient={http}
                         {...props}
+                        setBreadcrumbs={chrome.setBreadcrumbs}
                       />
                     )}
                   />
