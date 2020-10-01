@@ -129,7 +129,7 @@ export default function (router: IRouter) {
       TODO: also remove any job in queue and release lock, consider do that
       within the createSchedule API exposed from reports-scheduler
       */
-      if (reportDefinition.trigger.trigger_type == 'Schedule') {
+      if (reportDefinition.trigger.trigger_type == TRIGGER_TYPE.schedule) {
         const enabled = reportDefinition.trigger.trigger_params.enabled;
         if (enabled) {
           newStatus = REPORT_DEFINITION_STATUS.active;

@@ -54,6 +54,7 @@ export function EditReportDefinition(props) {
   };
 
   const editReportDefinition = async (metadata) => {
+    // TODO: remove this delete line after delivery integration
     delete metadata.delivery;
     const { httpClient } = props;
     httpClient
