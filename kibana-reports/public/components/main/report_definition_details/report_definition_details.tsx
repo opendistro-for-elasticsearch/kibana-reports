@@ -115,10 +115,6 @@ export function ReportDefinitionDetails(props) {
       });
   }, []);
 
-  useEffect(() => {
-    
-  }, []);
-
   const fileFormatDownload = (data) => {
     let formatUpper = data['fileFormat'];
     formatUpper = fileFormatsUpper[formatUpper];
