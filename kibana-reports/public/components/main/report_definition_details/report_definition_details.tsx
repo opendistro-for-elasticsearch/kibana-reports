@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   EuiFlexGroup,
   EuiFlexItem,
@@ -37,10 +37,7 @@ import moment from 'moment';
 export function ReportDefinitionDetails(props) {
   const [reportDefinitionDetails, setReportDefinitionDetails] = useState({});
   const [reportDefinitionRawResponse, setReportDefinitionRawResponse] = useState({});
-  let [,rerender] = useState();
   const reportDefinitionId = props.match['params']['reportDefinitionId'];
-
-  const forceUpdate: () => void = useState()[1].bind(null, {})  // see NOTE below
 
   const handleReportDefinitionDetails = (e) => {
     setReportDefinitionDetails(e);
@@ -118,6 +115,10 @@ export function ReportDefinitionDetails(props) {
       });
   }, []);
 
+  useEffect(() => {
+    
+  }, []);
+
   const fileFormatDownload = (data) => {
     let formatUpper = data['fileFormat'];
     formatUpper = fileFormatsUpper[formatUpper];
@@ -143,22 +144,16 @@ export function ReportDefinitionDetails(props) {
     return new Date(time_difference);
   }
 
-  const updateAfterStatusChange = () => {
-    const update = useCallback(() => {
-      rerender(tick => tick + 1);
-    }, [])
-    return update;
-  }
-
   const changeScheduledReportDefinitionStatus = (statusChange) => {
     let updatedReportDefinition = reportDefinitionRawResponse.report_definition;
     if (statusChange === 'Disable') {
       updatedReportDefinition.trigger.trigger_params.enabled = false;
+      updatedReportDefinition.status = 'Disabled';
     } 
     else if (statusChange === 'Enable') {
       updatedReportDefinition.trigger.trigger_params.enabled = true;
+      updatedReportDefinition.status = 'Active';
     }
-
 
     // update report definition
     const { httpClient } = props;
@@ -167,19 +162,10 @@ export function ReportDefinitionDetails(props) {
       params: reportDefinitionId.toString(),
     })
     .then(() => {
-      handleReportDefinitionRawResponse(updatedReportDefinition);
-      const test = {report_definition: {}};
-      test.report_definition = updatedReportDefinition;
-      setReportDefinitionDetails(getReportDefinitionDetailsMetadata(test));
-      // const test = getReportDefinitionDetailsMetadata(updatedReportDefinition);
-      // setReportDefinitionDetails(test);
-      // const update = useCallback(() => {
-      //   rerender(tick => tick + 1);
-      // }, [])
-      // return update;
-      // rerender({});
-      forceUpdate();
-      // updateAfterStatusChange();
+      const updatedRawResponse = {report_definition: {}};
+      updatedRawResponse.report_definition = updatedReportDefinition;
+      handleReportDefinitionRawResponse(updatedRawResponse);
+      setReportDefinitionDetails(getReportDefinitionDetailsMetadata(updatedRawResponse));
     })
     .catch((error) => {
       console.error('error in updating report definition status:', error);
@@ -216,7 +202,7 @@ export function ReportDefinitionDetails(props) {
     const { httpClient } = props;
     httpClient
       .delete(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
-      .then((response) => {
+      .then(() => {
         window.location.assign(`opendistro_kibana_reports#/`);
       })
       .catch((error) => {
