@@ -30,17 +30,22 @@ import {
   EuiLink,
 } from '@elastic/eui';
 import { ReportDetailsComponent } from '../report_details/report_details';
-import { fileFormatsUpper } from '../main_utils';
+import { fileFormatsUpper, generateReport } from '../main_utils';
 import { ReportDefinitionSchemaType } from '../../../../server/model';
 import moment from 'moment';
 
 export function ReportDefinitionDetails(props) {
   const [reportDefinitionDetails, setReportDefinitionDetails] = useState({});
+  const [reportDefinitionRawResponse, setReportDefinitionRawResponse] = useState({});
   const reportDefinitionId = props.match['params']['reportDefinitionId'];
 
   const handleReportDefinitionDetails = (e) => {
     setReportDefinitionDetails(e);
   };
+
+  const handleReportDefinitionRawResponse = (e) => {
+    setReportDefinitionRawResponse(e);
+  }
 
   const getReportDefinitionDetailsMetadata = (data) => {
     const reportDefinition: ReportDefinitionSchemaType = data.report_definition;
@@ -91,6 +96,7 @@ export function ReportDefinitionDetails(props) {
     httpClient
       .get(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
       .then((response) => {
+        handleReportDefinitionRawResponse(response);
         handleReportDefinitionDetails(
           getReportDefinitionDetailsMetadata(response)
         );
@@ -128,26 +134,71 @@ export function ReportDefinitionDetails(props) {
     );
   };
 
-  const scheduleOrOnDemandDefinition = (data) => {
-    if (data.scheduleDetails === 'Now') {
-      return <EuiButton>Generate report</EuiButton>;
-    } else if (
-      data.triggerType === 'Schedule' ||
-      data.triggerType === 'Trigger'
-    ) {
-      if (data.status === 'Active') {
-        return <EuiButton>Disable</EuiButton>;
-      } else {
-        return <EuiButton>Enable</EuiButton>;
-      }
+  const getRelativeStartDate = (duration) => {
+    duration = moment.duration(duration);
+    let time_difference = moment.now() - duration;
+    return new Date(time_difference);
+  }
+
+  const changeScheduledReportDefinitionStatus = (statusChange) => {
+    let updatedReportDefinition = reportDefinitionRawResponse.report_definition;
+    if (statusChange === 'Disable') {
+      updatedReportDefinition.trigger.trigger_params.enabled = false;
+      updatedReportDefinition.status = 'Disabled';
+    } 
+    else if (statusChange === 'Enable') {
+      updatedReportDefinition.trigger.trigger_params.enabled = true;
+      updatedReportDefinition.status = 'Active';
     }
-  };
+
+    // update report definition
+    const { httpClient } = props;
+    httpClient.put(`../api/reporting/reportDefinitions/${reportDefinitionId}`, {
+      body: JSON.stringify(updatedReportDefinition),
+      params: reportDefinitionId.toString(),
+    })
+    .then(() => {
+      const updatedRawResponse = {report_definition: {}};
+      updatedRawResponse.report_definition = updatedReportDefinition;
+      handleReportDefinitionRawResponse(updatedRawResponse);
+      setReportDefinitionDetails(getReportDefinitionDetailsMetadata(updatedRawResponse));
+    })
+    .catch((error) => {
+      console.error('error in updating report definition status:', error);
+    })
+  }
+
+  const ScheduledDefinitionStatus = () => {
+    const status = (reportDefinitionDetails.status === 'Active')
+      ? 'Disable'
+      : 'Enable';
+      
+    return (
+      <EuiButton onClick={() => changeScheduledReportDefinitionStatus(status)}>
+        {status}
+      </EuiButton>
+    )
+  }
+
+  const generateReportFromDetails = () => {
+    let duration = 
+    reportDefinitionRawResponse.report_definition.report_params.core_params.time_duration;
+    const fromDate = getRelativeStartDate(duration);
+    let onDemandDownloadMetadata = {
+      query_url: `${reportDefinitionDetails.baseUrl}?_g=(time:(from:'${fromDate.toISOString()}',to:'${moment().toISOString()}'))`,
+      time_from: fromDate.valueOf(),
+      time_to: moment().valueOf(),
+      report_definition: reportDefinitionRawResponse.report_definition
+    };
+    const {httpClient} = props;
+    generateReport(onDemandDownloadMetadata, httpClient);
+  }
 
   const deleteReportDefinition = () => {
     const { httpClient } = props;
     httpClient
       .delete(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
-      .then((response) => {
+      .then(() => {
         window.location.assign(`opendistro_kibana_reports#/`);
       })
       .catch((error) => {
@@ -158,6 +209,12 @@ export function ReportDefinitionDetails(props) {
   const includeReportAsAttachmentString = reportDefinitionDetails.includeReportAsAttachment
     ? 'True'
     : 'False';
+
+  
+
+  const showActionButton = (reportDefinitionDetails.triggerType === 'On demand')
+    ? <EuiButton onClick={() => generateReportFromDetails()}>Generate report</EuiButton>
+    : <ScheduledDefinitionStatus/>
 
   return (
     <EuiPage>
@@ -188,7 +245,7 @@ export function ReportDefinitionDetails(props) {
                 </EuiButton>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
-                {scheduleOrOnDemandDefinition(reportDefinitionDetails)}
+                {showActionButton}
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
                 <EuiButton
