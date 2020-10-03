@@ -67,7 +67,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
   } = props;
 
   const [reportTriggerType, setReportTriggerType] = useState('On demand');
-
   const [scheduleType, setScheduleType] = useState('Recurring');
   //TODO: should read local timezone and display
   const [timezone, setTimezone] = useState(TIMEZONE_OPTIONS[0].value);

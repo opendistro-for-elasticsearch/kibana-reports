@@ -71,6 +71,11 @@ export enum DELIVERY_TYPE {
   channel = 'Channel',
 }
 
+export enum EMAIL_FORMAT {
+  embeddedHtml = 'Embedded HTML',
+  attachment = 'Attachment',
+}
+
 // https://www.elastic.co/guide/en/elasticsearch/reference/6.8/search-request-from-size.html
 export const DEFAULT_MAX_SIZE = 10000;
 

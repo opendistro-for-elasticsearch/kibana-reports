@@ -34,14 +34,19 @@ const scrollTimeout = '1m';
 
 export async function createSavedSearchReport(
   report: any,
-  client: ILegacyClusterClient | ILegacyScopedClusterClient
+  client: ILegacyClusterClient | ILegacyScopedClusterClient,
+  isScheduledTask: boolean = true
 ): Promise<CreateReportResultType> {
   const params = report.report_definition.report_params;
   const reportFormat = params.core_params.report_format;
   const reportName = params.report_name;
 
-  await populateMetaData(client, report);
-  const data = await generateReportData(client, params.core_params);
+  await populateMetaData(client, report, isScheduledTask);
+  const data = await generateReportData(
+    client,
+    params.core_params,
+    isScheduledTask
+  );
 
   const curTime = new Date();
   const timeCreated = curTime.valueOf();
@@ -60,7 +65,8 @@ export async function createSavedSearchReport(
  */
 async function populateMetaData(
   client: ILegacyClusterClient | ILegacyScopedClusterClient,
-  report: any
+  report: any,
+  isScheduledTask: boolean
 ) {
   metaData.saved_search_id =
     report.report_definition.report_params.core_params.saved_search_id;
@@ -75,7 +81,7 @@ async function populateMetaData(
     index: '.kibana',
     id: 'search:' + metaData.saved_search_id,
   };
-  const ssInfos = await callCluster(client, 'get', ssParams);
+  const ssInfos = await callCluster(client, 'get', ssParams, isScheduledTask);
 
   metaData.sorting = ssInfos._source.search.sort;
   metaData.type = ssInfos._source.type;
@@ -89,10 +95,15 @@ async function populateMetaData(
   for (const item of ssInfos._source.references) {
     if (item.name === JSON.parse(metaData.filters).indexRefName) {
       // Get index-pattern information
-      const indexPattern = await callCluster(client, 'get', {
-        index: '.kibana',
-        id: 'index-pattern:' + item.id,
-      });
+      const indexPattern = await callCluster(
+        client,
+        'get',
+        {
+          index: '.kibana',
+          id: 'index-pattern:' + item.id,
+        },
+        isScheduledTask
+      );
       resIndexPattern = indexPattern._source['index-pattern'];
       metaData.paternName = resIndexPattern.title;
       (metaData.timeFieldName = resIndexPattern.timeFieldName),
@@ -114,7 +125,8 @@ async function populateMetaData(
  */
 async function generateReportData(
   client: ILegacyClusterClient | ILegacyScopedClusterClient,
-  params: any
+  params: any,
+  isScheduledTask: boolean
 ) {
   let esData: any = {};
   const arrayHits: any = [];
@@ -138,10 +150,15 @@ async function generateReportData(
 
   // Fetch ES query max size windows to decide search or scroll
   async function getMaxResultSize() {
-    const settings = await callCluster(client, 'indices.getSettings', {
-      index: indexPattern,
-      includeDefaults: true,
-    });
+    const settings = await callCluster(
+      client,
+      'indices.getSettings',
+      {
+        index: indexPattern,
+        includeDefaults: true,
+      },
+      isScheduledTask
+    );
     // The location of max result window differs if default overridden.
     return settings[indexPattern].settings.index.max_result_window != null
       ? settings[indexPattern].settings.index.max_result_window
@@ -151,46 +168,71 @@ async function generateReportData(
   // Build the ES Count query to count the size of result
   async function getEsDataSize() {
     const countReq = buildQuery(report, 1);
-    return await callCluster(client, 'count', {
-      index: indexPattern,
-      body: countReq.toJSON(),
-    });
+    return await callCluster(
+      client,
+      'count',
+      {
+        index: indexPattern,
+        body: countReq.toJSON(),
+      },
+      isScheduledTask
+    );
   }
 
   async function getEsDataByScroll() {
     // Open scroll context by fetching first batch
-    esData = await callCluster(client, 'search', {
-      index: report._source.paternName,
-      scroll: scrollTimeout,
-      body: reqBody,
-      size: maxResultSize,
-    });
+    esData = await callCluster(
+      client,
+      'search',
+      {
+        index: report._source.paternName,
+        scroll: scrollTimeout,
+        body: reqBody,
+        size: maxResultSize,
+      },
+      isScheduledTask
+    );
     arrayHits.push(esData.hits);
 
     // Start scrolling till the end
     const nbScroll = Math.floor(total / maxResultSize);
     for (let i = 0; i < nbScroll; i++) {
-      const resScroll = await callCluster(client, 'scroll', {
-        scrollId: esData._scroll_id,
-        scroll: scrollTimeout,
-      });
+      const resScroll = await callCluster(
+        client,
+        'scroll',
+        {
+          scrollId: esData._scroll_id,
+          scroll: scrollTimeout,
+        },
+        isScheduledTask
+      );
       if (Object.keys(resScroll.hits.hits).length > 0) {
         arrayHits.push(resScroll.hits);
       }
     }
 
     // Clear scroll context
-    await callCluster(client, 'clearScroll', {
-      scrollId: esData._scroll_id,
-    });
+    await callCluster(
+      client,
+      'clearScroll',
+      {
+        scrollId: esData._scroll_id,
+      },
+      isScheduledTask
+    );
   }
 
   async function getEsDataBySearch() {
-    esData = await callCluster(client, 'search', {
-      index: report._source.paternName,
-      body: reqBody,
-      size: total,
-    });
+    esData = await callCluster(
+      client,
+      'search',
+      {
+        index: report._source.paternName,
+        body: reqBody,
+        size: total,
+      },
+      isScheduledTask
+    );
     arrayHits.push(esData.hits);
   }
 

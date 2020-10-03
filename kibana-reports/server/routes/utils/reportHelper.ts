@@ -21,6 +21,7 @@ import {
   CONFIG_INDEX_NAME,
   LOCAL_HOST,
   DELIVERY_TYPE,
+  EMAIL_FORMAT,
 } from './constants';
 import { RequestParams } from '@elastic/elasticsearch';
 import { getFileName, callCluster } from './helpers';
@@ -120,6 +121,7 @@ export const createVisualReport = async (
 };
 
 export const createReport = async (
+  isScheduledTask: boolean,
   report: ReportSchemaType,
   esClient: ILegacyClusterClient | ILegacyScopedClusterClient,
   notificationClient?: ILegacyClusterClient | ILegacyScopedClusterClient,
@@ -141,7 +143,12 @@ export const createReport = async (
     },
   };
 
-  const esResp = await callCluster(esClient, 'index', saveParams);
+  const esResp = await callCluster(
+    esClient,
+    'index',
+    saveParams,
+    isScheduledTask
+  );
   const reportId = esResp._id;
 
   const reportDefinition = report.report_definition;
@@ -151,7 +158,11 @@ export const createReport = async (
   try {
     // generate report
     if (reportSource === REPORT_TYPE.savedSearch) {
-      createReportResult = await createSavedSearchReport(report, esClient);
+      createReportResult = await createSavedSearchReport(
+        report,
+        esClient,
+        isScheduledTask
+      );
     } else {
       // report source can only be one of [saved search, visualization, dashboard]
       const { origin } = new URL(report.query_url);
@@ -173,7 +184,7 @@ export const createReport = async (
       },
     };
 
-    await callCluster(esClient, 'update', updateParams);
+    await callCluster(esClient, 'update', updateParams, isScheduledTask);
 
     // deliver report
     if (notificationClient) {
@@ -182,7 +193,8 @@ export const createReport = async (
         createReportResult,
         notificationClient,
         esClient,
-        reportId
+        reportId,
+        isScheduledTask
       );
     }
   } catch (error) {
@@ -202,7 +214,7 @@ export const createReport = async (
       },
     };
 
-    await callCluster(esClient, 'update', updateParams);
+    await callCluster(esClient, 'update', updateParams, isScheduledTask);
 
     throw error;
   }
@@ -215,7 +227,8 @@ export const deliverReport = async (
   reportData: CreateReportResultType,
   notificationClient: ILegacyScopedClusterClient | ILegacyClusterClient,
   esClient: ILegacyClusterClient | ILegacyScopedClusterClient,
-  reportId: string
+  reportId: string,
+  isScheduledTask: boolean
 ) => {
   // check delivery type
   const delivery = report.report_definition.delivery;
@@ -232,15 +245,16 @@ export const deliverReport = async (
   if (deliveryType === DELIVERY_TYPE.channel) {
     // deliver through one of [Slack, Chime, Email]
     //@ts-ignore
-    const { hasAttachment, ...rest } = deliveryParams;
+    const { email_format: emailFormat, ...rest } = deliveryParams;
     // compose request body
-    if (hasAttachment) {
+    if (emailFormat === EMAIL_FORMAT.attachment) {
       const reportFormat =
         report.report_definition.report_params.core_params.report_format;
       const attachment = {
         fileName: reportData.fileName,
         fileEncoding: reportFormat === FORMAT.csv ? 'text' : 'base64',
-        // fileContentType: 'application/pdf', //TODO:
+        //TODO: figure out when this data field is acutally needed
+        // fileContentType: 'application/pdf',
         fileData: reportData.dataUrl,
       };
       const deliveryBody = {
@@ -248,11 +262,15 @@ export const deliverReport = async (
         refTag: reportId,
         attachment,
       };
-      console.log('delivery body ' + JSON.stringify(deliveryBody));
       try {
-        const res = await callCluster(notificationClient, 'notification.send', {
-          body: deliveryBody,
-        });
+        const res = await callCluster(
+          notificationClient,
+          'notification.send',
+          {
+            body: deliveryBody,
+          },
+          isScheduledTask
+        );
         console.log('delivery response: ' + JSON.stringify(res));
       } catch (error) {
         //TODO: need better error handling or logging
@@ -262,6 +280,12 @@ export const deliverReport = async (
     }
   } else {
     //TODO: No attachment, use embedded html (not implemented yet)
+    // empty kibana recipients array
+    //TODO: tmp solution
+    // @ts-ignore
+    if (!deliveryParams.kibana_recipients.length) {
+      return reportData;
+    }
   }
   // update report document with state "shared" and time_created
   const updateParams: RequestParams.Update = {
@@ -275,7 +299,7 @@ export const deliverReport = async (
     },
   };
 
-  await callCluster(esClient, 'update', updateParams);
+  await callCluster(esClient, 'update', updateParams, isScheduledTask);
 
   return reportData;
 };

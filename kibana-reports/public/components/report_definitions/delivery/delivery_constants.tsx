@@ -23,11 +23,22 @@ export const EMAIL_RECIPIENT_OPTIONS = [
 
 export const EMAIL_FORMAT_OPTIONS = [
   {
-    id: 'htmlReport',
+    id: 'Embedded HTML',
     label: 'Embedded HTML report',
   },
   {
-    id: 'htmlEmailWithAttachment',
+    id: 'Attachment',
     label: 'Email with report as attached file',
+  },
+];
+
+export const DELIVERY_TYPE_OPTIONS = [
+  {
+    id: 'Kibana user',
+    label: 'Kibana user',
+  },
+  {
+    id: 'Channel',
+    label: 'Email',
   },
 ];

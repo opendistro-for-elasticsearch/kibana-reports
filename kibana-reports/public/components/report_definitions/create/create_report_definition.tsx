@@ -52,6 +52,11 @@ interface triggerType {
   trigger_params?: any;
 }
 
+interface deliveryType {
+  delivery_type: string,
+  delivery_params: any,
+}
+
 export interface TriggerParamsType {
   schedule_type: string;
   schedule: Recurring | Cron;
@@ -76,7 +81,7 @@ interface Cron {
 
 export interface reportDefinitionParams {
   report_params: reportParamsType;
-  delivery?: any;
+  delivery: deliveryType;
   trigger: triggerType;
 }
 
@@ -98,7 +103,10 @@ export function CreateReport(props) {
       },
     },
     //TODO: add this field back when the notification module became available
-    // delivery: {},
+    delivery: {
+      delivery_type: '',
+      delivery_params: {}
+    },
     trigger: {
       trigger_type: '',
     },
@@ -148,8 +156,9 @@ export function CreateReport(props) {
     timeRange: timeRangeParams
   ) => {
     // TODO: temporarily remove delivery from request body, since integration with notification module is needed
-    delete metadata.delivery;
+    // delete metadata.delivery;
     const { httpClient } = props;
+    
 
     //TODO: need better handle
     if (
@@ -158,6 +167,9 @@ export function CreateReport(props) {
     ) {
       delete metadata.trigger.trigger_params;
     }
+
+    console.log(metadata)
+
     httpClient
       .post('../api/reporting/reportDefinition', {
         body: JSON.stringify(metadata),
@@ -176,13 +188,14 @@ export function CreateReport(props) {
             time_to: timeRange.timeTo.valueOf(),
             report_definition: metadata,
           };
+          console.log(onDemandDownloadMetadata);
           generateReport(onDemandDownloadMetadata, httpClient);
         }
         await handleSuccessToast();
         window.location.assign(`opendistro_kibana_reports#/`);
       })
-      .catch((error) => {
-        console.log('error in creating report definition:', error);
+      .catch((error, message) => {
+        console.log('error in creating report definition: ' + error + message);
         handleErrorToast();
       });
   };

@@ -44,16 +44,16 @@ export function ReportDefinitionDetails(props) {
 
   const getReportDefinitionDetailsMetadata = (data) => {
     const reportDefinition: ReportDefinitionSchemaType = data.report_definition;
-    const reportParams = reportDefinition.report_params;
-    const trigger = reportDefinition.trigger;
-    const triggerParams = trigger.trigger_params;
-    const coreParams = reportParams.core_params;
+    const { report_params: reportParams, trigger, delivery, time_created: timeCreated, last_updated: lastUpdated } = reportDefinition
+    const { trigger_type: triggerType, trigger_params: triggerParams } = trigger;
+    const { delivery_type: deliveryType, delivery_params: deliveryParams } = delivery;
+    const { core_params: { base_url: baseUrl, report_format: reportFormat, time_duration: timeDuration} } = reportParams;
 
-    let readableDate = new Date(reportDefinition.time_created);
+    let readableDate = new Date(timeCreated);
     let displayCreatedDate =
       readableDate.toDateString() + ' ' + readableDate.toLocaleTimeString();
 
-    let readableUpdatedDate = new Date(reportDefinition.last_updated);
+    let readableUpdatedDate = new Date(lastUpdated);
     let displayUpdatedDate =
       readableUpdatedDate.toDateString() +
       ' ' +
@@ -65,23 +65,23 @@ export function ReportDefinitionDetails(props) {
       created: displayCreatedDate,
       lastUpdated: displayUpdatedDate,
       source: reportParams.report_source,
-      baseUrl: coreParams.base_url,
+      baseUrl: baseUrl,
       // TODO: need better display
-      timePeriod: moment.duration(coreParams.time_duration).humanize(),
-      fileFormat: coreParams.report_format,
+      timePeriod: moment.duration(timeDuration).humanize(),
+      fileFormat: reportFormat,
       // TODO: to be added to schema, currently hardcoded in backend
       reportHeader: `\u2014`,
       reportFooter: `\u2014`,
-      triggerType: trigger.trigger_type,
+      triggerType: triggerType,
       scheduleDetails: triggerParams ? triggerParams.schedule_type : `\u2014`,
       alertDetails: `\u2014`,
+      channel: deliveryType,
       status: reportDefinition.status,
-      deliveryChannels: `\u2014`,
-      kibanaRecipients: `\u2014`,
-      emailRecipients: `\u2014`, // todo: data model needs separate field for email vs kibana recipients
-      emailSubject: `\u2014`,
-      emailBody: `\u2014`,
-      includeReportAsAttachment: `\u2014`,
+      kibanaRecipients: deliveryParams.kibana_recipients ? deliveryParams.kibana_recipients : `\u2014`,
+      emailRecipients: deliveryType === 'Channel' ? deliveryParams.recipients : `\u2014`,
+      emailSubject: deliveryType === 'Channel' ? deliveryParams.title : `\u2014`,
+      emailBody: deliveryType === 'Channel' ? deliveryParams.htmlDescription : `\u2014`,
+      reportAsAttachment: (deliveryType === 'Channel' && deliveryParams.email_format === 'Attachment')? 'True' : 'False',
     };
     return reportDefinitionDetails;
   };
@@ -154,10 +154,6 @@ export function ReportDefinitionDetails(props) {
         console.log('error when deleting report definition:', error);
       });
   };
-
-  const includeReportAsAttachmentString = reportDefinitionDetails.includeReportAsAttachment
-    ? 'True'
-    : 'False';
 
   return (
     <EuiPage>
@@ -302,9 +298,9 @@ export function ReportDefinitionDetails(props) {
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Delivery channels'}
+              reportDetailsComponentTitle={'Channel'}
               reportDetailsComponentContent={
-                reportDefinitionDetails.deliveryChannels
+                reportDefinitionDetails.channel
               }
             />
             <ReportDetailsComponent
@@ -334,7 +330,7 @@ export function ReportDefinitionDetails(props) {
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Include report as attachment'}
-              reportDetailsComponentContent={includeReportAsAttachmentString}
+              reportDetailsComponentContent={reportDefinitionDetails.reportAsAttachment}
             />
             <ReportDetailsComponent />
             <ReportDetailsComponent />

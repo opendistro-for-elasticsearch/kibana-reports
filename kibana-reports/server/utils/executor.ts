@@ -90,9 +90,11 @@ async function executeScheduledJob(
   const reportMetaData = createReportMetaData(reportDefinition, triggeredTime);
   // create report and return report data
   const reportData = await createReport(
+    true,
     reportMetaData,
     esClient,
-    notificationClient
+    notificationClient,
+    undefined
   );
   // TODO: Delivery: pass report data and (maybe original reportDefinition as well) to notification module
 

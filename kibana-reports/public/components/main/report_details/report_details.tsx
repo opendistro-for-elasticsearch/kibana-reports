@@ -71,10 +71,11 @@ export function ReportDetails(props) {
   };
 
   const getReportDetailsData = (report: ReportSchemaType) => {
-    const reportDefinition = report.report_definition;
-    const reportParams = reportDefinition.report_params;
+    const {report_definition: reportDefinition, last_updated: lastUpdated, state, query_url: queryUrl } = report
+    const { report_params: reportParams, trigger, delivery } = reportDefinition
+    const { trigger_type: triggerType, trigger_params: triggerParams } = trigger;
+    const { delivery_type: deliveryType, delivery_params: deliveryParams } = delivery;
     const coreParams = reportParams.core_params;
-    const trigger = reportDefinition.trigger;
     // covert timestamp to local date-time string
 
     let reportDetails = {
@@ -85,22 +86,22 @@ export function ReportDetails(props) {
       source: reportParams.report_source,
       // TODO:  we have all data needed, time_from, time_to, time_duration,
       // think of a way to better display
-      time_period: report.last_updated,
+      time_period: lastUpdated,
       defaultFileFormat: coreParams.report_format,
-      state: report.state,
+      state: state,
       reportHeader: `\u2014`,
       reportFooter: `\u2014`,
-      triggerType: trigger.trigger_type,
-      scheduleType: `\u2014`,
+      triggerType: triggerType,
+      scheduleType: triggerParams ? triggerParams.schedule_type : `\u2014`,
       scheduleDetails: `\u2014`,
       alertDetails: `\u2014`,
-      channel: `\u2014`,
-      kibanaRecipients: `\u2014`,
-      emailRecipients: `\u2014`,
-      emailSubject: `\u2014`,
-      emailBody: `\u2014`,
-      reportAsAttachment: `\u2014`,
-      queryUrl: report.query_url,
+      channel: deliveryType,
+      kibanaRecipients: deliveryParams.kibana_recipients ? deliveryParams.kibana_recipients : `\u2014`,
+      emailRecipients: deliveryType === 'Channel' ? deliveryParams.recipients : `\u2014`,
+      emailSubject: deliveryType === 'Channel' ? deliveryParams.title : `\u2014`,
+      emailBody: deliveryType === 'Channel' ? deliveryParams.htmlDescription : `\u2014`,
+      reportAsAttachment: (deliveryType === 'Channel' && deliveryParams.email_format === 'Attachment')? 'True' : 'False',
+      queryUrl: queryUrl,
     };
     return reportDetails;
   };

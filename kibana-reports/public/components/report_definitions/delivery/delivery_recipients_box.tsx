@@ -15,8 +15,12 @@
 
 import React, { useState } from 'react';
 import { EuiComboBox } from '@elastic/eui';
+import { useEffect } from 'react';
 
-const DeliveryRecipientsBox = () => {
+const KibanaRecipientsBox = (props) => {
+
+  const {reportDefinitionRequest} = props;
+
   const options = [];
   const [selectedOptions, setSelected] = useState([]);
 
@@ -51,6 +55,12 @@ const DeliveryRecipientsBox = () => {
     setSelected([...selectedOptions, newOption]);
   };
 
+  useEffect(() => {
+    reportDefinitionRequest.delivery.delivery_params = {
+      kibana_recipients: selectedOptions
+    }
+  }, [selectedOptions])
+
   return (
     <EuiComboBox
       placeholder="Select or create options"
@@ -64,4 +74,4 @@ const DeliveryRecipientsBox = () => {
   );
 };
 
-export { DeliveryRecipientsBox };
+export { KibanaRecipientsBox };

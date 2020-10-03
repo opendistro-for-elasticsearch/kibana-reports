@@ -108,7 +108,11 @@ export class OpendistroKibanaReportsPlugin
         plugins: [notificationPlugin],
       }
     );
-    const esClient = core.elasticsearch.legacy.client;
+    const esClient: ILegacyClusterClient = core.elasticsearch.legacy.client;
+    // Object.keys(esClient).forEach((prop) => console.log(prop));
+    // console.log('scheduler client ----------------------');
+    // Object.keys(schedulerClient).forEach((prop) => console.log(prop));
+
     /*
     setIntervalAsync provides the same familiar interface as built-in setInterval for asynchronous functions,
     while preventing multiple executions from overlapping in time.

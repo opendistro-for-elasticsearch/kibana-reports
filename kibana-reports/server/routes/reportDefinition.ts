@@ -51,6 +51,7 @@ export default function (router: IRouter) {
       try {
         reportDefinition = reportDefinitionSchema.validate(reportDefinition);
       } catch (error) {
+        console.log(error);
         return response.badRequest({ body: error });
       }
 

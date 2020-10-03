@@ -25,7 +25,7 @@ import { RequestParams } from '@elastic/elasticsearch';
 import { createReport } from './utils/reportHelper';
 import { reportSchema } from '../model';
 import { errorResponse } from './utils/helpers';
-import { CONFIG_INDEX_NAME } from './utils/constants';
+import { CONFIG_INDEX_NAME, DELIVERY_TYPE } from './utils/constants';
 
 export default function (router: IRouter) {
   // generate report
@@ -56,21 +56,26 @@ export default function (router: IRouter) {
         const esClient = context.core.elasticsearch.legacy.client;
 
         const reportData = await createReport(
+          false,
           report,
           esClient,
           notificationClient
         );
 
-        // if delivery is enabled, no need to send actual file data to client
-        if (report.report_definition.delivery) {
-          return response.ok();
-        } else {
+        // if not deliver to user himself , no need to send actual file data to client
+        const delivery = report.report_definition.delivery;
+        if (
+          delivery.delivery_type === DELIVERY_TYPE.kibanaUser &&
+          delivery.delivery_params.kibana_recipients.length === 0
+        ) {
           return response.ok({
             body: {
               data: reportData.dataUrl,
               filename: reportData.fileName,
             },
           });
+        } else {
+          return response.ok();
         }
       } catch (error) {
         //@ts-ignore
@@ -112,6 +117,7 @@ export default function (router: IRouter) {
         const esClient = context.core.elasticsearch.legacy.client;
 
         const reportData = await createReport(
+          false,
           report,
           esClient,
           undefined,

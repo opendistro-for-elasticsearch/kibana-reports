@@ -22,6 +22,7 @@ import {
   REPORT_STATE,
   REPORT_DEFINITION_STATUS,
   DELIVERY_TYPE,
+  EMAIL_FORMAT,
 } from '../routes/utils/constants';
 
 export const dataReportSchema = schema.object({
@@ -95,7 +96,10 @@ export const channelSchema = schema.object({
   title: schema.string(),
   textDescription: schema.string(),
   htmlDescription: schema.maybe(schema.string()),
-  hasAttachment: schema.boolean(),
+  email_format: schema.oneOf([
+    schema.literal(EMAIL_FORMAT.attachment),
+    schema.literal(EMAIL_FORMAT.embeddedHtml),
+  ]),
   channelIds: schema.maybe(schema.arrayOf(schema.string())),
 });
 
@@ -117,20 +121,18 @@ export const reportDefinitionSchema = schema.object({
     ),
   }),
 
-  delivery: schema.maybe(
-    schema.object({
-      delivery_type: schema.oneOf([
-        schema.literal(DELIVERY_TYPE.kibanaUser),
-        schema.literal(DELIVERY_TYPE.channel),
-      ]),
-      delivery_params: schema.conditional(
-        schema.siblingRef('delivery_type'),
-        DELIVERY_TYPE.kibanaUser,
-        kibanaUserSchema,
-        channelSchema
-      ),
-    })
-  ),
+  delivery: schema.object({
+    delivery_type: schema.oneOf([
+      schema.literal(DELIVERY_TYPE.kibanaUser),
+      schema.literal(DELIVERY_TYPE.channel),
+    ]),
+    delivery_params: schema.conditional(
+      schema.siblingRef('delivery_type'),
+      DELIVERY_TYPE.kibanaUser,
+      kibanaUserSchema,
+      channelSchema
+    ),
+  }),
 
   trigger: schema.object({
     trigger_type: schema.oneOf([
