@@ -99,7 +99,7 @@ export function ReportDetails(props) {
       kibanaRecipients: deliveryParams.kibana_recipients ? deliveryParams.kibana_recipients : `\u2014`,
       emailRecipients: deliveryType === 'Channel' ? deliveryParams.recipients : `\u2014`,
       emailSubject: deliveryType === 'Channel' ? deliveryParams.title : `\u2014`,
-      emailBody: deliveryType === 'Channel' ? deliveryParams.htmlDescription : `\u2014`,
+      emailBody: deliveryType === 'Channel' ? deliveryParams.textDescription : `\u2014`,
       reportAsAttachment: (deliveryType === 'Channel' && deliveryParams.email_format === 'Attachment')? 'True' : 'False',
       queryUrl: queryUrl,
     };

@@ -102,7 +102,6 @@ export function CreateReport(props) {
         time_duration: '',
       },
     },
-    //TODO: add this field back when the notification module became available
     delivery: {
       delivery_type: '',
       delivery_params: {}
@@ -155,10 +154,7 @@ export function CreateReport(props) {
     metadata: reportDefinitionParams,
     timeRange: timeRangeParams
   ) => {
-    // TODO: temporarily remove delivery from request body, since integration with notification module is needed
-    // delete metadata.delivery;
     const { httpClient } = props;
-    
 
     //TODO: need better handle
     if (

@@ -43,25 +43,11 @@ export const EmailDelivery = (props) => {
     'write'
   );
   const [insertPlaceholder, setInsertPlaceholder] = useState(false);
-  // const [includeReportAsAttachment, setIncludeReportAsAttachment] = useState(
-  //   true
-  // );
 
   const handleInsertPlaceholderClick = () => {
     setInsertPlaceholder((insertPlaceholder) => !insertPlaceholder);
   };
   const closeInsertPlaceholder = () => setInsertPlaceholder(false);
-
-
-
-  // const handleIncludeReportAsAttachment = (e: {
-  //   target: { checked: React.SetStateAction<boolean> };
-  // }) => {
-  //   setIncludeReportAsAttachment(e.target.checked);
-  //   if (e.target.checked) {
-  //     delivery_params['has_attachment'] = includeReportAsAttachment;
-  //   }
-  // };
 
   const placeholderInsert = (
     <EuiText size="xs">
@@ -163,7 +149,8 @@ export const EmailDelivery = (props) => {
       recipients: emailRecipients.map(option => option.label),
       title: emailSubject,
       email_format: emailFormat,
-      textDescription: "Placeholder*****Hardcode",
+      //TODO: need better render
+      textDescription: emailBody,
       htmlDescription: converter.makeHtml(emailBody),
     }
    }, [emailRecipients, emailSubject, emailFormat, emailBody]) 
