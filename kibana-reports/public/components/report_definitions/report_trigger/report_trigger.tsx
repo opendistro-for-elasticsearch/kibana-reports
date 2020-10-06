@@ -90,15 +90,12 @@ export function ReportTrigger(props: ReportTriggerProps) {
   const [monitor, setMonitor] = useState(AVAILABLE_MONITOR_OPTIONS[0].value);
   const [trigger, setTrigger] = useState(AVAILABLE_TRIGGER_OPTIONS[0].value);
 
-  let onRender = true;
-
   const handleReportTriggerType = (e: string) => {
     setReportTriggerType(e);
     reportDefinitionRequest.trigger.trigger_type = e;
     if (e === 'On demand') {
       delete reportDefinitionRequest.trigger.trigger_params;
-    } else if (e === 'Schedule') {
-    }
+    } 
   };
 
   const handleScheduleType = (e: React.SetStateAction<string>) => {
