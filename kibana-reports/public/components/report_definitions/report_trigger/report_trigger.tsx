@@ -66,7 +66,9 @@ export function ReportTrigger(props: ReportTriggerProps) {
     httpClientProps,
   } = props;
 
-  const [reportTriggerType, setReportTriggerType] = useState('On demand');
+  const [reportTriggerType, setReportTriggerType] = useState(
+    TRIGGER_TYPE_OPTIONS[0].id
+  );
 
   const [scheduleType, setScheduleType] = useState('Recurring');
   //TODO: should read local timezone and display
@@ -90,6 +92,10 @@ export function ReportTrigger(props: ReportTriggerProps) {
 
   const handleReportTriggerType = (e: string) => {
     setReportTriggerType(e);
+    reportDefinitionRequest.trigger.trigger_type = e;
+    if (e === 'On demand') {
+      delete reportDefinitionRequest.trigger.trigger_params;
+    } 
   };
 
   const handleScheduleType = (e: React.SetStateAction<string>) => {
@@ -104,6 +110,8 @@ export function ReportTrigger(props: ReportTriggerProps) {
     target: { value: React.SetStateAction<string> };
   }) => {
     setScheduleRecurringFrequency(e.target.value);
+    reportDefinitionRequest.trigger.trigger_params.schedule_type =
+      e.target.value;
   };
 
   const handleRecurringDailyTime = (e: React.SetStateAction<moment.Moment>) => {
@@ -330,6 +338,8 @@ export function ReportTrigger(props: ReportTriggerProps) {
       target: { value: React.SetStateAction<string> };
     }) => {
       setCronExpression(e.target.value);
+      reportDefinitionRequest.trigger.trigger_params.schedule.cron.expression =
+        e.target.value;
     };
 
     useEffect(() => {
@@ -345,6 +355,24 @@ export function ReportTrigger(props: ReportTriggerProps) {
         schedule: cron,
       };
     }, [cronExpression, timezone]);
+
+    useEffect(() => {
+      if (edit) {
+        httpClientProps
+          .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
+          .then(async (response) => {
+            if (
+              response.report_definition.trigger.trigger_params
+                .schedule_type === 'Cron based'
+            ) {
+              setCronExpression(
+                response.report_definition.trigger.trigger_params.schedule.cron
+                  .expression
+              );
+            }
+          });
+      }
+    }, []);
 
     return (
       <div>
@@ -447,24 +475,40 @@ export function ReportTrigger(props: ReportTriggerProps) {
   const defaultEditTriggerType = (trigger_type) => {
     let index = 0;
     for (index; index < TRIGGER_TYPE_OPTIONS.length; ++index) {
-      if (TRIGGER_TYPE_OPTIONS[index].label.includes(trigger_type)) {
+      if (TRIGGER_TYPE_OPTIONS[index].label === trigger_type) {
         setReportTriggerType(TRIGGER_TYPE_OPTIONS[index].id);
       }
     }
   };
 
   const defaultEditRequestType = (trigger) => {
-    let index;
-    for (index in SCHEDULE_TYPE_OPTIONS) {
-      if (SCHEDULE_TYPE_OPTIONS[index].label === trigger.trigger_type) {
+    let index = 0;
+    for (index; index < SCHEDULE_TYPE_OPTIONS.length; ++index) {
+      if (
+        SCHEDULE_TYPE_OPTIONS[index].label ===
+        trigger.trigger_params.schedule_type
+      ) {
         setScheduleType(SCHEDULE_TYPE_OPTIONS[index].id);
       }
     }
   };
 
+  const defaultEditScheduleFrequency = (trigger_params) => {
+    if (trigger_params.schedule_type === 'Recurring') {
+      if (trigger_params.schedule.interval.unit === 'DAYS') {
+        setScheduleRecurringFrequency('daily');
+      } else {
+        setScheduleRecurringFrequency('byInterval');
+      }
+    } 
+  };
+
   const defaultConfigurationEdit = (trigger) => {
-    defaultEditTriggerType(trigger['trigger_type']);
+    defaultEditTriggerType(trigger.trigger_type);
     defaultEditRequestType(trigger);
+    if (trigger.trigger_type === 'Schedule') {
+      defaultEditScheduleFrequency(trigger.trigger_params);
+    }
   };
 
   useEffect(() => {
@@ -473,15 +517,18 @@ export function ReportTrigger(props: ReportTriggerProps) {
         .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
         .then(async (response) => {
           defaultConfigurationEdit(response.report_definition.trigger);
-        });
+          reportDefinitionRequest.trigger = response.report_definition.trigger;
+        })
     }
-    // Set default trigger_type
-    TRIGGER_TYPE_OPTIONS.map((item) => {
-      if (item.id === reportTriggerType) {
-        reportDefinitionRequest.trigger.trigger_type = item.label;
-      }
-    });
-  }, [reportTriggerType]);
+    // Set default trigger_type for create new report definition
+    else {
+      TRIGGER_TYPE_OPTIONS.map((item) => {
+        if (item.id === reportTriggerType) {
+          reportDefinitionRequest.trigger.trigger_type = item.label;
+        }
+      });
+    }
+  }, []);
 
   return (
     <EuiPageContent panelPaddingSize={'l'}>
