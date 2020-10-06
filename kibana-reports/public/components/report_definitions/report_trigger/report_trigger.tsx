@@ -500,8 +500,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
       } else {
         setScheduleRecurringFrequency('byInterval');
       }
-    } else if (trigger_params.schedule_type === 'Cron based') {
-    }
+    } 
   };
 
   const defaultConfigurationEdit = (trigger) => {
@@ -520,12 +519,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
           defaultConfigurationEdit(response.report_definition.trigger);
           reportDefinitionRequest.trigger = response.report_definition.trigger;
         })
-        .then(() => {
-          console.log(
-            'report defintiion request after useeffect edit is',
-            reportDefinitionRequest
-          );
-        });
     }
     // Set default trigger_type for create new report definition
     else {
