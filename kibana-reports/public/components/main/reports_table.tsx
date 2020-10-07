@@ -160,24 +160,6 @@ export function ReportsTable(props) {
       truncateText: false,
     },
     {
-      field: 'sender',
-      name: 'Sender',
-      sortable: true,
-      truncateText: false,
-    },
-    {
-      field: 'kibanaRecipients',
-      name: 'Kibana recipient(s)',
-      sortable: true,
-      truncateText: true,
-    },
-    {
-      field: 'emailRecipients',
-      name: 'Email recipient(s)',
-      sortable: true,
-      truncateText: true,
-    },
-    {
       // TODO: link to dashboard/visualization snapshot, use "queryUrl" field. Display dashboard name?
       field: 'reportSource',
       name: 'Source',
@@ -251,39 +233,6 @@ export function ReportsTable(props) {
           value: type,
           name: type,
           view: type,
-        })),
-      },
-      {
-        type: 'field_value_selection',
-        field: 'sender',
-        name: 'Sender',
-        multiselect: false,
-        options: uniqueSenders.map((user) => ({
-          value: user,
-          name: user,
-          view: user,
-        })),
-      },
-      {
-        type: 'field_value_selection',
-        field: 'kibanaRecipients',
-        name: 'Kibana recipients',
-        multiselect: false,
-        options: uniqueRecipients.map((user) => ({
-          value: user,
-          name: user,
-          view: user,
-        })),
-      },
-      {
-        type: 'field_value_selection',
-        field: 'recipients',
-        name: 'Email recipients',
-        multiselect: false,
-        options: uniqueRecipients.map((user) => ({
-          value: user,
-          name: user,
-          view: user,
         })),
       },
       {
