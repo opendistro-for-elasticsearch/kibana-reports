@@ -30,6 +30,7 @@ import {
   REPORT_DEFINITION_STATUS,
   TRIGGER_TYPE,
   CONFIG_INDEX_NAME,
+  DEFAULT_MAX_SIZE,
 } from './utils/constants';
 
 export default function (router: IRouter) {
@@ -190,7 +191,7 @@ export default function (router: IRouter) {
       path: `${API_PREFIX}/reportDefinitions`,
       validate: {
         query: schema.object({
-          size: schema.string({ defaultValue: '100' }),
+          size: schema.maybe(schema.string()),
           sortField: schema.maybe(schema.string()),
           sortDirection: schema.maybe(schema.string()),
         }),
@@ -206,11 +207,13 @@ export default function (router: IRouter) {
         sortField: string;
         sortDirection: string;
       };
-      const sizeNumber = parseInt(size, 10);
       const params: RequestParams.Search = {
         index: CONFIG_INDEX_NAME.reportDefinition,
-        size: sizeNumber,
-        sort: `${sortField}:${sortDirection}`,
+        size: size ? parseInt(size, 10) : DEFAULT_MAX_SIZE,
+        sort:
+          sortField && sortDirection
+            ? `${sortField}:${sortDirection}`
+            : undefined,
       };
       try {
         const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
