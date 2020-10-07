@@ -36,7 +36,10 @@ import moment from 'moment';
 
 export function ReportDefinitionDetails(props) {
   const [reportDefinitionDetails, setReportDefinitionDetails] = useState({});
-  const [reportDefinitionRawResponse, setReportDefinitionRawResponse] = useState({});
+  const [
+    reportDefinitionRawResponse,
+    setReportDefinitionRawResponse,
+  ] = useState({});
   const reportDefinitionId = props.match['params']['reportDefinitionId'];
 
   const handleReportDefinitionDetails = (e) => {
@@ -45,7 +48,7 @@ export function ReportDefinitionDetails(props) {
 
   const handleReportDefinitionRawResponse = (e) => {
     setReportDefinitionRawResponse(e);
-  }
+  };
 
   const getReportDefinitionDetailsMetadata = (data) => {
     const reportDefinition: ReportDefinitionSchemaType = data.report_definition;
@@ -138,61 +141,76 @@ export function ReportDefinitionDetails(props) {
     duration = moment.duration(duration);
     let time_difference = moment.now() - duration;
     return new Date(time_difference);
-  }
+  };
 
   const changeScheduledReportDefinitionStatus = (statusChange) => {
     let updatedReportDefinition = reportDefinitionRawResponse.report_definition;
     if (statusChange === 'Disable') {
       updatedReportDefinition.trigger.trigger_params.enabled = false;
       updatedReportDefinition.status = 'Disabled';
-    } 
-    else if (statusChange === 'Enable') {
+    } else if (statusChange === 'Enable') {
       updatedReportDefinition.trigger.trigger_params.enabled = true;
       updatedReportDefinition.status = 'Active';
     }
 
-    // update report definition
+    // update report definition, delete extraneous schedule params
+    if (
+      updatedReportDefinition.trigger.trigger_params.schedule_type ===
+      'Recurring'
+    ) {
+      delete updatedReportDefinition.trigger.trigger_params.schedule.cron;
+    } else if (
+      updatedReportDefinition.trigger.trigger_params.schedule_type ===
+      'Cron based'
+    ) {
+      delete updatedReportDefinition.trigger.trigger_params.schedule.interval;
+    }
     const { httpClient } = props;
-    httpClient.put(`../api/reporting/reportDefinitions/${reportDefinitionId}`, {
-      body: JSON.stringify(updatedReportDefinition),
-      params: reportDefinitionId.toString(),
-    })
-    .then(() => {
-      const updatedRawResponse = {report_definition: {}};
-      updatedRawResponse.report_definition = updatedReportDefinition;
-      handleReportDefinitionRawResponse(updatedRawResponse);
-      setReportDefinitionDetails(getReportDefinitionDetailsMetadata(updatedRawResponse));
-    })
-    .catch((error) => {
-      console.error('error in updating report definition status:', error);
-    })
-  }
+    httpClient
+      .put(`../api/reporting/reportDefinitions/${reportDefinitionId}`, {
+        body: JSON.stringify(updatedReportDefinition),
+        params: reportDefinitionId.toString(),
+      })
+      .then(() => {
+        const updatedRawResponse = { report_definition: {} };
+        updatedRawResponse.report_definition = updatedReportDefinition;
+        handleReportDefinitionRawResponse(updatedRawResponse);
+        setReportDefinitionDetails(
+          getReportDefinitionDetailsMetadata(updatedRawResponse)
+        );
+      })
+      .catch((error) => {
+        console.error('error in updating report definition status:', error);
+      });
+  };
 
   const ScheduledDefinitionStatus = () => {
-    const status = (reportDefinitionDetails.status === 'Active')
-      ? 'Disable'
-      : 'Enable';
-      
+    const status =
+      reportDefinitionDetails.status === 'Active' ? 'Disable' : 'Enable';
+
     return (
       <EuiButton onClick={() => changeScheduledReportDefinitionStatus(status)}>
         {status}
       </EuiButton>
-    )
-  }
+    );
+  };
 
   const generateReportFromDetails = () => {
-    let duration = 
-    reportDefinitionRawResponse.report_definition.report_params.core_params.time_duration;
+    let duration =
+      reportDefinitionRawResponse.report_definition.report_params.core_params
+        .time_duration;
     const fromDate = getRelativeStartDate(duration);
     let onDemandDownloadMetadata = {
-      query_url: `${reportDefinitionDetails.baseUrl}?_g=(time:(from:'${fromDate.toISOString()}',to:'${moment().toISOString()}'))`,
+      query_url: `${
+        reportDefinitionDetails.baseUrl
+      }?_g=(time:(from:'${fromDate.toISOString()}',to:'${moment().toISOString()}'))`,
       time_from: fromDate.valueOf(),
       time_to: moment().valueOf(),
-      report_definition: reportDefinitionRawResponse.report_definition
+      report_definition: reportDefinitionRawResponse.report_definition,
     };
-    const {httpClient} = props;
+    const { httpClient } = props;
     generateReport(onDemandDownloadMetadata, httpClient);
-  }
+  };
 
   const deleteReportDefinition = () => {
     const { httpClient } = props;
@@ -238,9 +256,7 @@ export function ReportDefinitionDetails(props) {
                   Delete
                 </EuiButton>
               </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                {showActionButton}
-              </EuiFlexItem>
+              <EuiFlexItem grow={false}>{showActionButton}</EuiFlexItem>
               <EuiFlexItem grow={false}>
                 <EuiButton
                   fill={true}
