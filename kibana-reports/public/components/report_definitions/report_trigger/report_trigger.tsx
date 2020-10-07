@@ -95,11 +95,16 @@ export function ReportTrigger(props: ReportTriggerProps) {
     reportDefinitionRequest.trigger.trigger_type = e;
     if (e === 'On demand') {
       delete reportDefinitionRequest.trigger.trigger_params;
-    } 
+    }
   };
 
   const handleScheduleType = (e: React.SetStateAction<string>) => {
     setScheduleType(e);
+    if (e === 'Cron based') {
+      delete reportDefinitionRequest.trigger.trigger_params.schedule.interval;
+    } else if (e === 'Recurring') {
+      delete reportDefinitionRequest.trigger.trigger_params.schedule.cron;
+    }
   };
 
   const handleTimezone = (e) => {
@@ -500,7 +505,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
       } else {
         setScheduleRecurringFrequency('byInterval');
       }
-    } 
+    }
   };
 
   const defaultConfigurationEdit = (trigger) => {
@@ -518,7 +523,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
         .then(async (response) => {
           defaultConfigurationEdit(response.report_definition.trigger);
           reportDefinitionRequest.trigger = response.report_definition.trigger;
-        })
+        });
     }
     // Set default trigger_type for create new report definition
     else {
