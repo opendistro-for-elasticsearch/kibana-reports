@@ -14,6 +14,7 @@
  */
 
 export const EMAIL_RECIPIENT_OPTIONS = [
+  // TODO: remove once we support actual kibana users
   { label: 'admin (self)' },
   { label: 'davidcui' },
   { label: 'szhongna' },

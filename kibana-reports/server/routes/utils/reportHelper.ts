@@ -128,28 +128,14 @@ export const createReport = async (
   savedReportId?: string
 ): Promise<CreateReportResultType> => {
   let createReportResult: CreateReportResultType;
-
-  // create new report instance or update saved report instance with "pending" state
-  const timePending = Date.now();
-  const saveParams: RequestParams.Index = {
-    index: CONFIG_INDEX_NAME.report,
-    id: savedReportId,
-    body: {
-      ...report,
-      state: REPORT_STATE.pending,
-      ...(savedReportId
-        ? { last_updated: timePending }
-        : { time_created: timePending }),
-    },
-  };
-
-  const esResp = await callCluster(
-    esClient,
-    'index',
-    saveParams,
-    isScheduledTask
-  );
-  const reportId = esResp._id;
+  let reportId;
+  // create new report instance and set report state to "pending"
+  if (savedReportId) {
+    reportId = savedReportId;
+  } else {
+    const esResp = await saveToES(isScheduledTask, report, esClient);
+    reportId = esResp._id;
+  }
 
   const reportDefinition = report.report_definition;
   const reportParams = reportDefinition.report_params;
@@ -170,21 +156,15 @@ export const createReport = async (
       createReportResult = await createVisualReport(reportParams, queryUrl);
     }
 
-    // update report document with state "created" and time_created
-    const updateParams: RequestParams.Update = {
-      id: reportId,
-      index: CONFIG_INDEX_NAME.report,
-      body: {
-        doc: {
-          state: REPORT_STATE.created,
-          ...(savedReportId
-            ? { last_updated: createReportResult.timeCreated }
-            : { time_created: createReportResult.timeCreated }),
-        },
-      },
-    };
-
-    await callCluster(esClient, 'update', updateParams, isScheduledTask);
+    if (!savedReportId) {
+      await updateToES(
+        isScheduledTask,
+        reportId,
+        esClient,
+        REPORT_STATE.created,
+        createReportResult
+      );
+    }
 
     // deliver report
     if (notificationClient) {
@@ -200,26 +180,70 @@ export const createReport = async (
   } catch (error) {
     // update report instance with "error" state
     //TODO: save error detail and display on UI
-    const timeError = Date.now();
-    const updateParams: RequestParams.Update = {
-      id: reportId,
-      index: CONFIG_INDEX_NAME.report,
-      body: {
-        doc: {
-          state: REPORT_STATE.error,
-          ...(savedReportId
-            ? { last_updated: timeError }
-            : { time_created: timeError }),
-        },
-      },
-    };
-
-    await callCluster(esClient, 'update', updateParams, isScheduledTask);
-
+    if (!savedReportId) {
+      await updateToES(isScheduledTask, reportId, esClient, REPORT_STATE.error);
+    }
     throw error;
   }
 
   return createReportResult;
+};
+
+export const saveToES = async (
+  isScheduledTask: boolean,
+  report: ReportSchemaType,
+  esClient: ILegacyClusterClient | ILegacyScopedClusterClient
+) => {
+  const timePending = Date.now();
+  const saveParams: RequestParams.Index = {
+    index: CONFIG_INDEX_NAME.report,
+    body: {
+      ...report,
+      state: REPORT_STATE.pending,
+      last_updated: timePending,
+      time_created: timePending,
+    },
+  };
+  const esResp = await callCluster(
+    esClient,
+    'index',
+    saveParams,
+    isScheduledTask
+  );
+
+  return esResp;
+};
+
+export const updateToES = async (
+  isScheduledTask: boolean,
+  reportId: string,
+  esClient: ILegacyClusterClient | ILegacyScopedClusterClient,
+  state: string,
+  createReportResult?: CreateReportResultType
+) => {
+  const timeStamp = createReportResult
+    ? createReportResult.timeCreated
+    : Date.now();
+  // update report document with state "created" or "error"
+  const updateParams: RequestParams.Update = {
+    id: reportId,
+    index: CONFIG_INDEX_NAME.report,
+    body: {
+      doc: {
+        state: state,
+        last_updated: timeStamp,
+        time_created: timeStamp,
+      },
+    },
+  };
+  const esResp = await callCluster(
+    esClient,
+    'update',
+    updateParams,
+    isScheduledTask
+  );
+
+  return esResp;
 };
 
 export const deliverReport = async (
@@ -253,7 +277,7 @@ export const deliverReport = async (
       const attachment = {
         fileName: reportData.fileName,
         fileEncoding: reportFormat === FORMAT.csv ? 'text' : 'base64',
-        //TODO: figure out when this data field is acutally needed
+        //TODO: figure out when this data field is actually needed
         // fileContentType: 'application/pdf',
         fileData: reportData.dataUrl,
       };
@@ -262,21 +286,16 @@ export const deliverReport = async (
         refTag: reportId,
         attachment,
       };
-      try {
-        const res = await callCluster(
-          notificationClient,
-          'notification.send',
-          {
-            body: deliveryBody,
-          },
-          isScheduledTask
-        );
-        console.log('delivery response: ' + JSON.stringify(res));
-      } catch (error) {
-        //TODO: need better error handling or logging
-        console.log(error);
-        throw error;
-      }
+
+      await callCluster(
+        notificationClient,
+        'notification.send',
+        {
+          body: deliveryBody,
+        },
+        isScheduledTask
+      );
+      //TODO: need better error handling or logging
     }
   } else {
     //TODO: No attachment, use embedded html (not implemented yet)
@@ -288,18 +307,13 @@ export const deliverReport = async (
     }
   }
   // update report document with state "shared" and time_created
-  const updateParams: RequestParams.Update = {
-    id: reportId,
-    index: CONFIG_INDEX_NAME.report,
-    body: {
-      doc: {
-        state: REPORT_STATE.shared,
-        time_created: reportData.timeCreated,
-      },
-    },
-  };
-
-  await callCluster(esClient, 'update', updateParams, isScheduledTask);
+  await updateToES(
+    isScheduledTask,
+    reportId,
+    esClient,
+    REPORT_STATE.shared,
+    reportData
+  );
 
   return reportData;
 };

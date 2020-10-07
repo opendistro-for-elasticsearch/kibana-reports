@@ -24,7 +24,7 @@ import {
   EuiSpacer,
   EuiRadioGroup,
 } from '@elastic/eui';
-import { KibanaRecipientsBox } from './delivery_recipients_box';
+import { KibanaUserDelivery } from './kibana_user'
 import {
   DELIVERY_TYPE_OPTIONS
 } from './delivery_constants';
@@ -32,7 +32,7 @@ import 'react-mde/lib/styles/css/react-mde-all.css';
 import { reportDefinitionParams } from '../create/create_report_definition';
 import { EmailDelivery } from './email';
 
-type ReportDeliveryProps = {
+export type ReportDeliveryProps = {
   edit: boolean;
   editDefinitionId: string;
   reportDefinitionRequest: reportDefinitionParams;
@@ -46,34 +46,31 @@ export function ReportDelivery(props: ReportDeliveryProps) {
     reportDefinitionRequest,
     httpClientProps,
   } = props;
-  const [deliveryType, setDeliveryType] = useState('Kibana user');
+  
+  const [deliveryType, setDeliveryType] = useState(DELIVERY_TYPE_OPTIONS[0].id);
 
   const handleDeliveryType = (e: string) => {
     setDeliveryType(e);
+    reportDefinitionRequest.delivery.delivery_type = e;
   };
 
-  const KibanaUserDelivery = () => {
-
+  const deliverySetting = (props: ReportDeliveryProps) => {
     return (
-      <EuiFormRow label="Kibana recipients" helpText="Select or add users">
-        <KibanaRecipientsBox reportDefinitionRequest={reportDefinitionRequest}/>
-      </EuiFormRow>
-    );
-  };
-
-  const deliverySetting = deliveryType === "Kibana user" ? <KibanaUserDelivery /> : <EmailDelivery reportDefinitionRequest={reportDefinitionRequest} />
+      deliveryType === DELIVERY_TYPE_OPTIONS[0].id ? <KibanaUserDelivery {...props} /> : <EmailDelivery {...props} />
+    )
+  }
 
   useEffect(() => {
     if (edit) {
-      // httpClientProps
-      //   .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
-      //   .then(async (response) => {
-      //     defaultConfigurationEdit(response.report_definition.trigger);
-      //   });
+      httpClientProps
+        .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
+        .then(async (response) => {
+          handleDeliveryType(response.report_definition.delivery.delivery_type);
+        });
+    } else {
+      reportDefinitionRequest.delivery.delivery_type = deliveryType;
     }
-    reportDefinitionRequest.delivery.delivery_type = deliveryType
-  }, [deliveryType]);
-
+  }, []);
 
   return (
     <EuiPageContent panelPaddingSize={'l'}>
@@ -92,7 +89,7 @@ export function ReportDelivery(props: ReportDeliveryProps) {
           />
       </EuiFormRow>
         <EuiSpacer />
-        {deliverySetting}
+        {deliverySetting(props)}
       </EuiPageContentBody>
     </EuiPageContent>
   );

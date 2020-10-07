@@ -53,8 +53,8 @@ interface triggerType {
 }
 
 interface deliveryType {
-  delivery_type: string,
-  delivery_params: any,
+  delivery_type: string;
+  delivery_params: any;
 }
 
 export interface TriggerParamsType {
@@ -104,7 +104,7 @@ export function CreateReport(props) {
     },
     delivery: {
       delivery_type: '',
-      delivery_params: {}
+      delivery_params: {},
     },
     trigger: {
       trigger_type: '',
@@ -164,8 +164,6 @@ export function CreateReport(props) {
       delete metadata.trigger.trigger_params;
     }
 
-    console.log(metadata)
-
     httpClient
       .post('../api/reporting/reportDefinition', {
         body: JSON.stringify(metadata),
@@ -184,7 +182,6 @@ export function CreateReport(props) {
             time_to: timeRange.timeTo.valueOf(),
             report_definition: metadata,
           };
-          console.log(onDemandDownloadMetadata);
           generateReport(onDemandDownloadMetadata, httpClient);
         }
         await handleSuccessToast();
