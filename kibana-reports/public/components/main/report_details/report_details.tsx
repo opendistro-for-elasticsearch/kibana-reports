@@ -165,15 +165,6 @@ export function ReportDetails(props) {
                 </EuiPageHeaderSection>
               </EuiFlexItem>
             </EuiFlexGroup>
-            <EuiFlexGroup
-              justifyContent="flexEnd"
-              alignItems="flexEnd"
-              gutterSize="l"
-            >
-              <EuiFlexItem grow={false}>
-                <ShareModal />
-              </EuiFlexItem>
-            </EuiFlexGroup>
           </EuiPageHeader>
           <EuiHorizontalRule />
           <EuiTitle>
