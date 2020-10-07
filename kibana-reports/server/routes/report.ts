@@ -25,7 +25,11 @@ import { RequestParams } from '@elastic/elasticsearch';
 import { createReport } from './utils/reportHelper';
 import { reportSchema } from '../model';
 import { errorResponse } from './utils/helpers';
-import { CONFIG_INDEX_NAME, DELIVERY_TYPE } from './utils/constants';
+import {
+  CONFIG_INDEX_NAME,
+  DEFAULT_MAX_SIZE,
+  DELIVERY_TYPE,
+} from './utils/constants';
 
 export default function (router: IRouter) {
   // generate report
@@ -146,7 +150,7 @@ export default function (router: IRouter) {
       path: `${API_PREFIX}/reports`,
       validate: {
         query: schema.object({
-          size: schema.string({ defaultValue: '100' }),
+          size: schema.maybe(schema.string()),
           sortField: schema.maybe(schema.string()),
           sortDirection: schema.maybe(schema.string()),
         }),
@@ -162,11 +166,13 @@ export default function (router: IRouter) {
         sortField: string;
         sortDirection: string;
       };
-      const sizeNumber = parseInt(size, 10);
       const params: RequestParams.Search = {
         index: CONFIG_INDEX_NAME.report,
-        size: sizeNumber,
-        sort: `${sortField}:${sortDirection}`,
+        size: size ? parseInt(size, 10) : DEFAULT_MAX_SIZE, // ES search API use 10 as size default
+        sort:
+          sortField && sortDirection
+            ? `${sortField}:${sortDirection}`
+            : undefined,
       };
       try {
         const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
