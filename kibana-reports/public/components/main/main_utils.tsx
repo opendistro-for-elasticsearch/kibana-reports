@@ -79,7 +79,6 @@ export const addReportDefinitionsTableContent = (data: any) => {
     let reportParams = reportDefinition.report_params;
     let trigger = reportDefinition.trigger;
     let triggerParams = trigger.trigger_params;
-
     let reportDefinitionsTableEntry = {
       id: item._id,
       reportName: reportParams.report_name,
@@ -88,7 +87,10 @@ export const addReportDefinitionsTableContent = (data: any) => {
       source: reportParams.report_source,
       baseUrl: reportParams.core_params.base_url,
       lastUpdated: reportDefinition.last_updated,
-      details: triggerParams ? triggerParams.schedule_type : `\u2014`, // e.g. recurring, cron based
+      details:
+        trigger.trigger_type === 'On demand'
+          ? `\u2014`
+          : triggerParams.schedule_type, // e.g. recurring, cron based
       status: reportDefinition.status,
     };
     reportDefinitionsTableItems.push(reportDefinitionsTableEntry);
@@ -114,11 +116,11 @@ export const removeDuplicatePdfFileFormat = (filename) => {
 };
 
 const readDataReportToFile = async (
-  stream: string, 
-  fileFormat:string, 
+  stream: string,
+  fileFormat: string,
   fileName: string
 ) => {
-  const blob = new Blob([stream])
+  const blob = new Blob([stream]);
   const url = URL.createObjectURL(blob);
   let link = document.createElement('a');
   link.setAttribute('href', url);
@@ -126,7 +128,7 @@ const readDataReportToFile = async (
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-}
+};
 
 export const readStreamToFile = async (
   stream: string,
