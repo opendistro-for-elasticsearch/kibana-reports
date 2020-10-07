@@ -18,14 +18,15 @@ import { createReport } from '../routes/utils/reportHelper';
 import { POLL_INTERVAL } from './constants';
 import {
   ReportSchemaType,
-  dataReportSchemaType,
-  visualReportSchemaType,
+  DataReportSchemaType,
+  VisualReportSchemaType,
 } from '../model';
 import moment from 'moment';
 import { CONFIG_INDEX_NAME } from '../routes/utils/constants';
 
 async function pollAndExecuteJob(
   schedulerClient: ILegacyClusterClient,
+  notificationClient: ILegacyClusterClient,
   esClient: ILegacyClusterClient,
   logger: Logger
 ) {
@@ -50,6 +51,7 @@ async function pollAndExecuteJob(
         reportDefinitionId,
         triggeredTime,
         esClient,
+        notificationClient,
         logger
       );
 
@@ -74,29 +76,36 @@ async function pollAndExecuteJob(
 async function executeScheduledJob(
   reportDefinitionId: string,
   triggeredTime: number,
-  client: ILegacyClusterClient,
+  esClient: ILegacyClusterClient,
+  notificationClient: ILegacyClusterClient,
   logger: Logger
 ) {
   // retrieve report definition
-  const esResp = await client.callAsInternalUser('get', {
+  const esResp = await esClient.callAsInternalUser('get', {
     index: CONFIG_INDEX_NAME.reportDefinition,
     id: reportDefinitionId,
   });
   const reportDefinition = esResp._source.report_definition;
-  // compose query url and create report object based on report definition and triggered_time
+  // compose query_url and create report object based on report definition and triggered_time
   const reportMetaData = createReportMetaData(reportDefinition, triggeredTime);
   // create report and return report data
-  const reportData = await createReport(reportMetaData, client);
+  const reportData = await createReport(
+    true,
+    reportMetaData,
+    esClient,
+    notificationClient,
+    undefined
+  );
   // TODO: Delivery: pass report data and (maybe original reportDefinition as well) to notification module
 
-  logger.info(`new report created: ${reportData.fileName}`);
+  logger.info(`new report created and delivered: ${reportData.fileName}`);
 }
 
 function createReportMetaData(
   reportDefinition: any,
   triggeredTime: number
 ): ReportSchemaType {
-  const coreParams: dataReportSchemaType | visualReportSchemaType =
+  const coreParams: DataReportSchemaType | VisualReportSchemaType =
     reportDefinition.report_params.core_params;
   const duration = moment.duration(coreParams.time_duration);
   const base_url = coreParams.base_url;

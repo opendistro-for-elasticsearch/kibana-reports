@@ -6,3 +6,7 @@ export const REPORTS_SCHEDULER_API = {
   SCHEDULE_BASE: '/_opendistro/reports_scheduler/schedule',
   JOB_BASE: '/_opendistro/reports_scheduler/job',
 };
+
+export const NOTIFICATION_API = {
+  SEND: '/_opendistro/_notifications/send',
+};

@@ -22,7 +22,7 @@ import { reportSchema } from '../../../model';
  */
 const input = {
   query_url:
-    'http://localhost:5601/app/kibana#/search/7adfa750-4c81-11e8-b3d7-01146121b73d',
+    'http://localhost:5601/app/discover#/view/7adfa750-4c81-11e8-b3d7-01146121b73d',
   time_from: 1343576635300,
   time_to: 1596037435301,
   report_definition: {
@@ -32,7 +32,7 @@ const input = {
       description: 'Hi this is your saved search on demand',
       core_params: {
         base_url:
-          'http://localhost:5601/app/kibana#/search/7adfa750-4c81-11e8-b3d7-01146121b73d',
+          'http://localhost:5601/app/discover#/view/7adfa750-4c81-11e8-b3d7-01146121b73d',
         saved_search_id: 'ddd8f430-f2ef-11ea-8c86-81a0b21b4b67',
         report_format: 'csv',
         time_duration: 'PT5M',
@@ -41,10 +41,9 @@ const input = {
       },
     },
     delivery: {
-      recipients: ['kibanaUser:dfajfopdasf'],
-      title: 'fake title',
-      description: {
-        text: 'dasdasdasd',
+      delivery_type: 'Kibana user',
+      delivery_params: {
+        kibana_recipients: [],
       },
     },
     trigger: {
@@ -59,7 +58,6 @@ const input = {
 const maxResultSize = 5;
 
 describe('test create saved search report', () => {
-
   test('create report with valid input', async () => {
     // Check if the assumption of input is up-to-date
     reportSchema.validate(input);
@@ -104,11 +102,11 @@ describe('test create saved search report', () => {
 
     expect(dataUrl).toEqual(
       'category,customer_gender\n' +
-      'c1,Male\n' +
-      'c2,Male\n' +
-      'c3,Male\n' + 
-      'c4,Male\n' +
-      'c5,Male' 
+        'c1,Male\n' +
+        'c2,Male\n' +
+        'c3,Male\n' +
+        'c4,Male\n' +
+        'c5,Male'
     );
   }, 20000);
 
@@ -131,17 +129,17 @@ describe('test create saved search report', () => {
 
     expect(dataUrl).toEqual(
       'category,customer_gender\n' +
-      'c1,Male\n' +
-      'c2,Male\n' +
-      'c3,Male\n' + 
-      'c4,Male\n' +
-      'c5,Male\n' +
-      'c6,Female\n' +
-      'c7,Female\n' +
-      'c8,Female\n' +
-      'c9,Female\n' +
-      'c10,Female\n' +
-      'c11,Male'
+        'c1,Male\n' +
+        'c2,Male\n' +
+        'c3,Male\n' +
+        'c4,Male\n' +
+        'c5,Male\n' +
+        'c6,Female\n' +
+        'c7,Female\n' +
+        'c8,Female\n' +
+        'c9,Female\n' +
+        'c10,Female\n' +
+        'c11,Male'
     );
   }, 20000);
 
@@ -159,10 +157,7 @@ describe('test create saved search report', () => {
     const client = mockEsClient(hits);
     const { dataUrl } = await createSavedSearchReport(input, client);
 
-    expect(dataUrl).toEqual(
-      'category,customer_gender\n' +
-      'c1,Male'
-    );
+    expect(dataUrl).toEqual('category,customer_gender\n' + 'c1,Male');
   }, 20000);
 
   test('create report with limit greater than max result size', async () => {
@@ -186,12 +181,12 @@ describe('test create saved search report', () => {
 
     expect(dataUrl).toEqual(
       'category,customer_gender\n' +
-      'c1,Male\n' +
-      'c2,Male\n' +
-      'c3,Male\n' +
-      'c4,Male\n' +
-      'c5,Male\n' +
-      'c6,Female'
+        'c1,Male\n' +
+        'c2,Male\n' +
+        'c3,Male\n' +
+        'c4,Male\n' +
+        'c5,Male\n' +
+        'c6,Female'
     );
   }, 20000);
 
@@ -212,12 +207,12 @@ describe('test create saved search report', () => {
 
     expect(dataUrl).toEqual(
       'category,customer_gender\n' +
-      'c1,Male\n' +
-      'c2,Male\n' +
-      'c3,Male\n' +
-      'c4,Male\n' +
-      'c5,Male\n' +
-      'c6,Female'
+        'c1,Male\n' +
+        'c2,Male\n' +
+        'c3,Male\n' +
+        'c4,Male\n' +
+        'c5,Male\n' +
+        'c6,Female'
     );
   }, 20000);
 
@@ -232,9 +227,9 @@ describe('test create saved search report', () => {
 
     expect(dataUrl).toEqual(
       'category,customer_gender\n' +
-      '",c1","Ma,le"\n' +
-      '"c2,","M,ale"\n' +
-      '",,c3","Male,,,"'
+        '",c1","Ma,le"\n' +
+        '"c2,","M,ale"\n' +
+        '",,c3","Male,,,"'
     );
   }, 20000);
 
@@ -251,11 +246,11 @@ describe('test create saved search report', () => {
 
     expect(dataUrl).toEqual(
       'category,customer_gender\n' +
-      `c1,'=Male\n` +
-      `c2,Male=\n` +
-      `c3,"'+Ma,le"\n` +
-      `",-c4",Male\n` +
-      `",,,@c5",Male`
+        `c1,'=Male\n` +
+        `c2,Male=\n` +
+        `c3,"'+Ma,le"\n` +
+        `",-c4",Male\n` +
+        `",,,@c5",Male`
     );
   }, 20000);
 
@@ -275,11 +270,11 @@ describe('test create saved search report', () => {
 
     expect(dataUrl).toEqual(
       'category,customer_gender\n' +
-      'c1,=Male\n' +
-      'c2,Male=\n' +
-      'c3,"+Ma,le"\n' +
-      '",-c4",Male\n' +
-      '",,,@c5",Male'
+        'c1,=Male\n' +
+        'c2,Male=\n' +
+        'c3,"+Ma,le"\n' +
+        '",-c4",Male\n' +
+        '",,,@c5",Male'
     );
   }, 20000);
 });

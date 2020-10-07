@@ -20,6 +20,8 @@ import {
   REPORT_STATE,
   CONFIG_INDEX_NAME,
   LOCAL_HOST,
+  DELIVERY_TYPE,
+  EMAIL_FORMAT,
 } from './constants';
 import { RequestParams } from '@elastic/elasticsearch';
 import { getFileName, callCluster } from './helpers';
@@ -29,11 +31,12 @@ import {
 } from '../../../../../src/core/server';
 import { createSavedSearchReport } from './savedSearchReportHelper';
 import { ReportSchemaType } from '../../model';
+import { CreateReportResultType } from './types';
 
 export const createVisualReport = async (
   reportParams: any,
   queryUrl: string
-): Promise<{ timeCreated: number; dataUrl: string; fileName: string }> => {
+): Promise<CreateReportResultType> => {
   const coreParams = reportParams.core_params;
   // parse params
   const reportSource = reportParams.report_source;
@@ -111,90 +114,207 @@ export const createVisualReport = async (
 
   const curTime = new Date();
   const timeCreated = curTime.valueOf();
-  const fileName = getFileName(reportName, curTime) + '.' + reportFormat;
+  const fileName = `${getFileName(reportName, curTime)}.${reportFormat}`;
   await browser.close();
 
   return { timeCreated, dataUrl: buffer.toString('base64'), fileName };
 };
 
 export const createReport = async (
+  isScheduledTask: boolean,
   report: ReportSchemaType,
-  client: ILegacyClusterClient | ILegacyScopedClusterClient,
+  esClient: ILegacyClusterClient | ILegacyScopedClusterClient,
+  notificationClient?: ILegacyClusterClient | ILegacyScopedClusterClient,
   savedReportId?: string
-): Promise<{ timeCreated: number; dataUrl: string; fileName: string }> => {
-  let createReportResult: {
-    timeCreated: number;
-    dataUrl: string;
-    fileName: string;
-  };
-
-  // create new report instance or update saved report instance with "pending" state
-  const timePending = Date.now();
-  const saveParams: RequestParams.Index = {
-    index: CONFIG_INDEX_NAME.report,
-    id: savedReportId,
-    body: {
-      ...report,
-      state: REPORT_STATE.pending,
-      ...(savedReportId
-        ? { last_updated: timePending }
-        : { time_created: timePending }),
-    },
-  };
-
-  const esResp = await callCluster(client, 'index', saveParams);
-  const reportId = esResp._id;
+): Promise<CreateReportResultType> => {
+  let createReportResult: CreateReportResultType;
+  let reportId;
+  // create new report instance and set report state to "pending"
+  if (savedReportId) {
+    reportId = savedReportId;
+  } else {
+    const esResp = await saveToES(isScheduledTask, report, esClient);
+    reportId = esResp._id;
+  }
 
   const reportDefinition = report.report_definition;
   const reportParams = reportDefinition.report_params;
   const reportSource = reportParams.report_source;
+
   try {
+    // generate report
     if (reportSource === REPORT_TYPE.savedSearch) {
-      createReportResult = await createSavedSearchReport(report, client);
-    } else if (
-      reportSource === REPORT_TYPE.dashboard ||
-      reportSource === REPORT_TYPE.visualization
-    ) {
+      createReportResult = await createSavedSearchReport(
+        report,
+        esClient,
+        isScheduledTask
+      );
+    } else {
+      // report source can only be one of [saved search, visualization, dashboard]
       const { origin } = new URL(report.query_url);
       const queryUrl = report.query_url.replace(origin, LOCAL_HOST);
       createReportResult = await createVisualReport(reportParams, queryUrl);
     }
+
+    if (!savedReportId) {
+      await updateToES(
+        isScheduledTask,
+        reportId,
+        esClient,
+        REPORT_STATE.created,
+        createReportResult
+      );
+    }
+
+    // deliver report
+    if (notificationClient) {
+      createReportResult = await deliverReport(
+        report,
+        createReportResult,
+        notificationClient,
+        esClient,
+        reportId,
+        isScheduledTask
+      );
+    }
   } catch (error) {
     // update report instance with "error" state
-    const timeError = Date.now();
-    const updateParams: RequestParams.Update = {
-      id: reportId,
-      index: CONFIG_INDEX_NAME.report,
-      body: {
-        doc: {
-          state: REPORT_STATE.error,
-          ...(savedReportId
-            ? { last_updated: timeError }
-            : { time_created: timeError }),
-        },
-      },
-    };
-
-    await callCluster(client, 'update', updateParams);
-
+    //TODO: save error detail and display on UI
+    if (!savedReportId) {
+      await updateToES(isScheduledTask, reportId, esClient, REPORT_STATE.error);
+    }
     throw error;
   }
 
-  // update report document with state "created" and time_created
+  return createReportResult;
+};
+
+export const saveToES = async (
+  isScheduledTask: boolean,
+  report: ReportSchemaType,
+  esClient: ILegacyClusterClient | ILegacyScopedClusterClient
+) => {
+  const timePending = Date.now();
+  const saveParams: RequestParams.Index = {
+    index: CONFIG_INDEX_NAME.report,
+    body: {
+      ...report,
+      state: REPORT_STATE.pending,
+      last_updated: timePending,
+      time_created: timePending,
+    },
+  };
+  const esResp = await callCluster(
+    esClient,
+    'index',
+    saveParams,
+    isScheduledTask
+  );
+
+  return esResp;
+};
+
+export const updateToES = async (
+  isScheduledTask: boolean,
+  reportId: string,
+  esClient: ILegacyClusterClient | ILegacyScopedClusterClient,
+  state: string,
+  createReportResult?: CreateReportResultType
+) => {
+  const timeStamp = createReportResult
+    ? createReportResult.timeCreated
+    : Date.now();
+  // update report document with state "created" or "error"
   const updateParams: RequestParams.Update = {
     id: reportId,
     index: CONFIG_INDEX_NAME.report,
     body: {
       doc: {
-        state: REPORT_STATE.created,
-        ...(savedReportId
-          ? { last_updated: createReportResult.timeCreated }
-          : { time_created: createReportResult.timeCreated }),
+        state: state,
+        last_updated: timeStamp,
+        time_created: timeStamp,
       },
     },
   };
+  const esResp = await callCluster(
+    esClient,
+    'update',
+    updateParams,
+    isScheduledTask
+  );
 
-  await callCluster(client, 'update', updateParams);
+  return esResp;
+};
 
-  return createReportResult;
+export const deliverReport = async (
+  report: ReportSchemaType,
+  reportData: CreateReportResultType,
+  notificationClient: ILegacyScopedClusterClient | ILegacyClusterClient,
+  esClient: ILegacyClusterClient | ILegacyScopedClusterClient,
+  reportId: string,
+  isScheduledTask: boolean
+) => {
+  // check delivery type
+  const delivery = report.report_definition.delivery;
+
+  let deliveryType;
+  let deliveryParams;
+  if (delivery) {
+    deliveryType = delivery.delivery_type;
+    deliveryParams = delivery.delivery_params;
+  } else {
+    return reportData;
+  }
+
+  if (deliveryType === DELIVERY_TYPE.channel) {
+    // deliver through one of [Slack, Chime, Email]
+    //@ts-ignore
+    const { email_format: emailFormat, ...rest } = deliveryParams;
+    // compose request body
+    if (emailFormat === EMAIL_FORMAT.attachment) {
+      const reportFormat =
+        report.report_definition.report_params.core_params.report_format;
+      const attachment = {
+        fileName: reportData.fileName,
+        fileEncoding: reportFormat === FORMAT.csv ? 'text' : 'base64',
+        //TODO: figure out when this data field is actually needed
+        // fileContentType: 'application/pdf',
+        fileData: reportData.dataUrl,
+      };
+      const deliveryBody = {
+        ...rest,
+        refTag: reportId,
+        attachment,
+      };
+
+      const res = await callCluster(
+        notificationClient,
+        'notification.send',
+        {
+          body: deliveryBody,
+        },
+        isScheduledTask
+      );
+      console.log(res);
+      //TODO: need better error handling or logging
+    }
+  } else {
+    //TODO: No attachment, use embedded html (not implemented yet)
+    // empty kibana recipients array
+    //TODO: tmp solution
+    // @ts-ignore
+    if (!deliveryParams.kibana_recipients.length) {
+      return reportData;
+    }
+  }
+  // update report document with state "shared" and time_created
+  await updateToES(
+    isScheduledTask,
+    reportId,
+    esClient,
+    REPORT_STATE.shared,
+    reportData
+  );
+
+  return reportData;
 };

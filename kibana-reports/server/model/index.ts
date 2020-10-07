@@ -21,17 +21,19 @@ import {
   SCHEDULE_TYPE,
   REPORT_STATE,
   REPORT_DEFINITION_STATUS,
+  DELIVERY_TYPE,
+  EMAIL_FORMAT,
 } from '../routes/utils/constants';
 
 export const dataReportSchema = schema.object({
   base_url: schema.uri(),
   saved_search_id: schema.string(),
-  //ISO duration string. 'PT10M' means 10 min
+  //ISO duration format. 'PT10M' means 10 min
   time_duration: schema.string(),
   //TODO: future support schema.literal('xlsx')
   report_format: schema.oneOf([schema.literal(FORMAT.csv)]),
-  limit: schema.maybe(schema.number({ defaultValue: 10000 })),
-  excel: schema.maybe(schema.boolean({ defaultValue: true })),
+  limit: schema.number({ defaultValue: 10000 }),
+  excel: schema.boolean({ defaultValue: true }),
 });
 
 const visualReportSchema = schema.object({
@@ -85,6 +87,22 @@ export const scheduleSchema = schema.object({
   enabled: schema.boolean(),
 });
 
+export const kibanaUserSchema = schema.object({
+  kibana_recipients: schema.arrayOf(schema.string()),
+});
+
+export const channelSchema = schema.object({
+  recipients: schema.arrayOf(schema.string(), { minSize: 1 }),
+  title: schema.string(),
+  textDescription: schema.string(),
+  htmlDescription: schema.maybe(schema.string()),
+  email_format: schema.oneOf([
+    schema.literal(EMAIL_FORMAT.attachment),
+    schema.literal(EMAIL_FORMAT.embeddedHtml),
+  ]),
+  channelIds: schema.maybe(schema.arrayOf(schema.string())),
+});
+
 export const reportDefinitionSchema = schema.object({
   report_params: schema.object({
     report_name: schema.string(),
@@ -103,17 +121,18 @@ export const reportDefinitionSchema = schema.object({
     ),
   }),
 
-  delivery: schema.maybe(
-    schema.object({
-      recipients: schema.arrayOf(schema.string(), { minSize: 0 }),
-      title: schema.string(),
-      description: schema.oneOf([
-        schema.object({ text: schema.string() }),
-        schema.object({ html: schema.string() }),
-      ]),
-      channel_ids: schema.maybe(schema.arrayOf(schema.string())),
-    })
-  ),
+  delivery: schema.object({
+    delivery_type: schema.oneOf([
+      schema.literal(DELIVERY_TYPE.kibanaUser),
+      schema.literal(DELIVERY_TYPE.channel),
+    ]),
+    delivery_params: schema.conditional(
+      schema.siblingRef('delivery_type'),
+      DELIVERY_TYPE.kibanaUser,
+      kibanaUserSchema,
+      channelSchema
+    ),
+  }),
 
   trigger: schema.object({
     trigger_type: schema.oneOf([
@@ -160,5 +179,7 @@ export const reportSchema = schema.object({
 
 export type ReportDefinitionSchemaType = TypeOf<typeof reportDefinitionSchema>;
 export type ReportSchemaType = TypeOf<typeof reportSchema>;
-export type dataReportSchemaType = TypeOf<typeof dataReportSchema>;
-export type visualReportSchemaType = TypeOf<typeof visualReportSchema>;
+export type DataReportSchemaType = TypeOf<typeof dataReportSchema>;
+export type VisualReportSchemaType = TypeOf<typeof visualReportSchema>;
+export type ChannelSchemaType = TypeOf<typeof channelSchema>;
+export type KibanaUserSchemaType = TypeOf<typeof kibanaUserSchema>;

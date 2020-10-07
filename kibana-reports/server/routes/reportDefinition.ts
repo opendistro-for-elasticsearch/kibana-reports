@@ -20,6 +20,7 @@ import {
   ResponseError,
   RequestHandlerContext,
   KibanaRequest,
+  ILegacyScopedClusterClient,
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
@@ -126,7 +127,7 @@ export default function (router: IRouter) {
       let newStatus = REPORT_DEFINITION_STATUS.active;
       /* 
       "enabled = false" means de-scheduling a job.
-      TODO: also remove any job in queue and release lock, consider do that
+      TODO: also need to remove any job in queue and release lock, consider do that
       within the createSchedule API exposed from reports-scheduler
       */
       if (reportDefinition.trigger.trigger_type == TRIGGER_TYPE.schedule) {
@@ -354,7 +355,7 @@ async function createScheduledJob(
   const triggerParams = trigger.trigger_params;
 
   // @ts-ignore
-  const schedulerClient = context.reporting_plugin.schedulerClient.asScoped(
+  const schedulerClient: ILegacyScopedClusterClient = context.reporting_plugin.schedulerClient.asScoped(
     request
   );
 
