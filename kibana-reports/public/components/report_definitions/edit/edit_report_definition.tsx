@@ -41,8 +41,10 @@ export function EditReportDefinition(props) {
         time_duration: '',
       },
     },
-    //TODO: add this field back when the notification module became available
-    // delivery: {},
+    delivery: {
+      delivery_type: '',
+      delivery_params: {},
+    },
     trigger: {
       trigger_type: '',
     },
@@ -54,8 +56,6 @@ export function EditReportDefinition(props) {
   };
 
   const editReportDefinition = async (metadata) => {
-    // TODO: remove this delete line after delivery integration
-    delete metadata.delivery;
     const { httpClient } = props;
     httpClient
       .put(`../api/reporting/reportDefinitions/${reportDefinitionId}`, {

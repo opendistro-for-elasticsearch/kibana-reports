@@ -14,6 +14,7 @@
  */
 
 export const EMAIL_RECIPIENT_OPTIONS = [
+  // TODO: remove once we support actual kibana users
   { label: 'admin (self)' },
   { label: 'davidcui' },
   { label: 'szhongna' },
@@ -23,11 +24,24 @@ export const EMAIL_RECIPIENT_OPTIONS = [
 
 export const EMAIL_FORMAT_OPTIONS = [
   {
-    id: 'htmlReport',
+    id: 'Attachment',
+    label: 'Email with report as attached file',
+  },
+  // TODO: add it back when we have fully support for embedded html
+  {
+    id: 'Embedded HTML',
     label: 'Embedded HTML report',
+    disabled: true,
+  },
+];
+
+export const DELIVERY_TYPE_OPTIONS = [
+  {
+    id: 'Kibana user',
+    label: 'Kibana user',
   },
   {
-    id: 'htmlEmailWithAttachment',
-    label: 'Email with report as attached file',
+    id: 'Channel',
+    label: 'Email',
   },
 ];

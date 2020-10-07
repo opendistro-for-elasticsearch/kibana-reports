@@ -57,13 +57,14 @@ export function getFileName(itemName: string, timeCreated: Date): string {
 export const callCluster = async (
   client: ILegacyClusterClient | ILegacyScopedClusterClient,
   endpoint: string,
-  params: any
+  params: any,
+  isScheduledTask: boolean
 ) => {
   let esResp;
-  if ('callAsCurrentUser' in client) {
-    esResp = await client.callAsCurrentUser(endpoint, params);
-  } else {
+  if (isScheduledTask) {
     esResp = await client.callAsInternalUser(endpoint, params);
+  } else {
+    esResp = await client.callAsCurrentUser(endpoint, params);
   }
   return esResp;
 };

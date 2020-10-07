@@ -18,13 +18,14 @@ import {
   IRouter,
   IKibanaResponse,
   ResponseError,
+  ILegacyScopedClusterClient,
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
 import { createReport } from './utils/reportHelper';
 import { reportSchema } from '../model';
 import { errorResponse } from './utils/helpers';
-import { CONFIG_INDEX_NAME } from './utils/constants';
+import { CONFIG_INDEX_NAME, DELIVERY_TYPE } from './utils/constants';
 
 export default function (router: IRouter) {
   // generate report
@@ -47,21 +48,38 @@ export default function (router: IRouter) {
       } catch (error) {
         return response.badRequest({ body: error });
       }
-
       try {
+        // @ts-ignore
+        const notificationClient: ILegacyScopedClusterClient = context.reporting_plugin.notificationClient.asScoped(
+          request
+        );
+        const esClient = context.core.elasticsearch.legacy.client;
+
         const reportData = await createReport(
+          false,
           report,
-          context.core.elasticsearch.legacy.client
+          esClient,
+          notificationClient
         );
 
-        return response.ok({
-          body: {
-            data: reportData.dataUrl,
-            filename: reportData.fileName,
-          },
-        });
+        // if not deliver to user himself , no need to send actual file data to client
+        const delivery = report.report_definition.delivery;
+        if (
+          delivery.delivery_type === DELIVERY_TYPE.kibanaUser &&
+          delivery.delivery_params.kibana_recipients.length === 0
+        ) {
+          return response.ok({
+            body: {
+              data: reportData.dataUrl,
+              filename: reportData.fileName,
+            },
+          });
+        } else {
+          return response.ok();
+        }
       } catch (error) {
         //@ts-ignore
+        // TODO: better error handling for delivery and stages in generating report, pass logger to deeper level
         context.reporting_plugin.logger.error(
           `Failed to create report: ${error}`
         );
@@ -96,9 +114,13 @@ export default function (router: IRouter) {
           }
         );
         const report = esResp._source;
+        const esClient = context.core.elasticsearch.legacy.client;
+
         const reportData = await createReport(
+          false,
           report,
-          context.core.elasticsearch.legacy.client,
+          esClient,
+          undefined,
           savedReportId
         );
 

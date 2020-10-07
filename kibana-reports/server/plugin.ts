@@ -23,6 +23,7 @@ import {
 } from '../../../src/core/server';
 import { setIntervalAsync } from 'set-interval-async/dynamic';
 import reportsSchedulerPlugin from './backend/opendistro-reports-scheduler-plugin';
+import notificationPlugin from './backend/opendistro-notification-plugin';
 import {
   OpendistroKibanaReportsPluginSetup,
   OpendistroKibanaReportsPluginStart,
@@ -66,6 +67,12 @@ export class OpendistroKibanaReportsPlugin
         plugins: [reportsSchedulerPlugin],
       }
     );
+    const notificationClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
+      'notification',
+      {
+        plugins: [notificationPlugin],
+      }
+    );
 
     // Register server side APIs
     registerRoutes(router);
@@ -78,6 +85,7 @@ export class OpendistroKibanaReportsPlugin
         return {
           logger: this.logger,
           schedulerClient,
+          notificationClient,
         };
       }
     );
@@ -94,7 +102,13 @@ export class OpendistroKibanaReportsPlugin
         plugins: [reportsSchedulerPlugin],
       }
     );
-    const esClient = core.elasticsearch.legacy.client;
+    const notificationClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
+      'notification',
+      {
+        plugins: [notificationPlugin],
+      }
+    );
+    const esClient: ILegacyClusterClient = core.elasticsearch.legacy.client;
     /*
     setIntervalAsync provides the same familiar interface as built-in setInterval for asynchronous functions,
     while preventing multiple executions from overlapping in time.
@@ -107,6 +121,7 @@ export class OpendistroKibanaReportsPlugin
       pollAndExecuteJob,
       POLL_INTERVAL,
       schedulerClient,
+      notificationClient,
       esClient,
       this.logger
     );
