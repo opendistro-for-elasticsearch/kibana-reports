@@ -24,12 +24,14 @@ export const EMAIL_RECIPIENT_OPTIONS = [
 
 export const EMAIL_FORMAT_OPTIONS = [
   {
-    id: 'Embedded HTML',
-    label: 'Embedded HTML report',
-  },
-  {
     id: 'Attachment',
     label: 'Email with report as attached file',
+  },
+  // TODO: add it back when we have fully support for embedded html
+  {
+    id: 'Embedded HTML',
+    label: 'Embedded HTML report',
+    disabled: true,
   },
 ];
 

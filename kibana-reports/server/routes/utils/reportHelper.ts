@@ -287,7 +287,7 @@ export const deliverReport = async (
         attachment,
       };
 
-      await callCluster(
+      const res = await callCluster(
         notificationClient,
         'notification.send',
         {
@@ -295,6 +295,7 @@ export const deliverReport = async (
         },
         isScheduledTask
       );
+      console.log(res);
       //TODO: need better error handling or logging
     }
   } else {
