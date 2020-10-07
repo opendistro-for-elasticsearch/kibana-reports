@@ -32,7 +32,6 @@ import {
   EuiSpacer,
   EuiTitle,
 } from '@elastic/eui';
-import { reports_list_users } from './test_data';
 import {
   fileFormatsUpper,
   humanReadableDate,
