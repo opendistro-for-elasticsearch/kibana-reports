@@ -19,7 +19,6 @@ import { parseInContextUrl } from './report_settings_helpers';
 import dateMath from '@elastic/datemath';
 import { EuiFormRow, EuiSuperDatePicker } from '@elastic/eui';
 
-
 const isValidTimeRange = (
   timeRangeMoment: number | moment.Moment,
   limit: string
@@ -55,32 +54,36 @@ export function TimeRangeSelect(props) {
   const [isPaused, setIsPaused] = useState(true);
   const [refreshInterval, setRefreshInterval] = useState();
 
-  const setDefaultEditTimeRange = (duration) => {
+  const setDefaultEditTimeRange = (duration, unmounted) => {
     let time_difference = moment.now() - duration;
     const fromDate = new Date(time_difference);
     parseTimeRange(fromDate, end, reportDefinitionRequest);
-    onTimeChange({ start: fromDate.toISOString(), end: end });
+    if (!unmounted) {
+      onTimeChange({ start: fromDate.toISOString(), end: end });
+    }
   };
 
   useEffect(() => {
+    let unmounted = false;
     // if we are coming from the in-context menu
     if (window.location.href.indexOf('?') > -1) {
       const url = window.location.href;
       const timeFrom = parseInContextUrl(url, 'timeFrom');
       const timeTo = parseInContextUrl(url, 'timeTo');
       parseTimeRange(timeFrom, timeTo, reportDefinitionRequest);
-      onTimeChange({ start: timeFrom, end: timeTo });
+      if (!unmounted) {
+        onTimeChange({ start: timeFrom, end: timeTo });
+      }
     } else {
       if (edit) {
-        let duration;
         httpClientProps
           .get(`../api/reporting/reportDefinitions/${id}`)
           .then(async (response: {}) => {
-            duration =
+            let duration =
               response.report_definition.report_params.core_params
                 .time_duration;
             duration = moment.duration(duration);
-            setDefaultEditTimeRange(duration);
+            setDefaultEditTimeRange(duration, unmounted);
           })
           .catch((error) => {
             console.error(
@@ -92,6 +95,9 @@ export function TimeRangeSelect(props) {
         parseTimeRange(start, end, reportDefinitionRequest);
       }
     }
+    return () => {
+      unmounted = true;
+    };
   }, []);
 
   const onTimeChange = ({ start, end }) => {
