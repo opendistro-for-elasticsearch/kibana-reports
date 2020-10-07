@@ -202,22 +202,6 @@ export function ReportsTable(props) {
     },
   };
 
-  const uniqueSenders = [];
-  reports_list_users.map((user) => {
-    if (uniqueSenders.indexOf(user.sender) === -1) {
-      uniqueSenders.push(user.sender);
-    }
-  });
-
-  const uniqueRecipients = [];
-  reports_list_users.map((user) => {
-    for (const [index, value] of user.recipients.entries()) {
-      if (uniqueRecipients.indexOf(value) === -1) {
-        uniqueRecipients.push(value);
-      }
-    }
-  });
-
   const reportsListSearch = {
     box: {
       incremental: true,
