@@ -59,7 +59,8 @@ export function TimeRangeSelect(props) {
     const fromDate = new Date(time_difference);
     parseTimeRange(fromDate, end, reportDefinitionRequest);
     if (!unmounted) {
-      onTimeChange({ start: fromDate.toISOString(), end: end });
+      setStart(fromDate.toISOString());
+      setEnd(end);
     }
   };
 
@@ -72,7 +73,8 @@ export function TimeRangeSelect(props) {
       const timeTo = parseInContextUrl(url, 'timeTo');
       parseTimeRange(timeFrom, timeTo, reportDefinitionRequest);
       if (!unmounted) {
-        onTimeChange({ start: timeFrom, end: timeTo });
+        setStart(timeFrom);
+        setEnd(timeTo);
       }
     } else {
       if (edit) {
