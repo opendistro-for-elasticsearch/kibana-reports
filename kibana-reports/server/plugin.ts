@@ -23,7 +23,7 @@ import {
 } from '../../../src/core/server';
 import { setIntervalAsync } from 'set-interval-async/dynamic';
 import reportsSchedulerPlugin from './backend/opendistro-reports-scheduler-plugin';
-import notificationPlugin from './backend/opendistro-notificaiton-plugin';
+import notificationPlugin from './backend/opendistro-notification-plugin';
 import {
   OpendistroKibanaReportsPluginSetup,
   OpendistroKibanaReportsPluginStart,
