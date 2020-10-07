@@ -70,7 +70,9 @@ export function ReportTrigger(props: ReportTriggerProps) {
     TRIGGER_TYPE_OPTIONS[0].id
   );
 
-  const [scheduleType, setScheduleType] = useState('Recurring');
+  const [scheduleType, setScheduleType] = useState(
+    SCHEDULE_TYPE_OPTIONS[0].label
+  );
   //TODO: should read local timezone and display
   const [timezone, setTimezone] = useState(TIMEZONE_OPTIONS[0].value);
   const [scheduleRecurringFrequency, setScheduleRecurringFrequency] = useState(
@@ -100,9 +102,9 @@ export function ReportTrigger(props: ReportTriggerProps) {
 
   const handleScheduleType = (e: React.SetStateAction<string>) => {
     setScheduleType(e);
-    if (e === 'Cron based') {
+    if (e === SCHEDULE_TYPE_OPTIONS[1].label) {
       delete reportDefinitionRequest.trigger.trigger_params.schedule.interval;
-    } else if (e === 'Recurring') {
+    } else if (e === SCHEDULE_TYPE_OPTIONS[0].label) {
       delete reportDefinitionRequest.trigger.trigger_params.schedule.cron;
     }
   };
@@ -368,7 +370,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
           .then(async (response) => {
             if (
               response.report_definition.trigger.trigger_params
-                .schedule_type === 'Cron based'
+                .schedule_type === SCHEDULE_TYPE_OPTIONS[1].label
             ) {
               setCronExpression(
                 response.report_definition.trigger.trigger_params.schedule.cron
@@ -439,10 +441,14 @@ export function ReportTrigger(props: ReportTriggerProps) {
 
   const ScheduleTrigger = () => {
     const display_recurring =
-      scheduleType === 'Recurring' ? <ScheduleTriggerRecurring /> : null;
+      scheduleType === SCHEDULE_TYPE_OPTIONS[0].label ? (
+        <ScheduleTriggerRecurring />
+      ) : null;
 
     const display_cron =
-      scheduleType === 'Cron based' ? <CronExpression /> : null;
+      scheduleType === SCHEDULE_TYPE_OPTIONS[1].label ? (
+        <CronExpression />
+      ) : null;
 
     useEffect(() => {
       // Set default trigger_type
@@ -499,7 +505,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
   };
 
   const defaultEditScheduleFrequency = (trigger_params) => {
-    if (trigger_params.schedule_type === 'Recurring') {
+    if (trigger_params.schedule_type === SCHEDULE_TYPE_OPTIONS[0].label) {
       if (trigger_params.schedule.interval.unit === 'DAYS') {
         setScheduleRecurringFrequency('daily');
       } else {
