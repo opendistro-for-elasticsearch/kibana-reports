@@ -132,7 +132,6 @@ export function CreateReport(props) {
   // preserve the state of the request after an invalid create report definition request
   if (comingFromError) {
     createReportDefinitionRequest = preErrorData;
-    console.log(createReportDefinitionRequest);
   }
 
   const addErrorToastHandler = () => {
@@ -238,7 +237,6 @@ export function CreateReport(props) {
       handleErrorToast();
       setPreErrorData(metadata);
       setComingFromError(true);
-      console.log('pre error data is', metadata);
     } else {
       httpClient
         .post('../api/reporting/reportDefinition', {
