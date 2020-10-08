@@ -70,7 +70,14 @@ const emptyMessageReports = (
 );
 
 export function ReportsTable(props) {
-  const { getRowProps, pagination, reportsTableItems, httpClient } = props;
+  const {
+    getRowProps,
+    pagination,
+    reportsTableItems,
+    httpClient,
+    handleSuccessToast,
+    handleErrorToast,
+  } = props;
 
   const [sortField, setSortField] = useState('timeCreated');
   const [sortDirection, setSortDirection] = useState(SortDirection.desc);
@@ -132,7 +139,12 @@ export function ReportsTable(props) {
 
   const onDemandDownload = async (id: any) => {
     handleLoading(true);
-    await generateReportById(id, httpClient);
+    await generateReportById(
+      id,
+      httpClient,
+      handleSuccessToast,
+      handleErrorToast
+    );
     handleLoading(false);
   };
 

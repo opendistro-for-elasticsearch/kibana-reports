@@ -154,6 +154,7 @@ export const readStreamToFile = async (
 };
 
 export const generateReport = async (metadata, httpClient) => {
+  let status = false;
   await httpClient
     .post('../api/reporting/generateReport', {
       body: JSON.stringify(metadata),
@@ -165,14 +166,21 @@ export const generateReport = async (metadata, httpClient) => {
       const fileFormat = extractFileFormat(response['filename']);
       const fileName = response['filename'];
       await readStreamToFile(await response['data'], fileFormat, fileName);
-      return response;
+      status = true;
     })
     .catch((error) => {
       console.log('error on generating report:', error);
+      status = false;
     });
+  return status;
 };
 
-export const generateReportById = async (reportId, httpClient) => {
+export const generateReportById = async (
+  reportId,
+  httpClient,
+  handleSuccessToast,
+  handleErrorToast
+) => {
   await httpClient
     .post(`../api/reporting/generateReport/${reportId}`)
     .then(async (response) => {
@@ -180,9 +188,11 @@ export const generateReportById = async (reportId, httpClient) => {
       const fileFormat = extractFileFormat(response['filename']);
       const fileName = response['filename'];
       await readStreamToFile(await response['data'], fileFormat, fileName);
+      handleSuccessToast();
       return response;
     })
     .catch((error) => {
       console.log('error on generating report by id:', error);
+      handleErrorToast();
     });
 };

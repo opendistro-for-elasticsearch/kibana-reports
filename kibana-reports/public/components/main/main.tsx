@@ -23,6 +23,7 @@ import {
   EuiHorizontalRule,
   EuiSpacer,
   EuiPanel,
+  EuiGlobalToastList,
 } from '@elastic/eui';
 import { ReportsTable } from './reports_table';
 import { ReportDefinitions } from './report_definitions_table';
@@ -30,119 +31,149 @@ import {
   addReportsTableContent,
   addReportDefinitionsTableContent,
 } from './main_utils';
-import { CoreInterface } from '../app';
 import CSS from 'csstype';
-
-interface RouterHomeProps extends CoreInterface {
-  httpClient?: any;
-  reportDefinitionCreateSuccess?: boolean
-}
 
 const reportCountStyles: CSS.Properties = {
   color: 'gray',
   display: 'inline',
 };
 
-export class Main extends React.Component<RouterHomeProps, any> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      pagination: this.pagination,
-      generateReportFilename: '',
-      generateReportFileFormat: '',
-      generateReportStatus: '',
-      reportsTableContent: [],
-      reportDefinitionsTableContent: [],
-      reportSourceDashboardOptions: [],
-    };
-  }
+export function Main(props) {
+  const [reportsTableContent, setReportsTableContent] = useState([]);
+  const [
+    reportDefinitionsTableContent,
+    setReportDefinitionsTableContent,
+  ] = useState([]);
+  const [toasts, setToasts] = useState([]);
 
-  pagination = {
+  const addReportsTableContentErrorToastHandler = () => {
+    const errorToast = {
+      title: 'Error generating reports table content',
+      color: 'danger',
+      iconType: 'alert',
+      id: 'reportsTableErrorToast',
+    };
+    setToasts(toasts.concat(errorToast));
+  };
+
+  const handleReportsTableContentErrorToast = () => {
+    addReportsTableContentErrorToastHandler();
+  };
+
+  const addReportDefinitionsTableErrorToastHandler = () => {
+    const errorToast = {
+      title: 'Error generating report definitions table content',
+      color: 'danger',
+      iconType: 'alert',
+      id: 'reportDefinitionsTableErrorToast',
+    };
+    setToasts(toasts.concat(errorToast));
+  };
+
+  const handleReportDefinitionsTableErrorToast = () => {
+    addReportDefinitionsTableErrorToastHandler();
+  };
+
+  const addErrorOnDemandDownloadToastHandler = () => {
+    const errorToast = {
+      title: 'Error downloading report',
+      color: 'danger',
+      iconType: 'alert',
+      id: 'onDemandDownloadErrorToast',
+    };
+    setToasts(toasts.concat(errorToast));
+  };
+
+  const handleOnDemandDownloadErrorToast = () => {
+    addErrorOnDemandDownloadToastHandler();
+  };
+
+  const addSuccessOnDemandDownloadToastHandler = () => {
+    const successToast = {
+      title: 'Success',
+      color: 'success',
+      text: <p>Report successfully downloaded!</p>,
+      id: 'onDemandDownloadSuccessToast',
+    };
+    setToasts(toasts.concat(successToast));
+  };
+
+  const handleOnDemandDownloadSuccessToast = () => {
+    addSuccessOnDemandDownloadToastHandler();
+  };
+
+  const removeToast = (removedToast) => {
+    setToasts(toasts.filter((toast) => toast.id !== removedToast.id));
+  };
+
+  const pagination = {
     initialPageSize: 10,
     pageSizeOptions: [8, 10, 13],
   };
 
-  updateReportsTableContent = async () => {
-    const { httpClient } = this.props;
-    httpClient
-      .get('../api/reporting/reports')
-      .then((response) => {
-        this.setState({
-          reportsTableContent: addReportsTableContent(response.data),
-        });
-      })
-      .catch((error) => {
-        console.log('error when fetching all reports: ', error);
-      });
-  };
-
-  componentDidMount = async () => {
-    this.props.setBreadcrumbs([
+  useEffect(() => {
+    props.setBreadcrumbs([
       {
         text: 'Reporting',
         href: '#',
       },
     ]);
-    const { httpClient } = this.props;
+    const { httpClient } = props;
     // get all reports
-    await httpClient
+    httpClient
       .get('../api/reporting/reports')
       .then((response) => {
-        this.setState({
-          reportsTableContent: addReportsTableContent(response.data),
-        });
+        setReportsTableContent(addReportsTableContent(response.data));
       })
       .catch((error) => {
         console.log('error when fetching all reports: ', error);
+        handleReportsTableContentErrorToast();
       });
 
     // get all report definitions
-    await httpClient
+    httpClient
       .get('../api/reporting/reportDefinitions')
       .then((response) => {
-        this.setState({
-          reportDefinitionsTableContent: addReportDefinitionsTableContent(
-            response.data
-          ),
-        });
+        setReportDefinitionsTableContent(
+          addReportDefinitionsTableContent(response.data)
+        );
       })
       .catch((error) => {
         console.log('error when fetching all report definitions: ', error);
+        handleReportDefinitionsTableErrorToast();
       });
-  };
+  }, []);
 
-  refreshReportsTable = async () => {
-    const { httpClient } = this.props;
+  const refreshReportsTable = async () => {
+    const { httpClient } = props;
     await httpClient
       .get('../api/reporting/reports')
       .then((response) => {
-        this.setState({
-          reportsTableContent: addReportsTableContent(response.data),
-        });
+        setReportsTableContent(addReportsTableContent(response.data));
         addReportsTableContent(response.data);
       })
       .catch((error) => {
         console.log('error when fetching all reports: ', error);
+        handleReportsTableContentErrorToast();
       });
   };
 
-  refreshReportsDefinitionsTable = async () => {
-    const { httpClient } = this.props;
+  const refreshReportsDefinitionsTable = async () => {
+    const { httpClient } = props;
     await httpClient
       .get('../api/reporting/reportDefinitions')
       .then((response) => {
-        this.setState({
-          reportDefinitionsTableContent: addReportDefinitionsTableContent(
-            response.data
-          ),
-        });
+        setReportDefinitionsTableContent(
+          addReportDefinitionsTableContent(response.data)
+        );
       })
       .catch((error) => {
         console.log('error when fetching all report definitions: ', error);
+        handleReportDefinitionsTableErrorToast();
       });
   };
 
-  getReportsRowProps = (item: any) => {
+  const getReportsRowProps = (item: any) => {
     const { id } = item;
     return {
       'data-test-subj': `row-${id}`,
@@ -150,14 +181,14 @@ export class Main extends React.Component<RouterHomeProps, any> {
       onClick: (e: any) => {
         if (!$(e.target).is('button')) {
           window.location.assign(
-            `opendistro_kibana_reports#/report_details/${item.id}${this.props.history.location.search}`
+            `opendistro_kibana_reports#/report_details/${item.id}${props.history.location.search}`
           );
         }
       },
     };
   };
 
-  getReportDefinitionsRowProps = (item: any) => {
+  const getReportDefinitionsRowProps = (item: any) => {
     const { id } = item;
     return {
       'data-test-subj': `row-${id}`,
@@ -165,83 +196,83 @@ export class Main extends React.Component<RouterHomeProps, any> {
       onClick: (e: any) => {
         if (!$(e.target).is('button')) {
           window.location.assign(
-            `opendistro_kibana_reports#/report_definition_details/${item.id}${this.props.history.location.search}`
+            `opendistro_kibana_reports#/report_definition_details/${item.id}${props.history.location.search}`
           );
         }
       },
     };
   };
 
-  render() {
-    return (
-      <div>
-        <EuiPanel paddingSize={'l'}>
-          <EuiFlexGroup justifyContent="spaceEvenly">
-            <EuiFlexItem>
-              <EuiTitle>
-                <h2>
-                  Reports{' '}
-                  <p style={reportCountStyles}>
-                    {' '}
-                    ({this.state.reportsTableContent.length})
-                  </p>
-                </h2>
-              </EuiTitle>
-            </EuiFlexItem>
-            <EuiFlexItem component="span" grow={false}>
-              <EuiButton size="m" onClick={this.refreshReportsTable}>
-                Refresh
-              </EuiButton>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-          <EuiHorizontalRule />
-          <ReportsTable
-            getRowProps={this.getReportsRowProps}
-            pagination={this.pagination}
-            reportsTableItems={this.state.reportsTableContent}
-            httpClient={this.props['httpClient']}
-          />
-        </EuiPanel>
-        <EuiSpacer />
-        <EuiPanel paddingSize={'l'}>
-          <EuiFlexGroup justifyContent="spaceEvenly">
-            <EuiFlexItem>
-              <EuiTitle>
-                <h2>
-                  Report definitions
-                  <p style={reportCountStyles}>
-                    {' '}
-                    ({this.state.reportDefinitionsTableContent.length})
-                  </p>
-                </h2>
-              </EuiTitle>
-            </EuiFlexItem>
-            <EuiFlexItem grow={false}>
-              <EuiButton onClick={this.refreshReportsDefinitionsTable}>
-                Refresh
-              </EuiButton>
-            </EuiFlexItem>
-            <EuiFlexItem component="span" grow={false}>
-              <EuiButton
-                fill={true}
-                onClick={() => {
-                  window.location.assign('opendistro_kibana_reports#/create');
-                }}
-              >
-                Create
-              </EuiButton>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-          <EuiHorizontalRule />
-          <ReportDefinitions
-            pagination={this.pagination}
-            getRowProps={this.getReportDefinitionsRowProps}
-            reportDefinitionsTableContent={
-              this.state.reportDefinitionsTableContent
-            }
-          />
-        </EuiPanel>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <EuiPanel paddingSize={'l'}>
+        <EuiFlexGroup justifyContent="spaceEvenly">
+          <EuiFlexItem>
+            <EuiTitle>
+              <h2>
+                Reports{' '}
+                <p style={reportCountStyles}> ({reportsTableContent.length})</p>
+              </h2>
+            </EuiTitle>
+          </EuiFlexItem>
+          <EuiFlexItem component="span" grow={false}>
+            <EuiButton size="m" onClick={refreshReportsTable}>
+              Refresh
+            </EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiHorizontalRule />
+        <ReportsTable
+          getRowProps={getReportsRowProps}
+          pagination={pagination}
+          reportsTableItems={reportsTableContent}
+          httpClient={props['httpClient']}
+          handleSuccessToast={handleOnDemandDownloadSuccessToast}
+          handleErrorToast={handleOnDemandDownloadErrorToast}
+        />
+      </EuiPanel>
+      <EuiSpacer />
+      <EuiPanel paddingSize={'l'}>
+        <EuiFlexGroup justifyContent="spaceEvenly">
+          <EuiFlexItem>
+            <EuiTitle>
+              <h2>
+                Report definitions
+                <p style={reportCountStyles}>
+                  {' '}
+                  ({reportDefinitionsTableContent.length})
+                </p>
+              </h2>
+            </EuiTitle>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <EuiButton onClick={refreshReportsDefinitionsTable}>
+              Refresh
+            </EuiButton>
+          </EuiFlexItem>
+          <EuiFlexItem component="span" grow={false}>
+            <EuiButton
+              fill={true}
+              onClick={() => {
+                window.location.assign('opendistro_kibana_reports#/create');
+              }}
+            >
+              Create
+            </EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiHorizontalRule />
+        <ReportDefinitions
+          pagination={pagination}
+          getRowProps={getReportDefinitionsRowProps}
+          reportDefinitionsTableContent={reportDefinitionsTableContent}
+        />
+      </EuiPanel>
+      <EuiGlobalToastList
+        toasts={toasts}
+        dismissToast={removeToast}
+        toastLifeTimeMs={6000}
+      />
+    </div>
+  );
 }

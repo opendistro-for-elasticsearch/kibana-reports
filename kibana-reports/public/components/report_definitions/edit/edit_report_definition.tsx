@@ -23,12 +23,33 @@ import {
   EuiTitle,
   EuiPageBody,
   EuiSpacer,
+  EuiGlobalToastList,
 } from '@elastic/eui';
 import { ReportSettings } from '../report_settings';
 import { ReportDelivery } from '../delivery';
 import { ReportTrigger } from '../report_trigger';
 
 export function EditReportDefinition(props) {
+  const [toasts, setToasts] = useState([]);
+
+  const addErrorUpdatingReportDefinitionToast = () => {
+    const errorToast = {
+      title: 'Error updating report definition',
+      color: 'danger',
+      iconType: 'alert',
+      id: 'errorToast',
+    };
+    setToasts(toasts.concat(errorToast));
+  };
+
+  const handleErrorUpdatingReportDefinitionToast = () => {
+    addErrorUpdatingReportDefinitionToast();
+  };
+
+  const removeToast = (removedToast) => {
+    setToasts(toasts.filter((toast) => toast.id !== removedToast.id));
+  };
+
   const reportDefinitionId = props['match']['params']['reportDefinitionId'];
   let editReportDefinitionRequest = {
     report_params: {
@@ -67,6 +88,7 @@ export function EditReportDefinition(props) {
       })
       .catch((error) => {
         console.error('error in updating report definition:', error);
+        handleErrorUpdatingReportDefinitionToast();
       });
   };
 
@@ -147,6 +169,11 @@ export function EditReportDefinition(props) {
             </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
+        <EuiGlobalToastList
+          toasts={toasts}
+          dismissToast={removeToast}
+          toastLifeTimeMs={6000}
+        />
       </EuiPageBody>
     </EuiPage>
   );
