@@ -28,6 +28,7 @@ import { ReportSettings } from '../report_settings';
 import { ReportDelivery } from '../delivery';
 import { ReportTrigger } from '../report_trigger';
 import { generateReport } from '../../main/main_utils';
+import { isValidCron } from 'cron-validator';
 
 interface reportParamsType {
   report_name: string;
@@ -112,6 +113,27 @@ export function CreateReport(props) {
   };
 
   const [toasts, setToasts] = useState([]);
+  const [comingFromError, setComingFromError] = useState(false);
+  const [preErrorData, setPreErrorData] = useState({});
+
+  const [
+    showSettingsReportNameError,
+    setShowSettingsReportNameError,
+  ] = useState(false);
+  const [
+    showTriggerIntervalNaNError,
+    setShowTriggerIntervalNaNError,
+  ] = useState(false);
+  const [showCronError, setShowCronError] = useState(false);
+  const [showEmailRecipientsError, setShowEmailRecipientsError] = useState(
+    false
+  );
+
+  // preserve the state of the request after an invalid create report definition request
+  if (comingFromError) {
+    createReportDefinitionRequest = preErrorData;
+    console.log(createReportDefinitionRequest);
+  }
 
   const addErrorToastHandler = () => {
     const errorToast = {
@@ -150,6 +172,50 @@ export function CreateReport(props) {
     timeTo: new Date(),
   };
 
+  const definitionInputValidation = async (metadata, error) => {
+    // check report name
+    // allow a-z, A-Z, 0-9, (), [], ',' - and _ and spaces
+    let regexp = /^[\w\-\s\(\)\[\]\,\_\-+]+$/;
+    if (metadata.report_params.report_name.search(regexp) === -1) {
+      setShowSettingsReportNameError(true);
+      error = true;
+    }
+    // if recurring by interval and input is not a number
+    if (
+      metadata.trigger.trigger_type === 'Schedule' &&
+      metadata.trigger.trigger_params.schedule_type === 'Recurring'
+    ) {
+      let interval = parseInt(
+        metadata.trigger.trigger_params.schedule.interval.period
+      );
+      if (isNaN(interval)) {
+        setShowTriggerIntervalNaNError(true);
+        error = true;
+      }
+    }
+
+    // if cron based and cron input is invalid
+    if (
+      metadata.trigger.trigger_type === 'Schedule' &&
+      metadata.trigger.trigger_params.schedule_type === 'Cron based'
+    ) {
+      if (
+        !isValidCron(metadata.trigger.trigger_params.schedule.cron.expression)
+      ) {
+        setShowCronError(true);
+        error = true;
+      }
+    }
+    // if email delivery and no recipients are listed
+    if (metadata.delivery.delivery_type === 'Channel') {
+      if (metadata.delivery.delivery_params.recipients.length === 0) {
+        setShowEmailRecipientsError(true);
+        error = true;
+      }
+    }
+    return error;
+  };
+
   const createNewReportDefinition = async (
     metadata: reportDefinitionParams,
     timeRange: timeRangeParams
@@ -164,33 +230,44 @@ export function CreateReport(props) {
       delete metadata.trigger.trigger_params;
     }
 
-    httpClient
-      .post('../api/reporting/reportDefinition', {
-        body: JSON.stringify(metadata),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then(async (resp) => {
-        //TODO: consider handle the on demand report generation from server side instead
-        if (metadata.trigger.trigger_type === 'On demand') {
-          let onDemandDownloadMetadata = {
-            query_url: `${
-              metadata.report_params.core_params.base_url
-            }?_g=(time:(from:'${timeRange.timeFrom.toISOString()}',to:'${timeRange.timeTo.toISOString()}'))`,
-            time_from: timeRange.timeFrom.valueOf(),
-            time_to: timeRange.timeTo.valueOf(),
-            report_definition: metadata,
-          };
-          generateReport(onDemandDownloadMetadata, httpClient);
-        }
-        await handleSuccessToast();
-        window.location.assign(`opendistro_kibana_reports#/`);
-      })
-      .catch((error, message) => {
-        console.log('error in creating report definition: ' + error + message);
-        handleErrorToast();
-      });
+    let error = false;
+    await definitionInputValidation(metadata, error).then((response) => {
+      error = response;
+    });
+    if (error) {
+      handleErrorToast();
+      setPreErrorData(metadata);
+      setComingFromError(true);
+      console.log('pre error data is', metadata);
+    } else {
+      httpClient
+        .post('../api/reporting/reportDefinition', {
+          body: JSON.stringify(metadata),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(async (resp) => {
+          //TODO: consider handle the on demand report generation from server side instead
+          if (metadata.trigger.trigger_type === 'On demand') {
+            let onDemandDownloadMetadata = {
+              query_url: `${
+                metadata.report_params.core_params.base_url
+              }?_g=(time:(from:'${timeRange.timeFrom.toISOString()}',to:'${timeRange.timeTo.toISOString()}'))`,
+              time_from: timeRange.timeFrom.valueOf(),
+              time_to: timeRange.timeTo.valueOf(),
+              report_definition: metadata,
+            };
+            generateReport(onDemandDownloadMetadata, httpClient);
+          }
+          await handleSuccessToast();
+          window.location.assign(`opendistro_kibana_reports#/`);
+        })
+        .catch((error) => {
+          console.log('error in creating report definition: ' + error);
+          handleErrorToast();
+        });
+    }
   };
 
   useEffect(() => {
@@ -218,16 +295,20 @@ export function CreateReport(props) {
           reportDefinitionRequest={createReportDefinitionRequest}
           httpClientProps={props['httpClient']}
           timeRange={timeRange}
+          showSettingsReportNameError={showSettingsReportNameError}
         />
         <EuiSpacer />
         <ReportTrigger
           edit={false}
           reportDefinitionRequest={createReportDefinitionRequest}
+          showTriggerIntervalNaNError={showTriggerIntervalNaNError}
+          showCronError={showCronError}
         />
         <EuiSpacer />
         <ReportDelivery
           edit={false}
           reportDefinitionRequest={createReportDefinitionRequest}
+          showEmailRecipientsError={showEmailRecipientsError}
         />
         <EuiSpacer />
         <EuiFlexGroup justifyContent="flexEnd">

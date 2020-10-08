@@ -24,10 +24,8 @@ import {
   EuiSpacer,
   EuiRadioGroup,
 } from '@elastic/eui';
-import { KibanaUserDelivery } from './kibana_user'
-import {
-  DELIVERY_TYPE_OPTIONS
-} from './delivery_constants';
+import { KibanaUserDelivery } from './kibana_user';
+import { DELIVERY_TYPE_OPTIONS } from './delivery_constants';
 import 'react-mde/lib/styles/css/react-mde-all.css';
 import { reportDefinitionParams } from '../create/create_report_definition';
 import { EmailDelivery } from './email';
@@ -37,6 +35,7 @@ export type ReportDeliveryProps = {
   editDefinitionId: string;
   reportDefinitionRequest: reportDefinitionParams;
   httpClientProps: any;
+  showEmailRecipientsError: boolean;
 };
 
 export function ReportDelivery(props: ReportDeliveryProps) {
@@ -45,8 +44,9 @@ export function ReportDelivery(props: ReportDeliveryProps) {
     editDefinitionId,
     reportDefinitionRequest,
     httpClientProps,
+    showEmailRecipientsError,
   } = props;
-  
+
   const [deliveryType, setDeliveryType] = useState(DELIVERY_TYPE_OPTIONS[0].id);
 
   const handleDeliveryType = (e: string) => {
@@ -55,10 +55,12 @@ export function ReportDelivery(props: ReportDeliveryProps) {
   };
 
   const deliverySetting = (props: ReportDeliveryProps) => {
-    return (
-      deliveryType === DELIVERY_TYPE_OPTIONS[0].id ? <KibanaUserDelivery {...props} /> : <EmailDelivery {...props} />
-    )
-  }
+    return deliveryType === DELIVERY_TYPE_OPTIONS[0].id ? (
+      <KibanaUserDelivery {...props} />
+    ) : (
+      <EmailDelivery {...props} />
+    );
+  };
 
   useEffect(() => {
     if (edit) {
@@ -81,13 +83,13 @@ export function ReportDelivery(props: ReportDeliveryProps) {
       </EuiPageHeader>
       <EuiHorizontalRule />
       <EuiPageContentBody>
-      <EuiFormRow label="Delivery type">
+        <EuiFormRow label="Delivery type">
           <EuiRadioGroup
             options={DELIVERY_TYPE_OPTIONS}
             idSelected={deliveryType}
             onChange={handleDeliveryType}
           />
-      </EuiFormRow>
+        </EuiFormRow>
         <EuiSpacer />
         {deliverySetting(props)}
       </EuiPageContentBody>
