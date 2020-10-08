@@ -205,11 +205,22 @@ export function CreateReport(props) {
         error = true;
       }
     }
-    // if email delivery and no recipients are listed
+    // if email delivery 
     if (metadata.delivery.delivery_type === 'Channel') {
+      // no recipients are listed
       if (metadata.delivery.delivery_params.recipients.length === 0) {
         setShowEmailRecipientsError(true);
         error = true;
+      }
+      // recipients have invalid email addresses: regexp checks format xxxxx@yyyy.zzz
+      let emailRegExp = /\S+@\S+\.\S+/;
+      let index;
+      let recipients = metadata.delivery.delivery_params.recipients;
+      for (index = 0; index < recipients.length; ++index) {
+        if (recipients[0].search(emailRegExp) === -1) {
+          setShowEmailRecipientsError(true);
+          error = true;
+        }
       }
     }
     return error;
