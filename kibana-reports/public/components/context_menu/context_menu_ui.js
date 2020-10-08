@@ -121,7 +121,7 @@ export const reportGenerationSuccess = () => {
     <div class="euiText euiText--small euiToastBody">
       <p>Your report is available in 
         <a class="euiLink euiLink--primary"
-        href="opendistro_kibana_report#/" rel="noreferrer">Reports</a>.</p>
+        href="opendistro_kibana_reports#/" rel="noreferrer">Reports</a>.</p>
     </div>
   </div>
   `
