@@ -61,6 +61,7 @@ type ReportSettingProps = {
   reportDefinitionRequest: reportDefinitionParams;
   httpClientProps: any;
   timeRange: timeRangeParams;
+  showSettingsReportNameError: boolean;
 };
 
 export function ReportSettings(props: ReportSettingProps) {
@@ -70,6 +71,7 @@ export function ReportSettings(props: ReportSettingProps) {
     reportDefinitionRequest,
     httpClientProps,
     timeRange,
+    showSettingsReportNameError,
   } = props;
 
   const [reportName, setReportName] = useState('');
@@ -532,6 +534,7 @@ export function ReportSettings(props: ReportSettingProps) {
             <EuiFormRow
               label="Name"
               helpText="Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space)."
+              isInvalid={showSettingsReportNameError}
             >
               <EuiFieldText
                 placeholder="Report name (e.g Log Traffic Daily Report)"
