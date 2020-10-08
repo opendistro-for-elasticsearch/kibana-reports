@@ -3212,6 +3212,11 @@ create-react-context@^0.3.0:
     gud "^1.0.0"
     warning "^4.0.3"
 
+cron-validator@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/cron-validator/-/cron-validator-1.1.1.tgz#0a27bb75508c7bc03c8b840d2d9f170eeacb5615"
+  integrity sha512-vfZb05w/wezuwPZBDvdIBmJp2BvuJExHeyKRa5oBqD2ZDXR61hb3QgPc/3ZhBEQJlAy8Jlnn5XC/JCT3IDqxwg==
+
 cross-env@^6.0.3:
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-6.0.3.tgz#4256b71e49b3a40637a0ce70768a6ef5c72ae941"

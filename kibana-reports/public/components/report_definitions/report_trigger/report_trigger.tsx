@@ -56,6 +56,8 @@ type ReportTriggerProps = {
   editDefinitionId: string;
   reportDefinitionRequest: reportDefinitionParams;
   httpClientProps: any;
+  showTriggerIntervalNaNError: boolean;
+  showCronError: boolean;
 };
 
 export function ReportTrigger(props: ReportTriggerProps) {
@@ -64,6 +66,8 @@ export function ReportTrigger(props: ReportTriggerProps) {
     editDefinitionId,
     reportDefinitionRequest,
     httpClientProps,
+    showTriggerIntervalNaNError,
+    showCronError,
   } = props;
 
   const [reportTriggerType, setReportTriggerType] = useState(
@@ -111,6 +115,13 @@ export function ReportTrigger(props: ReportTriggerProps) {
 
   const handleTimezone = (e) => {
     setTimezone(e.target.value);
+    if (
+      reportDefinitionRequest.trigger.trigger_params.schedule_type ===
+      'Cron based'
+    ) {
+      reportDefinitionRequest.trigger.trigger_params.schedule.cron.timezone =
+        e.target.value;
+    }
   };
 
   const handleScheduleRecurringFrequency = (e: {
@@ -231,7 +242,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
 
     return (
       <div>
-        <EuiFormRow label="Every">
+        <EuiFormRow label="Every" isInvalid={showTriggerIntervalNaNError}>
           <EuiFlexGroup>
             <EuiFlexItem grow={false}>
               <EuiFieldText
@@ -345,8 +356,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
       target: { value: React.SetStateAction<string> };
     }) => {
       setCronExpression(e.target.value);
-      reportDefinitionRequest.trigger.trigger_params.schedule.cron.expression =
-        e.target.value;
     };
 
     useEffect(() => {
@@ -385,6 +394,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
       <div>
         <EuiFormRow
           label="Custom cron expression"
+          isInvalid={showCronError}
           labelAppend={
             <EuiText size="xs">
               <EuiLink href="https://opendistro.github.io/for-elasticsearch-docs/docs/alerting/cron/">
