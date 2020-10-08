@@ -28,6 +28,7 @@ import {
   EuiButton,
   EuiIcon,
   EuiLink,
+  EuiGlobalToastList,
 } from '@elastic/eui';
 import { ReportDetailsComponent } from '../report_details/report_details';
 import { fileFormatsUpper, generateReport } from '../main_utils';
@@ -40,7 +41,124 @@ export function ReportDefinitionDetails(props) {
     reportDefinitionRawResponse,
     setReportDefinitionRawResponse,
   ] = useState({});
+  const [toasts, setToasts] = useState([]);
   const reportDefinitionId = props.match['params']['reportDefinitionId'];
+
+  const addErrorLoadingDetailsToastHandler = () => {
+    const errorToast = {
+      title: 'Error loading report definition details',
+      color: 'danger',
+      iconType: 'alert',
+      id: 'reportDefinitionDetailsErrorToast',
+    };
+    setToasts(toasts.concat(errorToast));
+  };
+
+  const handleDetailsErrorToast = () => {
+    addErrorLoadingDetailsToastHandler();
+  };
+
+  const addSuccessGeneratingReportToastHandler = () => {
+    const successToast = {
+      title: 'Success',
+      color: 'success',
+      text: <p>Report successfully downloaded!</p>,
+      id: 'generateReportSuccessToast',
+    };
+    setToasts(toasts.concat(successToast));
+  };
+
+  const handleSuccessGeneratingReportToast = () => {
+    addSuccessGeneratingReportToastHandler();
+  };
+
+  const addErrorGeneratingReportToastHandler = () => {
+    const errorToast = {
+      title: 'Error generating report',
+      color: 'danger',
+      iconType: 'alert',
+      id: 'generateReportErrorToast',
+    };
+    setToasts(toasts.concat(errorToast));
+  };
+
+  const handleErrorGeneratingReportToast = () => {
+    addErrorGeneratingReportToastHandler();
+  };
+
+  const addSuccessEnablingScheduleToastHandler = () => {
+    const successToast = {
+      title: 'Success',
+      color: 'success',
+      text: <p>Schedule successfully enabled!</p>,
+      id: 'successEnableToast',
+    };
+    setToasts(toasts.concat(successToast));
+  };
+
+  const handleSuccessEnablingScheduleToast = () => {
+    addSuccessEnablingScheduleToastHandler();
+  };
+
+  const addErrorEnablingScheduleToastHandler = () => {
+    const errorToast = {
+      title: 'Error enabling schedule',
+      color: 'danger',
+      iconType: 'alert',
+      id: 'errorToast',
+    };
+    setToasts(toasts.concat(errorToast));
+  };
+
+  const handleErrorEnablingScheduleToast = () => {
+    addErrorEnablingScheduleToastHandler();
+  };
+
+  const addSuccessDisablingScheduleToastHandler = () => {
+    const successToast = {
+      title: 'Success',
+      color: 'success',
+      text: <p>Schedule successfully disabled!</p>,
+      id: 'successDisableToast',
+    };
+    setToasts(toasts.concat(successToast));
+  };
+
+  const handleSuccessDisablingScheduleToast = () => {
+    addSuccessDisablingScheduleToastHandler();
+  };
+
+  const addErrorDisablingScheduleToastHandler = () => {
+    const errorToast = {
+      title: 'Error disabling schedule',
+      color: 'danger',
+      iconType: 'alert',
+      id: 'errorDisableToast',
+    };
+    setToasts(toasts.concat(errorToast));
+  };
+
+  const handleErrorDisablingScheduleToast = () => {
+    addErrorDisablingScheduleToastHandler();
+  };
+
+  const addErrorDeletingReportDefinitionToastHandler = () => {
+    const errorToast = {
+      title: 'Error deleting report definition',
+      color: 'danger',
+      iconType: 'alert',
+      id: 'errorDeleteToast',
+    };
+    setToasts(toasts.concat(errorToast));
+  };
+
+  const handleErrorDeletingReportDefinitionToast = () => {
+    addErrorDeletingReportDefinitionToastHandler();
+  };
+
+  const removeToast = (removedToast) => {
+    setToasts(toasts.filter((toast) => toast.id !== removedToast.id));
+  };
 
   const handleReportDefinitionDetails = (e) => {
     setReportDefinitionDetails(e);
@@ -52,10 +170,28 @@ export function ReportDefinitionDetails(props) {
 
   const getReportDefinitionDetailsMetadata = (data) => {
     const reportDefinition: ReportDefinitionSchemaType = data.report_definition;
-    const { report_params: reportParams, trigger, delivery, time_created: timeCreated, last_updated: lastUpdated } = reportDefinition
-    const { trigger_type: triggerType, trigger_params: triggerParams } = trigger;
-    const { delivery_type: deliveryType, delivery_params: deliveryParams } = delivery;
-    const { core_params: { base_url: baseUrl, report_format: reportFormat, time_duration: timeDuration} } = reportParams;
+    const {
+      report_params: reportParams,
+      trigger,
+      delivery,
+      time_created: timeCreated,
+      last_updated: lastUpdated,
+    } = reportDefinition;
+    const {
+      trigger_type: triggerType,
+      trigger_params: triggerParams,
+    } = trigger;
+    const {
+      delivery_type: deliveryType,
+      delivery_params: deliveryParams,
+    } = delivery;
+    const {
+      core_params: {
+        base_url: baseUrl,
+        report_format: reportFormat,
+        time_duration: timeDuration,
+      },
+    } = reportParams;
 
     let readableDate = new Date(timeCreated);
     let displayCreatedDate =
@@ -85,11 +221,20 @@ export function ReportDefinitionDetails(props) {
       alertDetails: `\u2014`,
       channel: deliveryType,
       status: reportDefinition.status,
-      kibanaRecipients: deliveryParams.kibana_recipients ? deliveryParams.kibana_recipients : `\u2014`,
-      emailRecipients: deliveryType === 'Channel' ? deliveryParams.recipients : `\u2014`,
-      emailSubject: deliveryType === 'Channel' ? deliveryParams.title : `\u2014`,
-      emailBody: deliveryType === 'Channel' ? deliveryParams.textDescription : `\u2014`,
-      reportAsAttachment: (deliveryType === 'Channel' && deliveryParams.email_format === 'Attachment')? 'True' : 'False',
+      kibanaRecipients: deliveryParams.kibana_recipients
+        ? deliveryParams.kibana_recipients
+        : `\u2014`,
+      emailRecipients:
+        deliveryType === 'Channel' ? deliveryParams.recipients : `\u2014`,
+      emailSubject:
+        deliveryType === 'Channel' ? deliveryParams.title : `\u2014`,
+      emailBody:
+        deliveryType === 'Channel' ? deliveryParams.textDescription : `\u2014`,
+      reportAsAttachment:
+        deliveryType === 'Channel' &&
+        deliveryParams.email_format === 'Attachment'
+          ? 'True'
+          : 'False',
     };
     return reportDefinitionDetails;
   };
@@ -115,6 +260,7 @@ export function ReportDefinitionDetails(props) {
       })
       .catch((error) => {
         console.error('error when getting report definition details:', error);
+        handleDetailsErrorToast();
       });
   }, []);
 
@@ -178,9 +324,19 @@ export function ReportDefinitionDetails(props) {
         setReportDefinitionDetails(
           getReportDefinitionDetailsMetadata(updatedRawResponse)
         );
+        if (statusChange === 'Enable') {
+          handleSuccessEnablingScheduleToast();
+        } else if (statusChange === 'Disable') {
+          handleSuccessDisablingScheduleToast();
+        }
       })
       .catch((error) => {
         console.error('error in updating report definition status:', error);
+        if (statusChange === 'Enable') {
+          handleErrorEnablingScheduleToast();
+        } else if (statusChange === 'Disable') {
+          handleErrorDisablingScheduleToast();
+        }
       });
   };
 
@@ -195,7 +351,7 @@ export function ReportDefinitionDetails(props) {
     );
   };
 
-  const generateReportFromDetails = () => {
+  const generateReportFromDetails = async () => {
     let duration =
       reportDefinitionRawResponse.report_definition.report_params.core_params
         .time_duration;
@@ -209,7 +365,15 @@ export function ReportDefinitionDetails(props) {
       report_definition: reportDefinitionRawResponse.report_definition,
     };
     const { httpClient } = props;
-    generateReport(onDemandDownloadMetadata, httpClient);
+    let generateReportSuccess = await generateReport(
+      onDemandDownloadMetadata,
+      httpClient
+    );
+    if (generateReportSuccess) {
+      handleSuccessGeneratingReportToast();
+    } else {
+      handleErrorGeneratingReportToast();
+    }
   };
 
   const deleteReportDefinition = () => {
@@ -221,12 +385,18 @@ export function ReportDefinitionDetails(props) {
       })
       .catch((error) => {
         console.log('error when deleting report definition:', error);
+        handleErrorDeletingReportDefinitionToast();
       });
   };
 
-  const showActionButton = (reportDefinitionDetails.triggerType === 'On demand')
-    ? <EuiButton onClick={() => generateReportFromDetails()}>Generate report</EuiButton>
-    : <ScheduledDefinitionStatus/>
+  const showActionButton =
+    reportDefinitionDetails.triggerType === 'On demand' ? (
+      <EuiButton onClick={() => generateReportFromDetails()}>
+        Generate report
+      </EuiButton>
+    ) : (
+      <ScheduledDefinitionStatus />
+    );
 
   return (
     <EuiPage>
@@ -370,9 +540,7 @@ export function ReportDefinitionDetails(props) {
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Channel'}
-              reportDetailsComponentContent={
-                reportDefinitionDetails.channel
-              }
+              reportDetailsComponentContent={reportDefinitionDetails.channel}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Kibana recipients'}
@@ -401,12 +569,19 @@ export function ReportDefinitionDetails(props) {
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Include report as attachment'}
-              reportDetailsComponentContent={reportDefinitionDetails.reportAsAttachment}
+              reportDetailsComponentContent={
+                reportDefinitionDetails.reportAsAttachment
+              }
             />
             <ReportDetailsComponent />
             <ReportDetailsComponent />
           </EuiFlexGroup>
         </EuiPageContent>
+        <EuiGlobalToastList
+          toasts={toasts}
+          dismissToast={removeToast}
+          toastLifeTimeMs={6000}
+        />
       </EuiPageBody>
     </EuiPage>
   );
