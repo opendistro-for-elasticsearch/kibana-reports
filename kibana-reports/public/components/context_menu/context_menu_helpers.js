@@ -108,9 +108,11 @@ export const addSuccessOrFailureToast = (status) => {
       const generateInProgressToast = document.createElement("div");
       if (status === "success") {
         generateInProgressToast.innerHTML = reportGenerationSuccess();
+        setTimeout(function () {document.getElementById('reportSuccessToast').style.display='none'}, 6000); // closes toast automatically after 6s
       }
       else if (status === "failure") {
-        generateInProgressToast.innerHTML = reportGenerationFailure()
+        generateInProgressToast.innerHTML = reportGenerationFailure();
+        setTimeout(function () {document.getElementById('reportFailureToast').style.display='none'}, 6000);
       }
       generateToast[0].appendChild(generateInProgressToast.children[0]);
     } catch (e) {

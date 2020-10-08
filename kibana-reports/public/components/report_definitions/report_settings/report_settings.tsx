@@ -144,7 +144,7 @@ export function ReportSettings(props: ReportSettingProps) {
   }) => {
     setDashboardSourceSelect(e.target.value);
     reportDefinitionRequest.report_params.core_params.base_url =
-      getDashboardBaseUrlCreate() + e.target.value;
+      getDashboardBaseUrlCreate(edit, editDefinitionId) + e.target.value;
   };
 
   const handleVisualizationSelect = (e: {
@@ -152,7 +152,7 @@ export function ReportSettings(props: ReportSettingProps) {
   }) => {
     setVisualizationSourceSelect(e.target.value);
     reportDefinitionRequest.report_params.core_params.base_url =
-      getVisualizationBaseUrlCreate() + e.target.value;
+      getVisualizationBaseUrlCreate(edit) + e.target.value;
   };
 
   const handleSavedSearchSelect = (e: {
@@ -398,6 +398,18 @@ export function ReportSettings(props: ReportSettingProps) {
     }
   };
 
+  const setInContextDefaultConfiguration = () => {
+    const url = window.location.href;
+    const id = parseInContextUrl(url, 'id');
+    if (url.includes('dashboard')) {
+      setReportSourceId('dashboardReportSource');
+      setDashboardSourceSelect(id);
+    } else if (url.includes('visualize')) {
+      setReportSourceId('visualizationReportSource');
+      setVisualizationSourceSelect(id);
+    }
+  };
+
   const setDefaultEditValues = async (response, reportSourceOptions) => {
     setReportName(response.report_definition.report_params.report_name);
     setReportDescription(response.report_definition.report_params.description);
@@ -454,7 +466,7 @@ export function ReportSettings(props: ReportSettingProps) {
           setDashboardSourceSelect(dashboardOptions[0].value);
           reportDefinitionRequest.report_params.report_source = 'Dashboard';
           reportDefinitionRequest['report_params']['core_params']['base_url'] =
-            getDashboardBaseUrlCreate() +
+            getDashboardBaseUrlCreate(edit, editDefinitionId) +
             response['hits']['hits'][0]['_id'].substring(10);
         }
       })
@@ -502,22 +514,14 @@ export function ReportSettings(props: ReportSettingProps) {
     }
     defaultConfigurationCreate(httpClientProps).then(async (response) => {
       reportSourceOptions = response;
+      // if coming from in-context menu
+      if (window.location.href.indexOf('?') > -1) {
+        setInContextDefaultConfiguration();
+      }
       if (edit) {
         setDefaultEditValues(editData, reportSourceOptions);
       }
     });
-
-    if (window.location.href.indexOf('?') > -1) {
-      const url = window.location.href;
-      const id = parseInContextUrl(url, 'id');
-      if (url.includes('dashboard')) {
-        setReportSourceId('dashboardReportSource');
-        setDashboardSourceSelect(id);
-      } else if (url.includes('visualize')) {
-        setReportSourceId('visualizationReportSource');
-        setVisualizationSourceSelect(id);
-      }
-    }
   }, []);
 
   return (
