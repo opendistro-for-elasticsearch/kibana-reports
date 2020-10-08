@@ -23,6 +23,7 @@ import {
   REPORT_DEFINITION_STATUS,
   DELIVERY_TYPE,
   EMAIL_FORMAT,
+  DEFAULT_MAX_SIZE,
 } from '../routes/utils/constants';
 
 export const dataReportSchema = schema.object({
@@ -32,7 +33,7 @@ export const dataReportSchema = schema.object({
   time_duration: schema.string(),
   //TODO: future support schema.literal('xlsx')
   report_format: schema.oneOf([schema.literal(FORMAT.csv)]),
-  limit: schema.number({ defaultValue: 10000 }),
+  limit: schema.number({ defaultValue: DEFAULT_MAX_SIZE }),
   excel: schema.boolean({ defaultValue: true }),
 });
 
