@@ -31,8 +31,8 @@ import {
   EuiButton,
   EuiLink,
   EuiIcon,
+  EuiGlobalToastList,
 } from '@elastic/eui';
-import { ShareModal } from './share_modal/share_modal';
 import { fileFormatsUpper } from '../main_utils';
 import { ReportSchemaType } from '../../../../server/model';
 
@@ -55,7 +55,27 @@ export const ReportDetailsComponent = (props) => {
 
 export function ReportDetails(props) {
   const [reportDetails, setReportDetails] = useState({});
+  const [toasts, setToasts] = useState([]);
+
   const reportId = props.match['params']['reportId'];
+
+  const addErrorToastHandler = () => {
+    const errorToast = {
+      title: 'Error loading report details',
+      color: 'danger',
+      iconType: 'alert',
+      id: 'reportDetailsErrorToast',
+    };
+    setToasts(toasts.concat(errorToast));
+  };
+
+  const handleErrorToast = () => {
+    addErrorToastHandler();
+  };
+
+  const removeToast = (removedToast) => {
+    setToasts(toasts.filter((toast) => toast.id !== removedToast.id));
+  };
 
   const handleReportDetails = (e) => {
     setReportDetails(e);
@@ -71,10 +91,21 @@ export function ReportDetails(props) {
   };
 
   const getReportDetailsData = (report: ReportSchemaType) => {
-    const {report_definition: reportDefinition, last_updated: lastUpdated, state, query_url: queryUrl } = report
-    const { report_params: reportParams, trigger, delivery } = reportDefinition
-    const { trigger_type: triggerType, trigger_params: triggerParams } = trigger;
-    const { delivery_type: deliveryType, delivery_params: deliveryParams } = delivery;
+    const {
+      report_definition: reportDefinition,
+      last_updated: lastUpdated,
+      state,
+      query_url: queryUrl,
+    } = report;
+    const { report_params: reportParams, trigger, delivery } = reportDefinition;
+    const {
+      trigger_type: triggerType,
+      trigger_params: triggerParams,
+    } = trigger;
+    const {
+      delivery_type: deliveryType,
+      delivery_params: deliveryParams,
+    } = delivery;
     const coreParams = reportParams.core_params;
     // covert timestamp to local date-time string
 
@@ -96,11 +127,20 @@ export function ReportDetails(props) {
       scheduleDetails: `\u2014`,
       alertDetails: `\u2014`,
       channel: deliveryType,
-      kibanaRecipients: deliveryParams.kibana_recipients ? deliveryParams.kibana_recipients : `\u2014`,
-      emailRecipients: deliveryType === 'Channel' ? deliveryParams.recipients : `\u2014`,
-      emailSubject: deliveryType === 'Channel' ? deliveryParams.title : `\u2014`,
-      emailBody: deliveryType === 'Channel' ? deliveryParams.textDescription : `\u2014`,
-      reportAsAttachment: (deliveryType === 'Channel' && deliveryParams.email_format === 'Attachment')? 'True' : 'False',
+      kibanaRecipients: deliveryParams.kibana_recipients
+        ? deliveryParams.kibana_recipients
+        : `\u2014`,
+      emailRecipients:
+        deliveryType === 'Channel' ? deliveryParams.recipients : `\u2014`,
+      emailSubject:
+        deliveryType === 'Channel' ? deliveryParams.title : `\u2014`,
+      emailBody:
+        deliveryType === 'Channel' ? deliveryParams.textDescription : `\u2014`,
+      reportAsAttachment:
+        deliveryType === 'Channel' &&
+        deliveryParams.email_format === 'Attachment'
+          ? 'True'
+          : 'False',
       queryUrl: queryUrl,
     };
     return reportDetails;
@@ -126,6 +166,7 @@ export function ReportDetails(props) {
       })
       .catch((error) => {
         console.log('Error when fetching report details: ', error);
+        handleErrorToast();
       });
   }, []);
 
@@ -281,6 +322,11 @@ export function ReportDetails(props) {
             <ReportDetailsComponent />
           </EuiFlexGroup>
         </EuiPageContent>
+        <EuiGlobalToastList
+          toasts={toasts}
+          dismissToast={removeToast}
+          toastLifeTimeMs={6000}
+        />
       </EuiPageBody>
     </EuiPage>
   );
