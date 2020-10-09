@@ -17,26 +17,11 @@ import moment from 'moment';
 import React, { useState, useEffect } from 'react';
 import { parseInContextUrl } from './report_settings_helpers';
 import dateMath from '@elastic/datemath';
-import { EuiFormRow, EuiSuperDatePicker } from '@elastic/eui';
-
-const isValidTimeRange = (
-  timeRangeMoment: number | moment.Moment,
-  limit: string
-) => {
-  if (limit === 'start') {
-    if (!timeRangeMoment || !timeRangeMoment.isValid()) {
-      throw new Error('Unable to parse start string');
-    }
-  } else if (limit === 'end') {
-    if (
-      !timeRangeMoment ||
-      !timeRangeMoment.isValid() ||
-      timeRangeMoment > moment()
-    ) {
-      throw new Error('Unable to parse end string');
-    }
-  }
-};
+import {
+  EuiFormRow,
+  EuiGlobalToastList,
+  EuiSuperDatePicker,
+} from '@elastic/eui';
 
 export function TimeRangeSelect(props) {
   const {
@@ -45,6 +30,7 @@ export function TimeRangeSelect(props) {
     edit,
     id,
     httpClientProps,
+    showTimeRangeError,
   } = props;
 
   const [recentlyUsedRanges, setRecentlyUsedRanges] = useState([]);
@@ -54,6 +40,46 @@ export function TimeRangeSelect(props) {
   const [isPaused, setIsPaused] = useState(true);
   const [refreshInterval, setRefreshInterval] = useState();
 
+  const [toasts, setToasts] = useState([]);
+
+  const addInvalidTimeRangeToastHandler = () => {
+    const errorToast = {
+      title: 'Invalid time range selected',
+      color: 'danger',
+      iconType: 'alert',
+      id: 'timeRangeErrorToast',
+    };
+    setToasts(toasts.concat(errorToast));
+  };
+
+  const handleInvalidTimeRangeToast = () => {
+    addInvalidTimeRangeToastHandler();
+  };
+
+  const removeToast = (removedToast) => {
+    setToasts(toasts.filter((toast) => toast.id !== removedToast.id));
+  };
+
+  const isValidTimeRange = (
+    timeRangeMoment: number | moment.Moment,
+    limit: string,
+    handleInvalidTimeRangeToast: any
+  ) => {
+    if (limit === 'start') {
+      if (!timeRangeMoment || !timeRangeMoment.isValid()) {
+        handleInvalidTimeRangeToast();
+      }
+    } else if (limit === 'end') {
+      if (
+        !timeRangeMoment ||
+        !timeRangeMoment.isValid() ||
+        timeRangeMoment > moment()
+      ) {
+        handleInvalidTimeRangeToast();
+      }
+    }
+  };
+
   const setDefaultEditTimeRange = (duration, unmounted) => {
     let time_difference = moment.now() - duration;
     const fromDate = new Date(time_difference);
@@ -62,6 +88,18 @@ export function TimeRangeSelect(props) {
       setStart(fromDate.toISOString());
       setEnd(end);
     }
+  };
+
+  // valid time range check for absolute time end date
+  const checkValidAbsoluteEndDate = (end) => {
+    let endDate = new Date(end);
+    let nowDate = new Date(moment.now());
+    let valid = true;
+    if (endDate.getTime() > nowDate.getTime()) {
+      end = 'now';
+      valid = false;
+    }
+    return valid;
   };
 
   useEffect(() => {
@@ -103,11 +141,28 @@ export function TimeRangeSelect(props) {
   }, []);
 
   const onTimeChange = ({ start, end }) => {
+    isValidTimeRange(
+      dateMath.parse(start),
+      'start',
+      handleInvalidTimeRangeToast
+    );
+    isValidTimeRange(
+      dateMath.parse(end, { roundUp: true }),
+      'end',
+      handleInvalidTimeRangeToast
+    );
+
     const recentlyUsedRange = recentlyUsedRanges.filter((recentlyUsedRange) => {
       const isDuplicate =
         recentlyUsedRange.start === start && recentlyUsedRange.end === end;
       return !isDuplicate;
     });
+    const validEndDate = checkValidAbsoluteEndDate(end);
+    if (!validEndDate) {
+      handleInvalidTimeRangeToast();
+      return;
+    }
+
     recentlyUsedRange.unshift({ start, end });
     setStart(start);
     setEnd(end);
@@ -118,6 +173,7 @@ export function TimeRangeSelect(props) {
     );
     setIsLoading(true);
     startLoading();
+    parseTimeRange(start, end, reportDefinitionRequest);
   };
 
   const parseTimeRange = (start, end, reportDefinitionRequest) => {
@@ -150,29 +206,36 @@ export function TimeRangeSelect(props) {
     setRefreshInterval(refreshInterval);
   };
 
-  isValidTimeRange(dateMath.parse(start), 'start');
-  isValidTimeRange(dateMath.parse(end, { roundUp: true }), 'end');
-
   return (
     <div>
-      <EuiFormRow
-        label="Time range"
-        helpText="Time range is relative to the report creation date on the report trigger."
-      >
-        <EuiSuperDatePicker
-          isDisabled={false}
-          isLoading={isLoading}
-          start={start}
-          end={end}
-          onTimeChange={onTimeChange}
-          onRefresh={onRefresh}
-          isPaused={isPaused}
-          refreshInterval={refreshInterval}
-          onRefreshChange={onRefreshChange}
-          recentlyUsedRanges={recentlyUsedRanges}
-          showUpdateButton={false}
+      <div>
+        <EuiFormRow
+          label="Time range"
+          helpText="Time range is relative to the report creation date on the report trigger."
+          isInvalid={showTimeRangeError}
+        >
+          <EuiSuperDatePicker
+            isDisabled={false}
+            isLoading={isLoading}
+            start={start}
+            end={end}
+            onTimeChange={onTimeChange}
+            onRefresh={onRefresh}
+            isPaused={isPaused}
+            refreshInterval={refreshInterval}
+            onRefreshChange={onRefreshChange}
+            recentlyUsedRanges={recentlyUsedRanges}
+            showUpdateButton={false}
+          />
+        </EuiFormRow>
+      </div>
+      <div>
+        <EuiGlobalToastList
+          toasts={toasts}
+          dismissToast={removeToast}
+          toastLifeTimeMs={6000}
         />
-      </EuiFormRow>
+      </div>
     </div>
   );
 }

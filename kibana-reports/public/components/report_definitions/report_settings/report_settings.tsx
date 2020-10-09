@@ -62,6 +62,7 @@ type ReportSettingProps = {
   httpClientProps: any;
   timeRange: timeRangeParams;
   showSettingsReportNameError: boolean;
+  showTimeRangeError: boolean;
 };
 
 export function ReportSettings(props: ReportSettingProps) {
@@ -72,6 +73,7 @@ export function ReportSettings(props: ReportSettingProps) {
     httpClientProps,
     timeRange,
     showSettingsReportNameError,
+    showTimeRangeError,
   } = props;
 
   const [reportName, setReportName] = useState('');
@@ -278,17 +280,6 @@ export function ReportSettings(props: ReportSettingProps) {
           />
         </EuiFormRow>
         <EuiSpacer />
-        <TimeRangeSelect
-          reportDefinitionRequest={reportDefinitionRequest}
-          timeRange={timeRange}
-          edit={edit}
-          id={editDefinitionId}
-          httpClientProps={httpClientProps}
-        />
-        <EuiSpacer />
-        <PDFandPNGFileFormats />
-        <EuiSpacer />
-        <SettingsMarkdown />
       </div>
     );
   };
@@ -305,17 +296,6 @@ export function ReportSettings(props: ReportSettingProps) {
           />
         </EuiFormRow>
         <EuiSpacer />
-        <TimeRangeSelect
-          timeRange={timeRange}
-          reportDefinitionRequest={reportDefinitionRequest}
-          edit={edit}
-          id={editDefinitionId}
-          httpClientProps={httpClientProps}
-        />
-        <EuiSpacer />
-        <PDFandPNGFileFormats />
-        <EuiSpacer />
-        <SettingsMarkdown />
       </div>
     );
   };
@@ -332,37 +312,19 @@ export function ReportSettings(props: ReportSettingProps) {
           />
         </EuiFormRow>
         <EuiSpacer />
-        <TimeRangeSelect
-          timeRange={timeRange}
-          reportDefinitionRequest={reportDefinitionRequest}
-          edit={edit}
-          id={editDefinitionId}
-          httpClientProps={httpClientProps}
-        />
-        <EuiSpacer />
-        <EuiFormRow label="File format">
-          <EuiText>
-            <p>CSV</p>
-          </EuiText>
-        </EuiFormRow>
       </div>
     );
   };
 
-  const displayDashboardSelect =
-    reportSourceId === 'dashboardReportSource' ? (
-      <ReportSourceDashboard />
-    ) : null;
-
-  const displayVisualizationSelect =
-    reportSourceId === 'visualizationReportSource' ? (
-      <ReportSourceVisualization />
-    ) : null;
-
-  const displaySavedSearchSelect =
-    reportSourceId === 'savedSearchReportSource' ? (
-      <ReportSourceSavedSearch />
-    ) : null;
+  const VisualReportFormatAndMarkdown = () => {
+    return (
+      <div>
+        <PDFandPNGFileFormats />
+        <EuiSpacer />
+        <SettingsMarkdown />
+      </div>
+    );
+  };
 
   const setReportSourceDropdownOption = (options, reportSource, url) => {
     let index = 0;
@@ -524,6 +486,34 @@ export function ReportSettings(props: ReportSettingProps) {
     });
   }, []);
 
+  const displayDashboardSelect =
+    reportSourceId === 'dashboardReportSource' ? (
+      <ReportSourceDashboard />
+    ) : null;
+
+  const displayVisualizationSelect =
+    reportSourceId === 'visualizationReportSource' ? (
+      <ReportSourceVisualization />
+    ) : null;
+
+  const displaySavedSearchSelect =
+    reportSourceId === 'savedSearchReportSource' ? (
+      <ReportSourceSavedSearch />
+    ) : null;
+
+  const displayVisualReportsFormatAndMarkdown =
+    reportSourceId != 'savedSearchReportSource' ? (
+      <VisualReportFormatAndMarkdown />
+    ) : (
+      <div>
+        <EuiFormRow label="File format">
+          <EuiText>
+            <p>CSV</p>
+          </EuiText>
+        </EuiFormRow>
+      </div>
+    );
+
   return (
     <EuiPageContent panelPaddingSize={'l'}>
       <EuiPageHeader>
@@ -571,6 +561,16 @@ export function ReportSettings(props: ReportSettingProps) {
         {displayDashboardSelect}
         {displayVisualizationSelect}
         {displaySavedSearchSelect}
+        <TimeRangeSelect
+          timeRange={timeRange}
+          reportDefinitionRequest={reportDefinitionRequest}
+          edit={edit}
+          id={editDefinitionId}
+          httpClientProps={httpClientProps}
+          showTimeRangeError={showTimeRangeError}
+        />
+        <EuiSpacer />
+        {displayVisualReportsFormatAndMarkdown}
         <EuiSpacer />
       </EuiPageContentBody>
     </EuiPageContent>
