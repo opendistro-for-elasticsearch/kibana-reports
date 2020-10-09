@@ -29,6 +29,7 @@ import { ReportDelivery } from '../delivery';
 import { ReportTrigger } from '../report_trigger';
 import { generateReport } from '../../main/main_utils';
 import { isValidCron } from 'cron-validator';
+import moment from 'moment';
 
 interface reportParamsType {
   report_name: string;
@@ -128,6 +129,7 @@ export function CreateReport(props) {
   const [showEmailRecipientsError, setShowEmailRecipientsError] = useState(
     false
   );
+  const [showTimeRangeError, setShowTimeRangeError] = useState(false);
 
   // preserve the state of the request after an invalid create report definition request
   if (comingFromError) {
@@ -162,6 +164,20 @@ export function CreateReport(props) {
     addSuccessToastHandler();
   };
 
+  const addInvalidTimeRangeToastHandler = () => {
+    const errorToast = {
+      title: 'Invalid time range selected',
+      color: 'danger',
+      iconType: 'alert',
+      id: 'timeRangeErrorToast',
+    };
+    setToasts(toasts.concat(errorToast));
+  };
+
+  const handleInvalidTimeRangeToast = () => {
+    addInvalidTimeRangeToastHandler();
+  };
+
   const removeToast = (removedToast) => {
     setToasts(toasts.filter((toast) => toast.id !== removedToast.id));
   };
@@ -179,6 +195,7 @@ export function CreateReport(props) {
       setShowSettingsReportNameError(true);
       error = true;
     }
+
     // if recurring by interval and input is not a number
     if (
       metadata.trigger.trigger_type === 'Schedule' &&
@@ -193,6 +210,13 @@ export function CreateReport(props) {
       }
     }
 
+    // if time range is invalid
+    const nowDate = new Date(moment.now());
+    if (timeRange.timeFrom > timeRange.timeTo || timeRange.timeTo > nowDate) {
+      setShowTimeRangeError(true);
+      error = true;
+    }
+
     // if cron based and cron input is invalid
     if (
       metadata.trigger.trigger_type === 'Schedule' &&
@@ -205,7 +229,7 @@ export function CreateReport(props) {
         error = true;
       }
     }
-    // if email delivery 
+    // if email delivery
     if (metadata.delivery.delivery_type === 'Channel') {
       // no recipients are listed
       if (metadata.delivery.delivery_params.recipients.length === 0) {
@@ -305,6 +329,7 @@ export function CreateReport(props) {
           httpClientProps={props['httpClient']}
           timeRange={timeRange}
           showSettingsReportNameError={showSettingsReportNameError}
+          showTimeRangeError={showTimeRangeError}
         />
         <EuiSpacer />
         <ReportTrigger
