@@ -113,7 +113,8 @@ export const reportDefinitionSchema = schema.object({
       schema.literal(REPORT_TYPE.savedSearch),
     ]),
     description: schema.string(),
-
+    header: schema.string(),
+    footer: schema.string(),
     core_params: schema.conditional(
       schema.siblingRef('report_source'),
       REPORT_TYPE.savedSearch,

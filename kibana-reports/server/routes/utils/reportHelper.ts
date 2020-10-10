@@ -46,8 +46,8 @@ export const createVisualReport = async (
   const reportFormat = coreParams.report_format;
 
   // TODO: replace placeholders with actual schema data fields
-  const header = 'Test report header sample text';
-  const footer = 'Test report footer sample text';
+  const header = reportParams.header;
+  const footer = reportParams.footer;
   // set up puppeteer
   const browser = await puppeteer.launch({
     headless: true,

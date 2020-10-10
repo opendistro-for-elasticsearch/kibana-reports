@@ -207,6 +207,16 @@ export function ReportSettings(props: ReportSettingProps) {
       'write' | 'preview'
     >('write');
 
+    const handleHeader = (e) => {
+      setHeader(e);
+      reportDefinitionRequest.report_params.header = e;
+    };
+
+    const handleFooter = (e) => {
+      setFooter(e);
+      reportDefinitionRequest.report_params.footer = e;
+    };
+
     const handleCheckboxHeaderFooter = (optionId) => {
       const newCheckboxIdToSelectedMap = {
         ...checkboxIdSelectHeaderFooter,
@@ -221,7 +231,7 @@ export function ReportSettings(props: ReportSettingProps) {
       <EuiFormRow label="Footer" fullWidth={true}>
         <ReactMde
           value={footer}
-          onChange={setFooter}
+          onChange={handleFooter}
           selectedTab={selectedTabFooter}
           onTabChange={setSelectedTabFooter}
           toolbarCommands={[
@@ -239,7 +249,7 @@ export function ReportSettings(props: ReportSettingProps) {
       <EuiFormRow label="Header" fullWidth={true}>
         <ReactMde
           value={header}
-          onChange={setHeader}
+          onChange={handleHeader}
           selectedTab={selectedTabHeader}
           onTabChange={setSelectedTabHeader}
           toolbarCommands={[
