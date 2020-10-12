@@ -22,8 +22,9 @@ import {
   getTimeFieldsFromUrl,
   displayLoadingModal,
   addSuccessOrFailureToast,
+  contextMenuViewReports,
 } from './context_menu_helpers';
-import { popoverMenu, getMenuItem } from './context_menu_ui';
+import { popoverMenu, popoverMenuDiscover, getMenuItem } from './context_menu_ui';
 
 const replaceQueryURL = () => {
   let url = window.location.href;
@@ -31,6 +32,12 @@ const replaceQueryURL = () => {
     url.lastIndexOf('time:'),
     url.lastIndexOf('))')
   );
+  if (url.includes("visualize") || url.includes("discover")) {
+    timeString = url.substring(
+      url.lastIndexOf("time:"),
+      url.indexOf("))")
+    );
+  }
 
   let fromDateString = timeString.substring(
     timeString.lastIndexOf('from:') + 5,
@@ -61,7 +68,7 @@ const replaceQueryURL = () => {
   return url;
 };
 
-const generateInContextReport = (timeRanges, queryUrl, fileFormat) => {
+const generateInContextReport = (timeRanges, queryUrl, fileFormat, rest = {}) => {
   displayLoadingModal();
   let baseUrl = window.location.href.substr(
     0,
@@ -72,6 +79,8 @@ const generateInContextReport = (timeRanges, queryUrl, fileFormat) => {
     reportSource = 'Dashboard';
   } else if (window.location.href.includes('visualize')) {
     reportSource = 'Visualization';
+  } else if (window.location.href.includes('discover')) {
+    reportSource = 'Saved search';
   }
 
   // create query body
@@ -88,6 +97,7 @@ const generateInContextReport = (timeRanges, queryUrl, fileFormat) => {
           base_url: baseUrl,
           report_format: fileFormat,
           time_duration: timeRanges.time_duration,
+          ...rest,
         },
       },
       delivery: {
@@ -102,6 +112,7 @@ const generateInContextReport = (timeRanges, queryUrl, fileFormat) => {
     },
   };
 
+  console.log('contextMenuOnDemandReport', contextMenuOnDemandReport);
   fetch('/api/reporting/generateReport', {
     headers: {
       'Content-Type': 'application/json',
@@ -140,7 +151,7 @@ $(function () {
     if (popoverScreen) {
       try {
         const reportPopover = document.createElement('div');
-        reportPopover.innerHTML = popoverMenu();
+        reportPopover.innerHTML = isDiscover() ? popoverMenuDiscover(getUuidFromUrl()) : popoverMenu();
         popoverScreen[0].appendChild(reportPopover.children[0]);
         $('#reportPopover').show();
       } catch (e) {
@@ -163,9 +174,22 @@ $(function () {
     generateInContextReport(timeRanges, queryUrl, 'png');
   });
 
+  // generate CSV onclick
+  $(document).on('click', '#generateCSV', function () {
+    const timeRanges = getTimeFieldsFromUrl();
+    const queryUrl = replaceQueryURL();
+    const saved_search_id = getUuidFromUrl()[1];
+    generateInContextReport(timeRanges, queryUrl, 'csv', { saved_search_id });
+  });
+
   // navigate to Create report definition page with report source and pre-set time range
   $(document).on('click', '#createReportDefinition', function () {
     contextMenuCreateReportDefinition(this.baseURI);
+  });
+
+  // redirect to Reporting home page
+  $(document).on('click', '#viewReports', function () {
+    contextMenuViewReports();
   });
 
   // close popover menu on click outside
@@ -198,10 +222,7 @@ $(function () {
     });
   });
 
-  // do not render the Reporting menu on "Discover"
-  if (!window.location.href.includes('discover')) {
-    locationHashChanged();
-  }
+  locationHashChanged();
 });
 
 function locationHashChanged() {
@@ -211,10 +232,10 @@ function locationHashChanged() {
     );
     if (navMenu && navMenu.length && navMenu[0].children.length > 1) {
       try {
-        const menuItem = document.createElement('div');
         if ($('#downloadReport').length) {
           return;
         }
+        const menuItem = document.createElement('div');
         menuItem.innerHTML = getMenuItem('Reporting');
         navMenu[0].appendChild(menuItem.children[0]);
       } catch (e) {
@@ -233,8 +254,10 @@ function locationHashChanged() {
   });
 }
 
+// try to match uuid followed by '?' in URL, which would be the saved search id for discover URL
+const getUuidFromUrl = () => window.location.href.match(/(\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b)\?/);
+const isDiscover = () => window.location.href.includes('discover');
+
 window.onhashchange = function () {
-  if (!window.location.href.includes('discover')) {
-    locationHashChanged();
-  }
+  locationHashChanged();
 };
