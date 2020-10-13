@@ -15,8 +15,6 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.job;
 
-import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.JOB_QUEUE_INDEX_NAME;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +31,8 @@ import com.amazon.opendistroforelasticsearch.jobscheduler.spi.JobExecutionContex
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobParameter;
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobRunner;
 import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobParameter;
+
+import static com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.JOB_QUEUE_INDEX_NAME;
 
 /**
  * This reports scheduler job runner will add a scheduled job to a queue index once it gets
