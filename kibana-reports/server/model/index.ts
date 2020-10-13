@@ -45,6 +45,8 @@ const visualReportSchema = schema.object({
     schema.literal(FORMAT.pdf),
     schema.literal(FORMAT.png),
   ]),
+  header: schema.string(),
+  footer: schema.string(),
   time_duration: schema.string(),
 });
 
@@ -113,7 +115,6 @@ export const reportDefinitionSchema = schema.object({
       schema.literal(REPORT_TYPE.savedSearch),
     ]),
     description: schema.string(),
-
     core_params: schema.conditional(
       schema.siblingRef('report_source'),
       REPORT_TYPE.savedSearch,

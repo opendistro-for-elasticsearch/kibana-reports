@@ -207,6 +207,16 @@ export function ReportSettings(props: ReportSettingProps) {
       'write' | 'preview'
     >('write');
 
+    const handleHeader = (e) => {
+      setHeader(e);
+      reportDefinitionRequest.report_params.core_params.header = e;
+    };
+
+    const handleFooter = (e) => {
+      setFooter(e);
+      reportDefinitionRequest.report_params.core_params.footer = e;
+    };
+
     const handleCheckboxHeaderFooter = (optionId) => {
       const newCheckboxIdToSelectedMap = {
         ...checkboxIdSelectHeaderFooter,
@@ -221,7 +231,7 @@ export function ReportSettings(props: ReportSettingProps) {
       <EuiFormRow label="Footer" fullWidth={true}>
         <ReactMde
           value={footer}
-          onChange={setFooter}
+          onChange={handleFooter}
           selectedTab={selectedTabFooter}
           onTabChange={setSelectedTabFooter}
           toolbarCommands={[
@@ -239,7 +249,7 @@ export function ReportSettings(props: ReportSettingProps) {
       <EuiFormRow label="Header" fullWidth={true}>
         <ReactMde
           value={header}
-          onChange={setHeader}
+          onChange={handleHeader}
           selectedTab={selectedTabHeader}
           onTabChange={setSelectedTabHeader}
           toolbarCommands={[
@@ -252,6 +262,55 @@ export function ReportSettings(props: ReportSettingProps) {
         />
       </EuiFormRow>
     ) : null;
+
+    useEffect(() => {
+      let unmounted = false;
+      if (edit) {
+        httpClientProps
+          .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
+          .then(async (response: {}) => {
+            // set header/footer default
+            if (
+              response.report_definition.report_params.core_params.header != ''
+            ) {
+              checkboxIdSelectHeaderFooter.header = true;
+              if (!unmounted) {
+                setHeader(
+                  response.report_definition.report_params.core_params.header
+                );
+              }
+            }
+            if (
+              response.report_definition.report_params.core_params.footer != ''
+            ) {
+              checkboxIdSelectHeaderFooter.footer = true;
+              if (!unmounted) {
+                setFooter(
+                  response.report_definition.report_params.core_params.footer
+                );
+              }
+            }
+          })
+          .catch((error: any) => {
+            console.error(
+              'error in fetching report definition details:',
+              error
+            );
+          });
+      } else {
+        if (reportDefinitionRequest.report_params.core_params.header != '') {
+          checkboxIdSelectHeaderFooter.header = true;
+          setHeader(reportDefinitionRequest.report_params.core_params.header);
+        }
+        if (reportDefinitionRequest.report_params.core_params.footer != '') {
+          checkboxIdSelectHeaderFooter.footer = true;
+          setFooter(reportDefinitionRequest.report_params.core_params.footer);
+        }
+      }
+      return () => {
+        unmounted = true;
+      };
+    }, []);
 
     return (
       <div>
@@ -321,7 +380,6 @@ export function ReportSettings(props: ReportSettingProps) {
       <div>
         <PDFandPNGFileFormats />
         <EuiSpacer />
-        <SettingsMarkdown />
       </div>
     );
   };
@@ -369,6 +427,9 @@ export function ReportSettings(props: ReportSettingProps) {
     } else if (url.includes('visualize')) {
       setReportSourceId('visualizationReportSource');
       setVisualizationSourceSelect(id);
+    } else if (url.includes('discover')) {
+      setReportSourceId('savedSearchReportSource');
+      setSavedSearchSourceSelect(id);
     }
   };
 
@@ -503,7 +564,10 @@ export function ReportSettings(props: ReportSettingProps) {
 
   const displayVisualReportsFormatAndMarkdown =
     reportSourceId != 'savedSearchReportSource' ? (
-      <VisualReportFormatAndMarkdown />
+      <div>
+        <VisualReportFormatAndMarkdown />
+        <SettingsMarkdown />
+      </div>
     ) : (
       <div>
         <EuiFormRow label="File format">

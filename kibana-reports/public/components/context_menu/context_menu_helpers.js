@@ -39,11 +39,16 @@ export const contextMenuCreateReportDefinition = (baseURI) => {
   else if (baseURI.includes('visualize')) {
     reportSource = 'visualize:'
   }
+  else if (baseURI.includes('discover')) {
+    reportSource = 'discover:';
+  }
   reportSource += reportSourceId.toString();
   window.location.assign(
     `opendistro_kibana_reports#/create?previous=${reportSource}?timeFrom=${timeRanges.time_from.toISOString()}?timeTo=${timeRanges.time_to.toISOString()}`
     )
 }
+
+export const contextMenuViewReports = () => window.location.assign('opendistro_kibana_reports#/');
 
 export const getTimeFieldsFromUrl = () => {
   let url = window.location.href;
@@ -51,7 +56,7 @@ export const getTimeFieldsFromUrl = () => {
     url.lastIndexOf("time:"),
     url.lastIndexOf("))")
   );  
-  if (url.includes("visualize")) {
+  if (url.includes("visualize") || url.includes("discover")) {
     timeString = url.substring(
       url.lastIndexOf("time:"),
       url.indexOf("))")
