@@ -102,12 +102,11 @@ async function executeScheduledJob(
       true,
       reportMetaData,
       esClient,
+      logger,
       notificationClient,
       undefined
     );
-    logger.info(
-      `new scheduled report created and delivered: ${reportData.fileName}`
-    );
+    logger.info(`new scheduled report created: ${reportData.fileName}`);
   } catch (error) {
     logger.error(
       `fail to create scheduled report(report definition id:${reportDefinitionId}): ${error}`

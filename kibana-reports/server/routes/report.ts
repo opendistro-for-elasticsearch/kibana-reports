@@ -68,6 +68,7 @@ export default function (router: IRouter) {
           false,
           report,
           esClient,
+          logger,
           notificationClient
         );
 
@@ -129,6 +130,7 @@ export default function (router: IRouter) {
           false,
           report,
           esClient,
+          logger,
           undefined,
           savedReportId
         );

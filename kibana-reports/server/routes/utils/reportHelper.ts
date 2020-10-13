@@ -14,6 +14,7 @@
  */
 
 import puppeteer from 'puppeteer';
+import delay from 'delay';
 import {
   FORMAT,
   REPORT_TYPE,
@@ -28,6 +29,7 @@ import { getFileName, callCluster } from './helpers';
 import {
   ILegacyClusterClient,
   ILegacyScopedClusterClient,
+  Logger,
 } from '../../../../../src/core/server';
 import { createSavedSearchReport } from './savedSearchReportHelper';
 import { ReportSchemaType } from '../../model';
@@ -35,7 +37,8 @@ import { CreateReportResultType } from './types';
 
 export const createVisualReport = async (
   reportParams: any,
-  queryUrl: string
+  queryUrl: string,
+  logger: Logger
 ): Promise<CreateReportResultType> => {
   const coreParams = reportParams.core_params;
   // parse params
@@ -59,7 +62,24 @@ export const createVisualReport = async (
   });
   const page = await browser.newPage();
   await page.setDefaultNavigationTimeout(0);
+  await page.setDefaultTimeout(60000); // 60 sec timeout
+  logger.info(`original query_url ${queryUrl}`);
   await page.goto(queryUrl, { waitUntil: 'networkidle0' });
+  logger.info(`page url ${page.url()}`);
+  logger.info(`page url includes login? ${page.url().includes('login')}`);
+  await delay(5000);
+
+  if (page.url().includes('login')) {
+    logger.info('at login page');
+    await page.type('[placeholder=Username]', 'admin', { delay: 30 });
+    await page.type('[placeholder=Password]', 'admin', { delay: 30 });
+    await page.click("[type='submit']");
+    await page.setDefaultNavigationTimeout(0);
+    await delay(5000);
+    logger.info(`After login, currently at page url ${page.url()}`);
+  }
+
+  logger.info(`page url outside if block ${page.url()}`);
   await page.setViewport({
     width: windowWidth,
     height: windowHeight,
@@ -126,6 +146,7 @@ export const createReport = async (
   isScheduledTask: boolean,
   report: ReportSchemaType,
   esClient: ILegacyClusterClient | ILegacyScopedClusterClient,
+  logger: Logger,
   notificationClient?: ILegacyClusterClient | ILegacyScopedClusterClient,
   savedReportId?: string
 ): Promise<CreateReportResultType> => {
@@ -167,7 +188,11 @@ export const createReport = async (
       );
     } else {
       // report source can only be one of [saved search, visualization, dashboard]
-      createReportResult = await createVisualReport(reportParams, queryUrl);
+      createReportResult = await createVisualReport(
+        reportParams,
+        queryUrl,
+        logger
+      );
     }
 
     if (!savedReportId) {

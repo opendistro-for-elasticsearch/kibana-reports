@@ -61,8 +61,6 @@ export function EditReportDefinition(props) {
       core_params: {
         base_url: '',
         report_format: '',
-        // header: '',
-        // footer: '',
         time_duration: '',
       },
     },
