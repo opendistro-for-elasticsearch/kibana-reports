@@ -45,8 +45,8 @@ const visualReportSchema = schema.object({
     schema.literal(FORMAT.pdf),
     schema.literal(FORMAT.png),
   ]),
-  header: schema.string(),
-  footer: schema.string(),
+  header: schema.maybe(schema.string()),
+  footer: schema.maybe(schema.string()),
   time_duration: schema.string(),
 });
 

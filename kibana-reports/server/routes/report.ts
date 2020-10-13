@@ -53,7 +53,7 @@ export default function (router: IRouter) {
       try {
         report = reportSchema.validate(report);
       } catch (error) {
-        logger.error(`Failed url validation for create report ${error}`);
+        logger.error(`Failed input validation for create report ${error}`);
         return response.badRequest({ body: error });
       }
 

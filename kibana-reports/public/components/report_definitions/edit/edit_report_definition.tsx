@@ -61,8 +61,8 @@ export function EditReportDefinition(props) {
       core_params: {
         base_url: '',
         report_format: '',
-        header: '',
-        footer: '',
+        // header: '',
+        // footer: '',
         time_duration: '',
       },
     },
@@ -107,11 +107,12 @@ export function EditReportDefinition(props) {
       If so, need to first delete the curReportDefinition along with the scheduled job first, by calling the delete
       report definition API
     */
+    console.log(metadata);
     const {
       trigger: { trigger_type: triggerType },
     } = curReportDefinition;
     if (
-      triggerType !== 'On demand ' &&
+      triggerType !== 'On demand' &&
       metadata.trigger.trigger_type === 'On demand'
     ) {
       httpClient

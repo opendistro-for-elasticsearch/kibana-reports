@@ -48,10 +48,15 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       let reportDefinition = request.body;
+      //@ts-ignore
+      const logger = context.reporting_plugin.logger;
       // input validation
       try {
         reportDefinition = reportDefinitionSchema.validate(reportDefinition);
       } catch (error) {
+        logger.error(
+          `Failed input validation for create report definition ${error}`
+        );
         return response.badRequest({ body: error });
       }
 
@@ -92,10 +97,7 @@ export default function (router: IRouter) {
           },
         });
       } catch (error) {
-        //@ts-ignore
-        context.reporting_plugin.logger.error(
-          `Failed to create report definition: ${error}`
-        );
+        logger.error(`Failed to create report definition: ${error}`);
         return errorResponse(response, error);
       }
     }
@@ -119,10 +121,15 @@ export default function (router: IRouter) {
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       const reportDefinition: ReportDefinitionSchemaType = request.body;
       const savedReportDefinitionId = request.params.reportDefinitionId;
+      //@ts-ignore
+      const logger = context.reporting_plugin.logger;
       // input validation
       try {
         reportDefinitionSchema.validate(reportDefinition);
       } catch (error) {
+        logger.error(
+          `Failed input validation for update report definition ${error}`
+        );
         return response.badRequest({ body: error });
       }
 
@@ -175,10 +182,7 @@ export default function (router: IRouter) {
           },
         });
       } catch (error) {
-        //@ts-ignore
-        context.reporting_plugin.logger.error(
-          `Failed to update report definition: ${error}`
-        );
+        logger.error(`Failed to update report definition: ${error}`);
         return errorResponse(response, error);
       }
     }

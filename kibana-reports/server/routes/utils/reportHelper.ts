@@ -45,9 +45,9 @@ export const createVisualReport = async (
   const windowHeight = coreParams.window_height;
   const reportFormat = coreParams.report_format;
 
-  // TODO: replace placeholders with actual schema data fields
-  const header = reportParams.header;
-  const footer = reportParams.footer;
+  // TODO: polish default header, maybe add a logo, depends on UX design
+  const header = coreParams.header || 'Open Distro Kibana Reports';
+  const footer = coreParams.footer || 'Open Distro Kibana Reports';
   // set up puppeteer
   const browser = await puppeteer.launch({
     headless: true,
@@ -82,6 +82,8 @@ export const createVisualReport = async (
    * Sets the content of the page to have the header be above the trimmed screenshot
    * and the footer be below it
    */
+  // TODO: need to convert header from markdown to html, either do it on server side, or on client side.
+  // Email body conversion is done from client side
   await page.setContent(`
     <!DOCTYPE html>
     <html>
