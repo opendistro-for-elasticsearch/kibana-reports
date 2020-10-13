@@ -112,7 +112,6 @@ const generateInContextReport = (timeRanges, queryUrl, fileFormat, rest = {}) =>
     },
   };
 
-  console.log('contextMenuOnDemandReport', contextMenuOnDemandReport);
   fetch('/api/reporting/generateReport', {
     headers: {
       'Content-Type': 'application/json',
