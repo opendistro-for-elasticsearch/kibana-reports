@@ -526,9 +526,12 @@ export function ReportTrigger(props: ReportTriggerProps) {
 
   const defaultConfigurationEdit = (trigger) => {
     defaultEditTriggerType(trigger.trigger_type);
-    defaultEditRequestType(trigger);
     if (trigger.trigger_type === 'Schedule') {
       defaultEditScheduleFrequency(trigger.trigger_params);
+      defaultEditRequestType(trigger);
+    } else if (trigger.trigger_type == 'On demand') {
+      setReportTriggerType('On demand');
+      reportDefinitionRequest.trigger.trigger_type = 'On demand';
     }
   };
 

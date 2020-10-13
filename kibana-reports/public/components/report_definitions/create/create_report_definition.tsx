@@ -35,13 +35,13 @@ interface reportParamsType {
   report_name: string;
   report_source: string;
   description: string;
-  header: string;
-  footer: string;
   core_params: visualReportParams | dataReportParams;
 }
 interface visualReportParams {
   base_url: string;
   report_format: string;
+  header: string;
+  footer: string;
   time_duration: string;
 }
 
@@ -100,11 +100,11 @@ export function CreateReport(props) {
       report_name: '',
       report_source: '',
       description: '',
-      header: '',
-      footer: '',
       core_params: {
         base_url: '',
         report_format: '',
+        header: '',
+        footer: '',
         time_duration: '',
       },
     },

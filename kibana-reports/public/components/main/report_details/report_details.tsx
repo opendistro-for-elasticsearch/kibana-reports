@@ -120,8 +120,14 @@ export function ReportDetails(props) {
       time_period: lastUpdated,
       defaultFileFormat: coreParams.report_format,
       state: state,
-      reportHeader: `\u2014`,
-      reportFooter: `\u2014`,
+      reportHeader:
+        reportParams.core_params.header != ''
+          ? reportParams.core_params.header
+          : `\u2014`,
+      reportFooter:
+        reportParams.core_params.footer != ''
+          ? reportParams.core_params.footer
+          : `\u2014`,
       triggerType: triggerType,
       scheduleType: triggerParams ? triggerParams.schedule_type : `\u2014`,
       scheduleDetails: `\u2014`,
@@ -151,6 +157,7 @@ export function ReportDetails(props) {
     httpClient
       .get('../api/reporting/reports/' + reportId)
       .then((response) => {
+        console.log('response is', response);
         handleReportDetails(getReportDetailsData(response));
         props.setBreadcrumbs([
           {
