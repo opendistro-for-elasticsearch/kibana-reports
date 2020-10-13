@@ -214,8 +214,14 @@ export function ReportDefinitionDetails(props) {
       timePeriod: moment.duration(timeDuration).humanize(),
       fileFormat: reportFormat,
       // TODO: to be added to schema, currently hardcoded in backend
-      reportHeader: `\u2014`,
-      reportFooter: `\u2014`,
+      reportHeader:
+        reportParams.core_params.header != ''
+          ? reportParams.core_params.header
+          : `\u2014`,
+      reportFooter:
+        reportParams.core_params.footer != ''
+          ? reportParams.core_params.footer
+          : `\u2014`,
       triggerType: triggerType,
       scheduleDetails: triggerParams ? triggerParams.schedule_type : `\u2014`,
       alertDetails: `\u2014`,
