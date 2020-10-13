@@ -250,7 +250,6 @@ export function ReportDefinitionDetails(props) {
     httpClient
       .get(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
       .then((response) => {
-        console.log('response is', response);
         handleReportDefinitionRawResponse(response);
         handleReportDefinitionDetails(
           getReportDefinitionDetailsMetadata(response)

@@ -157,7 +157,6 @@ export function ReportDetails(props) {
     httpClient
       .get('../api/reporting/reports/' + reportId)
       .then((response) => {
-        console.log('response is', response);
         handleReportDetails(getReportDetailsData(response));
         props.setBreadcrumbs([
           {
