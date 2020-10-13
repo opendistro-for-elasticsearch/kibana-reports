@@ -427,6 +427,9 @@ export function ReportSettings(props: ReportSettingProps) {
     } else if (url.includes('visualize')) {
       setReportSourceId('visualizationReportSource');
       setVisualizationSourceSelect(id);
+    } else if (url.includes('discover')) {
+      setReportSourceId('savedSearchReportSource');
+      setSavedSearchSourceSelect(id);
     }
   };
 
