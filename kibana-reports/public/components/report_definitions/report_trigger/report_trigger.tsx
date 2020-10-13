@@ -37,10 +37,6 @@ import {
 import moment, { Moment } from 'moment';
 import { reportDefinitionParams } from '../create/create_report_definition';
 import {
-  AVAILABLE_MONITOR_OPTIONS,
-  AVAILABLE_TRIGGER_OPTIONS,
-} from './report_trigger_test_data';
-import {
   SCHEDULE_RECURRING_OPTIONS,
   INTERVAL_TIME_PERIODS,
   WEEKLY_CHECKBOX_OPTIONS,
@@ -93,8 +89,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
   const [monthlyDaySelect, setMonthlyDaySelect] = useState(
     MONTHLY_DAY_SELECT_OPTIONS[0].value
   );
-  const [monitor, setMonitor] = useState(AVAILABLE_MONITOR_OPTIONS[0].value);
-  const [trigger, setTrigger] = useState(AVAILABLE_TRIGGER_OPTIONS[0].value);
 
   const handleReportTriggerType = (e: string) => {
     setReportTriggerType(e);
@@ -404,7 +398,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
           }
         >
           <EuiFieldText
-            placeholder={'Ex: 0 0 12 * * ? (Fire at 12:00 PM (noon) every day)'}
+            placeholder={'Ex: 0 12 * * * (Fire at 12:00 PM (noon) every day)'}
             value={cronExpression}
             onChange={handleCronExpression}
           />

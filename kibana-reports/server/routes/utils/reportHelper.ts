@@ -141,6 +141,20 @@ export const createReport = async (
   const reportParams = reportDefinition.report_params;
   const reportSource = reportParams.report_source;
 
+  // validate url
+  let queryUrl = report.query_url;
+  const { origin } = new URL(report.query_url);
+  /**
+   * Only URL in WHATWG format is accepted.
+   * e.g http://dasd@test.com/random?size=50 will be considered as invalid and throw error, due to the "@" symbol
+   * is not part of the url origin according to https://nodejs.org/api/url.html#url_url_strings_and_url_objects
+   */
+  if (report.query_url.search(origin) >= 0) {
+    queryUrl = report.query_url.replace(origin, LOCAL_HOST);
+  } else {
+    throw Error(`query url is not valid: ${queryUrl}`);
+  }
+
   try {
     // generate report
     if (reportSource === REPORT_TYPE.savedSearch) {
@@ -151,8 +165,6 @@ export const createReport = async (
       );
     } else {
       // report source can only be one of [saved search, visualization, dashboard]
-      const { origin } = new URL(report.query_url);
-      const queryUrl = report.query_url.replace(origin, LOCAL_HOST);
       createReportResult = await createVisualReport(reportParams, queryUrl);
     }
 
@@ -295,7 +307,6 @@ export const deliverReport = async (
         },
         isScheduledTask
       );
-      console.log(res);
       //TODO: need better error handling or logging
     }
   } else {

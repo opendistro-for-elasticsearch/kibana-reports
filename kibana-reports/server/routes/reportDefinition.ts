@@ -118,6 +118,7 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       const reportDefinition: ReportDefinitionSchemaType = request.body;
+      const savedReportDefinitionId = request.params.reportDefinitionId;
       // input validation
       try {
         reportDefinitionSchema.validate(reportDefinition);
@@ -150,15 +151,13 @@ export default function (router: IRouter) {
           },
         };
 
-        const params: RequestParams.Update = {
+        const params: RequestParams.Index = {
+          id: savedReportDefinitionId,
           index: CONFIG_INDEX_NAME.reportDefinition,
-          id: request.params.reportDefinitionId,
-          body: {
-            doc: toUpdate,
-          },
+          body: toUpdate,
         };
         const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
-          'update',
+          'index',
           params
         );
         // update scheduled job by calling reports-scheduler
