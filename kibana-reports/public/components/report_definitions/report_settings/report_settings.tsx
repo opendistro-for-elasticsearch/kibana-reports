@@ -380,7 +380,6 @@ export function ReportSettings(props: ReportSettingProps) {
       <div>
         <PDFandPNGFileFormats />
         <EuiSpacer />
-        {/* <SettingsMarkdown /> */}
       </div>
     );
   };
