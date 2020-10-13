@@ -5,18 +5,16 @@
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
+ *
  */
 
-package com.amazon.opendistroforelasticsearch.reportsscheduler.rest.handler;
-
-import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.JOB_QUEUE_INDEX_NAME;
-import static com.amazon.opendistroforelasticsearch.reportsscheduler.common.Constants.LOCK_DURATION_SECONDS;
+package com.amazon.opendistroforelasticsearch.reportsscheduler.action;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -50,6 +48,9 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.JobExecutionContext;
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.utils.LockService;
 import com.amazon.opendistroforelasticsearch.reportsscheduler.job.parameter.JobParameter;
+
+import static com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.JOB_QUEUE_INDEX_NAME;
+import static com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.LOCK_DURATION_SECONDS;
 
 public class ReportsJobActionHandler extends AbstractActionHandler {
   private static final Logger log = LogManager.getLogger(ReportsJobActionHandler.class);
