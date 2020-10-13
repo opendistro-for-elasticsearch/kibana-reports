@@ -1,4 +1,4 @@
-#
+##
 # Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License").
@@ -12,11 +12,16 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 #
-#
+##
 
-#Wed Jul 29 13:30:55 PDT 2020
-distributionUrl=https\://services.gradle.org/distributions/gradle-6.6-all.zip
-distributionBase=GRADLE_USER_HOME
-distributionPath=wrapper/dists
-zipStorePath=wrapper/dists
-zipStoreBase=GRADLE_USER_HOME
+# config for Pinterest ktlint. https://github.com/pinterest/ktlint
+
+root = true
+
+[*.{kt,kts}]
+# possible values: number (e.g. 2), "unset" (makes ktlint ignore indentation completely)
+indent_size=4
+
+# we have detekt also checking for max line length. Disable the linter and use only one tool to check for max line length.
+# See https://github.com/arturbosch/detekt
+max_line_length=off
