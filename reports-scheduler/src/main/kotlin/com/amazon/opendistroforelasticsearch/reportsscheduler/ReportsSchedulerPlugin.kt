@@ -22,6 +22,7 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.job.ReportsSchedul
 import com.amazon.opendistroforelasticsearch.reportsscheduler.job.ScheduledReportJobParser
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportsJobRestHandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportsScheduleRestHandler
+import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import com.google.common.collect.ImmutableList
 import org.elasticsearch.client.Client
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver
@@ -30,6 +31,7 @@ import org.elasticsearch.cluster.service.ClusterService
 import org.elasticsearch.common.io.stream.NamedWriteableRegistry
 import org.elasticsearch.common.settings.ClusterSettings
 import org.elasticsearch.common.settings.IndexScopedSettings
+import org.elasticsearch.common.settings.Setting
 import org.elasticsearch.common.settings.Settings
 import org.elasticsearch.common.settings.SettingsFilter
 import org.elasticsearch.common.xcontent.NamedXContentRegistry
@@ -65,6 +67,13 @@ class ReportsSchedulerPlugin : Plugin(), ActionPlugin, JobSchedulerExtension {
     /**
      * {@inheritDoc}
      */
+    override fun getSettings(): List<Setting<*>> {
+        return PluginSettings.getAllSettings()
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     override fun createComponents(
         client: Client,
         clusterService: ClusterService,
@@ -78,8 +87,9 @@ class ReportsSchedulerPlugin : Plugin(), ActionPlugin, JobSchedulerExtension {
         indexNameExpressionResolver: IndexNameExpressionResolver,
         repositoriesServiceSupplier: Supplier<RepositoriesService>
     ): Collection<Any> {
-        jobRunner.createRunnerInstance(clusterService, threadPool, client)
         this.clusterService = clusterService
+        PluginSettings.addSettingsUpdateConsumer(clusterService)
+        jobRunner.createRunnerInstance(clusterService, threadPool, client)
         return emptyList()
     }
 
