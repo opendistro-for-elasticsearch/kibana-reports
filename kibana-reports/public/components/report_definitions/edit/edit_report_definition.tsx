@@ -105,7 +105,6 @@ export function EditReportDefinition(props) {
       If so, need to first delete the curReportDefinition along with the scheduled job first, by calling the delete
       report definition API
     */
-    console.log(metadata);
     const {
       trigger: { trigger_type: triggerType },
     } = curReportDefinition;

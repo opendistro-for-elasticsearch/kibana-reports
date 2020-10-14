@@ -49,8 +49,8 @@ export const createVisualReport = async (
   const reportFormat = coreParams.report_format;
 
   // TODO: polish default header, maybe add a logo, depends on UX design
-  const header = coreParams.header || 'Open Distro Kibana Reports';
-  const footer = coreParams.footer || 'Open Distro Kibana Reports';
+  const header = coreParams.header || '<h1>Open Distro Kibana Reports</h1>';
+  const footer = coreParams.footer || '<h1>Open Distro Kibana Reports</h1>';
   // set up puppeteer
   const browser = await puppeteer.launch({
     headless: true,
@@ -108,9 +108,9 @@ export const createVisualReport = async (
     <!DOCTYPE html>
     <html>
       <div>
-      <h1>${header}</h1>
+      ${header}
         <img src="data:image/png;base64,${screenshot.toString('base64')}">
-      <h1>${footer}</h1>
+      ${footer}
       </div>
     </html>
     `);

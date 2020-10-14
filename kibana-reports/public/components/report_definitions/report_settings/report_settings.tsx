@@ -54,6 +54,8 @@ import {
   getDashboardOptions,
 } from './report_settings_helpers';
 import { TimeRangeSelect } from './time_range';
+import { converter } from '../utils';
+import { ReportDefinitionSchemaType } from 'server/model';
 
 type ReportSettingProps = {
   edit: boolean;
@@ -170,13 +172,6 @@ export function ReportSettings(props: ReportSettingProps) {
     reportDefinitionRequest.report_params.core_params.report_format = e.toString();
   };
 
-  const converter = new Showdown.Converter({
-    tables: true,
-    simplifiedAutoLink: true,
-    strikethrough: true,
-    tasklists: true,
-  });
-
   const PDFandPNGFileFormats = () => {
     return (
       <div>
@@ -209,12 +204,16 @@ export function ReportSettings(props: ReportSettingProps) {
 
     const handleHeader = (e) => {
       setHeader(e);
-      reportDefinitionRequest.report_params.core_params.header = e;
+      reportDefinitionRequest.report_params.core_params.header = converter.makeHtml(
+        e
+      );
     };
 
     const handleFooter = (e) => {
       setFooter(e);
-      reportDefinitionRequest.report_params.core_params.footer = e;
+      reportDefinitionRequest.report_params.core_params.footer = converter.makeHtml(
+        e
+      );
     };
 
     const handleCheckboxHeaderFooter = (optionId) => {
@@ -269,25 +268,24 @@ export function ReportSettings(props: ReportSettingProps) {
         httpClientProps
           .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
           .then(async (response: {}) => {
+            const reportDefinition: ReportDefinitionSchemaType =
+              response.report_definition;
+            const {
+              report_params: {
+                core_params: { header, footer },
+              },
+            } = reportDefinition;
             // set header/footer default
-            if (
-              response.report_definition.report_params.core_params.header != ''
-            ) {
+            if (header) {
               checkboxIdSelectHeaderFooter.header = true;
               if (!unmounted) {
-                setHeader(
-                  response.report_definition.report_params.core_params.header
-                );
+                setHeader(converter.makeMarkdown(header));
               }
             }
-            if (
-              response.report_definition.report_params.core_params.footer != ''
-            ) {
+            if (footer) {
               checkboxIdSelectHeaderFooter.footer = true;
               if (!unmounted) {
-                setFooter(
-                  response.report_definition.report_params.core_params.footer
-                );
+                setFooter(converter.makeMarkdown(header));
               }
             }
           })
