@@ -23,6 +23,8 @@ import {
   LOCAL_HOST,
   DELIVERY_TYPE,
   EMAIL_FORMAT,
+  DEFAULT_REPORT_FOOTER,
+  DEFAULT_REPORT_HEADER,
 } from './constants';
 import { RequestParams } from '@elastic/elasticsearch';
 import { getFileName, callCluster } from './helpers';
@@ -49,8 +51,8 @@ export const createVisualReport = async (
   const reportFormat = coreParams.report_format;
 
   // TODO: polish default header, maybe add a logo, depends on UX design
-  const header = coreParams.header || '<h1>Open Distro Kibana Reports</h1>';
-  const footer = coreParams.footer || '<h1>Open Distro Kibana Reports</h1>';
+  const header = coreParams.header || DEFAULT_REPORT_HEADER;
+  const footer = coreParams.footer || DEFAULT_REPORT_FOOTER;
   // set up puppeteer
   const browser = await puppeteer.launch({
     headless: true,
@@ -69,17 +71,21 @@ export const createVisualReport = async (
   logger.info(`page url includes login? ${page.url().includes('login')}`);
   await delay(5000);
 
+  /**
+   * TODO: This is a workaround to simulate a login to security enabled domain.
+   * Need better handle.
+   */
   if (page.url().includes('login')) {
     logger.info('at login page');
     await page.type('[placeholder=Username]', 'admin', { delay: 30 });
     await page.type('[placeholder=Password]', 'admin', { delay: 30 });
     await page.click("[type='submit']");
-    await page.setDefaultNavigationTimeout(0);
+    logger.info('Goto queryUrl again after login');
+    await page.goto(queryUrl, { waitUntil: 'networkidle0' });
     await delay(5000);
     logger.info(`After login, currently at page url ${page.url()}`);
   }
 
-  logger.info(`page url outside if block ${page.url()}`);
   await page.setViewport({
     width: windowWidth,
     height: windowHeight,

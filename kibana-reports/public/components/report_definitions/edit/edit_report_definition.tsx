@@ -47,12 +47,26 @@ export function EditReportDefinition(props) {
     addErrorUpdatingReportDefinitionToast();
   };
 
+  const addErrorDeletingReportDefinitionToastHandler = () => {
+    const errorToast = {
+      title: 'Error deleting old scheduled report definition',
+      color: 'danger',
+      iconType: 'alert',
+      id: 'errorDeleteToast',
+    };
+    setToasts(toasts.concat(errorToast));
+  };
+
+  const handleErrorDeletingReportDefinitionToast = () => {
+    addErrorDeletingReportDefinitionToastHandler();
+  };
+
   const removeToast = (removedToast) => {
     setToasts(toasts.filter((toast) => toast.id !== removedToast.id));
   };
 
   const reportDefinitionId = props['match']['params']['reportDefinitionId'];
-  let curReportDefinition: ReportDefinitionSchemaType;
+  let reportDefinition: ReportDefinitionSchemaType;
   let editReportDefinitionRequest = {
     report_params: {
       report_name: '',
@@ -101,13 +115,13 @@ export function EditReportDefinition(props) {
   const editReportDefinition = async (metadata) => {
     const { httpClient } = props;
     /*
-      we check if this edit update the trigger type from Schedule to On demand. 
-      If so, need to first delete the curReportDefinition along with the scheduled job first, by calling the delete
+      we check if this editing updates the trigger type from Schedule to On demand. 
+      If so, need to first delete the reportDefinition along with the scheduled job first, by calling the delete
       report definition API
     */
     const {
       trigger: { trigger_type: triggerType },
-    } = curReportDefinition;
+    } = reportDefinition;
     if (
       triggerType !== 'On demand' &&
       metadata.trigger.trigger_type === 'On demand'
@@ -118,7 +132,11 @@ export function EditReportDefinition(props) {
           await callUpdateAPI(metadata);
         })
         .catch((error) => {
-          console.log('error when deleting report definition:', error);
+          console.log(
+            'error when deleting old scheduled report definition:',
+            error
+          );
+          handleErrorDeletingReportDefinitionToast();
         });
     } else {
       await callUpdateAPI(metadata);
@@ -130,13 +148,13 @@ export function EditReportDefinition(props) {
     httpClient
       .get(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
       .then((response) => {
-        curReportDefinition = response.report_definition;
+        reportDefinition = response.report_definition;
         const {
           time_created: timeCreated,
           status,
           last_updated: lastUpdated,
           report_params: { report_name: reportName },
-        } = curReportDefinition;
+        } = reportDefinition;
         // configure non-editable fields
         editReportDefinitionRequest.time_created = timeCreated;
         editReportDefinitionRequest.last_updated = lastUpdated;
