@@ -31,9 +31,13 @@ import {
   EMAIL_RECIPIENT_OPTIONS,
 } from './delivery_constants';
 import ReactMDE from 'react-mde';
-import Showdown from 'showdown';
 import { ReportDeliveryProps } from './delivery';
-import { ChannelSchemaType } from 'server/model';
+import {
+  ChannelSchemaType,
+  DeliverySchemaType,
+  KibanaUserSchemaType,
+} from 'server/model';
+import { converter } from '../utils';
 
 const INSERT_PLACEHOLDER_OPTIONS = [
   {
@@ -61,14 +65,6 @@ const INSERT_PLACEHOLDER_OPTIONS = [
     size: 's',
   },
 ];
-
-const converter = new Showdown.Converter({
-  tables: true,
-  simplifiedAutoLink: true,
-  strikethrough: true,
-  tasklists: true,
-  noHeaderId: true,
-});
 
 export const EmailDelivery = (props: ReportDeliveryProps) => {
   const {
@@ -176,18 +172,38 @@ export const EmailDelivery = (props: ReportDeliveryProps) => {
   const showPlaceholder =
     emailFormat === 'Embedded HTML' ? null : <InsertPlaceholderPopover />;
 
-  const defaultEditDeliveryParams = (deliveryParams: ChannelSchemaType) => {
+  const defaultEditDeliveryParams = (delivery: DeliverySchemaType) => {
     //TODO: need better handle?
-    delete reportDefinitionRequest.delivery.delivery_params.kibana_recipients;
+    if (delivery.delivery_type === 'Kibana user') {
+      //@ts-ignore
+      const kibanaUserParams: KibanaUserSchemaType = delivery.delivery_params;
+      const { kibana_recipients } = kibanaUserParams;
+      defaultCreateDeliveryParams();
+      delete reportDefinitionRequest.delivery.delivery_params.kibana_recipients;
+    } else {
+      //@ts-ignore
+      const emailParams: ChannelSchemaType = delivery.delivery_params;
+      const { recipients, title, textDescription, email_format } = emailParams;
 
-    deliveryParams.recipients.map((emailRecipient) =>
-      handleCreateEmailRecipient(emailRecipient, emailRecipients)
-    );
-    setEmailSubject(deliveryParams.title);
-    reportDefinitionRequest.delivery.delivery_params.title =
-      deliveryParams.title;
-    handleEmailBody(deliveryParams.textDescription);
-    handleEmailFormat(deliveryParams.email_format);
+      recipients.map((emailRecipient) =>
+        handleCreateEmailRecipient(emailRecipient, emailRecipients)
+      );
+      setEmailSubject(title);
+      reportDefinitionRequest.delivery.delivery_params.title = title;
+      handleEmailBody(textDescription);
+      handleEmailFormat(email_format);
+    }
+  };
+
+  const defaultCreateDeliveryParams = () => {
+    reportDefinitionRequest.delivery.delivery_params = {
+      recipients: emailRecipients.map((option) => option.label),
+      title: emailSubject,
+      email_format: emailFormat,
+      //TODO: need better render
+      textDescription: emailBody,
+      htmlDescription: converter.makeHtml(emailBody),
+    };
   };
 
   useEffect(() => {
@@ -195,19 +211,10 @@ export const EmailDelivery = (props: ReportDeliveryProps) => {
       httpClientProps
         .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
         .then(async (response) => {
-          defaultEditDeliveryParams(
-            response.report_definition.delivery.delivery_params
-          );
+          defaultEditDeliveryParams(response.report_definition.delivery);
         });
     } else {
-      reportDefinitionRequest.delivery.delivery_params = {
-        recipients: emailRecipients.map((option) => option.label),
-        title: emailSubject,
-        email_format: emailFormat,
-        //TODO: need better render
-        textDescription: emailBody,
-        htmlDescription: converter.makeHtml(emailBody),
-      };
+      defaultCreateDeliveryParams();
     }
   }, []);
 

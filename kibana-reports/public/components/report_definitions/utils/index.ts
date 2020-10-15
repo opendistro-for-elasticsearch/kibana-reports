@@ -13,28 +13,12 @@
  * permissions and limitations under the License.
  */
 
-export const AVAILABLE_MONITOR_OPTIONS = [
-  {
-    value: 'monitor_1',
-    text: 'Monitor 1',
-  },
-  {
-    value: 'monitor_2',
-    text: 'Monitor 2',
-  },
-];
+import Showdown from 'showdown';
 
-export const AVAILABLE_TRIGGER_OPTIONS = [
-  {
-    value: 'trigger_1',
-    text: 'Trigger 1',
-  },
-  {
-    value: 'trigger_2',
-    text: 'Trigger 2',
-  },
-  {
-    value: 'trigger_3',
-    text: 'Trigger 3',
-  },
-];
+export const converter = new Showdown.Converter({
+  tables: true,
+  simplifiedAutoLink: true,
+  strikethrough: true,
+  tasklists: true,
+  noHeaderId: true,
+});

@@ -69,7 +69,12 @@ async function pollAndExecuteJob(
     }
   } catch (error) {
     // TODO: need better error handling
-    logger.error(`${error.statusCode} ${error.message}`);
+    if (error.statusCode === 404) {
+      logger.info(`${error.statusCode} ${parseEsErrorResponse(error)}`);
+    } else {
+      // for reports-scheduler getJob API and updateJobStatus API error
+      logger.error(`${error.statusCode} ${parseEsErrorResponse(error)}`);
+    }
   }
 }
 
@@ -80,25 +85,33 @@ async function executeScheduledJob(
   notificationClient: ILegacyClusterClient,
   logger: Logger
 ) {
-  // retrieve report definition
-  const esResp = await esClient.callAsInternalUser('get', {
-    index: CONFIG_INDEX_NAME.reportDefinition,
-    id: reportDefinitionId,
-  });
-  const reportDefinition = esResp._source.report_definition;
-  // compose query_url and create report object based on report definition and triggered_time
-  const reportMetaData = createReportMetaData(reportDefinition, triggeredTime);
-  // create report and return report data
-  const reportData = await createReport(
-    true,
-    reportMetaData,
-    esClient,
-    notificationClient,
-    undefined
-  );
-  // TODO: Delivery: pass report data and (maybe original reportDefinition as well) to notification module
-
-  logger.info(`new report created and delivered: ${reportData.fileName}`);
+  try {
+    // retrieve report definition
+    const esResp = await esClient.callAsInternalUser('get', {
+      index: CONFIG_INDEX_NAME.reportDefinition,
+      id: reportDefinitionId,
+    });
+    const reportDefinition = esResp._source.report_definition;
+    // compose query_url and create report object based on report definition and triggered_time
+    const reportMetaData = createReportMetaData(
+      reportDefinition,
+      triggeredTime
+    );
+    // create report and return report data
+    const reportData = await createReport(
+      true,
+      reportMetaData,
+      esClient,
+      logger,
+      notificationClient,
+      undefined
+    );
+    logger.info(`new scheduled report created: ${reportData.fileName}`);
+  } catch (error) {
+    logger.error(
+      `fail to create scheduled report(report definition id:${reportDefinitionId}): ${error}`
+    );
+  }
 }
 
 function createReportMetaData(
@@ -121,6 +134,18 @@ function createReportMetaData(
     },
   };
   return report;
+}
+
+function parseEsErrorResponse(error: any) {
+  if (error.response) {
+    try {
+      const esErrorResponse = JSON.parse(error.response);
+      return esErrorResponse.reason || error.response;
+    } catch (parsingError) {
+      return error.response;
+    }
+  }
+  return error.message;
 }
 
 export { pollAndExecuteJob };

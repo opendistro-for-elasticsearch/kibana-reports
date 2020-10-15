@@ -163,9 +163,12 @@ export const generateReport = async (metadata, httpClient) => {
       },
     })
     .then(async (response) => {
-      const fileFormat = extractFileFormat(response['filename']);
-      const fileName = response['filename'];
-      await readStreamToFile(await response['data'], fileFormat, fileName);
+      // for emailing a report, this API response doesn't have response body
+      if (response) {
+        const fileFormat = extractFileFormat(response['filename']);
+        const fileName = response['filename'];
+        await readStreamToFile(await response['data'], fileFormat, fileName);
+      }
       status = true;
     })
     .catch((error) => {

@@ -28,6 +28,7 @@ import {
 import { ReportSettings } from '../report_settings';
 import { ReportDelivery } from '../delivery';
 import { ReportTrigger } from '../report_trigger';
+import { ReportDefinitionSchemaType } from 'server/model';
 
 export function EditReportDefinition(props) {
   const [toasts, setToasts] = useState([]);
@@ -46,11 +47,26 @@ export function EditReportDefinition(props) {
     addErrorUpdatingReportDefinitionToast();
   };
 
+  const addErrorDeletingReportDefinitionToastHandler = () => {
+    const errorToast = {
+      title: 'Error deleting old scheduled report definition',
+      color: 'danger',
+      iconType: 'alert',
+      id: 'errorDeleteToast',
+    };
+    setToasts(toasts.concat(errorToast));
+  };
+
+  const handleErrorDeletingReportDefinitionToast = () => {
+    addErrorDeletingReportDefinitionToastHandler();
+  };
+
   const removeToast = (removedToast) => {
     setToasts(toasts.filter((toast) => toast.id !== removedToast.id));
   };
 
   const reportDefinitionId = props['match']['params']['reportDefinitionId'];
+  let reportDefinition: ReportDefinitionSchemaType;
   let editReportDefinitionRequest = {
     report_params: {
       report_name: '',
@@ -59,8 +75,6 @@ export function EditReportDefinition(props) {
       core_params: {
         base_url: '',
         report_format: '',
-        header: '',
-        footer: '',
         time_duration: '',
       },
     },
@@ -71,6 +85,9 @@ export function EditReportDefinition(props) {
     trigger: {
       trigger_type: '',
     },
+    time_created: 0,
+    last_updated: 0,
+    status: '',
   };
 
   let timeRange = {
@@ -78,14 +95,15 @@ export function EditReportDefinition(props) {
     timeTo: new Date(),
   };
 
-  const editReportDefinition = async (metadata) => {
+  const callUpdateAPI = async (metadata) => {
     const { httpClient } = props;
+
     httpClient
       .put(`../api/reporting/reportDefinitions/${reportDefinitionId}`, {
         body: JSON.stringify(metadata),
         params: reportDefinitionId.toString(),
       })
-      .then(async (response) => {
+      .then(async () => {
         window.location.assign(`opendistro_kibana_reports#/`);
       })
       .catch((error) => {
@@ -94,22 +112,65 @@ export function EditReportDefinition(props) {
       });
   };
 
+  const editReportDefinition = async (metadata) => {
+    const { httpClient } = props;
+    /*
+      we check if this editing updates the trigger type from Schedule to On demand. 
+      If so, need to first delete the reportDefinition along with the scheduled job first, by calling the delete
+      report definition API
+    */
+    const {
+      trigger: { trigger_type: triggerType },
+    } = reportDefinition;
+    if (
+      triggerType !== 'On demand' &&
+      metadata.trigger.trigger_type === 'On demand'
+    ) {
+      httpClient
+        .delete(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
+        .then(async () => {
+          await callUpdateAPI(metadata);
+        })
+        .catch((error) => {
+          console.log(
+            'error when deleting old scheduled report definition:',
+            error
+          );
+          handleErrorDeletingReportDefinitionToast();
+        });
+    } else {
+      await callUpdateAPI(metadata);
+    }
+  };
+
   useEffect(() => {
     const { httpClient } = props;
     httpClient
       .get(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
       .then((response) => {
+        reportDefinition = response.report_definition;
+        const {
+          time_created: timeCreated,
+          status,
+          last_updated: lastUpdated,
+          report_params: { report_name: reportName },
+        } = reportDefinition;
+        // configure non-editable fields
+        editReportDefinitionRequest.time_created = timeCreated;
+        editReportDefinitionRequest.last_updated = lastUpdated;
+        editReportDefinitionRequest.status = status;
+
         props.setBreadcrumbs([
           {
             text: 'Reporting',
             href: '#',
           },
           {
-            text: `Report definition details: ${response.report_definition.report_params.report_name}`,
+            text: `Report definition details: ${reportName}`,
             href: `#/report_definition_details/${reportDefinitionId}`,
           },
           {
-            text: `Edit report definition: ${response.report_definition.report_params.report_name}`,
+            text: `Edit report definition: ${reportName}`,
           },
         ]);
       })
