@@ -14,7 +14,6 @@
  */
 
 import puppeteer from 'puppeteer';
-import delay from 'delay';
 import {
   FORMAT,
   REPORT_TYPE,
@@ -63,27 +62,30 @@ export const createVisualReport = async (
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
   const page = await browser.newPage();
-  await page.setDefaultNavigationTimeout(0);
-  await page.setDefaultTimeout(60000); // 60 sec timeout
-  logger.info(`original query_url ${queryUrl}`);
+  page.setDefaultNavigationTimeout(0);
+  page.setDefaultTimeout(60000); // use 60s timeout instead of default 30s
+  logger.info(`original queryUrl ${queryUrl}`);
   await page.goto(queryUrl, { waitUntil: 'networkidle0' });
   logger.info(`page url ${page.url()}`);
   logger.info(`page url includes login? ${page.url().includes('login')}`);
-  await delay(5000);
 
   /**
    * TODO: This is a workaround to simulate a login to security enabled domain.
    * Need better handle.
    */
   if (page.url().includes('login')) {
-    logger.info('at login page');
+    logger.info(
+      'domain enables security, redirecting to login page, start simulating login'
+    );
     await page.type('[placeholder=Username]', 'admin', { delay: 30 });
     await page.type('[placeholder=Password]', 'admin', { delay: 30 });
     await page.click("[type='submit']");
-    logger.info('Goto queryUrl again after login');
+    await page.waitForNavigation();
+    logger.info(
+      `Done logging in, currently at page: ${page.url()} \nGo to queryUrl again`
+    );
     await page.goto(queryUrl, { waitUntil: 'networkidle0' });
-    await delay(5000);
-    logger.info(`After login, currently at page url ${page.url()}`);
+    logger.info(`wait for network idle, the current page url: ${page.url()}`);
   }
 
   await page.setViewport({
@@ -128,7 +130,7 @@ export const createVisualReport = async (
     );
 
     buffer = await page.pdf({
-      margin: 'none',
+      margin: undefined,
       width: windowWidth,
       height: scrollHeight + 'px',
       printBackground: true,
