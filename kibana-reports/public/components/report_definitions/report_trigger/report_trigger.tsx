@@ -525,6 +525,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
   };
 
   const defaultConfigurationEdit = (trigger) => {
+    console.log("in default config edit");
     defaultEditTriggerType(trigger.trigger_type);
     if (trigger.trigger_type === 'Schedule') {
       defaultEditScheduleFrequency(trigger.trigger_params);
@@ -537,12 +538,15 @@ export function ReportTrigger(props: ReportTriggerProps) {
 
   useEffect(() => {
     if (edit) {
-      httpClientProps
+      console.log("hello what happens here");
+      let test = httpClientProps
         .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
         .then(async (response) => {
+          console.log("in response");
           defaultConfigurationEdit(response.report_definition.trigger);
           reportDefinitionRequest.trigger = response.report_definition.trigger;
         });
+        console.log("test is", test);
     }
     // Set default trigger_type for create new report definition
     else {
