@@ -45,8 +45,8 @@ const visualReportSchema = schema.object({
     schema.literal(FORMAT.pdf),
     schema.literal(FORMAT.png),
   ]),
-  header: schema.string(),
-  footer: schema.string(),
+  header: schema.maybe(schema.string()),
+  footer: schema.maybe(schema.string()),
   time_duration: schema.string(),
 });
 
@@ -106,6 +106,19 @@ export const channelSchema = schema.object({
   channelIds: schema.maybe(schema.arrayOf(schema.string())),
 });
 
+export const deliverySchema = schema.object({
+  delivery_type: schema.oneOf([
+    schema.literal(DELIVERY_TYPE.kibanaUser),
+    schema.literal(DELIVERY_TYPE.channel),
+  ]),
+  delivery_params: schema.conditional(
+    schema.siblingRef('delivery_type'),
+    DELIVERY_TYPE.kibanaUser,
+    kibanaUserSchema,
+    channelSchema
+  ),
+});
+
 export const reportDefinitionSchema = schema.object({
   report_params: schema.object({
     report_name: schema.string(),
@@ -123,18 +136,7 @@ export const reportDefinitionSchema = schema.object({
     ),
   }),
 
-  delivery: schema.object({
-    delivery_type: schema.oneOf([
-      schema.literal(DELIVERY_TYPE.kibanaUser),
-      schema.literal(DELIVERY_TYPE.channel),
-    ]),
-    delivery_params: schema.conditional(
-      schema.siblingRef('delivery_type'),
-      DELIVERY_TYPE.kibanaUser,
-      kibanaUserSchema,
-      channelSchema
-    ),
-  }),
+  delivery: deliverySchema,
 
   trigger: schema.object({
     trigger_type: schema.oneOf([
@@ -185,3 +187,4 @@ export type DataReportSchemaType = TypeOf<typeof dataReportSchema>;
 export type VisualReportSchemaType = TypeOf<typeof visualReportSchema>;
 export type ChannelSchemaType = TypeOf<typeof channelSchema>;
 export type KibanaUserSchemaType = TypeOf<typeof kibanaUserSchema>;
+export type DeliverySchemaType = TypeOf<typeof deliverySchema>;

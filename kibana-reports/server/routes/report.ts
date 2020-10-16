@@ -19,6 +19,7 @@ import {
   IKibanaResponse,
   ResponseError,
   ILegacyScopedClusterClient,
+  Logger,
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
@@ -45,13 +46,17 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      //@ts-ignore
+      const logger: Logger = context.reporting_plugin.logger;
       // input validation
       let report = request.body;
       try {
         report = reportSchema.validate(report);
       } catch (error) {
+        logger.error(`Failed input validation for create report ${error}`);
         return response.badRequest({ body: error });
       }
+
       try {
         // @ts-ignore
         const notificationClient: ILegacyScopedClusterClient = context.reporting_plugin.notificationClient.asScoped(
@@ -63,6 +68,7 @@ export default function (router: IRouter) {
           false,
           report,
           esClient,
+          logger,
           notificationClient
         );
 
@@ -82,11 +88,9 @@ export default function (router: IRouter) {
           return response.ok();
         }
       } catch (error) {
-        //@ts-ignore
         // TODO: better error handling for delivery and stages in generating report, pass logger to deeper level
-        context.reporting_plugin.logger.error(
-          `Failed to create report: ${error}`
-        );
+        logger.error(`Failed to generate report: ${error}`);
+        logger.error(error);
         return errorResponse(response, error);
       }
     }
@@ -107,6 +111,8 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      //@ts-ignore
+      const logger: Logger = context.reporting_plugin.logger;
       // get report
       try {
         const savedReportId = request.params.reportId;
@@ -124,6 +130,7 @@ export default function (router: IRouter) {
           false,
           report,
           esClient,
+          logger,
           undefined,
           savedReportId
         );
@@ -135,10 +142,8 @@ export default function (router: IRouter) {
           },
         });
       } catch (error) {
-        //@ts-ignore
-        context.reporting_plugin.logger.error(
-          `Failed to generate report by id: ${error}`
-        );
+        logger.error(`Failed to generate report by id: ${error}`);
+        logger.error(error);
         return errorResponse(response, error);
       }
     }

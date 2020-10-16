@@ -14,6 +14,8 @@
  */
 
 import puppeteer from 'puppeteer';
+import createDOMPurify from 'dompurify';
+import { JSDOM } from 'jsdom';
 import {
   FORMAT,
   REPORT_TYPE,
@@ -22,20 +24,27 @@ import {
   LOCAL_HOST,
   DELIVERY_TYPE,
   EMAIL_FORMAT,
+  DEFAULT_REPORT_FOOTER,
+  DEFAULT_REPORT_HEADER,
 } from './constants';
 import { RequestParams } from '@elastic/elasticsearch';
 import { getFileName, callCluster } from './helpers';
 import {
   ILegacyClusterClient,
   ILegacyScopedClusterClient,
+  Logger,
 } from '../../../../../src/core/server';
 import { createSavedSearchReport } from './savedSearchReportHelper';
 import { ReportSchemaType } from '../../model';
 import { CreateReportResultType } from './types';
 
+const window = new JSDOM('').window;
+const DOMPurify = createDOMPurify(window);
+
 export const createVisualReport = async (
   reportParams: any,
-  queryUrl: string
+  queryUrl: string,
+  logger: Logger
 ): Promise<CreateReportResultType> => {
   const coreParams = reportParams.core_params;
   // parse params
@@ -45,9 +54,9 @@ export const createVisualReport = async (
   const windowHeight = coreParams.window_height;
   const reportFormat = coreParams.report_format;
 
-  // TODO: replace placeholders with actual schema data fields
-  const header = reportParams.header;
-  const footer = reportParams.footer;
+  // TODO: polish default header, maybe add a logo, depends on UX design
+  const header = coreParams.header ? DOMPurify.sanitize(coreParams.header) : DEFAULT_REPORT_HEADER;
+  const footer = coreParams.footer ? DOMPurify.sanitize(coreParams.footer) : DEFAULT_REPORT_FOOTER;
   // set up puppeteer
   const browser = await puppeteer.launch({
     headless: true,
@@ -58,8 +67,32 @@ export const createVisualReport = async (
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
   const page = await browser.newPage();
-  await page.setDefaultNavigationTimeout(0);
+  page.setDefaultNavigationTimeout(0);
+  page.setDefaultTimeout(60000); // use 60s timeout instead of default 30s
+  logger.info(`original queryUrl ${queryUrl}`);
   await page.goto(queryUrl, { waitUntil: 'networkidle0' });
+  logger.info(`page url ${page.url()}`);
+  logger.info(`page url includes login? ${page.url().includes('login')}`);
+
+  /**
+   * TODO: This is a workaround to simulate a login to security enabled domain.
+   * Need better handle.
+   */
+  if (page.url().includes('login')) {
+    logger.info(
+      'domain enables security, redirecting to login page, start simulating login'
+    );
+    await page.type('[placeholder=Username]', 'admin', { delay: 30 });
+    await page.type('[placeholder=Password]', 'admin', { delay: 30 });
+    await page.click("[type='submit']");
+    await page.waitForNavigation();
+    logger.info(
+      `Done logging in, currently at page: ${page.url()} \nGo to queryUrl again`
+    );
+    await page.goto(queryUrl, { waitUntil: 'networkidle0' });
+    logger.info(`wait for network idle, the current page url: ${page.url()}`);
+  }
+
   await page.setViewport({
     width: windowWidth,
     height: windowHeight,
@@ -82,13 +115,15 @@ export const createVisualReport = async (
    * Sets the content of the page to have the header be above the trimmed screenshot
    * and the footer be below it
    */
+  // TODO: need to convert header from markdown to html, either do it on server side, or on client side.
+  // Email body conversion is done from client side
   await page.setContent(`
     <!DOCTYPE html>
     <html>
       <div>
-      <h1>${header}</h1>
+      ${header}
         <img src="data:image/png;base64,${screenshot.toString('base64')}">
-      <h1>${footer}</h1>
+      ${footer}
       </div>
     </html>
     `);
@@ -100,7 +135,7 @@ export const createVisualReport = async (
     );
 
     buffer = await page.pdf({
-      margin: 'none',
+      margin: undefined,
       width: windowWidth,
       height: scrollHeight + 'px',
       printBackground: true,
@@ -124,6 +159,7 @@ export const createReport = async (
   isScheduledTask: boolean,
   report: ReportSchemaType,
   esClient: ILegacyClusterClient | ILegacyScopedClusterClient,
+  logger: Logger,
   notificationClient?: ILegacyClusterClient | ILegacyScopedClusterClient,
   savedReportId?: string
 ): Promise<CreateReportResultType> => {
@@ -141,6 +177,20 @@ export const createReport = async (
   const reportParams = reportDefinition.report_params;
   const reportSource = reportParams.report_source;
 
+  // validate url
+  let queryUrl = report.query_url;
+  const { origin } = new URL(report.query_url);
+  /**
+   * Only URL in WHATWG format is accepted.
+   * e.g http://dasd@test.com/random?size=50 will be considered as invalid and throw error, due to the "@" symbol
+   * is not part of the url origin according to https://nodejs.org/api/url.html#url_url_strings_and_url_objects
+   */
+  if (report.query_url.search(origin) >= 0) {
+    queryUrl = report.query_url.replace(origin, LOCAL_HOST);
+  } else {
+    throw Error(`query url is not valid: ${queryUrl}`);
+  }
+
   try {
     // generate report
     if (reportSource === REPORT_TYPE.savedSearch) {
@@ -151,9 +201,11 @@ export const createReport = async (
       );
     } else {
       // report source can only be one of [saved search, visualization, dashboard]
-      const { origin } = new URL(report.query_url);
-      const queryUrl = report.query_url.replace(origin, LOCAL_HOST);
-      createReportResult = await createVisualReport(reportParams, queryUrl);
+      createReportResult = await createVisualReport(
+        reportParams,
+        queryUrl,
+        logger
+      );
     }
 
     if (!savedReportId) {
@@ -295,7 +347,6 @@ export const deliverReport = async (
         },
         isScheduledTask
       );
-      console.log(res);
       //TODO: need better error handling or logging
     }
   } else {

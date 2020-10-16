@@ -34,7 +34,7 @@ export function parseEsErrorResponse(error: any) {
 
 export function errorResponse(response: KibanaResponseFactory, error: any) {
   return response.custom({
-    statusCode: error.statusCode,
+    statusCode: error.statusCode || 500,
     body: parseEsErrorResponse(error),
   });
 }

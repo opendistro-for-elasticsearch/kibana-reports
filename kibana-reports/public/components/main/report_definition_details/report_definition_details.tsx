@@ -305,18 +305,6 @@ export function ReportDefinitionDetails(props) {
       updatedReportDefinition.status = 'Active';
     }
 
-    // update report definition, delete extraneous schedule params
-    if (
-      updatedReportDefinition.trigger.trigger_params.schedule_type ===
-      'Recurring'
-    ) {
-      delete updatedReportDefinition.trigger.trigger_params.schedule.cron;
-    } else if (
-      updatedReportDefinition.trigger.trigger_params.schedule_type ===
-      'Cron based'
-    ) {
-      delete updatedReportDefinition.trigger.trigger_params.schedule.interval;
-    }
     const { httpClient } = props;
     httpClient
       .put(`../api/reporting/reportDefinitions/${reportDefinitionId}`, {
