@@ -14,6 +14,8 @@
  */
 
 import puppeteer from 'puppeteer';
+import createDOMPurify from 'dompurify';
+import { JSDOM } from 'jsdom';
 import {
   FORMAT,
   REPORT_TYPE,
@@ -36,6 +38,9 @@ import { createSavedSearchReport } from './savedSearchReportHelper';
 import { ReportSchemaType } from '../../model';
 import { CreateReportResultType } from './types';
 
+const window = new JSDOM('').window;
+const DOMPurify = createDOMPurify(window);
+
 export const createVisualReport = async (
   reportParams: any,
   queryUrl: string,
@@ -50,8 +55,8 @@ export const createVisualReport = async (
   const reportFormat = coreParams.report_format;
 
   // TODO: polish default header, maybe add a logo, depends on UX design
-  const header = coreParams.header || DEFAULT_REPORT_HEADER;
-  const footer = coreParams.footer || DEFAULT_REPORT_FOOTER;
+  const header = coreParams.header ? DOMPurify.sanitize(coreParams.header) : DEFAULT_REPORT_HEADER;
+  const footer = coreParams.footer ? DOMPurify.sanitize(coreParams.footer) : DEFAULT_REPORT_FOOTER;
   // set up puppeteer
   const browser = await puppeteer.launch({
     headless: true,
