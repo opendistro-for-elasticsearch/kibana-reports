@@ -1,16 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<ShareModal /> panel render component 1`] = `
-<div>
-  <div
-    class="euiText euiText--extraSmall"
+<button
+  class="euiButton euiButton--primary euiButton--fill"
+  type="button"
+>
+  <span
+    class="euiButton__content"
   >
-    <h2>
-      <a>
-        Share
-      </a>
-    </h2>
-    <div />
-  </div>
-</div>
+    <span
+      class="euiButton__text"
+    >
+      Share latest report
+    </span>
+  </span>
+</button>
 `;

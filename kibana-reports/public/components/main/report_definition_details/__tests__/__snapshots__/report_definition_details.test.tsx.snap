@@ -10,7 +10,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
     <h1
       class="euiTitle euiTitle--large"
     >
-      Report definition
+      Report definition details
     </h1>
     <div
       class="euiSpacer euiSpacer--m"
@@ -22,65 +22,58 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
         class="euiPageHeader euiPageHeader--responsive"
       >
         <div
-          class="euiFlexItem"
+          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
         >
           <div
-            class="euiPageHeaderSection"
+            class="euiFlexItem"
           >
-            <h2
-              class="euiTitle euiTitle--medium"
-            />
+            <div
+              class="euiPageHeaderSection"
+            >
+              <h2
+                class="euiTitle euiTitle--medium"
+              />
+            </div>
           </div>
         </div>
         <div
-          class="euiFlexGroup euiFlexGroup--gutterExtraSmall euiFlexGroup--alignItemsFlexEnd euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsFlexEnd euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
         >
           <div
-            class="euiFlexItem"
-          />
-          <div
-            class="euiFlexItem"
-          />
-          <div
-            class="euiFlexItem"
-          />
-          <div
-            class="euiFlexItem"
-          />
-          <div
-            class="euiFlexItem"
-          />
-          <div
-            class="euiFlexItem"
+            class="euiFlexItem euiFlexItem--flexGrowZero"
           >
-            <div
-              class="euiText euiText--extraSmall"
+            <button
+              class="euiButton euiButton--danger"
+              type="button"
             >
-              <h2>
-                <a
-                  href="#"
+              <span
+                class="euiButton__content"
+              >
+                <span
+                  class="euiButton__text"
                 >
-                  Disable
-                </a>
-              </h2>
-              <div />
-            </div>
+                  Delete
+                </span>
+              </span>
+            </button>
           </div>
           <div
-            class="euiFlexItem"
+            class="euiFlexItem euiFlexItem--flexGrowZero"
           >
-            <div
-              class="euiText euiText--extraSmall"
+            <button
+              class="euiButton euiButton--primary"
+              type="button"
             >
-              <h2>
-                <a
-                  href="#"
+              <span
+                class="euiButton__content"
+              >
+                <span
+                  class="euiButton__text"
                 >
                   Enable
-                </a>
-              </h2>
-              <div />
-            </div>
+                </span>
+              </span>
+            </button>
           </div>
           <div
             class="euiFlexItem euiFlexItem--flexGrowZero"
@@ -100,12 +93,6 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
               </span>
             </button>
           </div>
-          <div
-            class="euiFlexItem"
-          />
-          <div
-            class="euiFlexItem"
-          />
         </div>
       </div>
       <hr
@@ -206,7 +193,12 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              <button
+                class="euiLink euiLink--primary"
+                type="button"
+              />
+            </dd>
           </dl>
         </div>
         <div
@@ -222,7 +214,9 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              Last undefined
+            </dd>
           </dl>
         </div>
         <div
@@ -238,7 +232,24 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              <button
+                class="euiLink euiLink--primary"
+                type="button"
+              >
+                undefined 
+                <svg
+                  aria-hidden="true"
+                  class="euiIcon euiIcon--medium euiIcon-isLoading"
+                  focusable="false"
+                  height="16"
+                  role="img"
+                  viewBox="0 0 16 16"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                />
+              </button>
+            </dd>
           </dl>
         </div>
         <div
@@ -425,7 +436,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             <dt
               class="euiDescriptionList__title"
             >
-              Delivery channels
+              Channel
             </dt>
             <dd
               class="euiDescriptionList__description"
@@ -516,9 +527,7 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              False
-            </dd>
+            />
           </dl>
         </div>
         <div
@@ -551,6 +560,11 @@ exports[`<ReportDefinitionDetails /> panel render component 1`] = `
         </div>
       </div>
     </div>
+    <div
+      aria-live="polite"
+      class="euiGlobalToastList euiGlobalToastList--right"
+      role="region"
+    />
   </main>
 </div>
 `;
