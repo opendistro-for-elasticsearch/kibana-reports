@@ -28,9 +28,6 @@ export const isValidRelativeUrl = (relativeUrl: string) => {
  * moment.js isValid() API fails to validate time duration, so use regex
  * https://github.com/moment/moment/issues/1805
  **/
-
-export const isValidDuration = (duration: string) => {
-  return !!duration.match(
-    /^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$/
-  );
-};
+export const regexDuration = /^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$/;
+export const regexEmailAddress = /\S+@\S+\.\S+/;
+export const regexReportName = /^[\w\-\s\(\)\[\]\,\_\-+]+$/;

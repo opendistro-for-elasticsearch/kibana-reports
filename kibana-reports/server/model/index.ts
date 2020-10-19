@@ -14,7 +14,12 @@
  */
 
 import { schema, TypeOf } from '@kbn/config-schema';
-import { isValidDuration, isValidRelativeUrl } from '../utils/validationHelper';
+import {
+  isValidRelativeUrl,
+  regexDuration,
+  regexEmailAddress,
+  regexReportName,
+} from '../utils/validationHelper';
 import { isValidCron } from 'cron-validator';
 import {
   REPORT_TYPE,
@@ -40,7 +45,7 @@ export const dataReportSchema = schema.object({
   //ISO duration format. 'PT10M' means 10 min
   time_duration: schema.string({
     validate(value) {
-      if (!isValidDuration(value)) {
+      if (!regexDuration.test(value)) {
         return `invalid time duration: ${value}`;
       }
     },
@@ -69,7 +74,7 @@ const visualReportSchema = schema.object({
   footer: schema.maybe(schema.string()),
   time_duration: schema.string({
     validate(value) {
-      if (!isValidDuration(value)) {
+      if (!regexDuration.test(value)) {
         return `invalid time duration: ${value}`;
       }
     },
@@ -128,7 +133,16 @@ export const kibanaUserSchema = schema.object({
 });
 
 export const channelSchema = schema.object({
-  recipients: schema.arrayOf(schema.string(), { minSize: 1 }),
+  recipients: schema.arrayOf(
+    schema.string({
+      validate(value) {
+        if (!regexEmailAddress.test(value)) {
+          return `invalid email address ${value}`;
+        }
+      },
+    }),
+    { minSize: 1 }
+  ),
   title: schema.string({ minLength: 1 }),
   textDescription: schema.string({ minLength: 1 }),
   htmlDescription: schema.maybe(schema.string({ minLength: 1 })),
@@ -154,7 +168,13 @@ export const deliverySchema = schema.object({
 
 export const reportDefinitionSchema = schema.object({
   report_params: schema.object({
-    report_name: schema.string({ minLength: 1 }),
+    report_name: schema.string({
+      validate(value) {
+        if (!regexReportName.test(value)) {
+          return `invald report name ${value}.\nMust be non-empty, allow a-z, A-Z, 0-9, (), [], ',' - and _ and spaces`;
+        }
+      },
+    }),
     report_source: schema.oneOf([
       schema.literal(REPORT_TYPE.dashboard),
       schema.literal(REPORT_TYPE.visualization),
@@ -200,7 +220,7 @@ export const reportSchema = schema.object({
   query_url: schema.string({
     validate(value) {
       if (!isValidRelativeUrl(value)) {
-        return `this is invalid relative url: ${value}`;
+        return `invalid relative url: ${value}`;
       }
     },
   }),
