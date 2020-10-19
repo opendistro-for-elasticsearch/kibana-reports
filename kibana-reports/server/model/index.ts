@@ -14,6 +14,8 @@
  */
 
 import { schema, TypeOf } from '@kbn/config-schema';
+import { isValidDuration, isValidRelativeUrl } from '../utils/validationHelper';
+import { isValidCron } from 'cron-validator';
 import {
   REPORT_TYPE,
   TRIGGER_TYPE,
@@ -27,32 +29,56 @@ import {
 } from '../routes/utils/constants';
 
 export const dataReportSchema = schema.object({
-  base_url: schema.uri(),
+  base_url: schema.string({
+    validate(value) {
+      if (!isValidRelativeUrl(value)) {
+        return `invalid relative url: ${value}`;
+      }
+    },
+  }),
   saved_search_id: schema.string(),
   //ISO duration format. 'PT10M' means 10 min
-  time_duration: schema.string(),
+  time_duration: schema.string({
+    validate(value) {
+      if (!isValidDuration(value)) {
+        return `invalid time duration: ${value}`;
+      }
+    },
+  }),
   //TODO: future support schema.literal('xlsx')
   report_format: schema.oneOf([schema.literal(FORMAT.csv)]),
-  limit: schema.number({ defaultValue: DEFAULT_MAX_SIZE }),
+  limit: schema.number({ defaultValue: DEFAULT_MAX_SIZE, min: 0 }),
   excel: schema.boolean({ defaultValue: true }),
 });
 
 const visualReportSchema = schema.object({
-  base_url: schema.uri(),
-  window_width: schema.number({ defaultValue: 1200 }),
-  window_height: schema.number({ defaultValue: 800 }),
+  base_url: schema.string({
+    validate(value) {
+      if (!isValidRelativeUrl(value)) {
+        return `invalid relative url: ${value}`;
+      }
+    },
+  }),
+  window_width: schema.number({ defaultValue: 1200, min: 0 }),
+  window_height: schema.number({ defaultValue: 800, min: 0 }),
   report_format: schema.oneOf([
     schema.literal(FORMAT.pdf),
     schema.literal(FORMAT.png),
   ]),
   header: schema.maybe(schema.string()),
   footer: schema.maybe(schema.string()),
-  time_duration: schema.string(),
+  time_duration: schema.string({
+    validate(value) {
+      if (!isValidDuration(value)) {
+        return `invalid time duration: ${value}`;
+      }
+    },
+  }),
 });
 
 export const intervalSchema = schema.object({
   interval: schema.object({
-    period: schema.number(),
+    period: schema.number({ min: 0 }),
     // Refer to job scheduler SPI https://github.com/opendistro-for-elasticsearch/job-scheduler/blob/b333469c183a15ddbf496a690300cc9e34d937fb/spi/src/main/java/com/amazon/opendistroforelasticsearch/jobscheduler/spi/schedule/IntervalSchedule.java
     unit: schema.oneOf([
       schema.literal('MINUTES'),
@@ -66,7 +92,14 @@ export const intervalSchema = schema.object({
 
 export const cronSchema = schema.object({
   cron: schema.object({
-    expression: schema.string(),
+    expression: schema.string({
+      validate(value) {
+        if (!isValidCron(value)) {
+          return `invalid cron expression: ${value}`;
+        }
+      },
+    }),
+    //TODO: add more validation once we add full support of timezone
     timezone: schema.string(),
   }),
 });
@@ -74,7 +107,7 @@ export const cronSchema = schema.object({
 export const scheduleSchema = schema.object({
   schedule_type: schema.oneOf([
     /*
-    TODO: Future Date will be added in the future.
+    TODO: Future Date option will be added in the future.
     Currently @kbn/config-schema has no support for more than 2 conditions, keep an eye on library update
     */
     schema.literal(SCHEDULE_TYPE.recurring),
@@ -96,9 +129,9 @@ export const kibanaUserSchema = schema.object({
 
 export const channelSchema = schema.object({
   recipients: schema.arrayOf(schema.string(), { minSize: 1 }),
-  title: schema.string(),
-  textDescription: schema.string(),
-  htmlDescription: schema.maybe(schema.string()),
+  title: schema.string({ minLength: 1 }),
+  textDescription: schema.string({ minLength: 1 }),
+  htmlDescription: schema.maybe(schema.string({ minLength: 1 })),
   email_format: schema.oneOf([
     schema.literal(EMAIL_FORMAT.attachment),
     schema.literal(EMAIL_FORMAT.embeddedHtml),
@@ -121,13 +154,13 @@ export const deliverySchema = schema.object({
 
 export const reportDefinitionSchema = schema.object({
   report_params: schema.object({
-    report_name: schema.string(),
+    report_name: schema.string({ minLength: 1 }),
     report_source: schema.oneOf([
       schema.literal(REPORT_TYPE.dashboard),
       schema.literal(REPORT_TYPE.visualization),
       schema.literal(REPORT_TYPE.savedSearch),
     ]),
-    description: schema.string(),
+    description: schema.string({ minLength: 1 }),
     core_params: schema.conditional(
       schema.siblingRef('report_source'),
       REPORT_TYPE.savedSearch,
@@ -135,9 +168,7 @@ export const reportDefinitionSchema = schema.object({
       visualReportSchema
     ),
   }),
-
   delivery: deliverySchema,
-
   trigger: schema.object({
     trigger_type: schema.oneOf([
       /*
@@ -166,8 +197,14 @@ export const reportDefinitionSchema = schema.object({
 });
 
 export const reportSchema = schema.object({
-  query_url: schema.uri(),
-  time_from: schema.number(),
+  query_url: schema.string({
+    validate(value) {
+      if (!isValidRelativeUrl(value)) {
+        return `this is invalid relative url: ${value}`;
+      }
+    },
+  }),
+  time_from: schema.number({ min: 1 }),
   time_to: schema.number(),
   report_definition: reportDefinitionSchema,
 

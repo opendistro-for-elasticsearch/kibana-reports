@@ -29,7 +29,7 @@ export const getDashboardBaseUrlCreate = (
   edit: boolean,
   editDefinitionId: string
 ) => {
-  let baseUrl = window.location.href;
+  let baseUrl = location.pathname + location.hash;
   if (edit) {
     return baseUrl.replace(
       `opendistro_kibana_reports#/edit/${editDefinitionId}`,
@@ -43,7 +43,7 @@ export const getDashboardBaseUrlCreate = (
 };
 
 export const getVisualizationBaseUrlCreate = (edit: boolean) => {
-  let baseUrl = window.location.href;
+  let baseUrl = location.pathname + location.hash;
   if (edit) {
     return baseUrl.replace(
       'opendistro_kibana_reports#/edit',
@@ -57,7 +57,7 @@ export const getVisualizationBaseUrlCreate = (edit: boolean) => {
 };
 
 export const getSavedSearchBaseUrlCreate = (edit: boolean) => {
-  let baseUrl = window.location.href;
+  let baseUrl = location.pathname + location.hash;
   if (edit) {
     return baseUrl.replace(
       'opendistro_kibana_reports#/edit',

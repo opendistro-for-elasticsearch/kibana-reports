@@ -30,6 +30,7 @@ import {
   CONFIG_INDEX_NAME,
   DEFAULT_MAX_SIZE,
   DELIVERY_TYPE,
+  LOCAL_HOST,
 } from './utils/constants';
 
 export default function (router: IRouter) {

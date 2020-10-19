@@ -18,67 +18,63 @@ import moment from 'moment';
 import {
   reportGenerationInProgressModal,
   reportGenerationSuccess,
-  reportGenerationFailure
+  reportGenerationFailure,
 } from './context_menu_ui';
 
 const getReportSourceURL = (baseURI) => {
-  let url = baseURI.substr(0, baseURI.indexOf("?"));
-  const reportSourceId = url.substr(url.lastIndexOf("/") + 1, url.length);
+  let url = baseURI.substr(0, baseURI.indexOf('?'));
+  const reportSourceId = url.substr(url.lastIndexOf('/') + 1, url.length);
   return reportSourceId;
-}
+};
 
 export const contextMenuCreateReportDefinition = (baseURI) => {
   const reportSourceId = getReportSourceURL(baseURI);
-  let reportSource = "";
+  let reportSource = '';
   let timeRanges = getTimeFieldsFromUrl();
 
   // check report source
   if (baseURI.includes('dashboard')) {
     reportSource = 'dashboard:';
-  }
-  else if (baseURI.includes('visualize')) {
-    reportSource = 'visualize:'
-  }
-  else if (baseURI.includes('discover')) {
+  } else if (baseURI.includes('visualize')) {
+    reportSource = 'visualize:';
+  } else if (baseURI.includes('discover')) {
     reportSource = 'discover:';
   }
   reportSource += reportSourceId.toString();
   window.location.assign(
     `opendistro_kibana_reports#/create?previous=${reportSource}?timeFrom=${timeRanges.time_from.toISOString()}?timeTo=${timeRanges.time_to.toISOString()}`
-    )
-}
+  );
+};
 
-export const contextMenuViewReports = () => window.location.assign('opendistro_kibana_reports#/');
+export const contextMenuViewReports = () =>
+  window.location.assign('opendistro_kibana_reports#/');
 
 export const getTimeFieldsFromUrl = () => {
   let url = window.location.href;
   let timeString = url.substring(
-    url.lastIndexOf("time:"),
-    url.lastIndexOf("))")
-  );  
-  if (url.includes("visualize") || url.includes("discover")) {
-    timeString = url.substring(
-      url.lastIndexOf("time:"),
-      url.indexOf("))")
-    );
+    url.lastIndexOf('time:'),
+    url.lastIndexOf('))')
+  );
+  if (url.includes('visualize') || url.includes('discover')) {
+    timeString = url.substring(url.lastIndexOf('time:'), url.indexOf('))'));
   }
 
   let fromDateString = timeString.substring(
-    timeString.lastIndexOf("from:") + 5,
-    timeString.lastIndexOf(",")
+    timeString.lastIndexOf('from:') + 5,
+    timeString.lastIndexOf(',')
   );
-    
+
   // remove extra quotes if the 'from' date is absolute time
   fromDateString = fromDateString.replace(/[']+/g, '');
-  
+
   // convert time range to from date format in case time range is relative
   let fromDateFormat = dateMath.parse(fromDateString);
 
   let toDateString = timeString.substring(
-    timeString.lastIndexOf("to:") + 3,
+    timeString.lastIndexOf('to:') + 3,
     timeString.length
   );
-  
+
   toDateString = toDateString.replace(/[']+/g, '');
   let toDateFormat = dateMath.parse(toDateString);
 
@@ -89,39 +85,42 @@ export const getTimeFieldsFromUrl = () => {
   return {
     time_from: fromDateFormat,
     time_to: toDateFormat,
-    time_duration: timeDuration.toISOString()
-  }
-}
+    time_duration: timeDuration.toISOString(),
+  };
+};
 
 export const displayLoadingModal = () => {
-  const kibanaBody = document.getElementById("kibana-body");
+  const kibanaBody = document.getElementById('kibana-body');
   if (kibanaBody) {
     try {
-      const loadingModal = document.createElement("div");
+      const loadingModal = document.createElement('div');
       loadingModal.innerHTML = reportGenerationInProgressModal();
       kibanaBody.appendChild(loadingModal.children[0]);
     } catch (e) {
-      console.log("error displaying loading modal:", e);
+      console.log('error displaying loading modal:', e);
     }
   }
-}
+};
 
 export const addSuccessOrFailureToast = (status) => {
-  const generateToast = document.querySelectorAll(".euiGlobalToastList");
+  const generateToast = document.querySelectorAll('.euiGlobalToastList');
   if (generateToast) {
     try {
-      const generateInProgressToast = document.createElement("div");
-      if (status === "success") {
+      const generateInProgressToast = document.createElement('div');
+      if (status === 'success') {
         generateInProgressToast.innerHTML = reportGenerationSuccess();
-        setTimeout(function () {document.getElementById('reportSuccessToast').style.display='none'}, 6000); // closes toast automatically after 6s
-      }
-      else if (status === "failure") {
+        setTimeout(function () {
+          document.getElementById('reportSuccessToast').style.display = 'none';
+        }, 6000); // closes toast automatically after 6s
+      } else if (status === 'failure') {
         generateInProgressToast.innerHTML = reportGenerationFailure();
-        setTimeout(function () {document.getElementById('reportFailureToast').style.display='none'}, 6000);
+        setTimeout(function () {
+          document.getElementById('reportFailureToast').style.display = 'none';
+        }, 6000);
       }
       generateToast[0].appendChild(generateInProgressToast.children[0]);
     } catch (e) {
-      console.log("error displaying toast", e);
+      console.log('error displaying toast', e);
     }
   }
-}
+};
