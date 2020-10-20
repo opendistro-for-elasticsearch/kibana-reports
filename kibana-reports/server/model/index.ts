@@ -143,9 +143,9 @@ export const channelSchema = schema.object({
     }),
     { minSize: 1 }
   ),
-  title: schema.string({ minLength: 1 }),
-  textDescription: schema.string({ minLength: 1 }),
-  htmlDescription: schema.maybe(schema.string({ minLength: 1 })),
+  title: schema.string(),
+  textDescription: schema.string(),
+  htmlDescription: schema.maybe(schema.string()),
   email_format: schema.oneOf([
     schema.literal(EMAIL_FORMAT.attachment),
     schema.literal(EMAIL_FORMAT.embeddedHtml),
@@ -180,7 +180,7 @@ export const reportDefinitionSchema = schema.object({
       schema.literal(REPORT_TYPE.visualization),
       schema.literal(REPORT_TYPE.savedSearch),
     ]),
-    description: schema.string({ minLength: 1 }),
+    description: schema.string(),
     core_params: schema.conditional(
       schema.siblingRef('report_source'),
       REPORT_TYPE.savedSearch,
