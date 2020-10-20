@@ -14,8 +14,8 @@
  */
 
 import { ILegacyClusterClient, Logger } from '../../../../src/core/server';
-import { createReport } from '../routes/utils/reportHelper';
-import { POLL_INTERVAL } from './constants';
+import { createScheduledReport } from './createScheduledReport';
+import { POLL_INTERVAL } from '../utils/constants';
 import {
   ReportSchemaType,
   DataReportSchemaType,
@@ -98,15 +98,14 @@ async function executeScheduledJob(
       reportDefinition,
       triggeredTime
     );
-    // create report and return report data
-    const reportData = await createReport(
-      true,
+
+    const reportData = await createScheduledReport(
       reportMetaData,
       esClient,
-      logger,
       notificationClient,
-      undefined
+      logger
     );
+
     logger.info(`new scheduled report created: ${reportData.fileName}`);
   } catch (error) {
     logger.error(

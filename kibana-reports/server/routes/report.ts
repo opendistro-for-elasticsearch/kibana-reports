@@ -18,12 +18,11 @@ import {
   IRouter,
   IKibanaResponse,
   ResponseError,
-  ILegacyScopedClusterClient,
   Logger,
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
-import { createReport } from './utils/reportHelper';
+import { createReport } from './lib/createReport';
 import { reportSchema } from '../model';
 import { errorResponse } from './utils/helpers';
 import {
@@ -58,19 +57,7 @@ export default function (router: IRouter) {
       }
 
       try {
-        // @ts-ignore
-        const notificationClient: ILegacyScopedClusterClient = context.reporting_plugin.notificationClient.asScoped(
-          request
-        );
-        const esClient = context.core.elasticsearch.legacy.client;
-
-        const reportData = await createReport(
-          false,
-          report,
-          esClient,
-          logger,
-          notificationClient
-        );
+        const reportData = await createReport(request, context, report);
 
         // if not deliver to user himself , no need to send actual file data to client
         const delivery = report.report_definition.delivery;
@@ -124,14 +111,11 @@ export default function (router: IRouter) {
           }
         );
         const report = esResp._source;
-        const esClient = context.core.elasticsearch.legacy.client;
 
         const reportData = await createReport(
-          false,
+          request,
+          context,
           report,
-          esClient,
-          logger,
-          undefined,
           savedReportId
         );
 
