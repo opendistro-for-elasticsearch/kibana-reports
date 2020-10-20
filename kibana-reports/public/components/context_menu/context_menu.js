@@ -24,19 +24,20 @@ import {
   addSuccessOrFailureToast,
   contextMenuViewReports,
 } from './context_menu_helpers';
-import { popoverMenu, popoverMenuDiscover, getMenuItem } from './context_menu_ui';
+import {
+  popoverMenu,
+  popoverMenuDiscover,
+  getMenuItem,
+} from './context_menu_ui';
 
 const replaceQueryURL = () => {
-  let url = window.location.href;
+  let url = location.pathname + location.hash;
   let timeString = url.substring(
     url.lastIndexOf('time:'),
     url.lastIndexOf('))')
   );
-  if (url.includes("visualize") || url.includes("discover")) {
-    timeString = url.substring(
-      url.lastIndexOf("time:"),
-      url.indexOf("))")
-    );
+  if (url.includes('visualize') || url.includes('discover')) {
+    timeString = url.substring(url.lastIndexOf('time:'), url.indexOf('))'));
   }
 
   let fromDateString = timeString.substring(
@@ -68,18 +69,20 @@ const replaceQueryURL = () => {
   return url;
 };
 
-const generateInContextReport = (timeRanges, queryUrl, fileFormat, rest = {}) => {
+const generateInContextReport = (
+  timeRanges,
+  queryUrl,
+  fileFormat,
+  rest = {}
+) => {
   displayLoadingModal();
-  let baseUrl = window.location.href.substr(
-    0,
-    window.location.href.indexOf('?')
-  );
+  const baseUrl = queryUrl.substr(0, queryUrl.indexOf('?'));
   let reportSource = '';
-  if (window.location.href.includes('dashboard')) {
+  if (baseUrl.includes('dashboard')) {
     reportSource = 'Dashboard';
-  } else if (window.location.href.includes('visualize')) {
+  } else if (baseUrl.includes('visualize')) {
     reportSource = 'Visualization';
-  } else if (window.location.href.includes('discover')) {
+  } else if (baseUrl.includes('discover')) {
     reportSource = 'Saved search';
   }
 
@@ -150,7 +153,9 @@ $(function () {
     if (popoverScreen) {
       try {
         const reportPopover = document.createElement('div');
-        reportPopover.innerHTML = isDiscover() ? popoverMenuDiscover(getUuidFromUrl()) : popoverMenu();
+        reportPopover.innerHTML = isDiscover()
+          ? popoverMenuDiscover(getUuidFromUrl())
+          : popoverMenu();
         popoverScreen[0].appendChild(reportPopover.children[0]);
         $('#reportPopover').show();
       } catch (e) {
@@ -254,7 +259,10 @@ function locationHashChanged() {
 }
 
 // try to match uuid followed by '?' in URL, which would be the saved search id for discover URL
-const getUuidFromUrl = () => window.location.href.match(/(\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b)\?/);
+const getUuidFromUrl = () =>
+  window.location.href.match(
+    /(\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b)\?/
+  );
 const isDiscover = () => window.location.href.includes('discover');
 
 window.onhashchange = function () {

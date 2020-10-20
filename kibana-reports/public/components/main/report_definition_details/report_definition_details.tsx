@@ -283,7 +283,7 @@ export function ReportDefinitionDetails(props) {
 
   const sourceURL = (data) => {
     return (
-      <EuiLink href={data.baseUrl} target="_blank">
+      <EuiLink href={`${location.host}${data.baseUrl}`} target="_blank">
         {data['source']}
       </EuiLink>
     );

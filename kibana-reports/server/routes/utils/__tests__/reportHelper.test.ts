@@ -14,7 +14,7 @@
  */
 
 import 'regenerator-runtime/runtime';
-import { createVisualReport } from '../reportHelper';
+import { createVisualReport } from '../visualReportHelper';
 
 describe('test create visual report', () => {
   test('create png report', async () => {

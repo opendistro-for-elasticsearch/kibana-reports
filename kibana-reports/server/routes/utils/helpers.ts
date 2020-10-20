@@ -19,6 +19,10 @@ import {
   ILegacyClusterClient,
   ILegacyScopedClusterClient,
 } from '../../../../../src/core/server';
+import { RequestParams } from '@elastic/elasticsearch';
+import { CONFIG_INDEX_NAME, REPORT_STATE } from './constants';
+import { CreateReportResultType } from './types';
+import { ReportSchemaType } from 'server/model';
 
 export function parseEsErrorResponse(error: any) {
   if (error.response) {
@@ -66,5 +70,62 @@ export const callCluster = async (
   } else {
     esResp = await client.callAsCurrentUser(endpoint, params);
   }
+  return esResp;
+};
+
+export const saveToES = async (
+  isScheduledTask: boolean,
+  report: ReportSchemaType,
+  esClient: ILegacyClusterClient | ILegacyScopedClusterClient
+) => {
+  const timePending = Date.now();
+  const saveParams: RequestParams.Index = {
+    index: CONFIG_INDEX_NAME.report,
+    body: {
+      ...report,
+      state: REPORT_STATE.pending,
+      last_updated: timePending,
+      time_created: timePending,
+    },
+  };
+  const esResp = await callCluster(
+    esClient,
+    'index',
+    saveParams,
+    isScheduledTask
+  );
+
+  return esResp;
+};
+
+export const updateToES = async (
+  isScheduledTask: boolean,
+  reportId: string,
+  esClient: ILegacyClusterClient | ILegacyScopedClusterClient,
+  state: string,
+  createReportResult?: CreateReportResultType
+) => {
+  const timeStamp = createReportResult
+    ? createReportResult.timeCreated
+    : Date.now();
+  // update report document with state "created" or "error"
+  const updateParams: RequestParams.Update = {
+    id: reportId,
+    index: CONFIG_INDEX_NAME.report,
+    body: {
+      doc: {
+        state: state,
+        last_updated: timeStamp,
+        time_created: timeStamp,
+      },
+    },
+  };
+  const esResp = await callCluster(
+    esClient,
+    'update',
+    updateParams,
+    isScheduledTask
+  );
+
   return esResp;
 };

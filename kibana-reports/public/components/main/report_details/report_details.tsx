@@ -189,7 +189,7 @@ export function ReportDetails(props) {
 
   const sourceURL = (data) => {
     return (
-      <EuiLink href={data.queryUrl} target="_blank">
+      <EuiLink href={`${location.host}${data.queryUrl}`} target="_blank">
         {data['source']}
       </EuiLink>
     );

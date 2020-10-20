@@ -23,6 +23,7 @@ import {
 } from '../model';
 import moment from 'moment';
 import { CONFIG_INDEX_NAME } from '../routes/utils/constants';
+import { parseEsErrorResponse } from '../routes/utils/helpers';
 
 async function pollAndExecuteJob(
   schedulerClient: ILegacyClusterClient,
@@ -134,18 +135,6 @@ function createReportMetaData(
     },
   };
   return report;
-}
-
-function parseEsErrorResponse(error: any) {
-  if (error.response) {
-    try {
-      const esErrorResponse = JSON.parse(error.response);
-      return esErrorResponse.reason || error.response;
-    } catch (parsingError) {
-      return error.response;
-    }
-  }
-  return error.message;
 }
 
 export { pollAndExecuteJob };
