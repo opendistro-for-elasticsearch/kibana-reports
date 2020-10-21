@@ -45,7 +45,7 @@ exports[`<ReportTrigger /> panel render component 1`] = `
             <input
               checked=""
               class="euiRadio__input"
-              id="scheduleOption"
+              id="On demand"
               type="radio"
               value=""
             />
@@ -54,9 +54,28 @@ exports[`<ReportTrigger /> panel render component 1`] = `
             />
             <label
               class="euiRadio__label"
-              for="scheduleOption"
+              for="On demand"
             >
-              Schedule based
+              On demand
+            </label>
+          </div>
+          <div
+            class="euiRadio euiRadioGroup__item"
+          >
+            <input
+              class="euiRadio__input"
+              id="Schedule"
+              type="radio"
+              value=""
+            />
+            <div
+              class="euiRadio__circle"
+            />
+            <label
+              class="euiRadio__label"
+              for="Schedule"
+            >
+              Schedule
             </label>
           </div>
         </div>
@@ -65,99 +84,6 @@ exports[`<ReportTrigger /> panel render component 1`] = `
     <div
       class="euiSpacer euiSpacer--l"
     />
-    <div>
-      <div
-        class="euiFormRow"
-        id="random_html_id-row"
-      >
-        <div
-          class="euiFormRow__labelWrapper"
-        >
-          <label
-            class="euiFormLabel euiFormRow__label"
-            for="random_html_id"
-          >
-            Request time
-          </label>
-        </div>
-        <div
-          class="euiFormRow__fieldWrapper"
-        >
-          <div
-            aria-describedby="random_html_id-help"
-            id="random_html_id"
-          >
-            <div
-              class="euiRadio euiRadioGroup__item"
-            >
-              <input
-                checked=""
-                class="euiRadio__input"
-                id="nowOption"
-                type="radio"
-                value=""
-              />
-              <div
-                class="euiRadio__circle"
-              />
-              <label
-                class="euiRadio__label"
-                for="nowOption"
-              >
-                Now
-              </label>
-            </div>
-            <div
-              class="euiRadio euiRadioGroup__item"
-            >
-              <input
-                class="euiRadio__input"
-                id="recurringOption"
-                type="radio"
-                value=""
-              />
-              <div
-                class="euiRadio__circle"
-              />
-              <label
-                class="euiRadio__label"
-                for="recurringOption"
-              >
-                Recurring
-              </label>
-            </div>
-            <div
-              class="euiRadio euiRadioGroup__item"
-            >
-              <input
-                class="euiRadio__input"
-                id="cronBasedOption"
-                type="radio"
-                value=""
-              />
-              <div
-                class="euiRadio__circle"
-              />
-              <label
-                class="euiRadio__label"
-                for="cronBasedOption"
-              >
-                Cron based
-              </label>
-            </div>
-          </div>
-          <div
-            class="euiFormHelpText euiFormRow__text"
-            id="random_html_id-help"
-          >
-            Define delivery schedule and frequency
-          </div>
-        </div>
-      </div>
-      <div
-        class="euiSpacer euiSpacer--l"
-      />
-    </div>
   </div>
 </div>
 `;
