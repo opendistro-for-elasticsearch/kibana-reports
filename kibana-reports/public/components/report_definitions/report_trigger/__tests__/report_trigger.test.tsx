@@ -14,13 +14,13 @@
  */
 
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, waitFor, waitForElement, waitForElementToBeRemoved } from '@testing-library/react';
 import { ReportTrigger } from '../report_trigger';
 import 'babel-polyfill';
 import 'regenerator-runtime';
 import httpClientMock from '../../../../../test/httpMockClient';
+import { act } from 'react-dom/test-utils';
 import { shallow } from 'enzyme';
-import fetchMock from 'jest-fetch-mock';
 import axios from 'axios';
 
 var getFunction = async function() {
@@ -57,21 +57,14 @@ var getFunction = async function() {
       }
     },
   }
-  console.log("getFucntion was called");
   return test;
 }
 
+
 describe('<ReportTrigger /> panel', () => {
-
-  const httpClientMockTrigger = jest.fn();
-  // httpClientMockTrigger.get = httpClientMockTrigger.bind((getFunction()));
-  httpClientMockTrigger.get = jest.fn(() => ({
-    then: httpClientMockTrigger.bind(getFunction())
-  }));
-
-  // jest.mock("axios");
-
-
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   test('render create component', () => {
     let createReportDefinitionRequest = {
       report_params: {
@@ -99,7 +92,6 @@ describe('<ReportTrigger /> panel', () => {
     };
 
     jest.mock("axios");
-    axios.get.mockResolvedValue(createReportDefinitionRequest);
 
     let timeRange = {
       timeFrom: new Date(),
@@ -120,8 +112,9 @@ describe('<ReportTrigger /> panel', () => {
   });
 
   // edit test
-  test('render edit recurring 5 hours schedule component', () => {
-    let editReportDefinitionRequest = {
+  test('render edit recurring 5 hours schedule component', async () => {
+    const promise = Promise.resolve();
+    let report_definition = {
       report_params: {
         report_name: 'test create report definition trigger',
         report_source: 'Dashboard',
@@ -160,23 +153,28 @@ describe('<ReportTrigger /> panel', () => {
       timeTo: new Date(),
     };
 
-    fetchMock.mockResponseOnce(JSON.stringify(editReportDefinitionRequest));
+    httpClientMock.get = jest.fn().mockResolvedValue({
+      report_definition
+    });
+
     // var test = ReportTrigger.defaultConfigurationEdit();
     const { container } = render(
       <ReportTrigger
         edit={true}
         editDefinitionId={"1"}
-        reportDefinitionRequest={editReportDefinitionRequest}
-        httpClientProps={httpClientMockTrigger}
+        reportDefinitionRequest={report_definition}
+        httpClientProps={httpClientMock}
         timeRange={timeRange}
         showCronError={true}
       />
     );
 
-    expect(container.firstChild).toMatchSnapshot();
-  })
+    expect(container.firstChild).toMatchSnapshot();   
+    await act(() => promise);   
+  });
 
-  test('render edit recurring daily schedule component', () => {
+  test('render edit recurring daily schedule component', async () => {
+    const promise = Promise.resolve();
     let editReportDefinitionRequest = {
       report_params: {
         report_name: 'test create report definition trigger',
@@ -216,6 +214,10 @@ describe('<ReportTrigger /> panel', () => {
       timeTo: new Date(),
     };
 
+    httpClientMock.get = jest.fn().mockResolvedValue({
+      report_definition: editReportDefinitionRequest
+    });
+
     const { container } = render(
       <ReportTrigger
         edit={true}
@@ -227,10 +229,12 @@ describe('<ReportTrigger /> panel', () => {
       />
     );
 
-    expect(container.firstChild).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();      
+    await act(() => promise);
   });
 
-  test('render edit Cron schedule component', () => {
+  test('render edit Cron schedule component', async () => {
+    const promise = Promise.resolve();
     let editReportDefinitionRequest = {
       report_params: {
         report_name: 'edit cron schedule component',
@@ -269,6 +273,10 @@ describe('<ReportTrigger /> panel', () => {
       timeTo: new Date(),
     };
 
+    httpClientMock.get = jest.fn().mockResolvedValue({
+      report_definition: editReportDefinitionRequest
+    });
+
     const { container } = render(
       <ReportTrigger
         edit={true}
@@ -281,10 +289,12 @@ describe('<ReportTrigger /> panel', () => {
       />
     );
 
-    expect(container.firstChild).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();      
+    await act(() => promise);
   });
 
-  test('try testing individual component in trigger', () => {
+  test('try testing individual component in trigger', async () => {
+    const promise = Promise.resolve();
     let editReportDefinitionRequest = {
       report_params: {
         report_name: 'edit cron schedule component',
@@ -304,17 +314,6 @@ describe('<ReportTrigger /> panel', () => {
       },
       trigger: {
         trigger_type: 'On demand',
-        // trigger_params: {
-        //   schedule_type: 'Cron',
-        //   schedule: {
-        //     cron: {
-        //       expression: "30 11 * * *",
-        //       timezone: "PDT"
-        //     }
-        //   },
-        //   enabled_time: 1234567890,
-        //   enabled: true
-        // }
       },
     };
 
@@ -322,6 +321,10 @@ describe('<ReportTrigger /> panel', () => {
       timeFrom: new Date(),
       timeTo: new Date(),
     };
+
+    httpClientMock.get = jest.fn().mockResolvedValue({
+      report_definition: editReportDefinitionRequest
+    });
 
     const { container } = render(
       <ReportTrigger
@@ -334,6 +337,7 @@ describe('<ReportTrigger /> panel', () => {
       />
     );
 
-    expect(container.firstChild).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();      
+    await act(() => promise);
   })
 });

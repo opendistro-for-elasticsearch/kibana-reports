@@ -119,6 +119,8 @@ export function Main(props) {
       },
     ]);
     const { httpClient } = props;
+    console.log("props is", props);
+    console.log("Httpclient is", (httpClient));
     // get all reports
     httpClient
       .get('../api/reporting/reports')
