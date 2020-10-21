@@ -13,6 +13,8 @@
  * permissions and limitations under the License.
  */
 
+import reportDefinition from 'server/routes/reportDefinition';
+
 export const parseInContextUrl = (url: string, parameter: string) => {
   const info = url.split('?');
   if (parameter === 'id') {
@@ -27,14 +29,22 @@ export const parseInContextUrl = (url: string, parameter: string) => {
 
 export const getDashboardBaseUrlCreate = (
   edit: boolean,
-  editDefinitionId: string
+  editDefinitionId: string,
+  fromInContext: boolean
 ) => {
-  let baseUrl = location.pathname + location.hash;
+  let baseUrl;
+  if (!fromInContext) {
+    baseUrl = location.pathname + location.hash;
+  } else {
+    baseUrl = '/app/kibana#/dashboard/';
+  }
   if (edit) {
     return baseUrl.replace(
       `opendistro_kibana_reports#/edit/${editDefinitionId}`,
       'dashboards#/view/'
     );
+  } else if (fromInContext) {
+    return baseUrl;
   }
   return baseUrl.replace(
     'opendistro_kibana_reports#/create',
@@ -42,13 +52,23 @@ export const getDashboardBaseUrlCreate = (
   );
 };
 
-export const getVisualizationBaseUrlCreate = (edit: boolean) => {
-  let baseUrl = location.pathname + location.hash;
+export const getVisualizationBaseUrlCreate = (
+  edit: boolean,
+  fromInContext: boolean
+) => {
+  let baseUrl;
+  if (!fromInContext) {
+    baseUrl = location.pathname + location.hash;
+  } else {
+    baseUrl = '/app/kibana#/visualize/edit/';
+  }
   if (edit) {
     return baseUrl.replace(
       'opendistro_kibana_reports#/edit',
-      'kibana#/visualize/edit/'
+      'kibana#/visualize/edit'
     );
+  } else if (fromInContext) {
+    return baseUrl;
   }
   return baseUrl.replace(
     'opendistro_kibana_reports#/create',
@@ -56,13 +76,23 @@ export const getVisualizationBaseUrlCreate = (edit: boolean) => {
   );
 };
 
-export const getSavedSearchBaseUrlCreate = (edit: boolean) => {
-  let baseUrl = location.pathname + location.hash;
+export const getSavedSearchBaseUrlCreate = (
+  edit: boolean,
+  fromInContext: boolean
+) => {
+  let baseUrl;
+  if (!fromInContext) {
+    baseUrl = location.pathname + location.hash;
+  } else {
+    baseUrl = '/app/kibana#/discover/';
+  }
   if (edit) {
     return baseUrl.replace(
       'opendistro_kibana_reports#/edit',
       'kibana#/discover/'
     );
+  } else if (fromInContext) {
+    return baseUrl;
   }
   return baseUrl.replace(
     'opendistro_kibana_reports#/create',
@@ -107,4 +137,13 @@ export const getSavedSearchOptions = (data: string | any[]) => {
     options.push(entry);
   }
   return options;
+};
+
+export const handleDataToVisualReportSourceChange = (
+  reportDefinitionRequest
+) => {
+  delete reportDefinitionRequest.report_params.core_params.saved_search_id;
+  delete reportDefinitionRequest.report_params.core_params.limit;
+  delete reportDefinitionRequest.report_params.core_params.excel;
+  reportDefinitionRequest.report_params.core_params.report_format = 'pdf';
 };
