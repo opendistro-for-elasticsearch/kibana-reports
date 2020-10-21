@@ -110,7 +110,7 @@ exports[`<ReportDefinitions /> panel render component 1`] = `
           </div>
         </div>
         <table
-          class="euiTable euiTable--responsive"
+          class="euiTable euiTable--responsive euiTable--auto"
           id="random_html_id"
           tabindex="-1"
         >
@@ -120,34 +120,21 @@ exports[`<ReportDefinitions /> panel render component 1`] = `
           <thead>
             <tr>
               <th
-                aria-live="polite"
-                aria-sort="none"
                 class="euiTableHeaderCell"
                 data-test-subj="tableHeaderCell_reportName_0"
                 role="columnheader"
                 scope="col"
               >
-                <button
-                  class="euiTableHeaderButton"
-                  data-test-subj="tableHeaderSortButton"
-                  type="button"
+                <div
+                  class="euiTableCellContent"
                 >
                   <span
-                    class="euiTableCellContent"
+                    class="euiTableCellContent__text"
+                    title="Name"
                   >
-                    <span
-                      class="euiTableCellContent__text"
-                      title="Name"
-                    >
-                      Name
-                    </span>
-                    <span
-                      class="euiScreenReaderOnly"
-                    >
-                      Click to sort in ascending order
-                    </span>
+                    Name
                   </span>
-                </button>
+                </div>
               </th>
               <th
                 aria-live="polite"
@@ -305,13 +292,14 @@ exports[`<ReportDefinitions /> panel render component 1`] = `
                   Name
                 </div>
                 <div
-                  class="euiTableCellContent euiTableCellContent--truncateText"
+                  class="euiTableCellContent euiTableCellContent--overflowingContent"
                 >
-                  <span
-                    class="euiTableCellContent__text"
+                  <button
+                    class="euiLink euiLink--primary"
+                    type="button"
                   >
                     test report name
-                  </span>
+                  </button>
                 </div>
               </td>
               <td
@@ -361,14 +349,12 @@ exports[`<ReportDefinitions /> panel render component 1`] = `
                 <div
                   class="euiTableCellContent euiTableCellContent--overflowingContent"
                 >
-                  <a
+                  <button
                     class="euiLink euiLink--primary"
-                    href="#"
-                    rel="noopener noreferrer"
-                    target="_blank"
+                    type="button"
                   >
                     Dashboard
-                  </a>
+                  </button>
                 </div>
               </td>
               <td
@@ -380,13 +366,13 @@ exports[`<ReportDefinitions /> panel render component 1`] = `
                   Last Updated
                 </div>
                 <div
-                  class="euiTableCellContent euiTableCellContent--truncateText"
+                  class="euiTableCellContent euiTableCellContent--overflowingContent"
                 >
-                  <span
-                    class="euiTableCellContent__text"
+                  <div
+                    class="euiText euiText--small"
                   >
-                    test updated time
-                  </span>
+                    Invalid Date @ Invalid Date
+                  </div>
                 </div>
               </td>
               <td
