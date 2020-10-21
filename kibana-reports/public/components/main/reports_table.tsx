@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import {
   EuiButton,
   // @ts-ignore
