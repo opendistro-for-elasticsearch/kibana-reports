@@ -13,8 +13,6 @@
  * permissions and limitations under the License.
  */
 
-import reportDefinition from 'server/routes/reportDefinition';
-
 export const parseInContextUrl = (url: string, parameter: string) => {
   const info = url.split('?');
   if (parameter === 'id') {
