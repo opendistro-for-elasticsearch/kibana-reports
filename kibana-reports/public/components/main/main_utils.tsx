@@ -13,7 +13,6 @@
  * permissions and limitations under the License.
  */
 
-import { get } from 'lodash';
 import 'babel-polyfill';
 
 export const fileFormatsUpper = {
@@ -98,24 +97,11 @@ export const addReportDefinitionsTableContent = (data: any) => {
   return reportDefinitionsTableItems;
 };
 
-export const getReportSettingDashboardOptions = (data) => {
-  let index;
-  let dashboardOptions = [];
-  for (index = 0; index < data.length; ++index) {
-    let entry = {
-      value: get(data, [index, '_id']).substring(10),
-      text: get(data, [index, '_source', 'dashboard', 'title']),
-    };
-    dashboardOptions.push(entry);
-  }
-  return dashboardOptions;
-};
-
 export const removeDuplicatePdfFileFormat = (filename) => {
   return filename.substring(0, filename.length - 4);
 };
 
-const readDataReportToFile = async (
+export const readDataReportToFile = async (
   stream: string,
   fileFormat: string,
   fileName: string
