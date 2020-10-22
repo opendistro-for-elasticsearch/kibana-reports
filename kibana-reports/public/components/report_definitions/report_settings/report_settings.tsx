@@ -462,8 +462,6 @@ export function ReportSettings(props: ReportSettingProps) {
     } else if (url.includes('discover')) {
       setReportSourceId('savedSearchReportSource');
       reportDefinitionRequest.report_params.core_params.report_format = 'csv';
-      reportDefinitionRequest.report_params.core_params.excel = true;
-      reportDefinitionRequest.report_params.core_params.limit = 10000;
       reportDefinitionRequest.report_params.core_params.saved_search_id = id;
       reportDefinitionRequest.report_params.report_source =
         REPORT_SOURCE_RADIOS[2].label;
