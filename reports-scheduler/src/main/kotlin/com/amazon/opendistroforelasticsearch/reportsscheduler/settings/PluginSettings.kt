@@ -16,6 +16,7 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.settings
 
+import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.PLUGIN_NAME
 import org.apache.logging.log4j.LogManager
 import org.elasticsearch.bootstrap.BootstrapInfo
@@ -75,12 +76,12 @@ internal object PluginSettings {
     /**
      * Default operation timeout for network operations.
      */
-    private const val DEFAULT_OPERATION_TIMEOUT_MS = 60000
+    private const val DEFAULT_OPERATION_TIMEOUT_MS = 60000L
 
     /**
      * Minimum operation timeout for network operations.
      */
-    private const val MINIMUM_OPERATION_TIMEOUT_MS = 100
+    private const val MINIMUM_OPERATION_TIMEOUT_MS = 100L
 
     /**
      * Default Job lock duration.
@@ -126,7 +127,7 @@ internal object PluginSettings {
      * Operation timeout setting in ms for I/O operations
      */
     @Volatile
-    var operationTimeoutMs: Int
+    var operationTimeoutMs: Long
 
     /**
      * Job lock duration
@@ -165,11 +166,11 @@ internal object PluginSettings {
             try {
                 settings = Settings.builder().loadFromPath(defaultSettingYmlFile).build()
             } catch (exception: IOException) {
-                log.warn("$PLUGIN_NAME:Failed to load ${defaultSettingYmlFile.toAbsolutePath()}")
+                log.warn("$LOG_PREFIX:Failed to load ${defaultSettingYmlFile.toAbsolutePath()}")
             }
         }
         // Initialize the settings values to default values
-        operationTimeoutMs = (settings?.get(OPERATION_TIMEOUT_MS_KEY)?.toInt()) ?: DEFAULT_OPERATION_TIMEOUT_MS
+        operationTimeoutMs = (settings?.get(OPERATION_TIMEOUT_MS_KEY)?.toLong()) ?: DEFAULT_OPERATION_TIMEOUT_MS
         jobLockDurationSeconds = (settings?.get(JOB_LOCK_DURATION_S_KEY)?.toInt()) ?: DEFAULT_JOB_LOCK_DURATION_S
         minPollingDurationSeconds = (settings?.get(MIN_POLLING_DURATION_S_KEY)?.toInt())
             ?: DEFAULT_MIN_POLLING_DURATION_S
@@ -186,9 +187,9 @@ internal object PluginSettings {
         )
     }
 
-    private val OPERATION_TIMEOUT_MS: Setting<Int> = Setting.intSetting(
+    private val OPERATION_TIMEOUT_MS: Setting<Long> = Setting.longSetting(
         OPERATION_TIMEOUT_MS_KEY,
-        defaultSettings[OPERATION_TIMEOUT_MS_KEY]!!.toInt(),
+        defaultSettings[OPERATION_TIMEOUT_MS_KEY]!!.toLong(),
         MINIMUM_OPERATION_TIMEOUT_MS,
         NodeScope, Dynamic
     )
@@ -254,27 +255,27 @@ internal object PluginSettings {
     private fun updateSettingValuesFromCluster(clusterService: ClusterService) {
         val clusterOperationTimeoutMs = clusterService.clusterSettings.get(OPERATION_TIMEOUT_MS)
         if (clusterOperationTimeoutMs != null) {
-            log.debug("$PLUGIN_NAME:$OPERATION_TIMEOUT_MS_KEY -autoUpdatedTo-> $clusterOperationTimeoutMs")
+            log.debug("$LOG_PREFIX:$OPERATION_TIMEOUT_MS_KEY -autoUpdatedTo-> $clusterOperationTimeoutMs")
             operationTimeoutMs = clusterOperationTimeoutMs
         }
         val clusterJobLockDurationSeconds = clusterService.clusterSettings.get(JOB_LOCK_DURATION_S)
         if (clusterJobLockDurationSeconds != null) {
-            log.debug("$PLUGIN_NAME:$JOB_LOCK_DURATION_S_KEY -autoUpdatedTo-> $clusterJobLockDurationSeconds")
+            log.debug("$LOG_PREFIX:$JOB_LOCK_DURATION_S_KEY -autoUpdatedTo-> $clusterJobLockDurationSeconds")
             jobLockDurationSeconds = clusterJobLockDurationSeconds
         }
         val clusterMinPollingDurationSeconds = clusterService.clusterSettings.get(MIN_POLLING_DURATION_S)
         if (clusterMinPollingDurationSeconds != null) {
-            log.debug("$PLUGIN_NAME:$MIN_POLLING_DURATION_S_KEY -autoUpdatedTo-> $clusterMinPollingDurationSeconds")
+            log.debug("$LOG_PREFIX:$MIN_POLLING_DURATION_S_KEY -autoUpdatedTo-> $clusterMinPollingDurationSeconds")
             minPollingDurationSeconds = clusterMinPollingDurationSeconds
         }
         val clusterMaxPollingDurationSeconds = clusterService.clusterSettings.get(MAX_POLLING_DURATION_S)
         if (clusterMaxPollingDurationSeconds != null) {
-            log.debug("$PLUGIN_NAME:$MAX_POLLING_DURATION_S_KEY -autoUpdatedTo-> $clusterMaxPollingDurationSeconds")
+            log.debug("$LOG_PREFIX:$MAX_POLLING_DURATION_S_KEY -autoUpdatedTo-> $clusterMaxPollingDurationSeconds")
             maxPollingDurationSeconds = clusterMaxPollingDurationSeconds
         }
         val clusterMaxLockRetries = clusterService.clusterSettings.get(MAX_LOCK_RETRIES)
         if (clusterMaxLockRetries != null) {
-            log.debug("$PLUGIN_NAME:$MAX_LOCK_RETRIES_KEY -autoUpdatedTo-> $clusterMaxLockRetries")
+            log.debug("$LOG_PREFIX:$MAX_LOCK_RETRIES_KEY -autoUpdatedTo-> $clusterMaxLockRetries")
             maxLockRetries = clusterMaxLockRetries
         }
     }
@@ -291,23 +292,23 @@ internal object PluginSettings {
 
         clusterService.clusterSettings.addSettingsUpdateConsumer(OPERATION_TIMEOUT_MS) {
             operationTimeoutMs = it
-            log.info("$PLUGIN_NAME:$OPERATION_TIMEOUT_MS_KEY -updatedTo-> $it")
+            log.info("$LOG_PREFIX:$OPERATION_TIMEOUT_MS_KEY -updatedTo-> $it")
         }
         clusterService.clusterSettings.addSettingsUpdateConsumer(JOB_LOCK_DURATION_S) {
             jobLockDurationSeconds = it
-            log.info("$PLUGIN_NAME:$JOB_LOCK_DURATION_S_KEY -updatedTo-> $it")
+            log.info("$LOG_PREFIX:$JOB_LOCK_DURATION_S_KEY -updatedTo-> $it")
         }
         clusterService.clusterSettings.addSettingsUpdateConsumer(MIN_POLLING_DURATION_S) {
             minPollingDurationSeconds = it
-            log.info("$PLUGIN_NAME:$MIN_POLLING_DURATION_S_KEY -updatedTo-> $it")
+            log.info("$LOG_PREFIX:$MIN_POLLING_DURATION_S_KEY -updatedTo-> $it")
         }
         clusterService.clusterSettings.addSettingsUpdateConsumer(MAX_POLLING_DURATION_S) {
             maxPollingDurationSeconds = it
-            log.info("$PLUGIN_NAME:$MAX_POLLING_DURATION_S_KEY -updatedTo-> $it")
+            log.info("$LOG_PREFIX:$MAX_POLLING_DURATION_S_KEY -updatedTo-> $it")
         }
         clusterService.clusterSettings.addSettingsUpdateConsumer(MAX_LOCK_RETRIES) {
             maxLockRetries = it
-            log.info("$PLUGIN_NAME:$MAX_LOCK_RETRIES_KEY -updatedTo-> $it")
+            log.info("$LOG_PREFIX:$MAX_LOCK_RETRIES_KEY -updatedTo-> $it")
         }
     }
 }
