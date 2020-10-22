@@ -35,6 +35,8 @@ import { fileFormatsUpper, generateReport } from '../main_utils';
 import { ReportDefinitionSchemaType } from '../../../../server/model';
 import moment from 'moment';
 
+const ON_DEMAND = 'On demand';
+
 export function ReportDefinitionDetails(props) {
   const [reportDefinitionDetails, setReportDefinitionDetails] = useState({});
   const [
@@ -168,6 +170,47 @@ export function ReportDefinitionDetails(props) {
     setReportDefinitionRawResponse(e);
   };
 
+  const humanReadableScheduleDetails = (trigger) => {
+    let scheduleDetails = '';
+    if (trigger.trigger_type === 'Schedule') {
+      if (trigger.trigger_params.schedule_type === 'Recurring') {
+        // Daily
+        if (
+          trigger.trigger_params.schedule.interval.unit === 'DAYS' &&
+          trigger.trigger_params.schedule.interval.period === 1
+        ) {
+          const date = new Date(
+            trigger.trigger_params.schedule.interval.start_time
+          );
+          scheduleDetails = 'Daily @ ' + date.toTimeString();
+        }
+        // By interval
+        else {
+          const date = new Date(
+            trigger.trigger_params.schedule.interval.start_time
+          );
+          scheduleDetails =
+            'By interval, every ' +
+            trigger.trigger_params.schedule.interval.period +
+            ' ' +
+            trigger.trigger_params.schedule.interval.unit.toLowerCase() +
+            ', starting @ ' +
+            date.toTimeString();
+        }
+      }
+      // Cron
+      else if (trigger.trigger_params.schedule_type === 'Cron based') {
+        scheduleDetails =
+          'Cron based: ' +
+          trigger.trigger_params.schedule.cron.expression +
+          ' (' +
+          trigger.trigger_params.schedule.cron.timezone +
+          ')';
+      }
+    }
+    return scheduleDetails;
+  };
+
   const getReportDefinitionDetailsMetadata = (data) => {
     const reportDefinition: ReportDefinitionSchemaType = data.report_definition;
     const {
@@ -205,7 +248,8 @@ export function ReportDefinitionDetails(props) {
 
     let reportDefinitionDetails = {
       name: reportParams.report_name,
-      description: reportParams.description,
+      description:
+        reportParams.description === '' ? `\u2014` : reportParams.description,
       created: displayCreatedDate,
       lastUpdated: displayUpdatedDate,
       source: reportParams.report_source,
@@ -213,18 +257,16 @@ export function ReportDefinitionDetails(props) {
       // TODO: need better display
       timePeriod: moment.duration(timeDuration).humanize(),
       fileFormat: reportFormat,
-      // TODO: to be added to schema, currently hardcoded in backend
-      reportHeader:
-        reportParams.core_params.header != ''
-          ? reportParams.core_params.header
-          : `\u2014`,
-      reportFooter:
-        reportParams.core_params.footer != ''
-          ? reportParams.core_params.footer
-          : `\u2014`,
+      reportHeader: reportParams.core_params.hasOwnProperty('header')
+        ? reportParams.core_params.header
+        : `\u2014`,
+      reportFooter: reportParams.core_params.hasOwnProperty('footer')
+        ? reportParams.core_params.footer
+        : `\u2014`,
       triggerType: triggerType,
-      scheduleDetails: triggerParams ? triggerParams.schedule_type : `\u2014`,
-      alertDetails: `\u2014`,
+      scheduleDetails: triggerParams
+        ? humanReadableScheduleDetails(data.report_definition.trigger)
+        : `\u2014`,
       channel: deliveryType,
       status: reportDefinition.status,
       kibanaRecipients: deliveryParams.kibana_recipients
@@ -236,11 +278,6 @@ export function ReportDefinitionDetails(props) {
         deliveryType === 'Channel' ? deliveryParams.title : `\u2014`,
       emailBody:
         deliveryType === 'Channel' ? deliveryParams.textDescription : `\u2014`,
-      reportAsAttachment:
-        deliveryType === 'Channel' &&
-        deliveryParams.email_format === 'Attachment'
-          ? 'True'
-          : 'False',
     };
     return reportDefinitionDetails;
   };
@@ -384,12 +421,38 @@ export function ReportDefinitionDetails(props) {
   };
 
   const showActionButton =
-    reportDefinitionDetails.triggerType === 'On demand' ? (
+    reportDefinitionDetails.triggerType === ON_DEMAND ? (
       <EuiButton onClick={() => generateReportFromDetails()}>
         Generate report
       </EuiButton>
     ) : (
       <ScheduledDefinitionStatus />
+    );
+
+  const triggerSection =
+    reportDefinitionDetails.triggerType === ON_DEMAND ? (
+      <ReportDetailsComponent
+        reportDetailsComponentTitle={'Trigger type'}
+        reportDetailsComponentContent={reportDefinitionDetails.triggerType}
+      />
+    ) : (
+      <EuiFlexGroup>
+        <ReportDetailsComponent
+          reportDetailsComponentTitle={'Trigger type'}
+          reportDetailsComponentContent={reportDefinitionDetails.triggerType}
+        />
+        <ReportDetailsComponent
+          reportDetailsComponentTitle={'Schedule details'}
+          reportDetailsComponentContent={
+            reportDefinitionDetails.scheduleDetails
+          }
+        />
+        <ReportDetailsComponent
+          reportDetailsComponentTitle={'Status'}
+          reportDetailsComponentContent={reportDefinitionDetails.status}
+        />
+        <ReportDetailsComponent />
+      </EuiFlexGroup>
     );
 
   return (
@@ -502,46 +565,13 @@ export function ReportDefinitionDetails(props) {
             <h3>Report trigger</h3>
           </EuiTitle>
           <EuiSpacer />
-          <EuiFlexGroup>
-            <ReportDetailsComponent
-              reportDetailsComponentTitle={'Trigger type'}
-              reportDetailsComponentContent={
-                reportDefinitionDetails.triggerType
-              }
-            />
-            <ReportDetailsComponent
-              reportDetailsComponentTitle={'Schedule details'}
-              reportDetailsComponentContent={
-                reportDefinitionDetails.scheduleDetails
-              }
-            />
-            <ReportDetailsComponent
-              reportDetailsComponentTitle={'Alert details'}
-              reportDetailsComponentContent={
-                reportDefinitionDetails.alertDetails
-              }
-            />
-            <ReportDetailsComponent
-              reportDetailsComponentTitle={'Status'}
-              reportDetailsComponentContent={reportDefinitionDetails.status}
-            />
-          </EuiFlexGroup>
+          {triggerSection}
           <EuiSpacer />
           <EuiTitle>
-            <h3>Delivery settings</h3>
+            <h3>Notification settings</h3>
           </EuiTitle>
           <EuiSpacer />
           <EuiFlexGroup>
-            <ReportDetailsComponent
-              reportDetailsComponentTitle={'Channel'}
-              reportDetailsComponentContent={reportDefinitionDetails.channel}
-            />
-            <ReportDetailsComponent
-              reportDetailsComponentTitle={'Kibana recipients'}
-              reportDetailsComponentContent={
-                reportDefinitionDetails.kibanaRecipients
-              }
-            />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email recipients'}
               reportDetailsComponentContent={
@@ -554,20 +584,10 @@ export function ReportDefinitionDetails(props) {
                 reportDefinitionDetails.emailSubject
               }
             />
-          </EuiFlexGroup>
-          <EuiSpacer />
-          <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Email body'}
+              reportDetailsComponentTitle={'Optional message'}
               reportDetailsComponentContent={reportDefinitionDetails.emailBody}
             />
-            <ReportDetailsComponent
-              reportDetailsComponentTitle={'Include report as attachment'}
-              reportDetailsComponentContent={
-                reportDefinitionDetails.reportAsAttachment
-              }
-            />
-            <ReportDetailsComponent />
             <ReportDetailsComponent />
           </EuiFlexGroup>
         </EuiPageContent>
