@@ -40,7 +40,7 @@ export class OpendistroKibanaReportsPlugin
       id: PLUGIN_NAME,
       title: 'Reporting',
       category: DEFAULT_APP_CATEGORIES.kibana,
-      order: 8025,
+      order: 8037,
       async mount(params: AppMountParameters) {
         // Load application bundle
         const { renderApp } = await import('./application');
