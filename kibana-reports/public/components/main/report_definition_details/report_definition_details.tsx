@@ -35,6 +35,8 @@ import { fileFormatsUpper, generateReport } from '../main_utils';
 import { ReportDefinitionSchemaType } from '../../../../server/model';
 import moment from 'moment';
 
+const ON_DEMAND = 'On demand';
+
 export function ReportDefinitionDetails(props) {
   const [reportDefinitionDetails, setReportDefinitionDetails] = useState({});
   const [
@@ -419,7 +421,7 @@ export function ReportDefinitionDetails(props) {
   };
 
   const showActionButton =
-    reportDefinitionDetails.triggerType === 'On demand' ? (
+    reportDefinitionDetails.triggerType === ON_DEMAND ? (
       <EuiButton onClick={() => generateReportFromDetails()}>
         Generate report
       </EuiButton>
@@ -428,7 +430,7 @@ export function ReportDefinitionDetails(props) {
     );
 
   const triggerSection =
-    reportDefinitionDetails.triggerType === 'On demand' ? (
+    reportDefinitionDetails.triggerType === ON_DEMAND ? (
       <ReportDetailsComponent
         reportDetailsComponentTitle={'Trigger type'}
         reportDetailsComponentContent={reportDefinitionDetails.triggerType}
