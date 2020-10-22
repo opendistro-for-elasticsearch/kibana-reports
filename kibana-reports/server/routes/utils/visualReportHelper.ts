@@ -83,8 +83,8 @@ export const createVisualReport = async (
     await page.waitForSelector('#dashboardViewport');
     element = await page.$('#dashboardViewport');
   } else if (reportSource === REPORT_TYPE.visualization) {
-    await page.waitForSelector('.visChart');
-    element = await page.$('.visChart');
+    await page.waitForSelector('.visEditor__visualization');
+    element = await page.$('.visEditor__visualization');
   }
 
   const screenshot = await element.screenshot({ fullPage: false });

@@ -33,7 +33,7 @@ import {
   EuiIcon,
   EuiGlobalToastList,
 } from '@elastic/eui';
-import { fileFormatsUpper } from '../main_utils';
+import { fileFormatsUpper, generateReportById } from '../main_utils';
 import { ReportSchemaType } from '../../../../server/model';
 
 export const ReportDetailsComponent = (props) => {
@@ -71,6 +71,20 @@ export function ReportDetails(props) {
 
   const handleErrorToast = () => {
     addErrorToastHandler();
+  };
+
+  const addSuccessToastHandler = () => {
+    const successToast = {
+      title: 'Success',
+      color: 'success',
+      text: <p>Report successfully downloaded!</p>,
+      id: 'onDemandDownloadSuccessToast',
+    };
+    setToasts(toasts.concat(successToast));
+  };
+
+  const handleSuccessToast = () => {
+    addSuccessToastHandler();
   };
 
   const removeToast = (removedToast) => {
@@ -180,7 +194,9 @@ export function ReportDetails(props) {
     let formatUpper = data['defaultFileFormat'];
     formatUpper = fileFormatsUpper[formatUpper];
     return (
-      <EuiLink>
+      <EuiLink onClick={() => {
+        generateReportById(reportId, props.httpClient, handleSuccessToast, handleErrorToast);
+      }}>
         {formatUpper + ' '}
         <EuiIcon type="importAction" />
       </EuiLink>

@@ -22,90 +22,19 @@ exports[`<ReportDetails /> panel render component 1`] = `
         class="euiPageHeader euiPageHeader--responsive"
       >
         <div
-          class="euiFlexItem"
+          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
         >
-          <div
-            class="euiPageHeaderSection"
-          >
-            <h2
-              class="euiTitle euiTitle--medium"
-            />
-          </div>
-        </div>
-        <div
-          class="euiFlexGroup euiFlexGroup--gutterExtraSmall euiFlexGroup--alignItemsFlexEnd euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
-        >
-          <div
-            class="euiFlexItem"
-          />
-          <div
-            class="euiFlexItem"
-          />
-          <div
-            class="euiFlexItem"
-          />
-          <div
-            class="euiFlexItem"
-          />
-          <div
-            class="euiFlexItem"
-          />
           <div
             class="euiFlexItem"
           >
             <div
-              class="euiText euiText--extraSmall"
+              class="euiPageHeaderSection"
             >
-              <h2>
-                <a
-                  href="#"
-                >
-                  Archive
-                </a>
-              </h2>
-              <div />
+              <h2
+                class="euiTitle euiTitle--medium"
+              />
             </div>
           </div>
-          <div
-            class="euiFlexItem"
-          >
-            <div>
-              <div
-                class="euiText euiText--extraSmall"
-              >
-                <h2>
-                  <a>
-                    Share
-                  </a>
-                </h2>
-                <div />
-              </div>
-            </div>
-          </div>
-          <div
-            class="euiFlexItem euiFlexItem--flexGrowZero"
-          >
-            <button
-              class="euiButton euiButton--primary euiButton--fill"
-              type="button"
-            >
-              <span
-                class="euiButton__content"
-              >
-                <span
-                  class="euiButton__text"
-                >
-                  Download
-                </span>
-              </span>
-            </button>
-          </div>
-          <div
-            class="euiFlexItem"
-          />
-          <div
-            class="euiFlexItem"
-          />
         </div>
       </div>
       <hr
@@ -202,27 +131,16 @@ exports[`<ReportDetails /> panel render component 1`] = `
             <dt
               class="euiDescriptionList__title"
             >
-              Source type
-            </dt>
-            <dd
-              class="euiDescriptionList__description"
-            />
-          </dl>
-        </div>
-        <div
-          class="euiFlexItem"
-        >
-          <dl
-            class="euiDescriptionList euiDescriptionList--row"
-          >
-            <dt
-              class="euiDescriptionList__title"
-            >
               Source
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              <button
+                class="euiLink euiLink--primary"
+                type="button"
+              />
+            </dd>
           </dl>
         </div>
         <div
@@ -234,7 +152,40 @@ exports[`<ReportDetails /> panel render component 1`] = `
             <dt
               class="euiDescriptionList__title"
             >
-              Default file format
+              File format
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              <button
+                class="euiLink euiLink--primary"
+                type="button"
+              >
+                undefined 
+                <svg
+                  aria-hidden="true"
+                  class="euiIcon euiIcon--medium euiIcon-isLoading"
+                  focusable="false"
+                  height="16"
+                  role="img"
+                  viewBox="0 0 16 16"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                />
+              </button>
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              State
             </dt>
             <dd
               class="euiDescriptionList__description"
@@ -346,7 +297,7 @@ exports[`<ReportDetails /> panel render component 1`] = `
             <dt
               class="euiDescriptionList__title"
             >
-              Report type
+              Trigger type
             </dt>
             <dd
               class="euiDescriptionList__description"
@@ -441,7 +392,7 @@ exports[`<ReportDetails /> panel render component 1`] = `
             <dt
               class="euiDescriptionList__title"
             >
-              Kibana recipients
+              Kibana recipient(s)
             </dt>
             <dd
               class="euiDescriptionList__description"
@@ -457,7 +408,7 @@ exports[`<ReportDetails /> panel render component 1`] = `
             <dt
               class="euiDescriptionList__title"
             >
-              Email recipients
+              Email recipient(s)
             </dt>
             <dd
               class="euiDescriptionList__description"
@@ -516,9 +467,7 @@ exports[`<ReportDetails /> panel render component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            >
-              False
-            </dd>
+            />
           </dl>
         </div>
         <div
@@ -551,6 +500,11 @@ exports[`<ReportDetails /> panel render component 1`] = `
         </div>
       </div>
     </div>
+    <div
+      aria-live="polite"
+      class="euiGlobalToastList euiGlobalToastList--right"
+      role="region"
+    />
   </main>
 </div>
 `;

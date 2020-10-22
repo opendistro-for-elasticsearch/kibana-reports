@@ -33,6 +33,7 @@
     "cron-validator": "^1.1.1",
     "dompurify": "^2.1.1",
     "elastic-builder": "^2.7.1",
+    "jest-fetch-mock": "^3.0.3",
     "jquery": "^3.5.0",
     "jsdom": "^16.4.0",
     "json-2-csv": "^3.7.6",
@@ -49,6 +50,7 @@
     "regenerator-runtime": "^0.13.7",
     "set-interval-async": "1.0.33",
     "showdown": "^1.9.1",
+    "sinon": "^9.2.0",
     "uuid": "^8.1.0",
     "ws": "^7.2.3"
   },

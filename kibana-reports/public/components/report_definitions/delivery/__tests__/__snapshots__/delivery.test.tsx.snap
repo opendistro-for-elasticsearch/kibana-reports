@@ -30,6 +30,71 @@ exports[`<ReportDelivery /> panel render component 1`] = `
           class="euiFormLabel euiFormRow__label"
           for="random_html_id"
         >
+          Delivery type
+        </label>
+      </div>
+      <div
+        class="euiFormRow__fieldWrapper"
+      >
+        <div
+          id="random_html_id"
+        >
+          <div
+            class="euiRadio euiRadioGroup__item"
+          >
+            <input
+              checked=""
+              class="euiRadio__input"
+              id="Kibana user"
+              type="radio"
+              value=""
+            />
+            <div
+              class="euiRadio__circle"
+            />
+            <label
+              class="euiRadio__label"
+              for="Kibana user"
+            >
+              Kibana user
+            </label>
+          </div>
+          <div
+            class="euiRadio euiRadioGroup__item"
+          >
+            <input
+              class="euiRadio__input"
+              id="Channel"
+              type="radio"
+              value=""
+            />
+            <div
+              class="euiRadio__circle"
+            />
+            <label
+              class="euiRadio__label"
+              for="Channel"
+            >
+              Email
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="euiSpacer euiSpacer--l"
+    />
+    <div
+      class="euiFormRow"
+      id="random_html_id-row"
+    >
+      <div
+        class="euiFormRow__labelWrapper"
+      >
+        <label
+          class="euiFormLabel euiFormRow__label"
+          for="random_html_id"
+        >
           Kibana recipients
         </label>
       </div>
@@ -37,6 +102,7 @@ exports[`<ReportDelivery /> panel render component 1`] = `
         class="euiFormRow__fieldWrapper"
       >
         <div
+          aria-describedby="random_html_id-help"
           aria-expanded="false"
           aria-haspopup="listbox"
           class="euiComboBox"
@@ -66,6 +132,7 @@ exports[`<ReportDelivery /> panel render component 1`] = `
                   <input
                     aria-controls=""
                     data-test-subj="comboBoxSearchInput"
+                    id="random_html_id"
                     role="textbox"
                     style="box-sizing: content-box; width: 2px;"
                     value=""
@@ -107,30 +174,6 @@ exports[`<ReportDelivery /> panel render component 1`] = `
         </div>
       </div>
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
-    <div
-      class="euiCheckbox"
-    >
-      <input
-        class="euiCheckbox__input"
-        id="emailCheckboxDelivery"
-        type="checkbox"
-      />
-      <div
-        class="euiCheckbox__square"
-      />
-      <label
-        class="euiCheckbox__label"
-        for="emailCheckboxDelivery"
-      >
-        Email
-      </label>
-    </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
   </div>
 </div>
 `;
