@@ -453,33 +453,6 @@ export function ReportDefinitionDetails(props) {
       </EuiFlexGroup>
     );
 
-  const showNotificationSection =
-    reportDefinitionDetails.triggerType === 'On demand' ? null : (
-      <div>
-        <EuiTitle>
-          <h3>Notification settings</h3>
-        </EuiTitle>
-        <EuiSpacer />
-        <EuiFlexGroup>
-          <ReportDetailsComponent
-            reportDetailsComponentTitle={'Email recipients'}
-            reportDetailsComponentContent={
-              reportDefinitionDetails.emailRecipients
-            }
-          />
-          <ReportDetailsComponent
-            reportDetailsComponentTitle={'Email subject'}
-            reportDetailsComponentContent={reportDefinitionDetails.emailSubject}
-          />
-          <ReportDetailsComponent
-            reportDetailsComponentTitle={'Optional message'}
-            reportDetailsComponentContent={reportDefinitionDetails.emailBody}
-          />
-          <ReportDetailsComponent />
-        </EuiFlexGroup>
-      </div>
-    );
-
   return (
     <EuiPage>
       <EuiPageBody>
@@ -592,7 +565,29 @@ export function ReportDefinitionDetails(props) {
           <EuiSpacer />
           {triggerSection}
           <EuiSpacer />
-          {showNotificationSection}
+          <EuiTitle>
+            <h3>Notification settings</h3>
+          </EuiTitle>
+          <EuiSpacer />
+          <EuiFlexGroup>
+            <ReportDetailsComponent
+              reportDetailsComponentTitle={'Email recipients'}
+              reportDetailsComponentContent={
+                reportDefinitionDetails.emailRecipients
+              }
+            />
+            <ReportDetailsComponent
+              reportDetailsComponentTitle={'Email subject'}
+              reportDetailsComponentContent={
+                reportDefinitionDetails.emailSubject
+              }
+            />
+            <ReportDetailsComponent
+              reportDetailsComponentTitle={'Optional message'}
+              reportDetailsComponentContent={reportDefinitionDetails.emailBody}
+            />
+            <ReportDetailsComponent />
+          </EuiFlexGroup>
         </EuiPageContent>
         <EuiGlobalToastList
           toasts={toasts}
