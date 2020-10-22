@@ -13,98 +13,19 @@
  * permissions and limitations under the License.
  */
 
+import { ReportSchemaType } from 'server/model';
 import {
-  FORMAT,
-  REPORT_TYPE,
-  REPORT_STATE,
-  LOCAL_HOST,
+  ILegacyScopedClusterClient,
+  ILegacyClusterClient,
+} from '../../../../../src/core/server';
+import {
   DELIVERY_TYPE,
   EMAIL_FORMAT,
-} from './constants';
-import { callCluster, updateToES, saveToES } from './helpers';
-import {
-  ILegacyClusterClient,
-  ILegacyScopedClusterClient,
-  Logger,
-} from '../../../../../src/core/server';
-import { createSavedSearchReport } from './savedSearchReportHelper';
-import { ReportSchemaType } from '../../model';
-import { CreateReportResultType } from './types';
-import { createVisualReport } from './visualReportHelper';
-
-export const createReport = async (
-  isScheduledTask: boolean,
-  report: ReportSchemaType,
-  esClient: ILegacyClusterClient | ILegacyScopedClusterClient,
-  logger: Logger,
-  notificationClient?: ILegacyClusterClient | ILegacyScopedClusterClient,
-  savedReportId?: string
-): Promise<CreateReportResultType> => {
-  let createReportResult: CreateReportResultType;
-  let reportId;
-  // create new report instance and set report state to "pending"
-  if (savedReportId) {
-    reportId = savedReportId;
-  } else {
-    const esResp = await saveToES(isScheduledTask, report, esClient);
-    reportId = esResp._id;
-  }
-
-  const reportDefinition = report.report_definition;
-  const reportParams = reportDefinition.report_params;
-  const reportSource = reportParams.report_source;
-
-  // compose url
-  const queryUrl = `${LOCAL_HOST}${report.query_url}`;
-  try {
-    // generate report
-    if (reportSource === REPORT_TYPE.savedSearch) {
-      createReportResult = await createSavedSearchReport(
-        report,
-        esClient,
-        isScheduledTask
-      );
-    } else {
-      // report source can only be one of [saved search, visualization, dashboard]
-      createReportResult = await createVisualReport(
-        reportParams,
-        queryUrl,
-        logger
-      );
-    }
-
-    if (!savedReportId) {
-      await updateToES(
-        isScheduledTask,
-        reportId,
-        esClient,
-        REPORT_STATE.created,
-        createReportResult
-      );
-    }
-
-    // deliver report
-    if (notificationClient) {
-      createReportResult = await deliverReport(
-        report,
-        createReportResult,
-        notificationClient,
-        esClient,
-        reportId,
-        isScheduledTask
-      );
-    }
-  } catch (error) {
-    // update report instance with "error" state
-    //TODO: save error detail and display on UI
-    if (!savedReportId) {
-      await updateToES(isScheduledTask, reportId, esClient, REPORT_STATE.error);
-    }
-    throw error;
-  }
-
-  return createReportResult;
-};
+  FORMAT,
+  REPORT_STATE,
+} from '../utils/constants';
+import { callCluster, updateReportState } from '../utils/helpers';
+import { CreateReportResultType } from '../utils/types';
 
 export const deliverReport = async (
   report: ReportSchemaType,
@@ -167,7 +88,7 @@ export const deliverReport = async (
     }
   }
   // update report document with state "shared" and time_created
-  await updateToES(
+  await updateReportState(
     isScheduledTask,
     reportId,
     esClient,

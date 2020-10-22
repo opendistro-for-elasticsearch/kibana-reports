@@ -29,7 +29,7 @@ import {
   OpendistroKibanaReportsPluginStart,
 } from './types';
 import registerRoutes from './routes';
-import { pollAndExecuteJob } from './utils/executor';
+import { pollAndExecuteJob } from './executor/executor';
 import { POLL_INTERVAL } from './utils/constants';
 
 export interface ReportsPluginRequestContext {
