@@ -82,6 +82,7 @@ export function ReportsTable(props) {
   const [sortField, setSortField] = useState('timeCreated');
   const [sortDirection, setSortDirection] = useState(SortDirection.desc);
   const [showLoading, setShowLoading] = useState(false);
+  const [message, setMessage] = useState('');
 
   const handleLoading = (e) => {
     setShowLoading(e);
@@ -165,12 +166,6 @@ export function ReportsTable(props) {
       ),
     },
     {
-      field: 'type',
-      name: 'Type',
-      sortable: true,
-      truncateText: false,
-    },
-    {
       // TODO: link to dashboard/visualization snapshot, use "queryUrl" field. Display dashboard name?
       field: 'reportSource',
       name: 'Source',
@@ -179,6 +174,12 @@ export function ReportsTable(props) {
           {source}
         </EuiLink>
       ),
+    },
+    {
+      field: 'type',
+      name: 'Type',
+      sortable: true,
+      truncateText: false,
     },
     {
       field: 'timeCreated',
@@ -196,7 +197,7 @@ export function ReportsTable(props) {
     },
     {
       field: 'id',
-      name: 'Download',
+      name: 'Generate',
       render: (id, item) => {
         return (
           <EuiLink onClick={() => onDemandDownload(id)}>
@@ -244,6 +245,11 @@ export function ReportsTable(props) {
     ],
   };
 
+  const displayMessage =
+    reportsTableItems.length === 0
+      ? emptyMessageReports
+      : '0 reports match the search criteria. Search again';
+
   const showLoadingModal = showLoading ? <GenerateReportLoadingModal /> : null;
 
   return (
@@ -252,7 +258,7 @@ export function ReportsTable(props) {
         items={reportsTableItems}
         itemId="id"
         loading={false}
-        message={emptyMessageReports}
+        message={displayMessage}
         columns={reportsTableColumns}
         search={reportsListSearch}
         pagination={pagination}
