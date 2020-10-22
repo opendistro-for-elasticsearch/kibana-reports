@@ -118,30 +118,15 @@ export function Main(props) {
         href: '#',
       },
     ]);
-    const { httpClient } = props;
-    // get all reports
-    httpClient
-      .get('../api/reporting/reports')
-      .then((response) => {
-        setReportsTableContent(addReportsTableContent(response.data));
-      })
-      .catch((error) => {
-        console.log('error when fetching all reports: ', error);
-        handleReportsTableContentErrorToast();
-      });
+    refreshReportsTable();
+    refreshReportsDefinitionsTable();
 
-    // get all report definitions
-    httpClient
-      .get('../api/reporting/reportDefinitions')
-      .then((response) => {
-        setReportDefinitionsTableContent(
-          addReportDefinitionsTableContent(response.data)
-        );
-      })
-      .catch((error) => {
-        console.log('error when fetching all report definitions: ', error);
-        handleReportDefinitionsTableErrorToast();
-      });
+    // refresh might not fetch the latest changes when coming from CreateReport page
+    // workaround to wait 1 second and refresh again
+    setTimeout(() => {
+      refreshReportsTable();
+      refreshReportsDefinitionsTable();
+    }, 1000);
   }, []);
 
   const refreshReportsTable = async () => {
@@ -150,7 +135,6 @@ export function Main(props) {
       .get('../api/reporting/reports')
       .then((response) => {
         setReportsTableContent(addReportsTableContent(response.data));
-        addReportsTableContent(response.data);
       })
       .catch((error) => {
         console.log('error when fetching all reports: ', error);
