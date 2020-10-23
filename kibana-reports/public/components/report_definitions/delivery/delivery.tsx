@@ -22,9 +22,8 @@ import {
   EuiPageContentBody,
   EuiHorizontalRule,
   EuiSpacer,
-  EuiRadioGroup,
+  EuiCheckbox,
 } from '@elastic/eui';
-import { KibanaUserDelivery } from './kibana_user';
 import { DELIVERY_TYPE_OPTIONS } from './delivery_constants';
 import 'react-mde/lib/styles/css/react-mde-all.css';
 import { reportDefinitionParams } from '../create/create_report_definition';
@@ -44,22 +43,31 @@ export function ReportDelivery(props: ReportDeliveryProps) {
     editDefinitionId,
     reportDefinitionRequest,
     httpClientProps,
-    showEmailRecipientsError,
   } = props;
 
-  const [deliveryType, setDeliveryType] = useState(DELIVERY_TYPE_OPTIONS[0].id);
+  const [emailCheckbox, setEmailCheckbox] = useState(false);
 
-  const handleDeliveryType = (e: string) => {
-    setDeliveryType(e);
-    reportDefinitionRequest.delivery.delivery_type = e;
+  const handleEmailCheckbox = (e: {
+    target: { checked: React.SetStateAction<boolean> };
+  }) => {
+    setEmailCheckbox(e.target.checked);
+    if (e.target.checked) {
+      // if checked, set delivery type to email
+      reportDefinitionRequest.delivery.delivery_type =
+        DELIVERY_TYPE_OPTIONS[1].id;
+    } else {
+      // uncheck email checkbox means to use default setting, which is kibana user
+      defaultCreateDeliveryParams();
+    }
   };
 
-  const deliverySetting = (props: ReportDeliveryProps) => {
-    return deliveryType === DELIVERY_TYPE_OPTIONS[0].id ? (
-      <KibanaUserDelivery {...props} />
-    ) : (
-      <EmailDelivery {...props} />
-    );
+  const emailDelivery = emailCheckbox ? <EmailDelivery {...props} /> : null;
+
+  const defaultCreateDeliveryParams = () => {
+    reportDefinitionRequest.delivery = {
+      delivery_type: DELIVERY_TYPE_OPTIONS[0].id,
+      delivery_params: { kibana_recipients: [] },
+    };
   };
 
   useEffect(() => {
@@ -67,10 +75,14 @@ export function ReportDelivery(props: ReportDeliveryProps) {
       httpClientProps
         .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
         .then(async (response) => {
-          handleDeliveryType(response.report_definition.delivery.delivery_type);
+          const isEmailSelected =
+            response.report_definition.delivery.delivery_type ===
+            DELIVERY_TYPE_OPTIONS[1].id;
+          handleEmailCheckbox({ target: { checked: isEmailSelected } });
         });
     } else {
-      reportDefinitionRequest.delivery.delivery_type = deliveryType;
+      // By default it's set to deliver to kibana user
+      defaultCreateDeliveryParams();
     }
   }, []);
 
@@ -78,20 +90,19 @@ export function ReportDelivery(props: ReportDeliveryProps) {
     <EuiPageContent panelPaddingSize={'l'}>
       <EuiPageHeader>
         <EuiTitle>
-          <h2>Delivery settings</h2>
+          <h2>Notification settings</h2>
         </EuiTitle>
       </EuiPageHeader>
       <EuiHorizontalRule />
       <EuiPageContentBody>
-        <EuiFormRow label="Delivery type">
-          <EuiRadioGroup
-            options={DELIVERY_TYPE_OPTIONS}
-            idSelected={deliveryType}
-            onChange={handleDeliveryType}
-          />
-        </EuiFormRow>
+        <EuiCheckbox
+          id="emailCheckboxDelivery"
+          label="Add email recipients"
+          checked={emailCheckbox}
+          onChange={handleEmailCheckbox}
+        />
         <EuiSpacer />
-        {deliverySetting(props)}
+        {emailDelivery}
       </EuiPageContentBody>
     </EuiPageContent>
   );

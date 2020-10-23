@@ -30,6 +30,7 @@
     "@types/dompurify": "^2.0.4",
     "@types/jsdom": "^16.2.4",
     "babel-polyfill": "^6.26.0",
+    "cheerio": "^1.0.0-rc.3",
     "cron-validator": "^1.1.1",
     "dompurify": "^2.1.1",
     "elastic-builder": "^2.7.1",

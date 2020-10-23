@@ -29,7 +29,6 @@ import {
   REPORT_STATE,
   REPORT_DEFINITION_STATUS,
   DELIVERY_TYPE,
-  EMAIL_FORMAT,
   DEFAULT_MAX_SIZE,
 } from '../routes/utils/constants';
 
@@ -143,13 +142,12 @@ export const channelSchema = schema.object({
     }),
     { minSize: 1 }
   ),
+  // TODO: consider add this field next to url-related fields.
+  // Need this to build the links in email
+  origin: schema.uri(), //e.g. https://xxxxx.com
   title: schema.string(),
   textDescription: schema.string(),
   htmlDescription: schema.maybe(schema.string()),
-  email_format: schema.oneOf([
-    schema.literal(EMAIL_FORMAT.attachment),
-    schema.literal(EMAIL_FORMAT.embeddedHtml),
-  ]),
   channelIds: schema.maybe(schema.arrayOf(schema.string())),
 });
 

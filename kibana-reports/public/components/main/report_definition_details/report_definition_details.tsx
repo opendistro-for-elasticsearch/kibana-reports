@@ -34,6 +34,7 @@ import { ReportDetailsComponent } from '../report_details/report_details';
 import { fileFormatsUpper, generateReport } from '../main_utils';
 import { ReportDefinitionSchemaType } from '../../../../server/model';
 import moment from 'moment';
+import { converter } from '../../report_definitions/utils';
 
 const ON_DEMAND = 'On demand';
 
@@ -258,10 +259,10 @@ export function ReportDefinitionDetails(props) {
       timePeriod: moment.duration(timeDuration).humanize(),
       fileFormat: reportFormat,
       reportHeader: reportParams.core_params.hasOwnProperty('header')
-        ? reportParams.core_params.header
+        ? converter.makeMarkdown(reportParams.core_params.header)
         : `\u2014`,
       reportFooter: reportParams.core_params.hasOwnProperty('footer')
-        ? reportParams.core_params.footer
+        ? converter.makeMarkdown(reportParams.core_params.footer)
         : `\u2014`,
       triggerType: triggerType,
       scheduleDetails: triggerParams

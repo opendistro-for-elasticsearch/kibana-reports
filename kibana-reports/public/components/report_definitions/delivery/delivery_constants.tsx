@@ -13,27 +13,7 @@
  * permissions and limitations under the License.
  */
 
-export const EMAIL_RECIPIENT_OPTIONS = [
-  // TODO: remove once we support actual kibana users
-  { label: 'admin (self)' },
-  { label: 'davidcui' },
-  { label: 'szhongna' },
-  { label: 'jadhanir' },
-  { label: 'kvngar' },
-];
-
-export const EMAIL_FORMAT_OPTIONS = [
-  {
-    id: 'Attachment',
-    label: 'Email with report as attached file',
-  },
-  // TODO: add it back when we have fully support for embedded html
-  {
-    id: 'Embedded HTML',
-    label: 'Embedded HTML report',
-    disabled: true,
-  },
-];
+export const EMAIL_RECIPIENT_OPTIONS = [];
 
 export const DELIVERY_TYPE_OPTIONS = [
   {

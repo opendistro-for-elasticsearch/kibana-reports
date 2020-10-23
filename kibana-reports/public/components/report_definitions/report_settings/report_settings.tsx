@@ -230,16 +230,12 @@ export function ReportSettings(props: ReportSettingProps) {
 
     const handleHeader = (e) => {
       setHeader(e);
-      reportDefinitionRequest.report_params.core_params.header = converter.makeHtml(
-        e
-      );
+      reportDefinitionRequest.report_params.core_params.header = e;
     };
 
     const handleFooter = (e) => {
       setFooter(e);
-      reportDefinitionRequest.report_params.core_params.footer = converter.makeHtml(
-        e
-      );
+      reportDefinitionRequest.report_params.core_params.footer = e;
     };
 
     const handleCheckboxHeaderFooter = (optionId) => {
@@ -311,7 +307,7 @@ export function ReportSettings(props: ReportSettingProps) {
             if (footer) {
               checkboxIdSelectHeaderFooter.footer = true;
               if (!unmounted) {
-                setFooter(converter.makeMarkdown(header));
+                setFooter(converter.makeMarkdown(footer));
               }
             }
           })
@@ -322,12 +318,15 @@ export function ReportSettings(props: ReportSettingProps) {
             );
           });
       } else {
-        if (reportDefinitionRequest.report_params.core_params.header != '') {
-          checkboxIdSelectHeaderFooter.header = true;
+        // keeps header/footer from re-rendering empty when other fields in Report Settings are changed
+        checkboxIdSelectHeaderFooter.header =
+          'header' in reportDefinitionRequest.report_params.core_params;
+        checkboxIdSelectHeaderFooter.footer =
+          'footer' in reportDefinitionRequest.report_params.core_params;
+        if (checkboxIdSelectHeaderFooter.header) {
           setHeader(reportDefinitionRequest.report_params.core_params.header);
         }
-        if (reportDefinitionRequest.report_params.core_params.footer != '') {
-          checkboxIdSelectHeaderFooter.footer = true;
+        if (checkboxIdSelectHeaderFooter.footer) {
           setFooter(reportDefinitionRequest.report_params.core_params.footer);
         }
       }
