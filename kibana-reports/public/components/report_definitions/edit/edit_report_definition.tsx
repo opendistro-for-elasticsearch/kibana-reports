@@ -33,6 +33,8 @@ import { converter } from '../utils';
 
 export function EditReportDefinition(props) {
   const [toasts, setToasts] = useState([]);
+  const [comingFromError, setComingFromError] = useState(false);
+  const [preErrorData, setPreErrorData] = useState({});
 
   const addErrorUpdatingReportDefinitionToast = () => {
     const errorToast = {
@@ -90,11 +92,16 @@ export function EditReportDefinition(props) {
     last_updated: 0,
     status: '',
   };
+  reportDefinition = editReportDefinitionRequest; // initialize reportDefinition object
 
   let timeRange = {
     timeFrom: new Date(),
     timeTo: new Date(),
   };
+
+  if (comingFromError) {
+    editReportDefinitionRequest = preErrorData;
+  }
 
   const callUpdateAPI = async (metadata) => {
     const { httpClient } = props;
@@ -110,6 +117,8 @@ export function EditReportDefinition(props) {
       .catch((error) => {
         console.error('error in updating report definition:', error);
         handleErrorUpdatingReportDefinitionToast();
+        setPreErrorData(metadata);
+        setComingFromError(true);
       });
   };
 
