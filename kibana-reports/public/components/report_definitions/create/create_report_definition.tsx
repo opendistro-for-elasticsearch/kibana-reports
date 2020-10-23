@@ -244,6 +244,7 @@ export function CreateReport(props) {
     timeRange: timeRangeParams
   ) => {
     const { httpClient } = props;
+
     //TODO: need better handle
     if (
       metadata.trigger.trigger_type === 'On demand' &&
