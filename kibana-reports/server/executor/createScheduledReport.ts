@@ -78,7 +78,8 @@ export const createScheduledReport = async (
       notificationClient,
       esClient,
       reportId,
-      isScheduledTask
+      isScheduledTask,
+      logger
     );
   } catch (error) {
     // update report instance with "error" state

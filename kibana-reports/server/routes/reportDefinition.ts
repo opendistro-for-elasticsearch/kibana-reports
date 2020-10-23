@@ -100,14 +100,14 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
-      const reportDefinition: ReportDefinitionSchemaType = request.body;
+      let reportDefinition = request.body;
       const savedReportDefinitionId = request.params.reportDefinitionId;
       const esClient = context.core.elasticsearch.legacy.client;
       //@ts-ignore
       const logger = context.reporting_plugin.logger;
       // input validation
       try {
-        reportDefinitionSchema.validate(reportDefinition);
+        reportDefinition = reportDefinitionSchema.validate(reportDefinition);
       } catch (error) {
         logger.error(
           `Failed input validation for update report definition ${error}`

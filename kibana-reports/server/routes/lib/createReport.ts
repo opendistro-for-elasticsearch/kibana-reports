@@ -115,7 +115,8 @@ export const createReport = async (
         notificationClient,
         esClient,
         reportId,
-        isScheduledTask
+        isScheduledTask,
+        logger
       );
     }
   } catch (error) {
