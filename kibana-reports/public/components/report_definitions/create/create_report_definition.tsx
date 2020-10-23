@@ -293,7 +293,6 @@ export function CreateReport(props) {
             };
             generateReport(onDemandDownloadMetadata, httpClient);
           }
-          // await handleSuccessToast();
           window.location.assign(`opendistro_kibana_reports#/create=success`);
         })
         .catch((error) => {
