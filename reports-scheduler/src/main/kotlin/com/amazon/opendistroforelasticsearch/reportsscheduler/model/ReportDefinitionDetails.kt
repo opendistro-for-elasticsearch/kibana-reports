@@ -45,9 +45,9 @@ internal data class ReportDefinitionDetails(
         private val log by logger(ReportDefinitionDetails::class.java)
 
         /**
-         * Parse the data from parser and create DeliveryInfo object
+         * Parse the data from parser and create ReportDefinitionDetails object
          * @param parser data referenced at parser
-         * @return created DeliveryInfo object
+         * @return created ReportDefinitionDetails object
          */
         fun parse(parser: XContentParser, useId: String? = null): ReportDefinitionDetails {
             var id: String? = useId

@@ -17,6 +17,7 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.index
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstanceDoc
 
 /**
  * Empty implementation of the ReportInstancesIndex which responds with IllegalStateException all operations.
@@ -26,48 +27,64 @@ internal object EmptyReportInstancesIndex : IReportInstancesIndex {
      * {@inheritDoc}
      */
     override fun createIndex() {
-        throw IllegalStateException("ReportInstancesIndex not initialized")
+        notInitializedError()
     }
 
     /**
      * {@inheritDoc}
      */
     override fun isIndexExists(): Boolean {
-        throw IllegalStateException("ReportInstancesIndex not initialized")
+        notInitializedError()
     }
 
     /**
      * {@inheritDoc}
      */
     override fun createReportInstance(reportInstance: ReportInstance): String? {
-        throw IllegalStateException("ReportInstancesIndex not initialized")
+        notInitializedError()
     }
 
     /**
      * {@inheritDoc}
      */
     override fun getReportInstance(id: String): ReportInstance? {
-        throw IllegalStateException("ReportInstancesIndex not initialized")
+        notInitializedError()
     }
 
     /**
      * {@inheritDoc}
      */
     override fun getAllReportInstances(ownerId: String, from: Int): List<ReportInstance> {
-        throw IllegalStateException("ReportInstancesIndex not initialized")
+        notInitializedError()
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun updateReportInstance(id: String, reportInstance: ReportInstance): Boolean {
-        throw IllegalStateException("ReportInstancesIndex not initialized")
+    override fun updateReportInstance(reportInstance: ReportInstance): Boolean {
+        notInitializedError()
+    }
+
+    override fun updateReportInstanceDoc(reportInstanceDoc: ReportInstanceDoc): Boolean {
+        notInitializedError()
     }
 
     /**
      * {@inheritDoc}
      */
     override fun deleteReportInstance(id: String): Boolean {
-        throw IllegalStateException("ReportInstancesIndex not initialized")
+        notInitializedError()
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    override fun getPendingReportInstances(): MutableList<ReportInstanceDoc> {
+        notInitializedError()
+    }
+
+    /**
+     * throws IllegalStateException with not initialized message
+     */
+    private fun notInitializedError(): Nothing = throw IllegalStateException("ReportInstancesIndex not initialized")
 }

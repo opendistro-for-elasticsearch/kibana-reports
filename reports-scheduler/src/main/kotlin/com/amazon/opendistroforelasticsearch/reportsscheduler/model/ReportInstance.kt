@@ -56,9 +56,9 @@ internal data class ReportInstance(
         private val log by logger(ReportInstance::class.java)
 
         /**
-         * Parse the data from parser and create DeliveryInfo object
+         * Parse the data from parser and create ReportInstance object
          * @param parser data referenced at parser
-         * @return created DeliveryInfo object
+         * @return created ReportInstance object
          */
         @Suppress("ComplexMethod")
         fun parse(parser: XContentParser, useId: String? = null): ReportInstance {
@@ -89,7 +89,7 @@ internal data class ReportInstance(
                     REPORT_DEFINITION_DETAILS_FIELD -> reportDefinitionDetails = ReportDefinitionDetails.parse(parser)
                     else -> {
                         parser.skipChildren()
-                        log.info("$LOG_PREFIX:ReportDefinitionDetails Skipping Unknown field $fieldName")
+                        log.info("$LOG_PREFIX:ReportInstance Skipping Unknown field $fieldName")
                     }
                 }
             }

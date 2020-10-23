@@ -25,6 +25,7 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.OnDema
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportDefinitionListRestHandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportDefinitionRestHandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportInstanceListRestHandler
+import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportInstancePollRestHandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportInstanceRestHandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportsJobRestHandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportsScheduleRestHandler
@@ -149,6 +150,7 @@ class ReportsSchedulerPlugin : Plugin(), ActionPlugin, JobSchedulerExtension {
             ReportInstanceListRestHandler(),
             OnDemandReportRestHandler(),
             ReportsScheduleRestHandler(),
+            ReportInstancePollRestHandler(),
             ReportsJobRestHandler(clusterService)
         )
     }
