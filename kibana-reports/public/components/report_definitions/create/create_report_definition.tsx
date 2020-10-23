@@ -29,6 +29,7 @@ import { ReportDelivery } from '../delivery';
 import { ReportTrigger } from '../report_trigger';
 import { generateReport } from '../../main/main_utils';
 import { isValidCron } from 'cron-validator';
+import { converter } from '../utils';
 import moment from 'moment';
 
 interface reportParamsType {
@@ -152,20 +153,6 @@ export function CreateReport(props) {
     addErrorToastHandler();
   };
 
-  const addSuccessToastHandler = () => {
-    const successToast = {
-      title: 'Success',
-      color: 'success',
-      text: <p>Report definition successfully created!</p>,
-      id: 'successToast',
-    };
-    setToasts(toasts.concat(successToast));
-  };
-
-  const handleSuccessToast = () => {
-    addSuccessToastHandler();
-  };
-
   const addInvalidTimeRangeToastHandler = () => {
     const errorToast = {
       title: 'Invalid time range selected',
@@ -275,6 +262,17 @@ export function CreateReport(props) {
       setPreErrorData(metadata);
       setComingFromError(true);
     } else {
+      // convert header and footer to html
+      if ('header' in metadata.report_params.core_params) {
+        metadata.report_params.core_params.header = converter.makeHtml(
+          metadata.report_params.core_params.header
+        );
+      }
+      if ('footer' in metadata.report_params.core_params) {
+        metadata.report_params.core_params.footer = converter.makeHtml(
+          metadata.report_params.core_params.footer
+        );
+      }
       httpClient
         .post('../api/reporting/reportDefinition', {
           body: JSON.stringify(metadata),
@@ -295,8 +293,8 @@ export function CreateReport(props) {
             };
             generateReport(onDemandDownloadMetadata, httpClient);
           }
-          await handleSuccessToast();
-          window.location.assign(`opendistro_kibana_reports#/`);
+          // await handleSuccessToast();
+          window.location.assign(`opendistro_kibana_reports#/create=success`);
         })
         .catch((error) => {
           console.log('error in creating report definition: ' + error);
@@ -306,6 +304,7 @@ export function CreateReport(props) {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     props.setBreadcrumbs([
       {
         text: 'Reporting',
@@ -351,7 +350,7 @@ export function CreateReport(props) {
           <EuiFlexItem grow={false}>
             <EuiButtonEmpty
               onClick={() => {
-                window.location.assign(`opendistro_kibana_reports#/${true}`);
+                window.location.assign(`opendistro_kibana_reports#/`);
               }}
             >
               Cancel

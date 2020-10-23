@@ -35,6 +35,7 @@ import {
 } from '@elastic/eui';
 import { fileFormatsUpper, generateReportById } from '../main_utils';
 import { ReportSchemaType } from '../../../../server/model';
+import { converter } from '../../report_definitions/utils';
 
 export const ReportDetailsComponent = (props) => {
   const { reportDetailsComponentTitle, reportDetailsComponentContent } = props;
@@ -136,11 +137,11 @@ export function ReportDetails(props) {
       state: state,
       reportHeader:
         reportParams.core_params.header != ''
-          ? reportParams.core_params.header
+          ? converter.makeMarkdown(reportParams.core_params.header)
           : `\u2014`,
       reportFooter:
         reportParams.core_params.footer != ''
-          ? reportParams.core_params.footer
+          ? converter.makeMarkdown(reportParams.core_params.footer)
           : `\u2014`,
       triggerType: triggerType,
       scheduleType: triggerParams ? triggerParams.schedule_type : `\u2014`,
@@ -194,9 +195,16 @@ export function ReportDetails(props) {
     let formatUpper = data['defaultFileFormat'];
     formatUpper = fileFormatsUpper[formatUpper];
     return (
-      <EuiLink onClick={() => {
-        generateReportById(reportId, props.httpClient, handleSuccessToast, handleErrorToast);
-      }}>
+      <EuiLink
+        onClick={() => {
+          generateReportById(
+            reportId,
+            props.httpClient,
+            handleSuccessToast,
+            handleErrorToast
+          );
+        }}
+      >
         {formatUpper + ' '}
         <EuiIcon type="importAction" />
       </EuiLink>

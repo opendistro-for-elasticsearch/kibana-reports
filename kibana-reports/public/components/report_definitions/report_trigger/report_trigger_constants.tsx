@@ -31,7 +31,7 @@ export const SCHEDULE_TYPE_OPTIONS = [
   },
   {
     id: 'Cron based',
-    label: 'Cron based',
+    label: 'Cron-based',
   },
 ];
 
