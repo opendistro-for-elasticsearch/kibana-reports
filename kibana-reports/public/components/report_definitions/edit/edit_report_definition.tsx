@@ -97,6 +97,7 @@ export function EditReportDefinition(props) {
 
   const callUpdateAPI = async (metadata) => {
     const { httpClient } = props;
+
     httpClient
       .put(`../api/reporting/reportDefinitions/${reportDefinitionId}`, {
         body: JSON.stringify(metadata),
