@@ -46,6 +46,7 @@ import {
   SCHEDULE_TYPE_OPTIONS,
   TIMEZONE_OPTIONS,
 } from './report_trigger_constants';
+import { TimezoneSelect } from './timezone';
 
 type ReportTriggerProps = {
   edit: boolean;
@@ -74,7 +75,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
     SCHEDULE_TYPE_OPTIONS[0].label
   );
   //TODO: should read local timezone and display
-  const [timezone, setTimezone] = useState(TIMEZONE_OPTIONS[0].value);
   const [scheduleRecurringFrequency, setScheduleRecurringFrequency] = useState(
     'daily'
   );
@@ -104,17 +104,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
       delete reportDefinitionRequest.trigger.trigger_params.schedule.interval;
     } else if (e === SCHEDULE_TYPE_OPTIONS[0].label) {
       delete reportDefinitionRequest.trigger.trigger_params.schedule.cron;
-    }
-  };
-
-  const handleTimezone = (e) => {
-    setTimezone(e.target.value);
-    if (
-      reportDefinitionRequest.trigger.trigger_params.schedule_type ===
-      'Cron based'
-    ) {
-      reportDefinitionRequest.trigger.trigger_params.schedule.cron.timezone =
-        e.target.value;
     }
   };
 
@@ -152,21 +141,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
     setMonthlyDaySelect(e.target.value);
   };
 
-  const TimezoneSelect = () => {
-    return (
-      <div>
-        <EuiFormRow label="Timezone">
-          <EuiSelect
-            id="setTimezone"
-            options={TIMEZONE_OPTIONS}
-            value={timezone}
-            onChange={handleTimezone}
-          />
-        </EuiFormRow>
-      </div>
-    );
-  };
-
   const RequestTime = () => {
     useEffect(() => {
       let recurringDaily = {
@@ -196,7 +170,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
           />
         </EuiFormRow>
         <EuiSpacer />
-        <TimezoneSelect />
       </div>
     );
   };
@@ -208,26 +181,8 @@ export function ReportTrigger(props: ReportTriggerProps) {
       setRecurringDailyTime(e);
       reportDefinitionRequest.trigger.trigger_params.schedule.interval.start_time = e.valueOf();
     };
-    useEffect(() => {
-      let unmounted = false;
-      if (edit) {
-        httpClientProps
-          .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
-          .then(async (response) => {
-            if (
-              response.report_definition.trigger.trigger_params
-                .schedule_type === SCHEDULE_TYPE_OPTIONS[0].id
-            ) {
-              const date = moment(
-                response.report_definition.trigger.trigger_params.schedule
-                  .interval.start_time
-              );
-              if (!unmounted) {
-                setRecurringDailyTime(date);
-              }
-            }
-          });
-      }
+
+    const setDailyParams = () => {
       let recurringDaily = {
         interval: {
           period: 1,
@@ -240,6 +195,50 @@ export function ReportTrigger(props: ReportTriggerProps) {
         enabled_time: recurringDailyTime.valueOf(),
         schedule: recurringDaily,
       };
+    };
+
+    const isDailySchedule = (response) => {
+      return (
+        response.report_definition.trigger.trigger_params.schedule_type ===
+          SCHEDULE_TYPE_OPTIONS[0].id &&
+        response.report_definition.trigger.trigger_params.schedule.interval
+          .period === 1 &&
+        response.report_definition.trigger.trigger_params.schedule.interval ===
+          'DAYS'
+      );
+    };
+
+    useEffect(() => {
+      let unmounted = false;
+      if (edit) {
+        httpClientProps
+          .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
+          .then(async (response) => {
+            // if switching from on demand to schedule
+            if (
+              response.report_definition.trigger.trigger_type === 'On demand'
+            ) {
+              setDailyParams();
+            } else if (isDailySchedule(response)) {
+              const date = moment(
+                response.report_definition.trigger.trigger_params.schedule
+                  .interval.start_time
+              );
+              if (!unmounted) {
+                setRecurringDailyTime(date);
+              }
+            }
+            // if switching from on-demand to schedule
+            else if (
+              reportDefinitionRequest.trigger.trigger_params.schedule_type ===
+              SCHEDULE_TYPE_OPTIONS[0].id
+            ) {
+              setDailyParams();
+            }
+          });
+      } else {
+        setDailyParams();
+      }
       return () => {
         unmounted = true;
       };
@@ -258,7 +257,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
           />
         </EuiFormRow>
         <EuiSpacer />
-        <TimezoneSelect />
       </div>
     );
   };
@@ -453,13 +451,15 @@ export function ReportTrigger(props: ReportTriggerProps) {
       target: { value: React.SetStateAction<string> };
     }) => {
       setCronExpression(e.target.value);
+      reportDefinitionRequest.trigger.trigger_params.schedule.cron.expression =
+        e.target.value;
     };
 
-    useEffect(() => {
+    const setCronParams = () => {
       let cron = {
         cron: {
-          expression: cronExpression,
-          timezone: timezone,
+          expression: '',
+          timezone: TIMEZONE_OPTIONS[0].value,
         },
       };
       reportDefinitionRequest.trigger.trigger_params = {
@@ -467,14 +467,19 @@ export function ReportTrigger(props: ReportTriggerProps) {
         enabled_time: Date.now().valueOf(),
         schedule: cron,
       };
-    }, [cronExpression, timezone]);
+    };
 
     useEffect(() => {
       if (edit) {
         httpClientProps
           .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
           .then(async (response) => {
+            // if switching from on demand to schedule
             if (
+              response.report_definition.trigger.trigger_type === 'On demand'
+            ) {
+              setCronParams();
+            } else if (
               response.report_definition.trigger.trigger_params
                 .schedule_type === SCHEDULE_TYPE_OPTIONS[1].id
             ) {
@@ -482,8 +487,12 @@ export function ReportTrigger(props: ReportTriggerProps) {
                 response.report_definition.trigger.trigger_params.schedule.cron
                   .expression
               );
+            } else {
+              setCronParams();
             }
           });
+      } else {
+        setCronParams();
       }
     }, []);
 
@@ -507,7 +516,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
           />
         </EuiFormRow>
         <EuiSpacer />
-        <TimezoneSelect />
       </div>
     );
   };
@@ -553,7 +561,17 @@ export function ReportTrigger(props: ReportTriggerProps) {
       ) : null;
 
     const display_cron =
-      scheduleType === SCHEDULE_TYPE_OPTIONS[1].id ? <CronExpression /> : null;
+      scheduleType === SCHEDULE_TYPE_OPTIONS[1].id ? (
+        <div>
+          <CronExpression />
+          <TimezoneSelect
+            reportDefinitionRequest={reportDefinitionRequest}
+            httpClientProps={httpClientProps}
+            edit={edit}
+            editDefinitionId={editDefinitionId}
+          />
+        </div>
+      ) : null;
 
     useEffect(() => {
       // Set default trigger_type
@@ -566,6 +584,9 @@ export function ReportTrigger(props: ReportTriggerProps) {
           };
           if (!edit) {
             reportDefinitionRequest.trigger.trigger_params.enabled = true;
+          }
+          if (!('enabled' in reportDefinitionRequest.trigger.trigger_params)) {
+            reportDefinitionRequest.trigger.trigger_params.enabled = false;
           }
         }
       });
