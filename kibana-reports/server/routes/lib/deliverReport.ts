@@ -17,13 +17,10 @@ import { ReportSchemaType } from 'server/model';
 import {
   ILegacyScopedClusterClient,
   ILegacyClusterClient,
+  Logger,
 } from '../../../../../src/core/server';
-import {
-  DELIVERY_TYPE,
-  EMAIL_FORMAT,
-  FORMAT,
-  REPORT_STATE,
-} from '../utils/constants';
+import { DELIVERY_TYPE, REPORT_STATE } from '../utils/constants';
+import { composeEmbeddedHtml } from '../utils/notification/deliveryContentHelper';
 import { callCluster, updateReportState } from '../utils/helpers';
 import { CreateReportResultType } from '../utils/types';
 
@@ -33,7 +30,8 @@ export const deliverReport = async (
   notificationClient: ILegacyScopedClusterClient | ILegacyClusterClient,
   esClient: ILegacyClusterClient | ILegacyScopedClusterClient,
   reportId: string,
-  isScheduledTask: boolean
+  isScheduledTask: boolean,
+  logger: Logger
 ) => {
   // check delivery type
   const delivery = report.report_definition.delivery;
@@ -49,37 +47,73 @@ export const deliverReport = async (
 
   if (deliveryType === DELIVERY_TYPE.channel) {
     // deliver through one of [Slack, Chime, Email]
-    //@ts-ignore
-    const { email_format: emailFormat, ...rest } = deliveryParams;
-    // compose request body
-    if (emailFormat === EMAIL_FORMAT.attachment) {
-      const reportFormat =
-        report.report_definition.report_params.core_params.report_format;
-      const attachment = {
-        fileName: reportData.fileName,
-        fileEncoding: reportFormat === FORMAT.csv ? 'text' : 'base64',
-        //TODO: figure out when this data field is actually needed
-        // fileContentType: 'application/pdf',
-        fileData: reportData.dataUrl,
-      };
-      const deliveryBody = {
-        ...rest,
-        refTag: reportId,
-        attachment,
-      };
-
-      const res = await callCluster(
-        notificationClient,
-        'notification.send',
-        {
-          body: deliveryBody,
-        },
-        isScheduledTask
-      );
-      //TODO: need better error handling or logging
-    }
+    const {
+      query_url: queryUrl,
+      report_definition: {
+        report_params: { report_name: reportName },
+      },
+    } = report;
+    const { htmlDescription, origin } = deliveryParams;
+    const originalQueryUrl = origin + queryUrl;
+    /**
+     * have to manually compose the url because the Kibana url for AES is.../_plugin/kibana/app/opendistro_kibana_reports#/report_details/${reportId}
+     * while default Kibana is just .../app/opendistro_kibana_reports#/report_details/${reportId}
+     */
+    const reportDetailUrl = `${originalQueryUrl.replace(
+      /\/app\/.*$/i,
+      ''
+    )}/app/opendistro_kibana_reports#/report_details/${reportId}`;
+    const template = composeEmbeddedHtml(
+      htmlDescription,
+      originalQueryUrl,
+      reportDetailUrl,
+      reportName
+    );
+    const deliveryBody = {
+      ...deliveryParams,
+      htmlDescription: template,
+      refTag: reportId,
+    };
+    // send email
+    const notificationResp = await callCluster(
+      notificationClient,
+      'notification.send',
+      {
+        body: deliveryBody,
+      },
+      isScheduledTask
+    );
+    /**
+     * notification plugin response example:
+     * {
+          "refTag": "jeWuU3UBp8p83fn6xwzB",
+          "recipients": [
+            {
+              "recipient": "odfe@amazon.com",
+              "statusCode": 200,
+              "statusText": "Success"
+            },
+            {
+              "recipient": "wrong.odfe@amazon.com",
+              "statusCode": 503,
+              "statusText": "sendEmail Error, SES status:400:Optional[Bad Request]"
+            }
+          ]
+        }
+     */
+    logger.info(
+      `notification plugin response: ${JSON.stringify(notificationResp)}`
+    );
+    notificationResp.recipients.map((recipient) => {
+      if (recipient.statusCode !== 200) {
+        throw new Error(
+          `Fail to deliver report ${JSON.stringify(
+            notificationResp.recipients
+          )}`
+        );
+      }
+    });
   } else {
-    //TODO: No attachment, use embedded html (not implemented yet)
     // empty kibana recipients array
     //TODO: tmp solution
     // @ts-ignore
