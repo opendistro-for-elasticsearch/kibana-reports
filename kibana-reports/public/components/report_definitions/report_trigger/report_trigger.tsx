@@ -74,7 +74,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
     SCHEDULE_TYPE_OPTIONS[0].label
   );
   //TODO: should read local timezone and display
-  const [timezone, setTimezone] = useState(TIMEZONE_OPTIONS[0].value);
+  // const [timezone, setTimezone] = useState(TIMEZONE_OPTIONS[0].value);
   const [scheduleRecurringFrequency, setScheduleRecurringFrequency] = useState(
     'daily'
   );
@@ -107,16 +107,16 @@ export function ReportTrigger(props: ReportTriggerProps) {
     }
   };
 
-  const handleTimezone = (e) => {
-    setTimezone(e.target.value);
-    if (
-      reportDefinitionRequest.trigger.trigger_params.schedule_type ===
-      'Cron based'
-    ) {
-      reportDefinitionRequest.trigger.trigger_params.schedule.cron.timezone =
-        e.target.value;
-    }
-  };
+  // const handleTimezone = (e) => {
+  //   setTimezone(e.target.value);
+  //   if (
+  //     reportDefinitionRequest.trigger.trigger_params.schedule_type ===
+  //     'Cron based'
+  //   ) {
+  //     reportDefinitionRequest.trigger.trigger_params.schedule.cron.timezone =
+  //       e.target.value;
+  //   }
+  // };
 
   const handleScheduleRecurringFrequency = (e: {
     target: { value: React.SetStateAction<string> };
@@ -153,6 +153,35 @@ export function ReportTrigger(props: ReportTriggerProps) {
   };
 
   const TimezoneSelect = () => {
+    const [timezone, setTimezone] = useState(TIMEZONE_OPTIONS[0].value);
+
+    const handleTimezone = (e) => {
+      setTimezone(e.target.value);
+      if (
+        reportDefinitionRequest.trigger.trigger_params.schedule_type ===
+        'Cron based'
+      ) {
+        reportDefinitionRequest.trigger.trigger_params.schedule.cron.timezone =
+          e.target.value;
+      }
+    };
+
+    useEffect(() => {
+      let unmounted = false;
+      if (edit) {
+        httpClientProps
+          .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
+          .then(async (response) => {
+            if (!unmounted) {
+              setTimezone(response.report_definition.trigger.trigger_params.schedule.cron.timezone);
+            }
+          });
+      }
+      return () => {
+        unmounted = true;
+      };
+    }, []);
+    
     return (
       <div>
         <EuiFormRow label="Timezone">
@@ -350,27 +379,37 @@ export function ReportTrigger(props: ReportTriggerProps) {
       target: { value: React.SetStateAction<string> };
     }) => {
       setCronExpression(e.target.value);
+      reportDefinitionRequest.trigger.trigger_params.schedule.cron.expression = e.target.value;
     };
 
     useEffect(() => {
+      console.log("report def request in cronexpression is", reportDefinitionRequest);
       let cron = {
         cron: {
-          expression: cronExpression,
-          timezone: timezone,
-        },
-      };
+          expression: "",
+          timezone: ""
+        }
+      }
+      // console.log("test");
+      // let cron = {
+      //   cron: {
+      //     expression: cronExpression,
+      //     // timezone: timezone,
+      //   },
+      // };
       reportDefinitionRequest.trigger.trigger_params = {
         ...reportDefinitionRequest.trigger.trigger_params,
         enabled_time: Date.now().valueOf(),
-        schedule: cron,
+        schedule: cron
       };
-    }, [cronExpression, timezone]);
+    }, []);
 
     useEffect(() => {
       if (edit) {
         httpClientProps
           .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
           .then(async (response) => {
+            console.log("response is", response);
             if (
               response.report_definition.trigger.trigger_params
                 .schedule_type === SCHEDULE_TYPE_OPTIONS[1].label
@@ -379,6 +418,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
                 response.report_definition.trigger.trigger_params.schedule.cron
                   .expression
               );
+              // setTimezone(response.report_definition.trigger.trigger_params.schedule.cron.timezone);
             }
           });
       }
@@ -404,7 +444,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
           />
         </EuiFormRow>
         <EuiSpacer />
-        <TimezoneSelect />
+        {/* <TimezoneSelect /> */}
       </div>
     );
   };
@@ -451,7 +491,10 @@ export function ReportTrigger(props: ReportTriggerProps) {
 
     const display_cron =
       scheduleType === SCHEDULE_TYPE_OPTIONS[1].label ? (
+        <div>
         <CronExpression />
+        <TimezoneSelect />
+        </div>
       ) : null;
 
     useEffect(() => {
