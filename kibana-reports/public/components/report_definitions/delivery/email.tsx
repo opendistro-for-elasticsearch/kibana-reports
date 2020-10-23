@@ -31,7 +31,7 @@ export const EmailDelivery = (props: ReportDeliveryProps) => {
     showEmailRecipientsError,
   } = props;
 
-  const [emailRecipients, setOptions] = useState([]);
+  const [emailRecipients, setEmailRecipients] = useState([]);
   const [selectedEmailRecipients, setSelectedEmailRecipients] = useState([]);
   const [emailSubject, setEmailSubject] = useState('');
   const [emailBody, setEmailBody] = useState('');
@@ -59,14 +59,13 @@ export const EmailDelivery = (props: ReportDeliveryProps) => {
         (option) => option.label.trim().toLowerCase() === normalizedSearchValue
       ) === -1
     ) {
-      setOptions([...emailRecipients, newOption]);
+      setEmailRecipients([...emailRecipients, newOption]);
     }
 
-    // Select the option.
-    handleEmailRecipients([...selectedEmailRecipients, newOption]);
+    handleSelectEmailRecipients([...selectedEmailRecipients, newOption]);
   };
 
-  const handleEmailRecipients = (e) => {
+  const handleSelectEmailRecipients = (e) => {
     setSelectedEmailRecipients(e);
     reportDefinitionRequest.delivery.delivery_params.recipients = e.map(
       (option) => option.label
@@ -100,9 +99,10 @@ export const EmailDelivery = (props: ReportDeliveryProps) => {
       const emailParams: ChannelSchemaType = delivery.delivery_params;
       const { recipients, title, textDescription } = emailParams;
 
-      recipients.map((emailRecipient) =>
-        handleCreateEmailRecipient(emailRecipient, selectedEmailRecipients)
-      );
+      const recipientsOptions = recipients.map((email) => ({ label: email }));
+      handleSelectEmailRecipients(recipientsOptions);
+      setEmailRecipients(recipientsOptions);
+
       setEmailSubject(title);
       reportDefinitionRequest.delivery.delivery_params.title = title;
       reportDefinitionRequest.delivery.delivery_params.origin = location.origin;
@@ -144,7 +144,7 @@ export const EmailDelivery = (props: ReportDeliveryProps) => {
           placeholder={'Add users here'}
           options={emailRecipients}
           selectedOptions={selectedEmailRecipients}
-          onChange={handleEmailRecipients}
+          onChange={handleSelectEmailRecipients}
           onCreateOption={handleCreateEmailRecipient}
           isClearable={true}
           data-test-subj="demoComboBox"
