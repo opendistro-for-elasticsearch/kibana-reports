@@ -155,6 +155,7 @@ export function ReportsTable(props) {
       name: 'Name',
       render: (reportName, item) => (
         <EuiLink
+          disabled={item.state === 'Pending'}
           onClick={() => {
             window.location.assign(
               `opendistro_kibana_reports#/report_details/${item.id}`
@@ -169,11 +170,14 @@ export function ReportsTable(props) {
       // TODO: link to dashboard/visualization snapshot, use "queryUrl" field. Display dashboard name?
       field: 'reportSource',
       name: 'Source',
-      render: (source, item) => (
-        <EuiLink href={item.url} target="_blank">
-          {source}
-        </EuiLink>
-      ),
+      render: (source, item) =>
+        item.state === 'Pending' ? (
+          <EuiText size="s">{source}</EuiText>
+        ) : (
+          <EuiLink href={item.url} target="_blank">
+            {source}
+          </EuiLink>
+        ),
     },
     {
       field: 'type',
@@ -198,13 +202,16 @@ export function ReportsTable(props) {
     {
       field: 'id',
       name: 'Generate',
-      render: (id, item) => {
-        return (
+      render: (id, item) =>
+        item.state === 'Pending' ? (
+          <EuiText size="s">
+            {fileFormatsUpper[item.format]} <EuiIcon type="importAction" />
+          </EuiText>
+        ) : (
           <EuiLink onClick={() => onDemandDownload(id)}>
             {fileFormatsUpper[item.format]} <EuiIcon type="importAction" />
           </EuiLink>
-        );
-      },
+        ),
     },
   ];
 
