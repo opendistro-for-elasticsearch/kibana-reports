@@ -35,6 +35,7 @@ import {
 } from '@elastic/eui';
 import { fileFormatsUpper, generateReportById } from '../main_utils';
 import { ReportSchemaType } from '../../../../server/model';
+import { converter } from '../../report_definitions/utils';
 
 export const ReportDetailsComponent = (props) => {
   const { reportDetailsComponentTitle, reportDetailsComponentContent } = props;
@@ -136,31 +137,23 @@ export function ReportDetails(props) {
       state: state,
       reportHeader:
         reportParams.core_params.header != ''
-          ? reportParams.core_params.header
+          ? converter.makeMarkdown(reportParams.core_params.header)
           : `\u2014`,
       reportFooter:
         reportParams.core_params.footer != ''
-          ? reportParams.core_params.footer
+          ? converter.makeMarkdown(reportParams.core_params.footer)
           : `\u2014`,
       triggerType: triggerType,
       scheduleType: triggerParams ? triggerParams.schedule_type : `\u2014`,
       scheduleDetails: `\u2014`,
       alertDetails: `\u2014`,
       channel: deliveryType,
-      kibanaRecipients: deliveryParams.kibana_recipients
-        ? deliveryParams.kibana_recipients
-        : `\u2014`,
       emailRecipients:
         deliveryType === 'Channel' ? deliveryParams.recipients : `\u2014`,
       emailSubject:
         deliveryType === 'Channel' ? deliveryParams.title : `\u2014`,
       emailBody:
         deliveryType === 'Channel' ? deliveryParams.textDescription : `\u2014`,
-      reportAsAttachment:
-        deliveryType === 'Channel' &&
-        deliveryParams.email_format === 'Attachment'
-          ? 'True'
-          : 'False',
       queryUrl: queryUrl,
     };
     return reportDetails;
@@ -194,9 +187,16 @@ export function ReportDetails(props) {
     let formatUpper = data['defaultFileFormat'];
     formatUpper = fileFormatsUpper[formatUpper];
     return (
-      <EuiLink onClick={() => {
-        generateReportById(reportId, props.httpClient, handleSuccessToast, handleErrorToast);
-      }}>
+      <EuiLink
+        onClick={() => {
+          generateReportById(
+            reportId,
+            props.httpClient,
+            handleSuccessToast,
+            handleErrorToast
+          );
+        }}
+      >
         {formatUpper + ' '}
         <EuiIcon type="importAction" />
       </EuiLink>
@@ -307,18 +307,10 @@ export function ReportDetails(props) {
           </EuiFlexGroup>
           <EuiSpacer />
           <EuiTitle>
-            <h3>Delivery settings</h3>
+            <h3>Notification settings</h3>
           </EuiTitle>
           <EuiSpacer />
           <EuiFlexGroup>
-            <ReportDetailsComponent
-              reportDetailsComponentTitle={'Channel'}
-              reportDetailsComponentContent={reportDetails['channel']}
-            />
-            <ReportDetailsComponent
-              reportDetailsComponentTitle={'Kibana recipient(s)'}
-              reportDetailsComponentContent={reportDetails['kibanaRecipients']}
-            />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email recipient(s)'}
               reportDetailsComponentContent={reportDetails['emailRecipients']}
@@ -327,20 +319,10 @@ export function ReportDetails(props) {
               reportDetailsComponentTitle={'Email subject'}
               reportDetailsComponentContent={reportDetails['emailSubject']}
             />
-          </EuiFlexGroup>
-          <EuiSpacer />
-          <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Email body'}
+              reportDetailsComponentTitle={'Optional message'}
               reportDetailsComponentContent={reportDetails['emailBody']}
             />
-            <ReportDetailsComponent
-              reportDetailsComponentTitle={'Include report as attachment'}
-              reportDetailsComponentContent={
-                reportDetails['reportAsAttachment']
-              }
-            />
-            <ReportDetailsComponent />
             <ReportDetailsComponent />
           </EuiFlexGroup>
         </EuiPageContent>

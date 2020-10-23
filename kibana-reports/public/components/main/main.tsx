@@ -102,6 +102,34 @@ export function Main(props) {
     addSuccessOnDemandDownloadToastHandler();
   };
 
+  const addCreateReportDefinitionSuccessToastHandler = () => {
+    const successToast = {
+      title: 'Success',
+      color: 'success',
+      text: <p>Report definition successfully created!</p>,
+      id: 'createReportDefinitionSuccessToast',
+    };
+    setToasts(toasts.concat(successToast));
+  };
+
+  const handleCreateReportDefinitionSuccessToast = () => {
+    addCreateReportDefinitionSuccessToastHandler();
+  };
+
+  const addEditReportDefinitionSuccessToastHandler = () => {
+    const successToast = {
+      title: 'Success',
+      color: 'success',
+      text: <p>Report definition successfully updated!</p>,
+      id: 'editReportDefinitionSuccessToast',
+    };
+    setToasts(toasts.concat(successToast));
+  };
+
+  const handleEditReportDefinitionSuccessToast = () => {
+    addEditReportDefinitionSuccessToastHandler();
+  };
+
   const removeToast = (removedToast) => {
     setToasts(toasts.filter((toast) => toast.id !== removedToast.id));
   };
@@ -142,6 +170,13 @@ export function Main(props) {
         console.log('error when fetching all report definitions: ', error);
         handleReportDefinitionsTableErrorToast();
       });
+
+    if (window.location.href.includes('create=success')) {
+      handleCreateReportDefinitionSuccessToast();
+    } else if (window.location.href.includes('edit=success')) {
+      handleEditReportDefinitionSuccessToast();
+    }
+    window.location.href = 'opendistro_kibana_reports#/';
   }, []);
 
   const refreshReportsTable = async () => {

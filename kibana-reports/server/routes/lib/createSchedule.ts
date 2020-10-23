@@ -65,6 +65,5 @@ export const createSchedule = async (
      */
     return;
   }
-  // else if (triggerType == TRIGGER_TYPE.alerting) {
   //TODO: add alert-based scheduling logic [enhancement feature]
 };
