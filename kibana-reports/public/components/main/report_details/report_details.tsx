@@ -329,14 +329,6 @@ export function ReportDetails(props) {
               reportDetailsComponentTitle={'Email subject'}
               reportDetailsComponentContent={reportDetails['emailSubject']}
             />
-            <button
-              style={{ border: 'solid red', padding: 3 }}
-              onClick={() => {
-                console.log(reportDetails);
-              }}
-            >
-              TEST
-            </button>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Optional message'}
               reportDetailsComponentContent={trimAndRenderAsText(reportDetails['emailBody'])}
