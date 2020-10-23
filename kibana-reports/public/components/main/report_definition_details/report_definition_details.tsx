@@ -456,6 +456,14 @@ export function ReportDefinitionDetails(props) {
       </EuiFlexGroup>
     );
 
+  // convert markdown to plain text, trim it if it's longer than 3 lines
+  const trimAndRenderText = (markdown: string) => {
+    if (!markdown) return markdown;
+    const lines = markdown.split('\n').filter((line) => line);
+    const elements = lines.slice(0, 3).map((line) => <p>{line}</p>);
+    return lines.length <= 3 ? elements : elements.concat(<p>...</p>);
+  };
+
   return (
     <EuiPage>
       <EuiPageBody>
@@ -542,24 +550,24 @@ export function ReportDefinitionDetails(props) {
                 reportDefinitionDetails
               )}
             />
-            <ReportDetailsComponent
-              reportDetailsComponentTitle={'Report header'}
-              reportDetailsComponentContent={
-                reportDefinitionDetails.reportHeader
-              }
-            />
+            <EuiFlexItem />
           </EuiFlexGroup>
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Report footer'}
-              reportDetailsComponentContent={
-                reportDefinitionDetails.reportFooter
-              }
+              reportDetailsComponentTitle={'Report header'}
+              reportDetailsComponentContent={trimAndRenderText(
+                reportDefinitionDetails.reportHeader
+              )}
             />
-            <ReportDetailsComponent />
-            <ReportDetailsComponent />
-            <ReportDetailsComponent />
+            <ReportDetailsComponent
+              reportDetailsComponentTitle={'Report footer'}
+              reportDetailsComponentContent={trimAndRenderText(
+                reportDefinitionDetails.reportFooter
+              )}
+            />
+            <EuiFlexItem />
+            <EuiFlexItem />
           </EuiFlexGroup>
           <EuiSpacer />
           <EuiTitle>
@@ -575,9 +583,9 @@ export function ReportDefinitionDetails(props) {
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email recipients'}
-              reportDetailsComponentContent={
-                reportDefinitionDetails.emailRecipients
-              }
+              reportDetailsComponentContent={reportDefinitionDetails.emailRecipients?.join(
+                ', '
+              )}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email subject'}
@@ -587,7 +595,9 @@ export function ReportDefinitionDetails(props) {
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Optional message'}
-              reportDetailsComponentContent={reportDefinitionDetails.emailBody}
+              reportDetailsComponentContent={trimAndRenderText(
+                reportDefinitionDetails.emailBody
+              )}
             />
             <ReportDetailsComponent />
           </EuiFlexGroup>
