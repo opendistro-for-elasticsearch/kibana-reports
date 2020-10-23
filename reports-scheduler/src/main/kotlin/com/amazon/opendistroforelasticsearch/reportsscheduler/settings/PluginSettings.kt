@@ -116,12 +116,12 @@ internal object PluginSettings {
     /**
      * Default number of retries to try locking.
      */
-    private const val DEFAULT_MAX_LOCK_RETRIES = 0
+    private const val DEFAULT_MAX_LOCK_RETRIES = 4
 
     /**
      * Minimum number of retries to try locking.
      */
-    private const val MINIMUM_LOCK_RETRIES = 0
+    private const val MINIMUM_LOCK_RETRIES = 1
 
     /**
      * Operation timeout setting in ms for I/O operations

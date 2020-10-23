@@ -59,9 +59,9 @@ internal data class ReportDefinition(
         private const val DELIVERY_TAG = "delivery"
 
         /**
-         * Parse the data from parser and create DeliveryInfo object
+         * Parse the data from parser and create ReportDefinition object
          * @param parser data referenced at parser
-         * @return created DeliveryInfo object
+         * @return created ReportDefinition object
          */
         fun parse(parser: XContentParser): ReportDefinition {
             var name: String? = null
@@ -146,9 +146,9 @@ internal data class ReportDefinition(
             private const val URL_TAG = "url"
 
             /**
-             * Parse the data from parser and create DeliveryInfo object
+             * Parse the data from parser and create Source object
              * @param parser data referenced at parser
-             * @return created DeliveryInfo object
+             * @return created Source object
              */
             fun parse(parser: XContentParser): Source {
                 var description: String? = null
@@ -216,9 +216,9 @@ internal data class ReportDefinition(
             private const val FOOTER_TAG = "footer"
 
             /**
-             * Parse the data from parser and create DeliveryInfo object
+             * Parse the data from parser and create Format object
              * @param parser data referenced at parser
-             * @return created DeliveryInfo object
+             * @return created Format object
              */
             fun parse(parser: XContentParser): Format {
                 var durationSeconds: Duration? = null
@@ -292,9 +292,9 @@ internal data class ReportDefinition(
             private const val UNIT_FIELD = "unit"
 
             /**
-             * Parse the data from parser and create DeliveryInfo object
+             * Parse the data from parser and create Trigger object
              * @param parser data referenced at parser
-             * @return created DeliveryInfo object
+             * @return created Trigger object
              */
             fun parse(parser: XContentParser): Trigger {
                 var triggerType: TriggerType? = null
@@ -411,9 +411,9 @@ internal data class ReportDefinition(
             private const val CHANNEL_IDS_TAG = "channelIds"
 
             /**
-             * Parse the data from parser and create DeliveryInfo object
+             * Parse the data from parser and create Delivery object
              * @param parser data referenced at parser
-             * @return created DeliveryInfo object
+             * @return created Delivery object
              */
             fun parse(parser: XContentParser): Delivery {
                 var recipients: List<String> = listOf()
@@ -433,7 +433,7 @@ internal data class ReportDefinition(
                         TEXT_DESCRIPTION_TAG -> textDescription = parser.text()
                         HTML_DESCRIPTION_TAG -> htmlDescription = parser.textOrNull()
                         CHANNEL_IDS_TAG -> channelIds = parser.stringList()
-                        else -> log.info("$LOG_PREFIX: DeliveryInfo Unknown field $fieldName")
+                        else -> log.info("$LOG_PREFIX: Delivery Unknown field $fieldName")
                     }
                 }
                 deliveryFormat ?: throw IllegalArgumentException("$DELIVERY_FORMAT_TAG field absent")

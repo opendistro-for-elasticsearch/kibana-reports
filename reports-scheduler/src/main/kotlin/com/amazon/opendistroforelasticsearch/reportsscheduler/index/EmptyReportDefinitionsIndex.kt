@@ -26,48 +26,53 @@ internal object EmptyReportDefinitionsIndex : IReportDefinitionsIndex {
      * {@inheritDoc}
      */
     override fun createIndex() {
-        throw IllegalStateException("ReportDefinitionsIndex not initialized")
+        notInitializedError()
     }
 
     /**
      * {@inheritDoc}
      */
     override fun isIndexExists(): Boolean {
-        throw IllegalStateException("ReportDefinitionsIndex not initialized")
+        notInitializedError()
     }
 
     /**
      * {@inheritDoc}
      */
     override fun createReportDefinition(reportDefinitionDetails: ReportDefinitionDetails): String? {
-        throw IllegalStateException("ReportDefinitionsIndex not initialized")
+        notInitializedError()
     }
 
     /**
      * {@inheritDoc}
      */
     override fun getReportDefinition(id: String): ReportDefinitionDetails? {
-        throw IllegalStateException("ReportDefinitionsIndex not initialized")
+        notInitializedError()
     }
 
     /**
      * {@inheritDoc}
      */
     override fun getAllReportDefinitions(ownerId: String, from: Int): List<ReportDefinitionDetails> {
-        throw IllegalStateException("ReportDefinitionsIndex not initialized")
+        notInitializedError()
     }
 
     /**
      * {@inheritDoc}
      */
     override fun updateReportDefinition(id: String, reportDefinitionDetails: ReportDefinitionDetails): Boolean {
-        throw IllegalStateException("ReportDefinitionsIndex not initialized")
+        notInitializedError()
     }
 
     /**
      * {@inheritDoc}
      */
     override fun deleteReportDefinition(id: String): Boolean {
-        throw IllegalStateException("ReportDefinitionsIndex not initialized")
+        notInitializedError()
     }
+
+    /**
+     * throws IllegalStateException with not initialized message
+     */
+    private fun notInitializedError(): Nothing = throw IllegalStateException("ReportDefinitionsIndex not initialized")
 }

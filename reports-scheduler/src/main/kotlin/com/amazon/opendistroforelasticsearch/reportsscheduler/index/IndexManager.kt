@@ -18,6 +18,7 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.index
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinitionDetails
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstanceDoc
 import org.elasticsearch.client.Client
 import org.elasticsearch.cluster.service.ClusterService
 
@@ -126,12 +127,30 @@ internal object IndexManager {
 
     /**
      * update Report instance details for given id
-     * @param id the id for the document
      * @param reportInstance the Report instance details data
      * @return true if successful, false otherwise
      */
-    fun updateReportInstance(id: String, reportInstance: ReportInstance): Boolean {
+    fun updateReportInstance(reportInstance: ReportInstance): Boolean {
         reportInstancesIndex.createIndex()
-        return reportInstancesIndex.updateReportInstance(id, reportInstance)
+        return reportInstancesIndex.updateReportInstance(reportInstance)
+    }
+
+    /**
+     * update Report instance details for given id
+     * @param reportInstanceDoc the Report instance details doc data
+     * @return true if successful, false otherwise
+     */
+    fun updateReportInstanceDoc(reportInstanceDoc: ReportInstanceDoc): Boolean {
+        reportInstancesIndex.createIndex()
+        return reportInstancesIndex.updateReportInstanceDoc(reportInstanceDoc)
+    }
+
+    /**
+     * Get pending report instances
+     * @return ReportInstanceDoc list
+     */
+    fun getPendingReportInstances(): MutableList<ReportInstanceDoc> {
+        reportInstancesIndex.createIndex()
+        return reportInstancesIndex.getPendingReportInstances()
     }
 }

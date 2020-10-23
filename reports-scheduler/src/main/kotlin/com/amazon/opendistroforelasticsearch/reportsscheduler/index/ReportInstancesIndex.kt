@@ -18,7 +18,10 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.index
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance.State
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstanceDoc
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.LAST_UPDATED_TIME_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.STATUS_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.USER_ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.SecureIndexClient
@@ -39,6 +42,7 @@ import org.elasticsearch.common.xcontent.NamedXContentRegistry
 import org.elasticsearch.common.xcontent.XContentType
 import org.elasticsearch.index.query.QueryBuilders
 import org.elasticsearch.search.builder.SearchSourceBuilder
+import java.time.Instant
 import java.util.concurrent.TimeUnit
 
 /**
@@ -162,16 +166,35 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
     /**
      * {@inheritDoc}
      */
-    override fun updateReportInstance(id: String, reportInstance: ReportInstance): Boolean {
+    override fun updateReportInstance(reportInstance: ReportInstance): Boolean {
         val updateRequest = UpdateRequest()
             .index(REPORT_INSTANCES_INDEX_NAME)
-            .id(id)
+            .id(reportInstance.id)
             .doc(reportInstance.toXContent(false))
             .fetchSource(true)
         val actionFuture = client.update(updateRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
         if (response.result != DocWriteResponse.Result.UPDATED) {
             log.warn("$LOG_PREFIX:updateReportInstance failed; response:$response")
+        }
+        return response.result == DocWriteResponse.Result.UPDATED
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    override fun updateReportInstanceDoc(reportInstanceDoc: ReportInstanceDoc): Boolean {
+        val updateRequest = UpdateRequest()
+            .index(REPORT_INSTANCES_INDEX_NAME)
+            .id(reportInstanceDoc.reportInstance.id)
+            .setIfSeqNo(reportInstanceDoc.seqNo)
+            .setIfPrimaryTerm(reportInstanceDoc.primaryTerm)
+            .doc(reportInstanceDoc.reportInstance.toXContent(false))
+            .fetchSource(true)
+        val actionFuture = client.update(updateRequest)
+        val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
+        if (response.result != DocWriteResponse.Result.UPDATED) {
+            log.warn("$LOG_PREFIX:updateReportInstanceDoc failed; response:$response")
         }
         return response.result == DocWriteResponse.Result.UPDATED
     }
@@ -189,5 +212,40 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
             log.warn("$LOG_PREFIX:deleteReportInstance failed; response:$response")
         }
         return response.result == DocWriteResponse.Result.DELETED
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    override fun getPendingReportInstances(): MutableList<ReportInstanceDoc> {
+        val query = QueryBuilders.termsQuery(STATUS_FIELD,
+            State.Scheduled.name,
+            State.Executing.name
+        )
+        val sourceBuilder = SearchSourceBuilder()
+            .timeout(TimeValue(PluginSettings.operationTimeoutMs, TimeUnit.MILLISECONDS))
+            .size(MAX_ITEMS_TO_QUERY)
+            .query(query)
+        val searchRequest = SearchRequest()
+            .indices(REPORT_INSTANCES_INDEX_NAME)
+            .source(sourceBuilder)
+        val actionFuture = client.search(searchRequest)
+        val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
+        log.warn("$LOG_PREFIX:getPendingReportInstances; response:$response")
+        val mutableList: MutableList<ReportInstanceDoc> = mutableListOf()
+        val currentTime = Instant.now()
+        val refTime = currentTime.minusSeconds(PluginSettings.jobLockDurationSeconds.toLong())
+        response.hits.forEach {
+            val parser = XContentType.JSON.xContent().createParser(NamedXContentRegistry.EMPTY,
+                LoggingDeprecationHandler.INSTANCE,
+                it.sourceAsString)
+            parser.nextToken()
+            val reportInstance = ReportInstance.parse(parser, it.id)
+            if (reportInstance.currentState == State.Scheduled || // If still in Scheduled state
+                reportInstance.lastUpdatedTime.isBefore(refTime)) { // or when timeout happened
+                mutableList.add(ReportInstanceDoc(reportInstance, it.seqNo, it.primaryTerm))
+            }
+        }
+        return mutableList
     }
 }

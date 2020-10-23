@@ -17,6 +17,7 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.index
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstanceDoc
 
 /**
  * Interface for Report instance index operations.
@@ -58,11 +59,17 @@ internal interface IReportInstancesIndex {
 
     /**
      * update Report instance details for given id
-     * @param id the id for the document
      * @param reportInstance the Report instance details data
      * @return true if successful, false otherwise
      */
-    fun updateReportInstance(id: String, reportInstance: ReportInstance): Boolean
+    fun updateReportInstance(reportInstance: ReportInstance): Boolean
+
+    /**
+     * update Report instance details for given id
+     * @param reportInstanceDoc the Report instance details doc data
+     * @return true if successful, false otherwise
+     */
+    fun updateReportInstanceDoc(reportInstanceDoc: ReportInstanceDoc): Boolean
 
     /**
      * delete Report instance details for given id
@@ -70,4 +77,10 @@ internal interface IReportInstancesIndex {
      * @return true if successful, false otherwise
      */
     fun deleteReportInstance(id: String): Boolean
+
+    /**
+     * Get pending report instances
+     * @return ReportInstanceDoc list
+     */
+    fun getPendingReportInstances(): MutableList<ReportInstanceDoc>
 }
