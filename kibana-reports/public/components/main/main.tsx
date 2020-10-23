@@ -146,35 +146,23 @@ export function Main(props) {
         href: '#',
       },
     ]);
-    const { httpClient } = props;
-    // get all reports
-    httpClient
-      .get('../api/reporting/reports')
-      .then((response) => {
-        setReportsTableContent(addReportsTableContent(response.data));
-      })
-      .catch((error) => {
-        console.log('error when fetching all reports: ', error);
-        handleReportsTableContentErrorToast();
-      });
-
-    // get all report definitions
-    httpClient
-      .get('../api/reporting/reportDefinitions')
-      .then((response) => {
-        setReportDefinitionsTableContent(
-          addReportDefinitionsTableContent(response.data)
-        );
-      })
-      .catch((error) => {
-        console.log('error when fetching all report definitions: ', error);
-        handleReportDefinitionsTableErrorToast();
-      });
+    refreshReportsTable();
+    refreshReportsDefinitionsTable();
 
     if (window.location.href.includes('create=success')) {
       handleCreateReportDefinitionSuccessToast();
+      // refresh might not fetch the latest changes when coming from create or edit page
+      // workaround to wait 1 second and refresh again
+      setTimeout(() => {
+        refreshReportsTable();
+        refreshReportsDefinitionsTable();
+      }, 1000);
     } else if (window.location.href.includes('edit=success')) {
       handleEditReportDefinitionSuccessToast();
+      setTimeout(() => {
+        refreshReportsTable();
+        refreshReportsDefinitionsTable();
+      }, 1000);
     }
     window.location.href = 'opendistro_kibana_reports#/';
   }, []);
@@ -185,7 +173,6 @@ export function Main(props) {
       .get('../api/reporting/reports')
       .then((response) => {
         setReportsTableContent(addReportsTableContent(response.data));
-        addReportsTableContent(response.data);
       })
       .catch((error) => {
         console.log('error when fetching all reports: ', error);
