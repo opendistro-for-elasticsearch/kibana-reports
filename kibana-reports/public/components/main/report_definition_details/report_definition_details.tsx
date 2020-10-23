@@ -30,7 +30,11 @@ import {
   EuiLink,
   EuiGlobalToastList,
 } from '@elastic/eui';
-import { ReportDetailsComponent } from '../report_details/report_details';
+import {
+  ReportDetailsComponent,
+  formatEmails,
+  trimAndRenderAsText,
+} from '../report_details/report_details';
 import { fileFormatsUpper, generateReport } from '../main_utils';
 import { ReportDefinitionSchemaType } from '../../../../server/model';
 import moment from 'moment';
@@ -456,14 +460,6 @@ export function ReportDefinitionDetails(props) {
       </EuiFlexGroup>
     );
 
-  // convert markdown to plain text, trim it if it's longer than 3 lines
-  const trimAndRenderText = (markdown: string) => {
-    if (!markdown) return markdown;
-    const lines = markdown.split('\n').filter((line) => line);
-    const elements = lines.slice(0, 3).map((line) => <p>{line}</p>);
-    return lines.length <= 3 ? elements : elements.concat(<p>...</p>);
-  };
-
   return (
     <EuiPage>
       <EuiPageBody>
@@ -556,13 +552,13 @@ export function ReportDefinitionDetails(props) {
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report header'}
-              reportDetailsComponentContent={trimAndRenderText(
+              reportDetailsComponentContent={trimAndRenderAsText(
                 reportDefinitionDetails.reportHeader
               )}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report footer'}
-              reportDetailsComponentContent={trimAndRenderText(
+              reportDetailsComponentContent={trimAndRenderAsText(
                 reportDefinitionDetails.reportFooter
               )}
             />
@@ -583,8 +579,8 @@ export function ReportDefinitionDetails(props) {
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email recipients'}
-              reportDetailsComponentContent={reportDefinitionDetails.emailRecipients?.join(
-                ', '
+              reportDetailsComponentContent={formatEmails(
+                reportDefinitionDetails.emailRecipients
               )}
             />
             <ReportDetailsComponent
@@ -595,7 +591,7 @@ export function ReportDefinitionDetails(props) {
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Optional message'}
-              reportDetailsComponentContent={trimAndRenderText(
+              reportDetailsComponentContent={trimAndRenderAsText(
                 reportDefinitionDetails.emailBody
               )}
             />
