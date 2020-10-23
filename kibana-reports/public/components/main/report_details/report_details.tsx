@@ -54,6 +54,18 @@ export const ReportDetailsComponent = (props) => {
   );
 };
 
+// convert markdown to plain text, trim it if it's longer than 3 lines
+export const trimAndRenderAsText = (markdown: string) => {
+  if (!markdown) return markdown;
+  const lines = markdown.split('\n').filter((line) => line);
+  const elements = lines.slice(0, 3).map((line, i) => <p key={i}>{line}</p>);
+  return lines.length <= 3 ? elements : elements.concat(<p key={3}>...</p>);
+};
+
+export const formatEmails = (emails: string[]) => {
+  return Array.isArray(emails) ? emails.join(', ') : emails;
+};
+
 export function ReportDetails(props) {
   const [reportDetails, setReportDetails] = useState({});
   const [toasts, setToasts] = useState([]);
@@ -135,14 +147,12 @@ export function ReportDetails(props) {
       time_period: lastUpdated,
       defaultFileFormat: coreParams.report_format,
       state: state,
-      reportHeader:
-        reportParams.core_params.header != ''
-          ? converter.makeMarkdown(reportParams.core_params.header)
-          : `\u2014`,
-      reportFooter:
-        reportParams.core_params.footer != ''
-          ? converter.makeMarkdown(reportParams.core_params.footer)
-          : `\u2014`,
+      reportHeader: reportParams.core_params.hasOwnProperty('header')
+        ? converter.makeMarkdown(reportParams.core_params.header)
+        : `\u2014`,
+      reportFooter: reportParams.core_params.hasOwnProperty('footer')
+        ? converter.makeMarkdown(reportParams.core_params.footer)
+        : `\u2014`,
       triggerType: triggerType,
       scheduleType: triggerParams ? triggerParams.schedule_type : `\u2014`,
       scheduleDetails: `\u2014`,
@@ -273,11 +283,11 @@ export function ReportDetails(props) {
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report header'}
-              reportDetailsComponentContent={reportDetails['reportHeader']}
+              reportDetailsComponentContent={trimAndRenderAsText(reportDetails['reportHeader'])}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report footer'}
-              reportDetailsComponentContent={reportDetails['reportFooter']}
+              reportDetailsComponentContent={trimAndRenderAsText(reportDetails['reportFooter'])}
             />
             <ReportDetailsComponent />
             <ReportDetailsComponent />
@@ -313,7 +323,7 @@ export function ReportDetails(props) {
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email recipient(s)'}
-              reportDetailsComponentContent={reportDetails['emailRecipients']}
+              reportDetailsComponentContent={formatEmails(reportDetails['emailRecipients'])}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email subject'}
@@ -321,7 +331,7 @@ export function ReportDetails(props) {
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Optional message'}
-              reportDetailsComponentContent={reportDetails['emailBody']}
+              reportDetailsComponentContent={trimAndRenderAsText(reportDetails['emailBody'])}
             />
             <ReportDetailsComponent />
           </EuiFlexGroup>

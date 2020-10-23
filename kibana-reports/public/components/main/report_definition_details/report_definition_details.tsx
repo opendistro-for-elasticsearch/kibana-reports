@@ -30,7 +30,11 @@ import {
   EuiLink,
   EuiGlobalToastList,
 } from '@elastic/eui';
-import { ReportDetailsComponent } from '../report_details/report_details';
+import {
+  ReportDetailsComponent,
+  formatEmails,
+  trimAndRenderAsText,
+} from '../report_details/report_details';
 import { fileFormatsUpper, generateReport } from '../main_utils';
 import { ReportDefinitionSchemaType } from '../../../../server/model';
 import moment from 'moment';
@@ -542,24 +546,24 @@ export function ReportDefinitionDetails(props) {
                 reportDefinitionDetails
               )}
             />
-            <ReportDetailsComponent
-              reportDetailsComponentTitle={'Report header'}
-              reportDetailsComponentContent={
-                reportDefinitionDetails.reportHeader
-              }
-            />
+            <EuiFlexItem />
           </EuiFlexGroup>
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Report footer'}
-              reportDetailsComponentContent={
-                reportDefinitionDetails.reportFooter
-              }
+              reportDetailsComponentTitle={'Report header'}
+              reportDetailsComponentContent={trimAndRenderAsText(
+                reportDefinitionDetails.reportHeader
+              )}
             />
-            <ReportDetailsComponent />
-            <ReportDetailsComponent />
-            <ReportDetailsComponent />
+            <ReportDetailsComponent
+              reportDetailsComponentTitle={'Report footer'}
+              reportDetailsComponentContent={trimAndRenderAsText(
+                reportDefinitionDetails.reportFooter
+              )}
+            />
+            <EuiFlexItem />
+            <EuiFlexItem />
           </EuiFlexGroup>
           <EuiSpacer />
           <EuiTitle>
@@ -575,9 +579,9 @@ export function ReportDefinitionDetails(props) {
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email recipients'}
-              reportDetailsComponentContent={
+              reportDetailsComponentContent={formatEmails(
                 reportDefinitionDetails.emailRecipients
-              }
+              )}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email subject'}
@@ -587,7 +591,9 @@ export function ReportDefinitionDetails(props) {
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Optional message'}
-              reportDetailsComponentContent={reportDefinitionDetails.emailBody}
+              reportDetailsComponentContent={trimAndRenderAsText(
+                reportDefinitionDetails.emailBody
+              )}
             />
             <ReportDetailsComponent />
           </EuiFlexGroup>
