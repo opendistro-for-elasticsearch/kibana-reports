@@ -90,7 +90,7 @@ export function ReportDelivery(props: ReportDeliveryProps) {
     <EuiPageContent panelPaddingSize={'l'}>
       <EuiPageHeader>
         <EuiTitle>
-          <h2>Delivery settings</h2>
+          <h2>Notification settings</h2>
         </EuiTitle>
       </EuiPageHeader>
       <EuiHorizontalRule />
