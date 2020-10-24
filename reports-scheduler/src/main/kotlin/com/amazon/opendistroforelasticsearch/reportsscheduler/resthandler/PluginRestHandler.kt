@@ -37,7 +37,7 @@ internal abstract class PluginRestHandler : BaseRestHandler() {
         const val ID_FIELD = "id"
         const val STATUS_FIELD = "status"
         const val STATUS_TEXT_FIELD = "statusText"
-        const val LAST_UPDATED_TIME_FIELD = "lastUpdatedTimeMs"
+        const val UPDATED_TIME_FIELD = "lastUpdatedTimeMs"
         const val CREATED_TIME_FIELD = "createdTimeMs"
         const val OWNER_ID_FIELD = "ownerId"
         const val USER_ID_FIELD = "userId"

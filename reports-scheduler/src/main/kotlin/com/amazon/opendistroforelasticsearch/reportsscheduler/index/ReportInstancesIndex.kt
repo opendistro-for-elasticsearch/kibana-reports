@@ -20,8 +20,8 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPl
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance.State
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstanceDoc
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.LAST_UPDATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.STATUS_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.UPDATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.USER_ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.SecureIndexClient
@@ -143,7 +143,7 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
         val query = QueryBuilders.matchQuery(USER_ID_FIELD, ownerId)
         val sourceBuilder = SearchSourceBuilder()
             .timeout(TimeValue(PluginSettings.operationTimeoutMs, TimeUnit.MILLISECONDS))
-            .sort(LAST_UPDATED_TIME_FIELD)
+            .sort(UPDATED_TIME_FIELD)
             .size(MAX_ITEMS_TO_QUERY)
             .from(from)
             .query(query)
@@ -242,7 +242,7 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
             parser.nextToken()
             val reportInstance = ReportInstance.parse(parser, it.id)
             if (reportInstance.currentState == State.Scheduled || // If still in Scheduled state
-                reportInstance.lastUpdatedTime.isBefore(refTime)) { // or when timeout happened
+                reportInstance.updatedTime.isBefore(refTime)) { // or when timeout happened
                 mutableList.add(ReportInstanceDoc(reportInstance, it.seqNo, it.primaryTerm))
             }
         }

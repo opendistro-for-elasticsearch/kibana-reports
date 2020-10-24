@@ -16,8 +16,8 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
-import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.CronSchedule
-import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.IntervalSchedule
+import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.Schedule
+import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.ScheduleParser
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.stringList
@@ -28,9 +28,6 @@ import org.elasticsearch.common.xcontent.XContentFactory
 import org.elasticsearch.common.xcontent.XContentParser
 import org.elasticsearch.common.xcontent.XContentParserUtils
 import java.time.Duration
-import java.time.Instant
-import java.time.ZoneId
-import java.time.temporal.ChronoUnit
 
 /**
  * Report definition main data class.
@@ -274,22 +271,11 @@ internal data class ReportDefinition(
      */
     internal data class Trigger(
         val triggerType: TriggerType,
-        val cronSchedule: CronSchedule?,
-        val intervalSchedule: IntervalSchedule?
+        val schedule: Schedule?
     ) : ToXContentObject {
         internal companion object {
             private const val TRIGGER_TYPE_TAG = "triggerType"
-
-            // keeping it same as CronSchedule class
-            private const val CRON_FIELD = "cron"
-            private const val EXPRESSION_FIELD = "expression"
-            private const val TIMEZONE_FIELD = "timezone"
-
-            // keeping it same as IntervalSchedule class
-            private const val START_TIME_FIELD = "start_time"
-            private const val INTERVAL_FIELD = "interval"
-            private const val PERIOD_FIELD = "period"
-            private const val UNIT_FIELD = "unit"
+            private const val SCHEDULE_TAG = "schedule"
 
             /**
              * Parse the data from parser and create Trigger object
@@ -298,76 +284,26 @@ internal data class ReportDefinition(
              */
             fun parse(parser: XContentParser): Trigger {
                 var triggerType: TriggerType? = null
-                var cronSchedule: CronSchedule? = null
-                var intervalSchedule: IntervalSchedule? = null
+                var schedule: Schedule? = null
                 XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
                 while (XContentParser.Token.END_OBJECT != parser.nextToken()) {
                     val fieldName = parser.currentName()
                     parser.nextToken()
                     when (fieldName) {
                         TRIGGER_TYPE_TAG -> triggerType = TriggerType.valueOf(parser.text())
-                        CRON_FIELD -> cronSchedule = parseCron(parser)
-                        INTERVAL_FIELD -> intervalSchedule = parseInterval(parser)
+                        SCHEDULE_TAG -> schedule = ScheduleParser.parse(parser)
                         else -> log.info("$LOG_PREFIX: Trigger Skipping Unknown field $fieldName")
                     }
                 }
                 triggerType ?: throw IllegalArgumentException("$TRIGGER_TYPE_TAG field absent")
-                if (triggerType == TriggerType.CronSchedule) {
-                    cronSchedule ?: throw IllegalArgumentException("$CRON_FIELD field absent")
-                } else if (triggerType == TriggerType.IntervalSchedule) {
-                    intervalSchedule ?: throw IllegalArgumentException("$INTERVAL_FIELD field absent")
+                if (isScheduleType(triggerType)) {
+                    schedule ?: throw IllegalArgumentException("$SCHEDULE_TAG field absent")
                 }
-                return Trigger(triggerType, cronSchedule, intervalSchedule)
+                return Trigger(triggerType, schedule)
             }
 
-            /**
-             * Parse cron expression
-             * @param parser data referenced at parser
-             * @return CronSchedule object
-             */
-            private fun parseCron(parser: XContentParser): CronSchedule {
-                var timezone: ZoneId? = null
-                var expression: String? = null
-                XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
-                while (XContentParser.Token.END_OBJECT != parser.nextToken()) {
-                    val fieldName = parser.currentName()
-                    parser.nextToken()
-                    when (fieldName) {
-                        EXPRESSION_FIELD -> expression = parser.text()
-                        TIMEZONE_FIELD -> timezone = ZoneId.of(parser.text())
-                        else -> log.info("$LOG_PREFIX:CronSchedule Skipping Unknown field $fieldName")
-                    }
-                }
-                timezone ?: throw IllegalArgumentException("$TIMEZONE_FIELD field absent")
-                expression ?: throw IllegalArgumentException("$EXPRESSION_FIELD field absent")
-                return CronSchedule(expression, timezone)
-            }
-
-            /**
-             * Parse interval expression
-             * @param parser data referenced at parser
-             * @return IntervalSchedule object
-             */
-            private fun parseInterval(parser: XContentParser): IntervalSchedule {
-                // Keep same logic as in class [IntervalSchedule]
-                var startTime: Instant? = null
-                var interval = 0
-                var unit: ChronoUnit? = null
-                XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
-                while (XContentParser.Token.END_OBJECT != parser.nextToken()) {
-                    val fieldName = parser.currentName()
-                    parser.nextToken()
-                    when (fieldName) {
-                        START_TIME_FIELD -> startTime = Instant.ofEpochMilli(parser.longValue())
-                        PERIOD_FIELD -> interval = parser.intValue()
-                        UNIT_FIELD -> unit = ChronoUnit.valueOf(parser.text())
-                        else -> log.info("$LOG_PREFIX:IntervalSchedule Skipping Unknown field $fieldName")
-                    }
-                }
-                startTime ?: throw IllegalArgumentException("$START_TIME_FIELD field absent")
-                if (interval <= 0) throw IllegalArgumentException("$PERIOD_FIELD field absent or invalid")
-                unit ?: throw IllegalArgumentException("$UNIT_FIELD field absent")
-                return IntervalSchedule(startTime, interval, unit)
+            fun isScheduleType(triggerType: TriggerType): Boolean {
+                return (triggerType == TriggerType.CronSchedule || triggerType == TriggerType.IntervalSchedule)
             }
         }
 
@@ -378,13 +314,9 @@ internal data class ReportDefinition(
             builder!!
             builder.startObject()
                 .field(TRIGGER_TYPE_TAG, triggerType)
-            if (triggerType == TriggerType.CronSchedule) {
-                cronSchedule!!
-                cronSchedule.toXContent(builder, ToXContent.EMPTY_PARAMS)
-            }
-            if (triggerType == TriggerType.IntervalSchedule) {
-                intervalSchedule!!
-                intervalSchedule.toXContent(builder, ToXContent.EMPTY_PARAMS)
+            if (isScheduleType(triggerType)) {
+                builder.field(SCHEDULE_TAG)
+                schedule!!.toXContent(builder, ToXContent.EMPTY_PARAMS)
             }
             builder.endObject()
             return builder

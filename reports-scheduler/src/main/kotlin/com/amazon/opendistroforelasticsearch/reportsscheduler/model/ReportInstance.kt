@@ -21,11 +21,11 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.Plugin
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.CREATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.END_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.ID_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.LAST_UPDATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.QUERY_URL_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.REPORT_DEFINITION_DETAILS_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.STATUS_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.STATUS_TEXT_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.UPDATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.USER_ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import org.elasticsearch.common.xcontent.ToXContent
@@ -41,7 +41,7 @@ import java.time.Instant
  */
 internal data class ReportInstance(
     val id: String,
-    val lastUpdatedTime: Instant,
+    val updatedTime: Instant,
     val createdTime: Instant,
     val queryUrl: String,
     val beginTime: Instant,
@@ -63,7 +63,7 @@ internal data class ReportInstance(
         @Suppress("ComplexMethod")
         fun parse(parser: XContentParser, useId: String? = null): ReportInstance {
             var id: String? = useId
-            var lastUpdatedTime: Instant? = null
+            var updatedTime: Instant? = null
             var createdTime: Instant? = null
             var queryUrl: String? = null
             var beginTime: Instant? = null
@@ -78,7 +78,7 @@ internal data class ReportInstance(
                 parser.nextToken()
                 when (fieldName) {
                     ID_FIELD -> id = parser.text()
-                    LAST_UPDATED_TIME_FIELD -> lastUpdatedTime = Instant.ofEpochMilli(parser.longValue())
+                    UPDATED_TIME_FIELD -> updatedTime = Instant.ofEpochMilli(parser.longValue())
                     CREATED_TIME_FIELD -> createdTime = Instant.ofEpochMilli(parser.longValue())
                     QUERY_URL_FIELD -> queryUrl = parser.text()
                     BEGIN_TIME_FIELD -> beginTime = Instant.ofEpochMilli(parser.longValue())
@@ -94,7 +94,7 @@ internal data class ReportInstance(
                 }
             }
             id ?: throw IllegalArgumentException("$ID_FIELD field absent")
-            lastUpdatedTime ?: throw IllegalArgumentException("$LAST_UPDATED_TIME_FIELD field absent")
+            updatedTime ?: throw IllegalArgumentException("$UPDATED_TIME_FIELD field absent")
             createdTime ?: throw IllegalArgumentException("$CREATED_TIME_FIELD field absent")
             queryUrl ?: throw IllegalArgumentException("$QUERY_URL_FIELD field absent")
             beginTime ?: throw IllegalArgumentException("$BEGIN_TIME_FIELD field absent")
@@ -102,7 +102,7 @@ internal data class ReportInstance(
             userId ?: throw IllegalArgumentException("$USER_ID_FIELD field absent")
             currentState ?: throw IllegalArgumentException("$STATUS_FIELD field absent")
             return ReportInstance(id,
-                lastUpdatedTime,
+                updatedTime,
                 createdTime,
                 queryUrl,
                 beginTime,
@@ -138,7 +138,7 @@ internal data class ReportInstance(
         if (includeId) {
             builder.field(ID_FIELD, id)
         }
-        builder.field(LAST_UPDATED_TIME_FIELD, lastUpdatedTime.toEpochMilli())
+        builder.field(UPDATED_TIME_FIELD, updatedTime.toEpochMilli())
             .field(CREATED_TIME_FIELD, createdTime.toEpochMilli())
             .field(QUERY_URL_FIELD, queryUrl)
             .field(BEGIN_TIME_FIELD, beginTime.toEpochMilli())

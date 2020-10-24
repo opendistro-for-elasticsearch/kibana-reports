@@ -114,21 +114,21 @@ class ReportsSchedulerPlugin : Plugin(), ActionPlugin, JobSchedulerExtension {
      * {@inheritDoc}
      */
     override fun getJobIndex(): String {
-        return JOB_INDEX_NAME
+        return JOB_INDEX_NAME // return ReportDefinitionsIndex.REPORT_DEFINITIONS_INDEX_NAME
     }
 
     /**
      * {@inheritDoc}
      */
     override fun getJobRunner(): ScheduledJobRunner {
-        return jobRunner
+        return jobRunner // TODO return ReportDefinitionJobRunner
     }
 
     /**
      * {@inheritDoc}
      */
     override fun getJobParser(): ScheduledJobParser {
-        return ScheduledReportJobParser()
+        return ScheduledReportJobParser() // TODO return ReportDefinitionJobParser
     }
 
     /**

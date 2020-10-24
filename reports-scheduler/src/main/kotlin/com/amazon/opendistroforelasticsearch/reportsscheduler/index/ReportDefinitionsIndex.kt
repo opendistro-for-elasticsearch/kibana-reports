@@ -18,8 +18,8 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.index
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinitionDetails
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.LAST_UPDATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.OWNER_ID_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.UPDATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.SecureIndexClient
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
@@ -53,7 +53,7 @@ internal class ReportDefinitionsIndex(client: Client, private val clusterService
 
     companion object {
         private val log by logger(ReportDefinitionsIndex::class.java)
-        private const val REPORT_DEFINITIONS_INDEX_NAME = ".opendistro-reports-definitions"
+        const val REPORT_DEFINITIONS_INDEX_NAME = ".opendistro-reports-definitions"
         private const val REPORT_DEFINITIONS_MAPPING_FILE_NAME = "report-definitions-mapping.yml"
         private const val REPORT_DEFINITIONS_SETTINGS_FILE_NAME = "report-definitions-settings.yml"
         private const val MAPPING_TYPE = "_doc"
@@ -139,7 +139,7 @@ internal class ReportDefinitionsIndex(client: Client, private val clusterService
         val query = QueryBuilders.matchQuery(OWNER_ID_FIELD, ownerId)
         val sourceBuilder = SearchSourceBuilder()
             .timeout(TimeValue(PluginSettings.operationTimeoutMs, TimeUnit.MILLISECONDS))
-            .sort(LAST_UPDATED_TIME_FIELD)
+            .sort(UPDATED_TIME_FIELD)
             .size(MAX_ITEMS_TO_QUERY)
             .from(from)
             .query(query)
