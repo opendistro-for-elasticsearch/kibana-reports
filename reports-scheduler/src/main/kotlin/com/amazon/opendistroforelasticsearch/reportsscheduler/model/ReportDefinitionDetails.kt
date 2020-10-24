@@ -16,15 +16,18 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
+import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobParameter
+import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.Schedule
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinition.TriggerType
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.CREATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.ID_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.LAST_UPDATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.OWNER_ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.REPORT_DEFINITION_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.UPDATED_TIME_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import org.elasticsearch.common.xcontent.ToXContent
-import org.elasticsearch.common.xcontent.ToXContentObject
 import org.elasticsearch.common.xcontent.XContentBuilder
 import org.elasticsearch.common.xcontent.XContentFactory
 import org.elasticsearch.common.xcontent.XContentParser
@@ -36,11 +39,11 @@ import java.time.Instant
  */
 internal data class ReportDefinitionDetails(
     val id: String,
-    val lastUpdatedTime: Instant,
+    val updatedTime: Instant,
     val createdTime: Instant,
     val ownerId: String,
     val reportDefinition: ReportDefinition
-) : ToXContentObject {
+) : ScheduledJobParameter {
     internal companion object {
         private val log by logger(ReportDefinitionDetails::class.java)
 
@@ -51,7 +54,7 @@ internal data class ReportDefinitionDetails(
          */
         fun parse(parser: XContentParser, useId: String? = null): ReportDefinitionDetails {
             var id: String? = useId
-            var lastUpdatedTime: Instant? = null
+            var updatedTime: Instant? = null
             var createdTime: Instant? = null
             var createdBy: String? = null
             var reportDefinition: ReportDefinition? = null
@@ -61,7 +64,7 @@ internal data class ReportDefinitionDetails(
                 parser.nextToken()
                 when (fieldName) {
                     ID_FIELD -> id = parser.text()
-                    LAST_UPDATED_TIME_FIELD -> lastUpdatedTime = Instant.ofEpochMilli(parser.longValue())
+                    UPDATED_TIME_FIELD -> updatedTime = Instant.ofEpochMilli(parser.longValue())
                     CREATED_TIME_FIELD -> createdTime = Instant.ofEpochMilli(parser.longValue())
                     OWNER_ID_FIELD -> createdBy = parser.text()
                     REPORT_DEFINITION_FIELD -> reportDefinition = ReportDefinition.parse(parser)
@@ -72,12 +75,12 @@ internal data class ReportDefinitionDetails(
                 }
             }
             id ?: throw IllegalArgumentException("$ID_FIELD field absent")
-            lastUpdatedTime ?: throw IllegalArgumentException("$LAST_UPDATED_TIME_FIELD field absent")
+            updatedTime ?: throw IllegalArgumentException("$UPDATED_TIME_FIELD field absent")
             createdTime ?: throw IllegalArgumentException("$CREATED_TIME_FIELD field absent")
             createdBy ?: throw IllegalArgumentException("$OWNER_ID_FIELD field absent")
             reportDefinition ?: throw IllegalArgumentException("$REPORT_DEFINITION_FIELD field absent")
             return ReportDefinitionDetails(id,
-                lastUpdatedTime,
+                updatedTime,
                 createdTime,
                 createdBy,
                 reportDefinition)
@@ -93,13 +96,6 @@ internal data class ReportDefinitionDetails(
     }
 
     /**
-     * {@inheritDoc}
-     */
-    override fun toXContent(builder: XContentBuilder?, params: ToXContent.Params?): XContentBuilder {
-        return toXContent(builder, params, false)
-    }
-
-    /**
      * {ref toXContent}
      */
     fun toXContent(builder: XContentBuilder?, params: ToXContent.Params?, includeId: Boolean): XContentBuilder {
@@ -108,12 +104,58 @@ internal data class ReportDefinitionDetails(
         if (includeId) {
             builder.field(ID_FIELD, id)
         }
-        builder.field(LAST_UPDATED_TIME_FIELD, lastUpdatedTime.toEpochMilli())
+        builder.field(UPDATED_TIME_FIELD, updatedTime.toEpochMilli())
             .field(CREATED_TIME_FIELD, createdTime.toEpochMilli())
             .field(OWNER_ID_FIELD, ownerId)
         builder.field(REPORT_DEFINITION_FIELD)
         reportDefinition.toXContent(builder, ToXContent.EMPTY_PARAMS)
         builder.endObject()
         return builder
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    override fun toXContent(builder: XContentBuilder?, params: ToXContent.Params?): XContentBuilder {
+        return toXContent(builder, params, false)
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    override fun getName(): String {
+        return reportDefinition.name
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    override fun getLastUpdateTime(): Instant {
+        return updatedTime
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    override fun getEnabledTime(): Instant {
+        return createdTime
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    override fun getLockDurationSeconds(): Long? {
+        return PluginSettings.jobLockDurationSeconds.toLong()
+    }
+
+    override fun getSchedule(): Schedule {
+        return reportDefinition.trigger.schedule!!
+    }
+
+    override fun isEnabled(): Boolean {
+        val trigger = reportDefinition.trigger
+        return (reportDefinition.isEnabled &&
+            (reportDefinition.trigger.schedule != null) &&
+            (trigger.triggerType == TriggerType.IntervalSchedule || trigger.triggerType == TriggerType.CronSchedule))
     }
 }

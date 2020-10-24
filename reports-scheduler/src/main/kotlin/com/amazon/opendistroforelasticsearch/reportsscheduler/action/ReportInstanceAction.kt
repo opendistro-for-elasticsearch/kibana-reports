@@ -196,7 +196,7 @@ internal class ReportInstanceAction(
             if (state == null || state == State.Scheduled) { // Don't allow changing status to Scheduled
                 throw IllegalArgumentException("$STATUS_FIELD field not valid")
             }
-            val updatedReportInstance = currentReportInstance.copy(lastUpdatedTime = currentTime,
+            val updatedReportInstance = currentReportInstance.copy(updatedTime = currentTime,
                 currentState = state,
                 currentStateDescription = stateDescription)
             val isUpdated = IndexManager.updateReportInstance(updatedReportInstance)
@@ -274,7 +274,7 @@ internal class ReportInstanceAction(
             */
             val lockedJob = reportInstances.subList(0, PluginSettings.maxLockRetries).find {
                 val updatedInstance = it.copy(reportInstance = it.reportInstance.copy(
-                    lastUpdatedTime = currentTime,
+                    updatedTime = currentTime,
                     currentState = State.Executing
                 ))
                 IndexManager.updateReportInstanceDoc(updatedInstance)
