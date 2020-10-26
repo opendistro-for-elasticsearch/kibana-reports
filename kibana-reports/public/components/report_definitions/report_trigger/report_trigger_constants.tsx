@@ -14,7 +14,6 @@
  */
 
 import moment from 'moment-timezone';
-import 'babel-polyfill';
 
 export const TRIGGER_TYPE_OPTIONS = [
   {
