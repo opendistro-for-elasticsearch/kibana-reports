@@ -548,7 +548,7 @@ export function ReportDefinitionDetails(props) {
             />
             <EuiFlexItem />
           </EuiFlexGroup>
-          <EuiSpacer />
+          {/* <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report header'}
@@ -564,7 +564,7 @@ export function ReportDefinitionDetails(props) {
             />
             <EuiFlexItem />
             <EuiFlexItem />
-          </EuiFlexGroup>
+          </EuiFlexGroup> */}
           <EuiSpacer />
           <EuiTitle>
             <h3>Report trigger</h3>
