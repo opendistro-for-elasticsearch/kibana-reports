@@ -81,7 +81,9 @@ export function ReportSettings(props: ReportSettingProps) {
 
   const [reportName, setReportName] = useState('');
   const [reportDescription, setReportDescription] = useState('');
-  const [reportSourceId, setReportSourceId] = useState('dashboardReportSource');
+  const [reportSourceId, setReportSourceId] = useState(
+    REPORT_SOURCE_RADIOS[0].id
+  );
 
   const [dashboardSourceSelect, setDashboardSourceSelect] = useState('');
   const [dashboards, setDashboards] = useState([]);
@@ -94,7 +96,7 @@ export function ReportSettings(props: ReportSettingProps) {
   const [savedSearchSourceSelect, setSavedSearchSourceSelect] = useState('');
   const [savedSearches, setSavedSearches] = useState([]);
 
-  const [fileFormat, setFileFormat] = useState('pdf');
+  const [fileFormat, setFileFormat] = useState('csv');
 
   const handleDashboards = (e) => {
     setDashboards(e);
@@ -516,37 +518,31 @@ export function ReportSettings(props: ReportSettingProps) {
       savedSearch: [],
     };
     reportDefinitionRequest.report_params.core_params.report_format = fileFormat;
-    await httpClientProps
-      .get('../api/reporting/getReportSource/dashboard')
-      .then(async (response) => {
-        let dashboardOptions = getDashboardOptions(response['hits']['hits']);
-        reportSourceOptions.dashboard = dashboardOptions;
-        handleDashboards(dashboardOptions);
-        if (!edit) {
-          setDashboardSourceSelect(dashboardOptions[0].value);
-          reportDefinitionRequest.report_params.report_source = 'Dashboard';
-          reportDefinitionRequest['report_params']['core_params']['base_url'] =
-            getDashboardBaseUrlCreate(edit, editDefinitionId, false) +
-            response['hits']['hits'][0]['_id'].substring(10);
-        }
-      })
-      .catch((error) => {
-        console.log('error when fetching dashboards:', error);
-      });
+    // await httpClientProps
+    //   .get('../api/reporting/getReportSource/dashboard')
+    //   .then(async (response) => {
+    //     let dashboardOptions = getDashboardOptions(response['hits']['hits']);
+    //     reportSourceOptions.dashboard = dashboardOptions;
+    //     handleDashboards(dashboardOptions);
 
-    await httpClientProps
-      .get('../api/reporting/getReportSource/visualization')
-      .then(async (response) => {
-        let visualizationOptions = getVisualizationOptions(
-          response['hits']['hits']
-        );
-        reportSourceOptions.visualizations = visualizationOptions;
-        await handleVisualizations(visualizationOptions);
-        await setVisualizationSourceSelect(visualizationOptions[0].value);
-      })
-      .catch((error) => {
-        console.log('error when fetching visualizations:', error);
-      });
+    //   })
+    //   .catch((error) => {
+    //     console.log('error when fetching dashboards:', error);
+    //   });
+
+    // await httpClientProps
+    //   .get('../api/reporting/getReportSource/visualization')
+    //   .then(async (response) => {
+    //     let visualizationOptions = getVisualizationOptions(
+    //       response['hits']['hits']
+    //     );
+    //     reportSourceOptions.visualizations = visualizationOptions;
+    //     await handleVisualizations(visualizationOptions);
+    //     await setVisualizationSourceSelect(visualizationOptions[0].value);
+    //   })
+    //   .catch((error) => {
+    //     console.log('error when fetching visualizations:', error);
+    //   });
 
     await httpClientProps
       .get('../api/reporting/getReportSource/search')
@@ -556,7 +552,16 @@ export function ReportSettings(props: ReportSettingProps) {
         );
         reportSourceOptions.savedSearch = savedSearchOptions;
         await handleSavedSearches(savedSearchOptions);
-        await setSavedSearchSourceSelect(savedSearchOptions[0].value);
+
+        if (!edit) {
+          setSavedSearchSourceSelect(savedSearchOptions[0].value);
+          reportDefinitionRequest.report_params.core_params.saved_search_id =
+            savedSearchOptions[0].value;
+          reportDefinitionRequest.report_params.report_source = 'Saved search';
+          reportDefinitionRequest['report_params']['core_params']['base_url'] =
+            getSavedSearchBaseUrlCreate(edit, false) +
+            response['hits']['hits'][0]['_id'].substring(7);
+        }
       })
       .catch((error) => {
         console.log('error when fetching saved searches:', error);

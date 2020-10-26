@@ -240,7 +240,7 @@ function locationHashChanged() {
           return;
         }
         const menuItem = document.createElement('div');
-        menuItem.innerHTML = getMenuItem('Reporting');
+        menuItem.innerHTML = getMenuItem('Reporting', !isDiscover());
         navMenu[0].appendChild(menuItem.children[0]);
       } catch (e) {
         console.log(e);

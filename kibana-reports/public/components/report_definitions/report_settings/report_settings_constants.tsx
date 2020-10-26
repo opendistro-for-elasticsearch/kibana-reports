@@ -14,14 +14,14 @@
  */
 
 export const REPORT_SOURCE_RADIOS = [
-  {
-    id: 'dashboardReportSource',
-    label: 'Dashboard',
-  },
-  {
-    id: 'visualizationReportSource',
-    label: 'Visualization',
-  },
+  // {
+  //   id: 'dashboardReportSource',
+  //   label: 'Dashboard',
+  // },
+  // {
+  //   id: 'visualizationReportSource',
+  //   label: 'Visualization',
+  // },
   {
     id: 'savedSearchReportSource',
     label: 'Saved search',

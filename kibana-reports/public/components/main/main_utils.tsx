@@ -65,6 +65,7 @@ export const addReportsTableContent = (data) => {
       url: `${location.host}${report.query_url}`,
       format: reportParams.core_params.report_format,
     };
+    console.log(reportsTableEntry.url);
     reportsTableItems.push(reportsTableEntry);
   }
   return reportsTableItems;

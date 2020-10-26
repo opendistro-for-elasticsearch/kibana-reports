@@ -572,7 +572,7 @@ export function ReportDefinitionDetails(props) {
           <EuiSpacer />
           {triggerSection}
           <EuiSpacer />
-          <EuiTitle>
+          {/* <EuiTitle>
             <h3>Notification settings</h3>
           </EuiTitle>
           <EuiSpacer />
@@ -596,7 +596,7 @@ export function ReportDefinitionDetails(props) {
               )}
             />
             <ReportDetailsComponent />
-          </EuiFlexGroup>
+          </EuiFlexGroup> */}
         </EuiPageContent>
         <EuiGlobalToastList
           toasts={toasts}
