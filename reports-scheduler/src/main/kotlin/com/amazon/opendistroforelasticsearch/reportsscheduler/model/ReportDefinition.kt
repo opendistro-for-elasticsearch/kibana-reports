@@ -133,14 +133,12 @@ internal data class ReportDefinition(
     internal data class Source(
         val description: String,
         val type: SourceType,
-        val id: String,
-        val url: String?
+        val id: String
     ) : ToXContentObject {
         internal companion object {
             private const val DESCRIPTION_TAG = "description"
             private const val TYPE_TAG = "type"
             private const val ID_TAG = "id"
-            private const val URL_TAG = "url"
 
             /**
              * Parse the data from parser and create Source object
@@ -151,7 +149,6 @@ internal data class ReportDefinition(
                 var description: String? = null
                 var type: SourceType? = null
                 var id: String? = null
-                var url: String? = null
                 XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
                 while (XContentParser.Token.END_OBJECT != parser.nextToken()) {
                     val fieldName = parser.currentName()
@@ -160,7 +157,6 @@ internal data class ReportDefinition(
                         DESCRIPTION_TAG -> description = parser.text()
                         TYPE_TAG -> type = SourceType.valueOf(parser.text())
                         ID_TAG -> id = parser.text()
-                        URL_TAG -> url = parser.text()
                         else -> {
                             parser.skipChildren()
                             log.info("$LOG_PREFIX:Source Skipping Unknown field $fieldName")
@@ -172,8 +168,7 @@ internal data class ReportDefinition(
                 id ?: throw IllegalArgumentException("$ID_TAG field absent")
                 return Source(description,
                     type,
-                    id,
-                    url
+                    id
                 )
             }
         }
@@ -187,10 +182,7 @@ internal data class ReportDefinition(
                 .field(DESCRIPTION_TAG, description)
                 .field(TYPE_TAG, type.name)
                 .field(ID_TAG, id)
-            if (url != null) {
-                builder.field(URL_TAG, url)
-            }
-            builder.endObject()
+                .endObject()
             return builder
         }
     }
