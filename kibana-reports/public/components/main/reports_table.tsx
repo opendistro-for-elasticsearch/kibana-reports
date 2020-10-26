@@ -82,6 +82,7 @@ export function ReportsTable(props) {
   const [sortField, setSortField] = useState('timeCreated');
   const [sortDirection, setSortDirection] = useState(SortDirection.desc);
   const [showLoading, setShowLoading] = useState(false);
+  const [message, setMessage] = useState('');
 
   const handleLoading = (e) => {
     setShowLoading(e);
@@ -154,6 +155,7 @@ export function ReportsTable(props) {
       name: 'Name',
       render: (reportName, item) => (
         <EuiLink
+          disabled={item.state === 'Pending'}
           onClick={() => {
             window.location.assign(
               `opendistro_kibana_reports#/report_details/${item.id}`
@@ -165,20 +167,23 @@ export function ReportsTable(props) {
       ),
     },
     {
+      // TODO: link to dashboard/visualization snapshot, use "queryUrl" field. Display dashboard name?
+      field: 'reportSource',
+      name: 'Source',
+      render: (source, item) =>
+        item.state === 'Pending' ? (
+          <EuiText size="s">{source}</EuiText>
+        ) : (
+          <EuiLink href={item.url} target="_blank">
+            {source}
+          </EuiLink>
+        ),
+    },
+    {
       field: 'type',
       name: 'Type',
       sortable: true,
       truncateText: false,
-    },
-    {
-      // TODO: link to dashboard/visualization snapshot, use "queryUrl" field. Display dashboard name?
-      field: 'reportSource',
-      name: 'Source',
-      render: (source, item) => (
-        <EuiLink href={item.url} target="_blank">
-          {source}
-        </EuiLink>
-      ),
     },
     {
       field: 'timeCreated',
@@ -196,14 +201,17 @@ export function ReportsTable(props) {
     },
     {
       field: 'id',
-      name: 'Download',
-      render: (id, item) => {
-        return (
+      name: 'Generate',
+      render: (id, item) =>
+        item.state === 'Pending' ? (
+          <EuiText size="s">
+            {fileFormatsUpper[item.format]} <EuiIcon type="importAction" />
+          </EuiText>
+        ) : (
           <EuiLink onClick={() => onDemandDownload(id)}>
             {fileFormatsUpper[item.format]} <EuiIcon type="importAction" />
           </EuiLink>
-        );
-      },
+        ),
     },
   ];
 
@@ -244,6 +252,11 @@ export function ReportsTable(props) {
     ],
   };
 
+  const displayMessage =
+    reportsTableItems.length === 0
+      ? emptyMessageReports
+      : '0 reports match the search criteria. Search again';
+
   const showLoadingModal = showLoading ? <GenerateReportLoadingModal /> : null;
 
   return (
@@ -252,7 +265,7 @@ export function ReportsTable(props) {
         items={reportsTableItems}
         itemId="id"
         loading={false}
-        message={emptyMessageReports}
+        message={displayMessage}
         columns={reportsTableColumns}
         search={reportsListSearch}
         pagination={pagination}

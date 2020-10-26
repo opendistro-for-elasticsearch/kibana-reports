@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import puppeteer from 'puppeteer';
+import puppeteer, { SetCookie } from 'puppeteer';
 import createDOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 import { Logger } from '../../../../../src/core/server';
@@ -29,7 +29,8 @@ import { CreateReportResultType } from './types';
 export const createVisualReport = async (
   reportParams: any,
   queryUrl: string,
-  logger: Logger
+  logger: Logger,
+  cookie?: SetCookie
 ): Promise<CreateReportResultType> => {
   const coreParams = reportParams.core_params;
   // parse params
@@ -62,29 +63,13 @@ export const createVisualReport = async (
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(0);
   page.setDefaultTimeout(60000); // use 60s timeout instead of default 30s
+  if (cookie) {
+    logger.info('domain enables security, use session cookie to access');
+    await page.setCookie(cookie);
+  }
   logger.info(`original queryUrl ${queryUrl}`);
   await page.goto(queryUrl, { waitUntil: 'networkidle0' });
   logger.info(`page url ${page.url()}`);
-  logger.info(`page url includes login? ${page.url().includes('login')}`);
-
-  /**
-   * TODO: This is a workaround to simulate a login to security enabled domain.
-   * Need better handle.
-   */
-  if (page.url().includes('login')) {
-    logger.info(
-      'domain enables security, redirecting to login page, start simulating login'
-    );
-    await page.type('[placeholder=Username]', 'admin', { delay: 30 });
-    await page.type('[placeholder=Password]', 'admin', { delay: 30 });
-    await page.click("[type='submit']");
-    await page.waitForNavigation();
-    logger.info(
-      `Done logging in, currently at page: ${page.url()} \nGo to queryUrl again`
-    );
-    await page.goto(queryUrl, { waitUntil: 'networkidle0' });
-    logger.info(`wait for network idle, the current page url: ${page.url()}`);
-  }
 
   await page.setViewport({
     width: windowWidth,
@@ -98,8 +83,8 @@ export const createVisualReport = async (
     await page.waitForSelector('#dashboardViewport');
     element = await page.$('#dashboardViewport');
   } else if (reportSource === REPORT_TYPE.visualization) {
-    await page.waitForSelector('.visChart');
-    element = await page.$('.visChart');
+    await page.waitForSelector('.visEditor__visualization');
+    element = await page.$('.visEditor__visualization');
   }
 
   const screenshot = await element.screenshot({ fullPage: false });

@@ -104,18 +104,6 @@ export function ReportDefinitions(props) {
       ),
     },
     {
-      field: 'type',
-      name: 'Type',
-      sortable: true,
-      truncateText: false,
-    },
-    {
-      field: 'owner',
-      name: 'Owner',
-      sortable: true,
-      truncateText: false,
-    },
-    {
       field: 'source',
       name: 'Source',
       render: (value, item) => (
@@ -123,6 +111,18 @@ export function ReportDefinitions(props) {
           {value}
         </EuiLink>
       ),
+    },
+    {
+      field: 'type',
+      name: 'Type',
+      sortable: true,
+      truncateText: false,
+    },
+    {
+      field: 'details',
+      name: 'Schedule details',
+      sortable: false,
+      truncateText: true,
     },
     {
       field: 'lastUpdated',
@@ -133,12 +133,6 @@ export function ReportDefinitions(props) {
       },
     },
     {
-      field: 'details',
-      name: 'Details',
-      sortable: false,
-      truncateText: true,
-    },
-    {
       field: 'status',
       name: 'Status',
       sortable: true,
@@ -146,13 +140,18 @@ export function ReportDefinitions(props) {
     },
   ];
 
+  const displayMessage =
+    reportDefinitionsTableContent.length === 0
+      ? emptyMessageReportDefinitions
+      : '0 report definitions match the search criteria. Search again.';
+
   return (
     <div>
       <EuiInMemoryTable
         items={reportDefinitionsTableContent}
         itemId="id"
         loading={false}
-        message={emptyMessageReportDefinitions}
+        message={displayMessage}
         columns={reportDefinitionsColumns}
         search={reportDefinitionsSearch}
         pagination={pagination}

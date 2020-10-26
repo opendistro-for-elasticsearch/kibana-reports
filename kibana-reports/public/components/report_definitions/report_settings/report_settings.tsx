@@ -52,6 +52,7 @@ import {
   getVisualizationOptions,
   getDashboardBaseUrlCreate,
   getDashboardOptions,
+  handleDataToVisualReportSourceChange,
 } from './report_settings_helpers';
 import { TimeRangeSelect } from './time_range';
 import { converter } from '../utils';
@@ -123,18 +124,34 @@ export function ReportSettings(props: ReportSettingProps) {
 
   const handleReportSource = (e: React.SetStateAction<string>) => {
     setReportSourceId(e);
+    let fromInContext = false;
+    if (window.location.href.includes('?')) {
+      fromInContext = true;
+    }
     if (e === 'dashboardReportSource') {
       reportDefinitionRequest.report_params.report_source = 'Dashboard';
       reportDefinitionRequest.report_params.core_params.base_url =
-        getDashboardBaseUrlCreate(edit, editDefinitionId) + dashboards[0].value;
+        getDashboardBaseUrlCreate(edit, editDefinitionId, fromInContext) +
+        dashboards[0].value;
+
+      // set params to visual report params after switch from saved search
+      handleDataToVisualReportSourceChange(reportDefinitionRequest);
+      setFileFormat('pdf');
     } else if (e === 'visualizationReportSource') {
       reportDefinitionRequest.report_params.report_source = 'Visualization';
       reportDefinitionRequest.report_params.core_params.base_url =
-        getVisualizationBaseUrlCreate(edit) + visualizations[0].value;
+        getVisualizationBaseUrlCreate(edit, fromInContext) +
+        visualizations[0].value;
+
+      // set params to visual report params after switch from saved search
+      handleDataToVisualReportSourceChange(reportDefinitionRequest);
+
+      setFileFormat('pdf');
     } else if (e === 'savedSearchReportSource') {
       reportDefinitionRequest.report_params.report_source = 'Saved search';
       reportDefinitionRequest.report_params.core_params.base_url =
-        getSavedSearchBaseUrlCreate(edit) + savedSearches[0].value;
+        getSavedSearchBaseUrlCreate(edit, fromInContext) +
+        savedSearches[0].value;
       reportDefinitionRequest.report_params.core_params.saved_search_id =
         savedSearches[0].value;
       reportDefinitionRequest.report_params.core_params.report_format = 'csv';
@@ -147,16 +164,25 @@ export function ReportSettings(props: ReportSettingProps) {
     target: { value: React.SetStateAction<string> };
   }) => {
     setDashboardSourceSelect(e.target.value);
+    let fromInContext = false;
+    if (window.location.href.includes('?')) {
+      fromInContext = true;
+    }
     reportDefinitionRequest.report_params.core_params.base_url =
-      getDashboardBaseUrlCreate(edit, editDefinitionId) + e.target.value;
+      getDashboardBaseUrlCreate(edit, editDefinitionId, fromInContext) +
+      e.target.value;
   };
 
   const handleVisualizationSelect = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
     setVisualizationSourceSelect(e.target.value);
+    let fromInContext = false;
+    if (window.location.href.includes('?')) {
+      fromInContext = true;
+    }
     reportDefinitionRequest.report_params.core_params.base_url =
-      getVisualizationBaseUrlCreate(edit) + e.target.value;
+      getVisualizationBaseUrlCreate(edit, fromInContext) + e.target.value;
   };
 
   const handleSavedSearchSelect = (e: {
@@ -204,16 +230,12 @@ export function ReportSettings(props: ReportSettingProps) {
 
     const handleHeader = (e) => {
       setHeader(e);
-      reportDefinitionRequest.report_params.core_params.header = converter.makeHtml(
-        e
-      );
+      reportDefinitionRequest.report_params.core_params.header = e;
     };
 
     const handleFooter = (e) => {
       setFooter(e);
-      reportDefinitionRequest.report_params.core_params.footer = converter.makeHtml(
-        e
-      );
+      reportDefinitionRequest.report_params.core_params.footer = e;
     };
 
     const handleCheckboxHeaderFooter = (optionId) => {
@@ -285,7 +307,7 @@ export function ReportSettings(props: ReportSettingProps) {
             if (footer) {
               checkboxIdSelectHeaderFooter.footer = true;
               if (!unmounted) {
-                setFooter(converter.makeMarkdown(header));
+                setFooter(converter.makeMarkdown(footer));
               }
             }
           })
@@ -296,12 +318,15 @@ export function ReportSettings(props: ReportSettingProps) {
             );
           });
       } else {
-        if (reportDefinitionRequest.report_params.core_params.header != '') {
-          checkboxIdSelectHeaderFooter.header = true;
+        // keeps header/footer from re-rendering empty when other fields in Report Settings are changed
+        checkboxIdSelectHeaderFooter.header =
+          'header' in reportDefinitionRequest.report_params.core_params;
+        checkboxIdSelectHeaderFooter.footer =
+          'footer' in reportDefinitionRequest.report_params.core_params;
+        if (checkboxIdSelectHeaderFooter.header) {
           setHeader(reportDefinitionRequest.report_params.core_params.header);
         }
-        if (reportDefinitionRequest.report_params.core_params.footer != '') {
-          checkboxIdSelectHeaderFooter.footer = true;
+        if (checkboxIdSelectHeaderFooter.footer) {
           setFooter(reportDefinitionRequest.report_params.core_params.footer);
         }
       }
@@ -421,13 +446,27 @@ export function ReportSettings(props: ReportSettingProps) {
     const id = parseInContextUrl(url, 'id');
     if (url.includes('dashboard')) {
       setReportSourceId('dashboardReportSource');
+      reportDefinitionRequest.report_params.report_source =
+        REPORT_SOURCE_RADIOS[0].label;
       setDashboardSourceSelect(id);
+      reportDefinitionRequest.report_params.core_params.base_url =
+        getDashboardBaseUrlCreate(edit, id, true) + id;
     } else if (url.includes('visualize')) {
       setReportSourceId('visualizationReportSource');
+      reportDefinitionRequest.report_params.report_source =
+        REPORT_SOURCE_RADIOS[1].label;
       setVisualizationSourceSelect(id);
+      reportDefinitionRequest.report_params.core_params.base_url =
+        getVisualizationBaseUrlCreate(edit, true) + id;
     } else if (url.includes('discover')) {
       setReportSourceId('savedSearchReportSource');
+      reportDefinitionRequest.report_params.core_params.report_format = 'csv';
+      reportDefinitionRequest.report_params.core_params.saved_search_id = id;
+      reportDefinitionRequest.report_params.report_source =
+        REPORT_SOURCE_RADIOS[2].label;
       setSavedSearchSourceSelect(id);
+      reportDefinitionRequest.report_params.core_params.base_url =
+        getSavedSearchBaseUrlCreate(edit, true) + id;
     }
   };
 
@@ -487,7 +526,7 @@ export function ReportSettings(props: ReportSettingProps) {
           setDashboardSourceSelect(dashboardOptions[0].value);
           reportDefinitionRequest.report_params.report_source = 'Dashboard';
           reportDefinitionRequest['report_params']['core_params']['base_url'] =
-            getDashboardBaseUrlCreate(edit, editDefinitionId) +
+            getDashboardBaseUrlCreate(edit, editDefinitionId, false) +
             response['hits']['hits'][0]['_id'].substring(10);
         }
       })

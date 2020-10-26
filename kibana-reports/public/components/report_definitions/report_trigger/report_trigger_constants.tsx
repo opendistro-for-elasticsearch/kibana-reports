@@ -13,6 +13,8 @@
  * permissions and limitations under the License.
  */
 
+import moment from 'moment';
+
 export const TRIGGER_TYPE_OPTIONS = [
   {
     id: 'On demand',
@@ -31,7 +33,7 @@ export const SCHEDULE_TYPE_OPTIONS = [
   },
   {
     id: 'Cron based',
-    label: 'Cron based',
+    label: 'Cron-based',
   },
 ];
 
@@ -171,8 +173,6 @@ export const MONTHLY_DAY_SELECT_OPTIONS = [
   },
 ];
 
-//TODO: need to figure out what kind of timezone to use for both display and scheduler
-export const TIMEZONE_OPTIONS = [
-  { value: 'PST8PDT', text: 'PST US/Pacific' },
-  { value: 'EST', text: 'EST US/Eastern' },
-];
+export const TIMEZONE_OPTIONS = moment.tz
+  .names()
+  .map((tz) => ({ value: tz, text: tz }));

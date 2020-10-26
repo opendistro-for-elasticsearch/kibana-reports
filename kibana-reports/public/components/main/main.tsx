@@ -102,6 +102,34 @@ export function Main(props) {
     addSuccessOnDemandDownloadToastHandler();
   };
 
+  const addCreateReportDefinitionSuccessToastHandler = () => {
+    const successToast = {
+      title: 'Success',
+      color: 'success',
+      text: <p>Report definition successfully created!</p>,
+      id: 'createReportDefinitionSuccessToast',
+    };
+    setToasts(toasts.concat(successToast));
+  };
+
+  const handleCreateReportDefinitionSuccessToast = () => {
+    addCreateReportDefinitionSuccessToastHandler();
+  };
+
+  const addEditReportDefinitionSuccessToastHandler = () => {
+    const successToast = {
+      title: 'Success',
+      color: 'success',
+      text: <p>Report definition successfully updated!</p>,
+      id: 'editReportDefinitionSuccessToast',
+    };
+    setToasts(toasts.concat(successToast));
+  };
+
+  const handleEditReportDefinitionSuccessToast = () => {
+    addEditReportDefinitionSuccessToastHandler();
+  };
+
   const removeToast = (removedToast) => {
     setToasts(toasts.filter((toast) => toast.id !== removedToast.id));
   };
@@ -118,32 +146,25 @@ export function Main(props) {
         href: '#',
       },
     ]);
-    const { httpClient } = props;
-    console.log("props is", props);
-    console.log("Httpclient is", (httpClient));
-    // get all reports
-    httpClient
-      .get('../api/reporting/reports')
-      .then((response) => {
-        setReportsTableContent(addReportsTableContent(response.data));
-      })
-      .catch((error) => {
-        console.log('error when fetching all reports: ', error);
-        handleReportsTableContentErrorToast();
-      });
+    refreshReportsTable();
+    refreshReportsDefinitionsTable();
 
-    // get all report definitions
-    httpClient
-      .get('../api/reporting/reportDefinitions')
-      .then((response) => {
-        setReportDefinitionsTableContent(
-          addReportDefinitionsTableContent(response.data)
-        );
-      })
-      .catch((error) => {
-        console.log('error when fetching all report definitions: ', error);
-        handleReportDefinitionsTableErrorToast();
-      });
+    if (window.location.href.includes('create=success')) {
+      handleCreateReportDefinitionSuccessToast();
+      // refresh might not fetch the latest changes when coming from create or edit page
+      // workaround to wait 1 second and refresh again
+      setTimeout(() => {
+        refreshReportsTable();
+        refreshReportsDefinitionsTable();
+      }, 1000);
+    } else if (window.location.href.includes('edit=success')) {
+      handleEditReportDefinitionSuccessToast();
+      setTimeout(() => {
+        refreshReportsTable();
+        refreshReportsDefinitionsTable();
+      }, 1000);
+    }
+    window.location.href = 'opendistro_kibana_reports#/';
   }, []);
 
   const refreshReportsTable = async () => {
@@ -152,7 +173,6 @@ export function Main(props) {
       .get('../api/reporting/reports')
       .then((response) => {
         setReportsTableContent(addReportsTableContent(response.data));
-        addReportsTableContent(response.data);
       })
       .catch((error) => {
         console.log('error when fetching all reports: ', error);

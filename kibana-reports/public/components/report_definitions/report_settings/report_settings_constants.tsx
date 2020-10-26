@@ -53,11 +53,11 @@ export const SAVED_SEARCH_FORMAT_OPTIONS = [
 export const HEADER_FOOTER_CHECKBOX = [
   {
     id: 'header',
-    label: 'Header',
+    label: 'Add header',
   },
   {
     id: 'footer',
-    label: 'Footer',
+    label: 'Add footer',
   },
 ];
 export const REPORT_SOURCE_TYPES = {

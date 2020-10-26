@@ -33,8 +33,10 @@ import {
   EuiIcon,
   EuiGlobalToastList,
 } from '@elastic/eui';
-import { fileFormatsUpper } from '../main_utils';
+import { fileFormatsUpper, generateReportById } from '../main_utils';
 import { ReportSchemaType } from '../../../../server/model';
+import { converter } from '../../report_definitions/utils';
+import dateMath from '@elastic/datemath';
 
 export const ReportDetailsComponent = (props) => {
   const { reportDetailsComponentTitle, reportDetailsComponentContent } = props;
@@ -51,6 +53,18 @@ export const ReportDetailsComponent = (props) => {
       </EuiDescriptionList>
     </EuiFlexItem>
   );
+};
+
+// convert markdown to plain text, trim it if it's longer than 3 lines
+export const trimAndRenderAsText = (markdown: string) => {
+  if (!markdown) return markdown;
+  const lines = markdown.split('\n').filter((line) => line);
+  const elements = lines.slice(0, 3).map((line, i) => <p key={i}>{line}</p>);
+  return lines.length <= 3 ? elements : elements.concat(<p key={3}>...</p>);
+};
+
+export const formatEmails = (emails: string[]) => {
+  return Array.isArray(emails) ? emails.join(', ') : emails;
 };
 
 export function ReportDetails(props) {
@@ -73,6 +87,20 @@ export function ReportDetails(props) {
     addErrorToastHandler();
   };
 
+  const addSuccessToastHandler = () => {
+    const successToast = {
+      title: 'Success',
+      color: 'success',
+      text: <p>Report successfully downloaded!</p>,
+      id: 'onDemandDownloadSuccessToast',
+    };
+    setToasts(toasts.concat(successToast));
+  };
+
+  const handleSuccessToast = () => {
+    addSuccessToastHandler();
+  };
+
   const removeToast = (removedToast) => {
     setToasts(toasts.filter((toast) => toast.id !== removedToast.id));
   };
@@ -88,6 +116,34 @@ export function ReportDetails(props) {
       displayDate = readableDate.toLocaleString();
     }
     return displayDate;
+  };
+
+  const parseTimePeriod = (queryUrl: string) => {
+    let timeString = queryUrl.substring(
+      queryUrl.lastIndexOf('time:'),
+      queryUrl.lastIndexOf('))')
+    );
+
+    let fromDateString = timeString.substring(
+      timeString.lastIndexOf('from:') + 5,
+      timeString.lastIndexOf(',')
+    );
+
+    let toDateString = timeString.substring(
+      timeString.lastIndexOf('to:') + 3,
+      timeString.length
+    );
+    fromDateString = fromDateString.replace(/[']+/g, '');
+    toDateString = toDateString.replace(/[']+/g, '');
+
+    let fromDateParsed = dateMath.parse(fromDateString);
+    let toDateParsed = dateMath.parse(toDateString);
+
+    const fromTimePeriod = fromDateParsed?.toDate();
+    const toTimePeriod = toDateParsed?.toDate();
+    return (
+      fromTimePeriod?.toLocaleString() + ' -> ' + toTimePeriod?.toLocaleString()
+    );
   };
 
   const getReportDetailsData = (report: ReportSchemaType) => {
@@ -108,45 +164,35 @@ export function ReportDetails(props) {
     } = delivery;
     const coreParams = reportParams.core_params;
     // covert timestamp to local date-time string
-
     let reportDetails = {
       reportName: reportParams.report_name,
-      description: reportParams.description,
+      description:
+        reportParams.description === '' ? `\u2014` : reportParams.description,
       created: convertTimestamp(report.time_created),
       lastUpdated: convertTimestamp(report.last_updated),
       source: reportParams.report_source,
       // TODO:  we have all data needed, time_from, time_to, time_duration,
       // think of a way to better display
-      time_period: lastUpdated,
+      time_period: parseTimePeriod(queryUrl),
       defaultFileFormat: coreParams.report_format,
       state: state,
-      reportHeader:
-        reportParams.core_params.header != ''
-          ? reportParams.core_params.header
-          : `\u2014`,
-      reportFooter:
-        reportParams.core_params.footer != ''
-          ? reportParams.core_params.footer
-          : `\u2014`,
+      reportHeader: reportParams.core_params.hasOwnProperty('header')
+        ? converter.makeMarkdown(reportParams.core_params.header)
+        : `\u2014`,
+      reportFooter: reportParams.core_params.hasOwnProperty('footer')
+        ? converter.makeMarkdown(reportParams.core_params.footer)
+        : `\u2014`,
       triggerType: triggerType,
       scheduleType: triggerParams ? triggerParams.schedule_type : `\u2014`,
       scheduleDetails: `\u2014`,
       alertDetails: `\u2014`,
       channel: deliveryType,
-      kibanaRecipients: deliveryParams.kibana_recipients
-        ? deliveryParams.kibana_recipients
-        : `\u2014`,
       emailRecipients:
         deliveryType === 'Channel' ? deliveryParams.recipients : `\u2014`,
       emailSubject:
         deliveryType === 'Channel' ? deliveryParams.title : `\u2014`,
       emailBody:
         deliveryType === 'Channel' ? deliveryParams.textDescription : `\u2014`,
-      reportAsAttachment:
-        deliveryType === 'Channel' &&
-        deliveryParams.email_format === 'Attachment'
-          ? 'True'
-          : 'False',
       queryUrl: queryUrl,
     };
     return reportDetails;
@@ -180,7 +226,16 @@ export function ReportDetails(props) {
     let formatUpper = data['defaultFileFormat'];
     formatUpper = fileFormatsUpper[formatUpper];
     return (
-      <EuiLink>
+      <EuiLink
+        onClick={() => {
+          generateReportById(
+            reportId,
+            props.httpClient,
+            handleSuccessToast,
+            handleErrorToast
+          );
+        }}
+      >
         {formatUpper + ' '}
         <EuiIcon type="importAction" />
       </EuiLink>
@@ -244,6 +299,10 @@ export function ReportDetails(props) {
               reportDetailsComponentContent={sourceURL(reportDetails)}
             />
             <ReportDetailsComponent
+              reportDetailsComponentTitle={'Time period'}
+              reportDetailsComponentContent={reportDetails.time_period}
+            />
+            <ReportDetailsComponent
               reportDetailsComponentTitle={'File format'}
               reportDetailsComponentContent={fileFormatDownload(reportDetails)}
             />
@@ -251,17 +310,20 @@ export function ReportDetails(props) {
               reportDetailsComponentTitle={'State'}
               reportDetailsComponentContent={reportDetails['state']}
             />
-            <ReportDetailsComponent />
           </EuiFlexGroup>
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report header'}
-              reportDetailsComponentContent={reportDetails['reportHeader']}
+              reportDetailsComponentContent={trimAndRenderAsText(
+                reportDetails['reportHeader']
+              )}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Report footer'}
-              reportDetailsComponentContent={reportDetails['reportFooter']}
+              reportDetailsComponentContent={trimAndRenderAsText(
+                reportDetails['reportFooter']
+              )}
             />
             <ReportDetailsComponent />
             <ReportDetailsComponent />
@@ -273,7 +335,7 @@ export function ReportDetails(props) {
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Trigger type'}
+              reportDetailsComponentTitle={'Report type'}
               reportDetailsComponentContent={reportDetails['triggerType']}
             />
             <ReportDetailsComponent
@@ -284,47 +346,30 @@ export function ReportDetails(props) {
               reportDetailsComponentTitle={'Schedule details'}
               reportDetailsComponentContent={reportDetails['scheduleDetails']}
             />
-            <ReportDetailsComponent
-              reportDetailsComponentTitle={'Alert details'}
-              reportDetailsComponentContent={reportDetails['alertDetails']}
-            />
+            <ReportDetailsComponent />
           </EuiFlexGroup>
           <EuiSpacer />
           <EuiTitle>
-            <h3>Delivery settings</h3>
+            <h3>Notification settings</h3>
           </EuiTitle>
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Channel'}
-              reportDetailsComponentContent={reportDetails['channel']}
-            />
-            <ReportDetailsComponent
-              reportDetailsComponentTitle={'Kibana recipient(s)'}
-              reportDetailsComponentContent={reportDetails['kibanaRecipients']}
-            />
-            <ReportDetailsComponent
               reportDetailsComponentTitle={'Email recipient(s)'}
-              reportDetailsComponentContent={reportDetails['emailRecipients']}
+              reportDetailsComponentContent={formatEmails(
+                reportDetails['emailRecipients']
+              )}
             />
             <ReportDetailsComponent
               reportDetailsComponentTitle={'Email subject'}
               reportDetailsComponentContent={reportDetails['emailSubject']}
             />
-          </EuiFlexGroup>
-          <EuiSpacer />
-          <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Email body'}
-              reportDetailsComponentContent={reportDetails['emailBody']}
+              reportDetailsComponentTitle={'Optional message'}
+              reportDetailsComponentContent={trimAndRenderAsText(
+                reportDetails['emailBody']
+              )}
             />
-            <ReportDetailsComponent
-              reportDetailsComponentTitle={'Include report as attachment'}
-              reportDetailsComponentContent={
-                reportDetails['reportAsAttachment']
-              }
-            />
-            <ReportDetailsComponent />
             <ReportDetailsComponent />
           </EuiFlexGroup>
         </EuiPageContent>

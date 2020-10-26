@@ -13,58 +13,14 @@
  * permissions and limitations under the License.
  */
 
-import {
-  EuiComboBox,
-  EuiFieldText,
-  EuiFormRow,
-  EuiLink,
-  EuiListGroup,
-  EuiPopover,
-  EuiRadioGroup,
-  EuiSpacer,
-  EuiText,
-} from '@elastic/eui';
+import { EuiComboBox, EuiFieldText, EuiFormRow, EuiSpacer } from '@elastic/eui';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import {
-  EMAIL_FORMAT_OPTIONS,
-  EMAIL_RECIPIENT_OPTIONS,
-} from './delivery_constants';
 import ReactMDE from 'react-mde';
 import { ReportDeliveryProps } from './delivery';
-import {
-  ChannelSchemaType,
-  DeliverySchemaType,
-  KibanaUserSchemaType,
-} from 'server/model';
+import { ChannelSchemaType, DeliverySchemaType } from 'server/model';
 import { converter } from '../utils';
-
-const INSERT_PLACEHOLDER_OPTIONS = [
-  {
-    label: 'Report details URL',
-    href: '#',
-    iconType: 'link',
-    size: 's',
-  },
-  {
-    label: 'Report source URL',
-    href: '#',
-    iconType: 'link',
-    size: 's',
-  },
-  {
-    label: 'File download URL',
-    href: '#',
-    iconType: 'link',
-    size: 's',
-  },
-  {
-    label: 'Report creation timestamp',
-    href: '#',
-    iconType: 'clock',
-    size: 's',
-  },
-];
+import { DELIVERY_TYPE_OPTIONS } from './delivery_constants';
 
 export const EmailDelivery = (props: ReportDeliveryProps) => {
   const {
@@ -76,40 +32,12 @@ export const EmailDelivery = (props: ReportDeliveryProps) => {
   } = props;
 
   const [emailRecipients, setEmailRecipients] = useState([]);
+  const [selectedEmailRecipients, setSelectedEmailRecipients] = useState([]);
   const [emailSubject, setEmailSubject] = useState('');
   const [emailBody, setEmailBody] = useState('');
-  const [emailFormat, setEmailFormat] = useState(EMAIL_FORMAT_OPTIONS[0].id);
   const [selectedTab, setSelectedTab] = React.useState<'write' | 'preview'>(
     'write'
   );
-  const [insertPlaceholder, setInsertPlaceholder] = useState(false);
-
-  const handleInsertPlaceholderClick = () => {
-    setInsertPlaceholder((insertPlaceholder) => !insertPlaceholder);
-  };
-  const closeInsertPlaceholder = () => setInsertPlaceholder(false);
-
-  const placeholderInsert = (
-    <EuiText size="xs">
-      <EuiLink onClick={handleInsertPlaceholderClick}>
-        Insert placeholder
-      </EuiLink>
-    </EuiText>
-  );
-
-  const InsertPlaceholderPopover = () => {
-    return (
-      <div>
-        <EuiPopover
-          button={placeholderInsert}
-          isOpen={insertPlaceholder}
-          closePopover={closeInsertPlaceholder}
-        >
-          <EuiListGroup listItems={INSERT_PLACEHOLDER_OPTIONS} />
-        </EuiPopover>
-      </div>
-    );
-  };
 
   const handleCreateEmailRecipient = (
     searchValue: string,
@@ -131,15 +59,14 @@ export const EmailDelivery = (props: ReportDeliveryProps) => {
         (option) => option.label.trim().toLowerCase() === normalizedSearchValue
       ) === -1
     ) {
-      EMAIL_RECIPIENT_OPTIONS.push(newOption);
+      setEmailRecipients([...emailRecipients, newOption]);
     }
 
-    // Select the option.
-    handleEmailRecipients([...emailRecipients, newOption]);
+    handleSelectEmailRecipients([...selectedEmailRecipients, newOption]);
   };
 
-  const handleEmailRecipients = (e) => {
-    setEmailRecipients(e);
+  const handleSelectEmailRecipients = (e) => {
+    setSelectedEmailRecipients(e);
     reportDefinitionRequest.delivery.delivery_params.recipients = e.map(
       (option) => option.label
     );
@@ -148,11 +75,6 @@ export const EmailDelivery = (props: ReportDeliveryProps) => {
   const handleEmailSubject = (e) => {
     setEmailSubject(e.target.value);
     reportDefinitionRequest.delivery.delivery_params.title = e.target.value;
-  };
-
-  const handleEmailFormat = (e) => {
-    setEmailFormat(e);
-    reportDefinitionRequest.delivery.delivery_params.email_format = e;
   };
 
   const handleEmailBody = (e) => {
@@ -164,42 +86,35 @@ export const EmailDelivery = (props: ReportDeliveryProps) => {
   };
 
   // TODO: need better handling when we add full support for kibana user report delivery
-  const emailBodyLabel =
-    emailFormat === 'Embedded HTML'
-      ? `Add optional message (${selectedTab} mode)`
-      : `Email body (${selectedTab} mode)`;
-
-  const showPlaceholder =
-    emailFormat === 'Embedded HTML' ? null : <InsertPlaceholderPopover />;
+  const optionalMessageLabel = `Add optional message (${selectedTab} mode)`;
 
   const defaultEditDeliveryParams = (delivery: DeliverySchemaType) => {
     //TODO: need better handle?
-    if (delivery.delivery_type === 'Kibana user') {
-      //@ts-ignore
-      const kibanaUserParams: KibanaUserSchemaType = delivery.delivery_params;
-      const { kibana_recipients } = kibanaUserParams;
+    // if the original notification setting is kibana user
+    if (delivery.delivery_type === DELIVERY_TYPE_OPTIONS[0].id) {
       defaultCreateDeliveryParams();
       delete reportDefinitionRequest.delivery.delivery_params.kibana_recipients;
     } else {
       //@ts-ignore
       const emailParams: ChannelSchemaType = delivery.delivery_params;
-      const { recipients, title, textDescription, email_format } = emailParams;
+      const { recipients, title, textDescription } = emailParams;
 
-      recipients.map((emailRecipient) =>
-        handleCreateEmailRecipient(emailRecipient, emailRecipients)
-      );
+      const recipientsOptions = recipients.map((email) => ({ label: email }));
+      handleSelectEmailRecipients(recipientsOptions);
+      setEmailRecipients(recipientsOptions);
+
       setEmailSubject(title);
       reportDefinitionRequest.delivery.delivery_params.title = title;
+      reportDefinitionRequest.delivery.delivery_params.origin = location.origin;
       handleEmailBody(textDescription);
-      handleEmailFormat(email_format);
     }
   };
 
   const defaultCreateDeliveryParams = () => {
     reportDefinitionRequest.delivery.delivery_params = {
-      recipients: emailRecipients.map((option) => option.label),
+      recipients: selectedEmailRecipients.map((option) => option.label),
       title: emailSubject,
-      email_format: emailFormat,
+      origin: location.origin,
       //TODO: need better render
       textDescription: emailBody,
       htmlDescription: converter.makeHtml(emailBody),
@@ -227,20 +142,12 @@ export const EmailDelivery = (props: ReportDeliveryProps) => {
       >
         <EuiComboBox
           placeholder={'Add users here'}
-          options={EMAIL_RECIPIENT_OPTIONS}
-          selectedOptions={emailRecipients}
-          onChange={handleEmailRecipients}
+          options={emailRecipients}
+          selectedOptions={selectedEmailRecipients}
+          onChange={handleSelectEmailRecipients}
           onCreateOption={handleCreateEmailRecipient}
           isClearable={true}
           data-test-subj="demoComboBox"
-        />
-      </EuiFormRow>
-      <EuiSpacer />
-      <EuiFormRow label="Email format">
-        <EuiRadioGroup
-          options={EMAIL_FORMAT_OPTIONS}
-          idSelected={emailFormat}
-          onChange={handleEmailFormat}
         />
       </EuiFormRow>
       <EuiSpacer />
@@ -252,11 +159,7 @@ export const EmailDelivery = (props: ReportDeliveryProps) => {
         />
       </EuiFormRow>
       <EuiSpacer />
-      <EuiFormRow
-        label={emailBodyLabel}
-        labelAppend={showPlaceholder}
-        fullWidth={true}
-      >
+      <EuiFormRow label={optionalMessageLabel} fullWidth={true}>
         <ReactMDE
           value={emailBody}
           onChange={handleEmailBody}

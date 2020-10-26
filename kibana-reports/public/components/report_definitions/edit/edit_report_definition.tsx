@@ -29,9 +29,12 @@ import { ReportSettings } from '../report_settings';
 import { ReportDelivery } from '../delivery';
 import { ReportTrigger } from '../report_trigger';
 import { ReportDefinitionSchemaType } from 'server/model';
+import { converter } from '../utils';
 
 export function EditReportDefinition(props) {
   const [toasts, setToasts] = useState([]);
+  const [comingFromError, setComingFromError] = useState(false);
+  const [preErrorData, setPreErrorData] = useState({});
 
   const addErrorUpdatingReportDefinitionToast = () => {
     const errorToast = {
@@ -89,11 +92,16 @@ export function EditReportDefinition(props) {
     last_updated: 0,
     status: '',
   };
+  reportDefinition = editReportDefinitionRequest; // initialize reportDefinition object
 
   let timeRange = {
     timeFrom: new Date(),
     timeTo: new Date(),
   };
+
+  if (comingFromError) {
+    editReportDefinitionRequest = preErrorData;
+  }
 
   const callUpdateAPI = async (metadata) => {
     const { httpClient } = props;
@@ -104,16 +112,28 @@ export function EditReportDefinition(props) {
         params: reportDefinitionId.toString(),
       })
       .then(async () => {
-        window.location.assign(`opendistro_kibana_reports#/`);
+        window.location.assign(`opendistro_kibana_reports#/edit=success`);
       })
       .catch((error) => {
         console.error('error in updating report definition:', error);
         handleErrorUpdatingReportDefinitionToast();
+        setPreErrorData(metadata);
+        setComingFromError(true);
       });
   };
 
   const editReportDefinition = async (metadata) => {
     const { httpClient } = props;
+    if ('header' in metadata.report_params.core_params) {
+      metadata.report_params.core_params.header = converter.makeHtml(
+        metadata.report_params.core_params.header
+      );
+    }
+    if ('footer' in metadata.report_params.core_params) {
+      metadata.report_params.core_params.footer = converter.makeHtml(
+        metadata.report_params.core_params.footer
+      );
+    }
     /*
       we check if this editing updates the trigger type from Schedule to On demand. 
       If so, need to first delete the reportDefinition along with the scheduled job first, by calling the delete
@@ -144,6 +164,7 @@ export function EditReportDefinition(props) {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const { httpClient } = props;
     httpClient
       .get(`../api/reporting/reportDefinitions/${reportDefinitionId}`)

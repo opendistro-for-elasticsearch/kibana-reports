@@ -18,20 +18,21 @@ import {
   IRouter,
   IKibanaResponse,
   ResponseError,
-  RequestHandlerContext,
-  KibanaRequest,
-  ILegacyScopedClusterClient,
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 import { RequestParams } from '@elastic/elasticsearch';
 import { reportDefinitionSchema, ReportDefinitionSchemaType } from '../model';
-import { errorResponse } from './utils/helpers';
 import {
-  REPORT_DEFINITION_STATUS,
+  errorResponse,
+  saveReportDefinition,
+  updateReportDefinition,
+} from './utils/helpers';
+import {
   TRIGGER_TYPE,
   CONFIG_INDEX_NAME,
   DEFAULT_MAX_SIZE,
 } from './utils/constants';
+import { createSchedule } from './lib/createSchedule';
 
 export default function (router: IRouter) {
   // Create report Definition
@@ -48,6 +49,7 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       let reportDefinition = request.body;
+      const esClient = context.core.elasticsearch.legacy.client;
       //@ts-ignore
       const logger = context.reporting_plugin.logger;
       // input validation
@@ -63,32 +65,11 @@ export default function (router: IRouter) {
       // save metadata
       // TODO: consider create uuid manually and save report after it's scheduled with reports-scheduler
       try {
-        const toSave = {
-          report_definition: {
-            ...reportDefinition,
-            time_created: Date.now(),
-            last_updated: Date.now(),
-            status: REPORT_DEFINITION_STATUS.active,
-          },
-        };
-
-        const params: RequestParams.Index = {
-          index: CONFIG_INDEX_NAME.reportDefinition,
-          body: toSave,
-        };
-
-        const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
-          'index',
-          params
-        );
-
+        // save report definition to ES
+        const esResp = await saveReportDefinition(reportDefinition, esClient);
         // create scheduled job by reports-scheduler
         const reportDefinitionId = esResp._id;
-        const res = await createScheduledJob(
-          request,
-          reportDefinitionId,
-          context
-        );
+        const res = await createSchedule(request, reportDefinitionId, context);
 
         return response.ok({
           body: {
@@ -119,61 +100,30 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
-      const reportDefinition: ReportDefinitionSchemaType = request.body;
+      let reportDefinition = request.body;
       const savedReportDefinitionId = request.params.reportDefinitionId;
+      const esClient = context.core.elasticsearch.legacy.client;
       //@ts-ignore
       const logger = context.reporting_plugin.logger;
       // input validation
       try {
-        reportDefinitionSchema.validate(reportDefinition);
+        reportDefinition = reportDefinitionSchema.validate(reportDefinition);
       } catch (error) {
         logger.error(
           `Failed input validation for update report definition ${error}`
         );
         return response.badRequest({ body: error });
       }
-
-      let newStatus = REPORT_DEFINITION_STATUS.active;
-      /* 
-      "enabled = false" means de-scheduling a job.
-      TODO: also need to remove any job in queue and release lock, consider do that
-      within the createSchedule API exposed from reports-scheduler
-      */
-      if (reportDefinition.trigger.trigger_type == TRIGGER_TYPE.schedule) {
-        const enabled = reportDefinition.trigger.trigger_params.enabled;
-        if (enabled) {
-          newStatus = REPORT_DEFINITION_STATUS.active;
-        } else {
-          newStatus = REPORT_DEFINITION_STATUS.disabled;
-        }
-      }
-
       // Update report definition metadata
       try {
-        const toUpdate = {
-          report_definition: {
-            ...reportDefinition,
-            last_updated: Date.now(),
-            status: newStatus,
-          },
-        };
-
-        const params: RequestParams.Index = {
-          id: savedReportDefinitionId,
-          index: CONFIG_INDEX_NAME.reportDefinition,
-          body: toUpdate,
-        };
-        const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
-          'index',
-          params
+        const esResp = await updateReportDefinition(
+          savedReportDefinitionId,
+          reportDefinition,
+          esClient
         );
         // update scheduled job by calling reports-scheduler
         const reportDefinitionId = esResp._id;
-        const res = await createScheduledJob(
-          request,
-          reportDefinitionId,
-          context
-        );
+        const res = await createSchedule(request, reportDefinitionId, context);
 
         return response.ok({
           body: {
@@ -348,53 +298,4 @@ export default function (router: IRouter) {
       }
     }
   );
-}
-
-async function createScheduledJob(
-  request: KibanaRequest,
-  reportDefinitionId: string,
-  context: RequestHandlerContext
-) {
-  const reportDefinition: ReportDefinitionSchemaType = request.body;
-  const trigger = reportDefinition.trigger;
-  const triggerType = trigger.trigger_type;
-  const triggerParams = trigger.trigger_params;
-
-  // @ts-ignore
-  const schedulerClient: ILegacyScopedClusterClient = context.reporting_plugin.schedulerClient.asScoped(
-    request
-  );
-
-  if (triggerType === TRIGGER_TYPE.schedule) {
-    const schedule = triggerParams.schedule;
-
-    // compose the request body
-    const scheduledJob = {
-      schedule: schedule,
-      name: `${reportDefinition.report_params.report_name}_schedule`,
-      enabled: triggerParams.enabled,
-      report_definition_id: reportDefinitionId,
-      enabled_time: triggerParams.enabled_time,
-    };
-    // send to reports-scheduler to create a scheduled job
-    const res = await schedulerClient.callAsCurrentUser(
-      'reports_scheduler.createSchedule',
-      {
-        jobId: reportDefinitionId,
-        body: scheduledJob,
-      }
-    );
-
-    return res;
-  } else if (triggerType == TRIGGER_TYPE.onDemand) {
-    /*
-     * TODO: return nothing for on Demand report, because currently on-demand report is handled by client side,
-     * by hitting the create report http endpoint with data to get a report downloaded. Server side only saves
-     * that on-demand report definition into the index. Need further discussion on what behavior we want
-     * await createReport(reportDefinition, esClient);
-     */
-    return;
-  }
-  // else if (triggerType == TRIGGER_TYPE.alerting) {
-  //TODO: add alert-based scheduling logic [enhancement feature]
 }
