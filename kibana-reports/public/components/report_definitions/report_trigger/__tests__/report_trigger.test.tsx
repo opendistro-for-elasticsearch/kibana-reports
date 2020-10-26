@@ -145,7 +145,6 @@ describe('<ReportTrigger /> panel', () => {
       report_definition,
     });
 
-    // var test = ReportTrigger.defaultConfigurationEdit();
     const { container } = render(
       <ReportTrigger
         edit={true}
