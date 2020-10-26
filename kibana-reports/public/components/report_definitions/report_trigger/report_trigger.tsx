@@ -611,11 +611,11 @@ export function ReportTrigger(props: ReportTriggerProps) {
   const schedule =
     reportTriggerType === 'Schedule' ? <ScheduleTrigger /> : null;
 
-  const defaultEditTriggerType = (trigger_type) => {
+  const defaultEditTriggerType = (trigger_type, trigger) => {
     let index = 0;
     for (index; index < TRIGGER_TYPE_OPTIONS.length; ++index) {
       if (TRIGGER_TYPE_OPTIONS[index].id === trigger_type) {
-        setReportTriggerType(TRIGGER_TYPE_OPTIONS[index].id);
+        setReportTriggerType(trigger_type);
       }
     }
   };
@@ -642,7 +642,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
   };
 
   const defaultConfigurationEdit = (trigger) => {
-    defaultEditTriggerType(trigger.trigger_type);
+    defaultEditTriggerType(trigger.trigger_type, trigger);
     if (trigger.trigger_type === 'Schedule') {
       defaultEditScheduleFrequency(trigger.trigger_params);
       defaultEditRequestType(trigger);
@@ -657,7 +657,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
       httpClientProps
         .get(`../api/reporting/reportDefinitions/${editDefinitionId}`)
         .then(async (response) => {
-          defaultConfigurationEdit(response.report_definition.trigger);
+          await defaultConfigurationEdit(response.report_definition.trigger);
           reportDefinitionRequest.trigger = response.report_definition.trigger;
         });
     }

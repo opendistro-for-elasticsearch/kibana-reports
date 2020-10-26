@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<ReportTrigger /> panel render component 1`] = `
+exports[`<ReportTrigger /> panel Render edit on-demand component 1`] = `
 <div
   class="euiPanel euiPanel--paddingLarge euiPageContent"
 >
@@ -352,7 +352,7 @@ exports[`<ReportTrigger /> panel render edit recurring 5 hours schedule componen
 </div>
 `;
 
-exports[`<ReportTrigger /> panel render edit recurring daily schedule component 1`] = `
+exports[`<ReportTrigger /> panel render edit recurring 10 minutes schedule component 1`] = `
 <div
   class="euiPanel euiPanel--paddingLarge euiPageContent"
 >
@@ -440,7 +440,7 @@ exports[`<ReportTrigger /> panel render edit recurring daily schedule component 
 </div>
 `;
 
-exports[`<ReportTrigger /> panel try testing individual component in trigger 1`] = `
+exports[`<ReportTrigger /> panel render edit recurring daily schedule component 1`] = `
 <div
   class="euiPanel euiPanel--paddingLarge euiPageContent"
 >

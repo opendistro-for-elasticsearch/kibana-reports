@@ -13,7 +13,8 @@
  * permissions and limitations under the License.
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
+import 'babel-polyfill';
 
 export const TRIGGER_TYPE_OPTIONS = [
   {
