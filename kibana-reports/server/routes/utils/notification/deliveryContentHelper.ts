@@ -31,7 +31,8 @@ export const composeEmbeddedHtml = (
   const $ = cheerio.load(
     fs.readFileSync(
       `${__dirname}/notification_content_template/email_content_template.html`
-    )
+    ),
+    { decodeEntities: false }
   );
   // set each link and logo
   $('.logo').attr('src', `data:image/png;base64,${logoAsBase64}`);
