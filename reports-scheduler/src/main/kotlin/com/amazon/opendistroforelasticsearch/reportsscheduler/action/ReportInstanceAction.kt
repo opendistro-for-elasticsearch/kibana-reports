@@ -24,7 +24,7 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstan
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.BEGIN_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.END_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.ID_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.QUERY_URL_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.IN_CONTEXT_DOWNLOAD_URL_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.REPORT_DEFINITION_DETAILS_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.REPORT_INSTANCE_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.REPORT_INSTANCE_LIST_FIELD
@@ -69,18 +69,18 @@ internal class ReportInstanceAction(
         val currentTime = Instant.now()
         val parser = request.contentParser()
         parser.nextToken()
-        var queryUrl: String? = null
         var beginTime: Instant? = null
         var endTime: Instant? = null
         var currentState: State = State.Success
         var currentStateDescription: String? = null
+        var inContextDownloadUrlPath: String? = null
         var reportDefinitionDetails: ReportDefinitionDetails? = null
         XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
         while (XContentParser.Token.END_OBJECT != parser.nextToken()) {
             val fieldName = parser.currentName()
             parser.nextToken()
             when (fieldName) {
-                QUERY_URL_FIELD -> queryUrl = parser.text()
+                IN_CONTEXT_DOWNLOAD_URL_FIELD -> inContextDownloadUrlPath = parser.text()
                 BEGIN_TIME_FIELD -> beginTime = Instant.ofEpochMilli(parser.longValue())
                 END_TIME_FIELD -> endTime = Instant.ofEpochMilli(parser.longValue())
                 STATUS_FIELD -> currentState = State.valueOf(parser.text())
@@ -92,19 +92,18 @@ internal class ReportInstanceAction(
                 }
             }
         }
-        queryUrl ?: throw IllegalArgumentException("$QUERY_URL_FIELD field absent")
         beginTime ?: throw IllegalArgumentException("$BEGIN_TIME_FIELD field absent")
         endTime ?: throw IllegalArgumentException("$END_TIME_FIELD field absent")
         val reportInstance = ReportInstance("ignore",
             currentTime,
             currentTime,
-            queryUrl,
             beginTime,
             endTime,
             TEMP_OWNER_ID, // TODO validate userId actual requester ID
+            reportDefinitionDetails,
             currentState,
             currentStateDescription,
-            reportDefinitionDetails)
+            inContextDownloadUrlPath)
         val docId = IndexManager.createReportInstance(reportInstance)
         if (docId == null) {
             response.startObject()
@@ -134,20 +133,17 @@ internal class ReportInstanceAction(
                 .field(STATUS_TEXT_FIELD, "Report Definition $reportDefinitionId not found")
                 .endObject()
         } else {
-            val queryUrl: String = reportDefinitionDetails.reportDefinition.source.url!! // TODO to generate URL
             val beginTime: Instant = currentTime.minus(reportDefinitionDetails.reportDefinition.format.duration)
             val endTime: Instant = currentTime
             val currentState: State = State.Executing
             val reportInstance = ReportInstance("ignore",
                 currentTime,
                 currentTime,
-                queryUrl,
                 beginTime,
                 endTime,
                 reportDefinitionDetails.ownerId,
-                currentState,
-                null,
-                reportDefinitionDetails)
+                reportDefinitionDetails,
+                currentState)
             val docId = IndexManager.createReportInstance(reportInstance)
             if (docId == null) {
                 response.startObject()

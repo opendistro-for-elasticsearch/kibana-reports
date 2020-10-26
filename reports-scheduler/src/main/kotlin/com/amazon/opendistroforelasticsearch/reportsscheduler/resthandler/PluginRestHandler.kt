@@ -44,7 +44,7 @@ internal abstract class PluginRestHandler : BaseRestHandler() {
         const val REPORT_DEFINITION_LIST_FIELD = "reportDefinitionDetailsList"
         const val REPORT_INSTANCE_LIST_FIELD = "reportInstanceList"
         const val REPORT_INSTANCE_FIELD = "reportInstance"
-        const val QUERY_URL_FIELD = "queryUrl"
+        const val IN_CONTEXT_DOWNLOAD_URL_FIELD = "inContextDownloadUrlPath"
         const val BEGIN_TIME_FIELD = "beginTimeMs"
         const val END_TIME_FIELD = "endTimeMs"
         const val REPORT_DEFINITION_FIELD = "reportDefinition"

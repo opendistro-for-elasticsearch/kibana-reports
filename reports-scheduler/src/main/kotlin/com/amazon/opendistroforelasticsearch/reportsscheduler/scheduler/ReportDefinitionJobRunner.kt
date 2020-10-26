@@ -46,14 +46,11 @@ internal object ReportDefinitionJobRunner : ScheduledJobRunner {
             val reportInstance = ReportInstance(context.jobId,
                 currentTime,
                 currentTime,
-                "queryUrl", // TODO generate query url
                 beginTime,
                 endTime,
                 reportDefinitionDetails.ownerId,
-                ReportInstance.State.Scheduled,
-                null,
-                reportDefinitionDetails
-            )
+                reportDefinitionDetails,
+                ReportInstance.State.Scheduled)
             val id = IndexManager.createReportInstance(reportInstance)
             if (id == null) {
                 log.warn("$LOG_PREFIX:runJob-job creation failed for $reportInstance")
