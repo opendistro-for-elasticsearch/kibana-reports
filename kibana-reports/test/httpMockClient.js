@@ -17,6 +17,7 @@ const httpClientMock = jest.fn();
 
 httpClientMock.delete = jest.fn();
 httpClientMock.get = jest.fn(() => ({
+  
   then: jest.fn(() => ({ 
     catch: jest.fn() 
   })),
