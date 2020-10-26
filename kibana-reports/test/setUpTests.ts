@@ -15,6 +15,3 @@
 
 require('babel-polyfill');
 require('core-js/stable');
-import fetchMock from 'jest-fetch-mock';
-
-fetchMock.enableMocks();
