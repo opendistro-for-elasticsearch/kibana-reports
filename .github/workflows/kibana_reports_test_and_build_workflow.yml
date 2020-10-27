@@ -17,7 +17,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: '10.22.0'
+          node-version: "10.22.0"
       - name: Move Kibana Reports to Plugins Dir
         run: |
           mkdir kibana/plugins
@@ -30,6 +30,7 @@ jobs:
           command: cd kibana/plugins/kibana-reports; yarn kbn bootstrap
       - name: Build Artifact
         run: |
+          cd kibana/plugins/kibana-reports
           yarn build
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
