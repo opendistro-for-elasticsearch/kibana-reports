@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 export const TRIGGER_TYPE_OPTIONS = [
   {
