@@ -8,5 +8,4 @@ yarn-error.log
 .DS_Store
 .history/
 .eslintcache
-target
 package-lock.json
