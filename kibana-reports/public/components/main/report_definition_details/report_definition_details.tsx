@@ -171,7 +171,7 @@ export function ReportDefinitionDetails(props) {
     setReportDefinitionDetails(e);
   };
 
-  const handleReportDefinitionRawResponse = async (e) => {
+  const handleReportDefinitionRawResponse = (e) => {
     setReportDefinitionRawResponse(e);
   };
 
@@ -291,8 +291,8 @@ export function ReportDefinitionDetails(props) {
     const { httpClient } = props;
     httpClient
       .get(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
-      .then(async (response) => {
-        setReportDefinitionRawResponse(response);
+      .then((response) => {
+        handleReportDefinitionRawResponse(response);
         handleReportDefinitionDetails(
           getReportDefinitionDetailsMetadata(response)
         );
@@ -381,10 +381,7 @@ export function ReportDefinitionDetails(props) {
       reportDefinitionDetails.status === 'Active' ? 'Disable' : 'Enable';
 
     return (
-      <EuiButton 
-        onClick={async () => changeScheduledReportDefinitionStatus(status)}
-        className="changeDefinitionStatusButton"
-      >
+      <EuiButton onClick={() => changeScheduledReportDefinitionStatus(status)}>
         {status}
       </EuiButton>
     );
