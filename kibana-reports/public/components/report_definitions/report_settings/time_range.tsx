@@ -37,8 +37,6 @@ export function TimeRangeSelect(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [start, setStart] = useState('now-30m');
   const [end, setEnd] = useState('now');
-  const [isPaused, setIsPaused] = useState(true);
-  const [refreshInterval, setRefreshInterval] = useState();
 
   const [toasts, setToasts] = useState([]);
 
@@ -185,25 +183,12 @@ export function TimeRangeSelect(props) {
     reportDefinitionRequest.report_params.core_params.time_duration = timeDuration.toISOString();
   };
 
-  const onRefresh = ({ start, end, refreshInterval }) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, 100);
-    }).then(() => {
-      console.log(start, end, refreshInterval);
-    });
-  };
-
   const startLoading = () => {
     setTimeout(stopLoading, 1000);
   };
 
   const stopLoading = () => {
     setIsLoading(false);
-  };
-
-  const onRefreshChange = ({ isPaused, refreshInterval }) => {
-    setIsPaused(isPaused);
-    setRefreshInterval(refreshInterval);
   };
 
   return (
@@ -220,11 +205,6 @@ export function TimeRangeSelect(props) {
             start={start}
             end={end}
             onTimeChange={onTimeChange}
-            onRefresh={onRefresh}
-            isPaused={isPaused}
-            refreshInterval={refreshInterval}
-            onRefreshChange={onRefreshChange}
-            recentlyUsedRanges={recentlyUsedRanges}
             showUpdateButton={false}
           />
         </EuiFormRow>
