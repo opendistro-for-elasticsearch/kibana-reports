@@ -1,4 +1,4 @@
-name: Release SQL-Workbench Artifacts
+name: Release Kibana Reports Artifacts
 
 on: [pull_request, push]
 
