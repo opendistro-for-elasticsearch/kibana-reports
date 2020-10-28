@@ -9,12 +9,14 @@
     "module": "commonjs",
     "outDir": "./target",
     "noEmit": true,
-    "types": ["node", "jest", "react"],
-    "typeRoots": ["../node_modules/@types"],
-    "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "allowUnusedLabels": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "alwaysStrict": false,
+    "noImplicitUseStrict": false,
   },
   "include": [
     "test/**/*",
