@@ -36,7 +36,14 @@ jobs:
       - name: Test
         run: |
           cd kibana/plugins/kibana-reports
-          yarn test
+          yarn test --coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./kibana/plugins/kibana-reports/coverage/clover.xml
+          flags: unittests
+          name: kibana-reports-ut-codecov
 
       - name: Build Artifact
         run: |
