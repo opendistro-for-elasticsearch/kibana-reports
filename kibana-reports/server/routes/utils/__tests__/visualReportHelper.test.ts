@@ -18,7 +18,7 @@ import { createVisualReport } from '../visualReportHelper';
 import { Logger } from '../../../../../../src/core/server';
 import { reportSchema } from '../../../model';
 
-const logger: Logger = {
+const mockLogger: Logger = {
   info: jest.fn(),
   trace: jest.fn(),
   warn: jest.fn(),
@@ -30,7 +30,7 @@ const logger: Logger = {
 };
 
 const input = {
-  query_url: '/app/discover#/view/7adfa750-4c81-11e8-b3d7-01146121b73d',
+  query_url: '/app/dashboard#/view/7adfa750-4c81-11e8-b3d7-01146121b73d',
   time_from: 1343576635300,
   time_to: 1596037435301,
   report_definition: {
@@ -39,7 +39,7 @@ const input = {
       report_source: 'Dashboard',
       description: 'Hi this is your Dashboard on demand',
       core_params: {
-        base_url: '/app/discover#/view/7adfa750-4c81-11e8-b3d7-01146121b73d',
+        base_url: '/app/dashboard#/view/7adfa750-4c81-11e8-b3d7-01146121b73d',
         window_width: 1300,
         window_height: 900,
         report_format: 'png',
@@ -57,6 +57,7 @@ const input = {
     },
   },
 };
+
 const queryUrl =
   'https://demo.elastic.co/app/kibana#/dashboard/welcome_dashboard';
 
@@ -72,7 +73,7 @@ describe('test create visual report', () => {
     const { dataUrl, fileName } = await createVisualReport(
       reportParams,
       queryUrl,
-      logger
+      mockLogger
     );
     expect(fileName).toContain(`${reportParams.report_name}`);
     expect(fileName).toContain('.png');
@@ -87,7 +88,7 @@ describe('test create visual report', () => {
     const { dataUrl, fileName } = await createVisualReport(
       reportParams,
       queryUrl,
-      logger
+      mockLogger
     );
     expect(fileName).toContain(`${reportParams.report_name}`);
     expect(fileName).toContain('.pdf');
