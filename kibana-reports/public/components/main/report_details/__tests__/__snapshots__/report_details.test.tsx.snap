@@ -506,7 +506,9 @@ exports[`<ReportDetails /> panel render on-demand component 1`] = `
             >
               <h2
                 class="euiTitle euiTitle--medium"
-              />
+              >
+                test create report definition trigger
+              </h2>
             </div>
           </div>
         </div>
@@ -538,7 +540,9 @@ exports[`<ReportDetails /> panel render on-demand component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              test create report definition trigger
+            </dd>
           </dl>
         </div>
         <div
@@ -554,7 +558,9 @@ exports[`<ReportDetails /> panel render on-demand component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              —
+            </dd>
           </dl>
         </div>
         <div
@@ -570,7 +576,9 @@ exports[`<ReportDetails /> panel render on-demand component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              —
+            </dd>
           </dl>
         </div>
         <div
@@ -586,7 +594,9 @@ exports[`<ReportDetails /> panel render on-demand component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              —
+            </dd>
           </dl>
         </div>
       </div>
@@ -612,10 +622,12 @@ exports[`<ReportDetails /> panel render on-demand component 1`] = `
             >
               <a
                 class="euiLink euiLink--primary"
-                href="localhostundefined"
+                href="localhosthttp://localhost:5601/app/kibana#/dashboard/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(time:(from:'2020-10-23T20:53:35.315Z',to:'2020-10-23T21:23:35.316Z'))"
                 rel="noopener noreferrer"
                 target="_blank"
-              />
+              >
+                Dashboard
+              </a>
             </dd>
           </dl>
         </div>
@@ -632,7 +644,9 @@ exports[`<ReportDetails /> panel render on-demand component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              10/23/2020, 1:53:35 PM -&gt; 10/23/2020, 2:23:35 PM
+            </dd>
           </dl>
         </div>
         <div
@@ -779,7 +793,9 @@ exports[`<ReportDetails /> panel render on-demand component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              On demand
+            </dd>
           </dl>
         </div>
         <div
@@ -795,7 +811,9 @@ exports[`<ReportDetails /> panel render on-demand component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              —
+            </dd>
           </dl>
         </div>
         <div
@@ -811,7 +829,9 @@ exports[`<ReportDetails /> panel render on-demand component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              —
+            </dd>
           </dl>
         </div>
         <div
@@ -856,7 +876,9 @@ exports[`<ReportDetails /> panel render on-demand component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              —
+            </dd>
           </dl>
         </div>
         <div
@@ -872,7 +894,9 @@ exports[`<ReportDetails /> panel render on-demand component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              —
+            </dd>
           </dl>
         </div>
         <div
@@ -888,7 +912,11 @@ exports[`<ReportDetails /> panel render on-demand component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              <p>
+                —
+              </p>
+            </dd>
           </dl>
         </div>
         <div
