@@ -21,6 +21,10 @@ import httpClientMock from '../../../../../test/httpMockClient';
 import 'babel-polyfill';
 import { act } from 'react-dom/test-utils';
 
+function setBreadcrumbs(array: []) {
+  jest.fn();
+}
+
 describe('<ReportDetails /> panel', () => {
   const match = {
     params: {
@@ -40,7 +44,7 @@ describe('<ReportDetails /> panel', () => {
           report_format: '',
           header: '',
           footer: '',
-          time_duration: '',
+          time_duration: 'PT30M',
         },
       },
       delivery: {
@@ -54,17 +58,19 @@ describe('<ReportDetails /> panel', () => {
 
     httpClientMock.get = jest.fn().mockResolvedValue({
       report_definition,
+      query_url: `http://localhost:5601/app/kibana#/dashboard/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(time:(from:'2020-10-23T20:53:35.315Z',to:'2020-10-23T21:23:35.316Z'))`,
     });
 
-    const { container } = await render(
+    const { container } = render(
       <ReportDetails
         httpClient={httpClientMock}
         props={propsMock}
         match={match}
+        setBreadcrumbs={setBreadcrumbs}
       />
     );
-    await expect(container.firstChild).toMatchSnapshot();
     await act(() => promise);
+    await expect(container.firstChild).toMatchSnapshot();
   });
 
   test('render 5 hours recurring component', async () => {
@@ -79,7 +85,7 @@ describe('<ReportDetails /> panel', () => {
           report_format: '',
           header: '',
           footer: '',
-          time_duration: '',
+          time_duration: 'PT30M',
         },
       },
       delivery: {
@@ -108,14 +114,15 @@ describe('<ReportDetails /> panel', () => {
       query_url: `http://localhost:5601/app/kibana#/dashboard/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(time:(from:'2020-10-23T20:53:35.315Z',to:'2020-10-23T21:23:35.316Z'))`,
     });
 
-    const { container } = await render(
+    const { container } = render(
       <ReportDetails
         httpClient={httpClientMock}
         props={propsMock}
         match={match}
+        setBreadcrumbs={setBreadcrumbs}
       />
     );
-    await expect(container.firstChild).toMatchSnapshot();
     await act(() => promise);
+    await expect(container.firstChild).toMatchSnapshot();
   });
 });
