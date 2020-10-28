@@ -17,31 +17,90 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { ReportDelivery } from '../delivery';
 import httpClientMock from '../../../../../test/httpMockClient';
+import { act } from 'react-dom/test-utils';
+
+const emptyRequest = {
+  report_params: {
+    report_name: '',
+    report_source: '',
+    description: '',
+    core_params: {
+      base_url: '',
+      report_format: '',
+      time_duration: '',
+    },
+  },
+  delivery: {
+    delivery_type: '',
+    delivery_params: {},
+  },
+  trigger: {
+    trigger_type: '',
+    trigger_params: {},
+  },
+  time_created: 0,
+  last_updated: 0,
+  status: '',
+};
+
+const timeRange = {
+  timeFrom: new Date(1234567800),
+  timeTo: new Date(1234567890),
+};
 
 describe('<ReportDelivery /> panel', () => {
-  test('render component', () => {
-    let createReportDefinitionRequest = {
-      report_name: '',
-      report_source: '',
-      report_type: '',
-      description: '',
-      report_params: {
-        url: ``,
-        report_format: '',
-        window_width: 1560,
-        window_height: 2560,
-      },
-      delivery: {},
-      trigger: {},
-    };
+  test('render create component', () => {
     const { container } = render(
       <ReportDelivery
         edit={false}
-        reportDefinitionRequest={createReportDefinitionRequest}
+        reportDefinitionRequest={emptyRequest}
         httpClientProps={httpClientMock}
+        timeRange={timeRange}
       />
     );
 
     expect(container.firstChild).toMatchSnapshot();
+  });
+
+  test('render edit component', async () => {
+    const promise = Promise.resolve();
+    let editReportDefinitionRequest = {
+      report_params: {
+        report_name: 'edit cron schedule component',
+        report_source: 'Dashboard',
+        description: '',
+        core_params: {
+          base_url: '',
+          report_format: '',
+          header: '',
+          footer: '',
+          time_duration: '',
+        },
+      },
+      delivery: {
+        delivery_type: '',
+        delivery_params: {},
+      },
+      trigger: {
+        trigger_type: 'On demand',
+      },
+    };
+
+    httpClientMock.get = jest.fn().mockResolvedValue({
+      report_definition: editReportDefinitionRequest,
+    });
+
+    const { container } = render(
+      <ReportDelivery
+        edit={true}
+        editDefinitionId={'1'}
+        reportDefinitionRequest={emptyRequest}
+        httpClientProps={httpClientMock}
+        timeRange={timeRange}
+      />
+    );
+
+    expect(container.firstChild).toMatchSnapshot();
+    await act(() => promise);
   });
 });
