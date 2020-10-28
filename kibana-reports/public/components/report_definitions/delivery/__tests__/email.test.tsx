@@ -207,7 +207,6 @@ describe('<EmailDelivery /> panel', () => {
     component.update();
 
     const emailRecipientsBox = component.find('input').at(0);
-    console.log(emailRecipientsBox.debug());
     emailRecipientsBox.simulate('change', {
       target: { value: 'test@test.com' },
     });
