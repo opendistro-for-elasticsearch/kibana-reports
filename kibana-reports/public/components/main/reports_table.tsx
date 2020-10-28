@@ -37,7 +37,6 @@ import {
   humanReadableDate,
   generateReportById,
 } from './main_utils';
-import 'babel-polyfill';
 
 const reportStatusOptions = [
   'Created',
