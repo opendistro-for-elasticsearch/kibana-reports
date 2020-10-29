@@ -13,6 +13,8 @@
  * permissions and limitations under the License.
  */
 
+process.env.TZ = 'America/Los_Angeles';
+
 module.exports = {
   rootDir: '../',
   setUpFiles: ['<rootDir>/test/setupTests.ts'],
