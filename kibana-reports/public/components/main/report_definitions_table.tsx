@@ -61,7 +61,7 @@ const reportDefinitionsSearch = {
 };
 
 export function ReportDefinitions(props) {
-  const { pagination, getRowProps, reportDefinitionsTableContent } = props;
+  const { pagination, reportDefinitionsTableContent } = props;
 
   const [sortField, setSortField] = useState('lastUpdated');
   const [sortDirection, setSortDirection] = useState('des');

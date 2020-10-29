@@ -195,36 +195,6 @@ export function Main(props) {
       });
   };
 
-  const getReportsRowProps = (item: any) => {
-    const { id } = item;
-    return {
-      'data-test-subj': `row-${id}`,
-      className: 'customRowClass',
-      onClick: (e: any) => {
-        if (!$(e.target).is('button')) {
-          window.location.assign(
-            `opendistro_kibana_reports#/report_details/${item.id}${props.history.location.search}`
-          );
-        }
-      },
-    };
-  };
-
-  const getReportDefinitionsRowProps = (item: any) => {
-    const { id } = item;
-    return {
-      'data-test-subj': `row-${id}`,
-      className: 'customRowClass',
-      onClick: (e: any) => {
-        if (!$(e.target).is('button')) {
-          window.location.assign(
-            `opendistro_kibana_reports#/report_definition_details/${item.id}${props.history.location.search}`
-          );
-        }
-      },
-    };
-  };
-
   return (
     <div>
       <EuiPanel paddingSize={'l'}>
@@ -245,7 +215,6 @@ export function Main(props) {
         </EuiFlexGroup>
         <EuiHorizontalRule />
         <ReportsTable
-          getRowProps={getReportsRowProps}
           pagination={pagination}
           reportsTableItems={reportsTableContent}
           httpClient={props['httpClient']}
@@ -286,7 +255,6 @@ export function Main(props) {
         <EuiHorizontalRule />
         <ReportDefinitions
           pagination={pagination}
-          getRowProps={getReportDefinitionsRowProps}
           reportDefinitionsTableContent={reportDefinitionsTableContent}
         />
       </EuiPanel>
