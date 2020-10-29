@@ -352,36 +352,6 @@ function Main(props) {
     });
   };
 
-  const getReportsRowProps = item => {
-    const {
-      id
-    } = item;
-    return {
-      'data-test-subj': `row-${id}`,
-      className: 'customRowClass',
-      onClick: e => {
-        if (!$(e.target).is('button')) {
-          window.location.assign(`opendistro_kibana_reports#/report_details/${item.id}${props.history.location.search}`);
-        }
-      }
-    };
-  };
-
-  const getReportDefinitionsRowProps = item => {
-    const {
-      id
-    } = item;
-    return {
-      'data-test-subj': `row-${id}`,
-      className: 'customRowClass',
-      onClick: e => {
-        if (!$(e.target).is('button')) {
-          window.location.assign(`opendistro_kibana_reports#/report_definition_details/${item.id}${props.history.location.search}`);
-        }
-      }
-    };
-  };
-
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiPanel"], {
     paddingSize: 'l'
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexGroup"], {
@@ -395,7 +365,6 @@ function Main(props) {
     size: "m",
     onClick: refreshReportsTable
   }, "Refresh"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiHorizontalRule"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_reports_table__WEBPACK_IMPORTED_MODULE_2__["ReportsTable"], {
-    getRowProps: getReportsRowProps,
     pagination: pagination,
     reportsTableItems: reportsTableContent,
     httpClient: props['httpClient'],
@@ -421,7 +390,6 @@ function Main(props) {
     }
   }, "Create"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiHorizontalRule"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_report_definitions_table__WEBPACK_IMPORTED_MODULE_3__["ReportDefinitions"], {
     pagination: pagination,
-    getRowProps: getReportDefinitionsRowProps,
     reportDefinitionsTableContent: reportDefinitionsTableContent
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiGlobalToastList"], {
     toasts: toasts,
@@ -938,7 +906,6 @@ const reportDefinitionsSearch = {
 function ReportDefinitions(props) {
   const {
     pagination,
-    getRowProps,
     reportDefinitionsTableContent
   } = props;
   const [sortField, setSortField] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('lastUpdated');
@@ -1337,7 +1304,6 @@ const emptyMessageReports = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___defa
 });
 function ReportsTable(props) {
   const {
-    getRowProps,
     pagination,
     reportsTableItems,
     httpClient,
