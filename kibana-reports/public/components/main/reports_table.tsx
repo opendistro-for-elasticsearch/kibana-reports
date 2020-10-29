@@ -70,7 +70,6 @@ const emptyMessageReports = (
 
 export function ReportsTable(props) {
   const {
-    getRowProps,
     pagination,
     reportsTableItems,
     httpClient,
