@@ -37,7 +37,6 @@ import {
   humanReadableDate,
   generateReportById,
 } from './main_utils';
-import { SortDirection } from '../../../../../src/plugins/data/public';
 
 const reportStatusOptions = [
   'Created',
@@ -80,7 +79,7 @@ export function ReportsTable(props) {
   } = props;
 
   const [sortField, setSortField] = useState('timeCreated');
-  const [sortDirection, setSortDirection] = useState(SortDirection.desc);
+  const [sortDirection, setSortDirection] = useState('des');
   const [showLoading, setShowLoading] = useState(false);
   const [message, setMessage] = useState('');
 
