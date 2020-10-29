@@ -13127,21 +13127,6 @@ module.exports = __kbnSharedDeps__.MomentTimezone;
 
 /***/ }),
 
-/***/ "plugin/data/public":
-/*!*******************************************!*\
-  !*** @kbn/bundleRef "plugin/data/public" ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-
-      __webpack_require__.r(__webpack_exports__);
-      var ns = __kbnBundles__.get('plugin/data/public');
-      Object.defineProperties(__webpack_exports__, Object.getOwnPropertyDescriptors(ns))
-    
-
-/***/ }),
-
 /***/ "react":
 /*!******************************************!*\
   !*** external "__kbnSharedDeps__.React" ***!

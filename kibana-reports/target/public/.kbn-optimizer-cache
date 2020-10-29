@@ -1,7 +1,6 @@
 {
   "bundleRefExportIds": [
-    "entry/core/public",
-    "plugin/data/public"
+    "entry/core/public"
   ],
   "optimizerCacheKey": {
     "lastCommit": "c55e81fd177f184b8ad0e2d13cc9ca66255fb99e",
@@ -94,7 +93,7 @@
       "/Users/szhongna/Desktop/reporting/kibana/plugins/kibana-reports/public/components/main/report_definition_details/report_definition_details.tsx": 1603834850074.3706,
       "/Users/szhongna/Desktop/reporting/kibana/plugins/kibana-reports/public/components/main/report_definitions_table.tsx": 1603834850075.2112,
       "/Users/szhongna/Desktop/reporting/kibana/plugins/kibana-reports/public/components/main/report_details/report_details.tsx": 1603834850077.024,
-      "/Users/szhongna/Desktop/reporting/kibana/plugins/kibana-reports/public/components/main/reports_table.tsx": 1603834850078.1765,
+      "/Users/szhongna/Desktop/reporting/kibana/plugins/kibana-reports/public/components/main/reports_table.tsx": 1603930284241.0872,
       "/Users/szhongna/Desktop/reporting/kibana/plugins/kibana-reports/public/components/report_definitions/create/create_report_definition.tsx": 1603834850079.1113,
       "/Users/szhongna/Desktop/reporting/kibana/plugins/kibana-reports/public/components/report_definitions/delivery/delivery_constants.tsx": 1603834850082.07,
       "/Users/szhongna/Desktop/reporting/kibana/plugins/kibana-reports/public/components/report_definitions/delivery/delivery.tsx": 1603834850081.0684,
