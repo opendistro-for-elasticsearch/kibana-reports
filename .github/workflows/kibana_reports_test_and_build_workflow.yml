@@ -1,0 +1,50 @@
+name: Test and Build Kibana Reports
+
+on: [pull_request, push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Plugin
+        uses: actions/checkout@v1
+
+      - name: Checkout Kibana
+        uses: actions/checkout@v1
+        with:
+          repository: elastic/kibana
+          ref: v7.9.1
+          path: kibana-reports/kibana
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "10.22.0"
+
+      - name: Move Kibana Reports to Plugins Dir
+        run: |
+          mkdir kibana/plugins
+          mv kibana-reports kibana/plugins
+
+      - name: Kibana Plugin Bootstrap
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 60
+          max_attempts: 3
+          command: cd kibana/plugins/kibana-reports; yarn kbn bootstrap
+
+      - name: Test
+        run: |
+          cd kibana/plugins/kibana-reports
+          yarn test
+
+      - name: Build Artifact
+        run: |
+          cd kibana/plugins/kibana-reports
+          yarn build
+          
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: kibana-reports
+          path: kibana/plugins/kibana-reports/build
