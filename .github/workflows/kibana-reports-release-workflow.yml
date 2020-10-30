@@ -48,12 +48,13 @@ jobs:
         run: |
           cd kibana/plugins/kibana-reports
           yarn test
-          
+
       - name: Build Artifact
         run: |
           cd kibana/plugins/kibana-reports
           yarn build
           artifact=`ls ./build/*.zip`
+
           # TODO: rename S3 bucket path after infra team assigns one
           aws s3 cp $artifact s3://kiabna-reports/kibana-reports-plugin/
           aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths "/downloads/*"
