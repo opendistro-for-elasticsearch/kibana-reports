@@ -3,7 +3,7 @@ name: Release Reports Scheduler Artifacts
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build:
@@ -11,11 +11,11 @@ jobs:
 
     steps:
       - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
       - name: Checkout Plugin
         uses: actions/checkout@v1
@@ -26,13 +26,13 @@ jobs:
           java-version: 1.14
 
       - name: Run build
-      run: |
-        ./gradlew build buildDeb buildRpm --no-daemon --refresh-dependencies -Dbuild.snapshot=false
-        artifact=`ls plugin/build/distributions/*.zip`
-        rpm_artifact=`ls plugin/build/distributions/*.rpm`
-        deb_artifact=`ls plugin/build/distributions/*.deb`
-        # TODO: rename S3 bucket path after infra team assigns one
-        aws s3 cp $artifact s3://artifacts.opendistroforelasticsearch.amazon.com/downloads/elasticsearch-plugins/opendistro-sql/
-        aws s3 cp $rpm_artifact s3://artifacts.opendistroforelasticsearch.amazon.com/downloads/rpms/opendistro-sql/
-        aws s3 cp $deb_artifact s3://artifacts.opendistroforelasticsearch.amazon.com/downloads/debs/opendistro-sql/
-        aws cloudfront create-invalidation --distribution-id E1VG5HMIWI4SA2 --paths "/downloads/*"
+        run: |
+          ./gradlew build buildDeb buildRpm --no-daemon --refresh-dependencies -Dbuild.snapshot=false
+          artifact=`ls plugin/build/distributions/*.zip`
+          rpm_artifact=`ls plugin/build/distributions/*.rpm`
+          deb_artifact=`ls plugin/build/distributions/*.deb`
+          # TODO: rename S3 bucket path after infra team assigns one
+          aws s3 cp $artifact s3://artifacts.opendistroforelasticsearch.amazon.com/downloads/elasticsearch-plugins/opendistro-sql/
+          aws s3 cp $rpm_artifact s3://artifacts.opendistroforelasticsearch.amazon.com/downloads/rpms/opendistro-sql/
+          aws s3 cp $deb_artifact s3://artifacts.opendistroforelasticsearch.amazon.com/downloads/debs/opendistro-sql/
+          aws cloudfront create-invalidation --distribution-id E1VG5HMIWI4SA2 --paths "/downloads/*"
