@@ -36,13 +36,13 @@ jobs:
       - name: Test
         run: |
           cd kibana/plugins/kibana-reports
-          yarn test
+          yarn test -u
 
       - name: Build Artifact
         run: |
           cd kibana/plugins/kibana-reports
           yarn build
-          
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
