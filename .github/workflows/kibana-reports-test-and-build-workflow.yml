@@ -36,7 +36,7 @@ jobs:
       - name: Test
         run: |
           cd kibana/plugins/kibana-reports
-          yarn test -u
+          yarn test
 
       - name: Build Artifact
         run: |
