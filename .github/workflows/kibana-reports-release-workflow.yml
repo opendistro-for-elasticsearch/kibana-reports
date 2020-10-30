@@ -1,11 +1,22 @@
-name: Test and Build Kibana Reports
+name: Release Kibana Reports Artifacts
 
-on: [pull_request, push]
+on:
+  push:
+    tags:
+      - "v*"
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
       - name: Checkout Plugin
         uses: actions/checkout@v1
 
@@ -29,22 +40,23 @@ jobs:
       - name: Kibana Plugin Bootstrap
         uses: nick-invision/retry@v1
         with:
-          timeout_minutes: 60
+          timeout_minutes: 30
           max_attempts: 3
           command: cd kibana/plugins/kibana-reports; yarn kbn bootstrap
 
       - name: Test
-        run: |
-          cd kibana/plugins/kibana-reports
-          yarn test
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 30
+          max_attempts: 3
+          command: cd kibana/plugins/kibana-reports; yarn test
 
       - name: Build Artifact
         run: |
           cd kibana/plugins/kibana-reports
           yarn build
-          
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: kibana-reports
-          path: kibana/plugins/kibana-reports/build
+          artifact=`ls ./build/*.zip`
+
+          # TODO: rename S3 bucket path after infra team assigns one
+          aws s3 cp $artifact s3://kiabna-reports/kibana-reports-plugin/
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths "/downloads/*"
