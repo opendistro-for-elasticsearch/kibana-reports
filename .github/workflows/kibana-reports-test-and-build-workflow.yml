@@ -29,13 +29,14 @@ jobs:
       - name: Kibana Plugin Bootstrap
         uses: nick-invision/retry@v2
         with:
-          timeout_minutes: 60
+          timeout_minutes: 30
           max_attempts: 3
           command: cd kibana/plugins/kibana-reports; yarn kbn bootstrap
 
       - name: Test
         uses: nick-invision/retry@v2
         with:
+          timeout_minutes: 30
           max_attempts: 3
           retry_on: error
           command: cd kibana/plugins/kibana-reports; yarn test
