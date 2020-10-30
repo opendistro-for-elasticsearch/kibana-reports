@@ -27,7 +27,7 @@ jobs:
           mv kibana-reports kibana/plugins
 
       - name: Kibana Plugin Bootstrap
-        uses: nick-invision/retry@v2
+        uses: nick-invision/retry@v1
         with:
           timeout_minutes: 30
           max_attempts: 3
@@ -40,11 +40,6 @@ jobs:
           max_attempts: 3
           retry_on: error
           command: cd kibana/plugins/kibana-reports; yarn test
-
-      # - name: Test
-      #   run: |
-      #     cd kibana/plugins/kibana-reports
-      #     yarn test
 
       - name: Build Artifact
         run: |
