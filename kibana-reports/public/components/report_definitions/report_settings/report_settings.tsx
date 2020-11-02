@@ -630,6 +630,7 @@ export function ReportSettings(props: ReportSettingProps) {
               label="Name"
               helpText="Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space)."
               isInvalid={showSettingsReportNameError}
+              id={'reportSettingsName'}
             >
               <EuiFieldText
                 placeholder="Report name (e.g Log Traffic Daily Report)"
@@ -641,7 +642,10 @@ export function ReportSettings(props: ReportSettingProps) {
         </EuiFlexGroup>
         <EuiFlexGroup style={{ maxWidth: 600 }}>
           <EuiFlexItem>
-            <EuiFormRow label="Description (optional)">
+            <EuiFormRow
+              label="Description (optional)"
+              id={'reportSettingsDescription'}
+            >
               <EuiTextArea
                 placeholder="Describe this report (e.g Morning daily reports for log traffic)"
                 value={reportDescription}

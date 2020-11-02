@@ -247,6 +247,7 @@ export function Main(props) {
               onClick={() => {
                 window.location.assign('opendistro_kibana_reports#/create');
               }}
+              id={'createReportHomepageButton'}
             >
               Create
             </EuiButton>
