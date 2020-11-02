@@ -31,7 +31,49 @@ import java.time.Duration
 
 /**
  * Report definition main data class.
+ * <pre> JSON format
+ * {@code
+ * {
+ *   "name":"name",
+ *   "isEnabled":true,
+ *   "source":{
+ *      "description":"description",
+ *      "type":"Dashboard", // Dashboard, Visualization, SavedSearch
+ *      "id":"id"
+ *   },
+ *   "format":{
+ *       "duration":"PT1H",
+ *       "fileFormat":"Pdf", // Pdf, Png, Csv
+ *       "limit":1000, // optional
+ *       "header":"optional header",
+ *       "footer":"optional footer"
+ *   },
+ *   "trigger":{
+ *       "triggerType":"OnDemand", // Download, OnDemand, CronSchedule, IntervalSchedule
+ *       "schedule":{ // required when triggerType is CronSchedule or IntervalSchedule
+ *           "cron":{ // required when triggerType is CronSchedule
+ *               "expression":"0 * * * *",
+ *               "timezone":"PST"
+ *           },
+ *           "interval":{ // required when triggerType is IntervalSchedule
+ *               "start_time":1603506908773,
+ *               "period":10",
+ *               "unit":"Minutes"
+ *           }
+ *       }
+ *   },
+ *   "delivery":{ // optional
+ *       "recipients":["banantha@amazon.com"],
+ *       "deliveryFormat":"LinkOnly", // LinkOnly, Attachment, Embedded
+ *       "title":"title",
+ *       "textDescription":"textDescription",
+ *       "htmlDescription":"optional htmlDescription",
+ *       "channelIds":["optional_channelIds"]
+ *   }
+ * }
+ * }</pre>
  */
+
 internal data class ReportDefinition(
     val name: String,
     val isEnabled: Boolean,

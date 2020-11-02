@@ -16,9 +16,11 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
-import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportInstancesRequest
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.IRestResponse
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestErrorResponse
 import org.elasticsearch.client.node.NodeClient
-import org.elasticsearch.rest.BytesRestResponse
 import org.elasticsearch.rest.RestChannel
 import org.elasticsearch.rest.RestHandler.Route
 import org.elasticsearch.rest.RestRequest
@@ -27,7 +29,7 @@ import org.elasticsearch.rest.RestStatus
 
 /**
  * Rest handler for getting list of report instances.
- * This handler uses [ReportInstanceAction].
+ * This handler uses [ReportInstanceActions].
  */
 internal class ReportInstanceListRestHandler : PluginRestHandler() {
     companion object {
@@ -47,8 +49,12 @@ internal class ReportInstanceListRestHandler : PluginRestHandler() {
      */
     override fun routes(): List<Route> {
         return listOf(
-            // Get all report instances (from optional fromIndex)
-            // GET LIST_REPORT_INSTANCES_URL[?fromIndex=1000]
+            /**
+             * Get all report instances (from optional fromIndex)
+             * Request URL: GET LIST_REPORT_INSTANCES_URL[?fromIndex=1000]
+             * Request body: None
+             * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportInstancesResponse]
+             */
             Route(GET, LIST_REPORT_INSTANCES_URL)
         )
     }
@@ -63,12 +69,11 @@ internal class ReportInstanceListRestHandler : PluginRestHandler() {
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: RestRequest, client: NodeClient, channel: RestChannel) {
+    override fun executeRequest(request: RestRequest, client: NodeClient, channel: RestChannel): IRestResponse {
         val from = request.param(FROM_INDEX_FIELD)?.toIntOrNull() ?: 0
-        val handler = ReportInstanceAction(request, client, channel)
-        when (request.method()) {
-            GET -> handler.getAll(from)
-            else -> channel.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))
+        return when (request.method()) {
+            GET -> ReportInstanceActions.getAll(GetAllReportInstancesRequest(from))
+            else -> RestErrorResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed")
         }
     }
 }

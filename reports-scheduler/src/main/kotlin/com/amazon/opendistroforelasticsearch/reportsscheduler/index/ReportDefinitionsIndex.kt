@@ -18,7 +18,7 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.index
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinitionDetails
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.OWNER_ID_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.ROLE_LIST_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.UPDATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.SecureIndexClient
@@ -61,10 +61,10 @@ internal class ReportDefinitionsIndex(client: Client, private val clusterService
     }
 
     /**
-     * {@inheritDoc}
+     * Create index using the mapping and settings defined in resource
      */
     @Suppress("TooGenericExceptionCaught")
-    override fun createIndex() {
+    private fun createIndex() {
         if (!isIndexExists()) {
             val classLoader = ReportDefinitionsIndex::class.java.classLoader
             val indexMappingSource = classLoader.getResource(REPORT_DEFINITIONS_MAPPING_FILE_NAME)?.readText()!!
@@ -89,9 +89,10 @@ internal class ReportDefinitionsIndex(client: Client, private val clusterService
     }
 
     /**
-     * {@inheritDoc}
+     * Check if the index is created and available.
+     * @return true if index is available, false otherwise
      */
-    override fun isIndexExists(): Boolean {
+    private fun isIndexExists(): Boolean {
         val clusterState = clusterService.state()
         return clusterState.routingTable.hasIndex(REPORT_DEFINITIONS_INDEX_NAME)
     }
@@ -100,6 +101,7 @@ internal class ReportDefinitionsIndex(client: Client, private val clusterService
      * {@inheritDoc}
      */
     override fun createReportDefinition(reportDefinitionDetails: ReportDefinitionDetails): String? {
+        createIndex()
         val indexRequest = IndexRequest(REPORT_DEFINITIONS_INDEX_NAME)
             .source(reportDefinitionDetails.toXContent(false))
             .create(true)
@@ -117,6 +119,7 @@ internal class ReportDefinitionsIndex(client: Client, private val clusterService
      * {@inheritDoc}
      */
     override fun getReportDefinition(id: String): ReportDefinitionDetails? {
+        createIndex()
         val getRequest = GetRequest(REPORT_DEFINITIONS_INDEX_NAME).id(id)
         val actionFuture = client.get(getRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
@@ -135,8 +138,9 @@ internal class ReportDefinitionsIndex(client: Client, private val clusterService
     /**
      * {@inheritDoc}
      */
-    override fun getAllReportDefinitions(ownerId: String, from: Int): List<ReportDefinitionDetails> {
-        val query = QueryBuilders.matchQuery(OWNER_ID_FIELD, ownerId)
+    override fun getAllReportDefinitions(roles: List<String>, from: Int): List<ReportDefinitionDetails> {
+        createIndex()
+        val query = QueryBuilders.termsQuery(ROLE_LIST_FIELD, roles)
         val sourceBuilder = SearchSourceBuilder()
             .timeout(TimeValue(PluginSettings.operationTimeoutMs, TimeUnit.MILLISECONDS))
             .sort(UPDATED_TIME_FIELD)
@@ -163,6 +167,7 @@ internal class ReportDefinitionsIndex(client: Client, private val clusterService
      * {@inheritDoc}
      */
     override fun updateReportDefinition(id: String, reportDefinitionDetails: ReportDefinitionDetails): Boolean {
+        createIndex()
         val updateRequest = UpdateRequest()
             .index(REPORT_DEFINITIONS_INDEX_NAME)
             .id(id)
@@ -180,6 +185,7 @@ internal class ReportDefinitionsIndex(client: Client, private val clusterService
      * {@inheritDoc}
      */
     override fun deleteReportDefinition(id: String): Boolean {
+        createIndex()
         val deleteRequest = DeleteRequest()
             .index(REPORT_DEFINITIONS_INDEX_NAME)
             .id(id)

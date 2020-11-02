@@ -22,11 +22,12 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPl
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinition.TriggerType
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.CREATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.ID_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.OWNER_ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.REPORT_DEFINITION_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.ROLE_LIST_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.UPDATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
+import com.amazon.opendistroforelasticsearch.reportsscheduler.util.stringList
 import org.elasticsearch.common.xcontent.ToXContent
 import org.elasticsearch.common.xcontent.XContentBuilder
 import org.elasticsearch.common.xcontent.XContentFactory
@@ -36,12 +37,24 @@ import java.time.Instant
 
 /**
  * Wrapper data class over ReportDefinition to add metadata
+ * <pre> JSON format
+ * {@code
+ * {
+ *   "id":"id",
+ *   "lastUpdatedTimeMs":1603506908773,
+ *   "createdTimeMs":1603506908773,
+ *   "roles":["sample_role"]
+ *   "reportDefinition":{
+ *      // refer [com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinition]
+ *   }
+ * }
+ * }</pre>
  */
 internal data class ReportDefinitionDetails(
     val id: String,
     val updatedTime: Instant,
     val createdTime: Instant,
-    val ownerId: String,
+    val roles: List<String>,
     val reportDefinition: ReportDefinition
 ) : ScheduledJobParameter {
     internal companion object {
@@ -50,13 +63,14 @@ internal data class ReportDefinitionDetails(
         /**
          * Parse the data from parser and create ReportDefinitionDetails object
          * @param parser data referenced at parser
+         * @param useId use this id if not available in the json
          * @return created ReportDefinitionDetails object
          */
         fun parse(parser: XContentParser, useId: String? = null): ReportDefinitionDetails {
             var id: String? = useId
             var updatedTime: Instant? = null
             var createdTime: Instant? = null
-            var createdBy: String? = null
+            var roles: List<String> = listOf()
             var reportDefinition: ReportDefinition? = null
             XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
             while (XContentParser.Token.END_OBJECT != parser.nextToken()) {
@@ -66,7 +80,7 @@ internal data class ReportDefinitionDetails(
                     ID_FIELD -> id = parser.text()
                     UPDATED_TIME_FIELD -> updatedTime = Instant.ofEpochMilli(parser.longValue())
                     CREATED_TIME_FIELD -> createdTime = Instant.ofEpochMilli(parser.longValue())
-                    OWNER_ID_FIELD -> createdBy = parser.text()
+                    ROLE_LIST_FIELD -> roles = parser.stringList()
                     REPORT_DEFINITION_FIELD -> reportDefinition = ReportDefinition.parse(parser)
                     else -> {
                         parser.skipChildren()
@@ -77,12 +91,11 @@ internal data class ReportDefinitionDetails(
             id ?: throw IllegalArgumentException("$ID_FIELD field absent")
             updatedTime ?: throw IllegalArgumentException("$UPDATED_TIME_FIELD field absent")
             createdTime ?: throw IllegalArgumentException("$CREATED_TIME_FIELD field absent")
-            createdBy ?: throw IllegalArgumentException("$OWNER_ID_FIELD field absent")
             reportDefinition ?: throw IllegalArgumentException("$REPORT_DEFINITION_FIELD field absent")
             return ReportDefinitionDetails(id,
                 updatedTime,
                 createdTime,
-                createdBy,
+                roles,
                 reportDefinition)
         }
     }
@@ -106,7 +119,7 @@ internal data class ReportDefinitionDetails(
         }
         builder.field(UPDATED_TIME_FIELD, updatedTime.toEpochMilli())
             .field(CREATED_TIME_FIELD, createdTime.toEpochMilli())
-            .field(OWNER_ID_FIELD, ownerId)
+            .field(ROLE_LIST_FIELD, roles)
         builder.field(REPORT_DEFINITION_FIELD)
         reportDefinition.toXContent(builder, ToXContent.EMPTY_PARAMS)
         builder.endObject()

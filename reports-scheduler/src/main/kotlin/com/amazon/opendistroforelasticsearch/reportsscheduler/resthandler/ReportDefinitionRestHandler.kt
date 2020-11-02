@@ -16,9 +16,15 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
-import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportDefinitionAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportDefinitionActions
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.CreateReportDefinitionRequest
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.DeleteReportDefinitionRequest
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionRequest
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.IRestResponse
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestErrorResponse
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportDefinitionRequest
 import org.elasticsearch.client.node.NodeClient
-import org.elasticsearch.rest.BytesRestResponse
+import org.elasticsearch.common.xcontent.XContentParser
 import org.elasticsearch.rest.RestChannel
 import org.elasticsearch.rest.RestHandler.Route
 import org.elasticsearch.rest.RestRequest
@@ -30,7 +36,7 @@ import org.elasticsearch.rest.RestStatus
 
 /**
  * Rest handler for report definitions lifecycle management.
- * This handler uses [ReportDefinitionAction].
+ * This handler uses [ReportDefinitionActions].
  */
 internal class ReportDefinitionRestHandler : PluginRestHandler() {
     companion object {
@@ -50,17 +56,33 @@ internal class ReportDefinitionRestHandler : PluginRestHandler() {
      */
     override fun routes(): List<Route> {
         return listOf(
-            // create a new report definition
-            // POST REPORT_DEFINITION_URL
+            /**
+             * Create a new report definition
+             * Request URL: POST REPORT_DEFINITION_URL
+             * Request body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.CreateReportDefinitionRequest]
+             * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.CreateReportDefinitionResponse]
+             */
             Route(POST, REPORT_DEFINITION_URL),
-            // update report definition
-            // PUT REPORT_DEFINITION_URL?id=<reportDefinitionId>
+            /**
+             * Update report definition
+             * Request URL: PUT REPORT_DEFINITION_URL?id=<reportDefinitionId>
+             * Request body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportDefinitionRequest]
+             * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportDefinitionResponse]
+             */
             Route(PUT, REPORT_DEFINITION_URL),
-            // get a report definition
-            // GET REPORT_DEFINITION_URL?id=<reportDefinitionId>
+            /**
+             * Get a report definition
+             * Request URL: GET REPORT_DEFINITION_URL?id=<reportDefinitionId>
+             * Request body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionRequest]
+             * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionsResponse]
+             */
             Route(GET, REPORT_DEFINITION_URL),
-            // delete report definition
-            // DELETE REPORT_DEFINITION_URL?id=<reportDefinitionId>
+            /**
+             * Delete report definition
+             * Request URL: DELETE REPORT_DEFINITION_URL?id=<reportDefinitionId>
+             * Request body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.DeleteReportDefinitionRequest]
+             * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.DeleteReportDefinitionResponse]
+             */
             Route(DELETE, REPORT_DEFINITION_URL)
         )
     }
@@ -75,14 +97,19 @@ internal class ReportDefinitionRestHandler : PluginRestHandler() {
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: RestRequest, client: NodeClient, channel: RestChannel) {
-        val handler = ReportDefinitionAction(request, client, channel)
-        when (request.method()) {
-            POST -> handler.create()
-            PUT -> handler.update(request.param(ID_FIELD))
-            GET -> handler.info(request.param(ID_FIELD))
-            DELETE -> handler.delete(request.param(ID_FIELD))
-            else -> channel.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))
+    override fun executeRequest(request: RestRequest, client: NodeClient, channel: RestChannel): IRestResponse {
+        return when (request.method()) {
+            POST -> ReportDefinitionActions.create(CreateReportDefinitionRequest.parse(contentParser(request)))
+            PUT -> ReportDefinitionActions.update(UpdateReportDefinitionRequest.parse(contentParser(request), request.param(ID_FIELD)))
+            GET -> ReportDefinitionActions.info(GetReportDefinitionRequest(request.param(ID_FIELD)))
+            DELETE -> ReportDefinitionActions.delete(DeleteReportDefinitionRequest(request.param(ID_FIELD)))
+            else -> RestErrorResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed")
         }
+    }
+
+    private fun contentParser(request: RestRequest): XContentParser {
+        val parser = request.contentParser()
+        parser.nextToken()
+        return parser
     }
 }

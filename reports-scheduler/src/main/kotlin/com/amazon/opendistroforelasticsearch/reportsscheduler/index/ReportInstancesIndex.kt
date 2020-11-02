@@ -18,11 +18,11 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.index
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance.State
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance.Status
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstanceDoc
+import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.ROLE_LIST_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.STATUS_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.UPDATED_TIME_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.USER_ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.SecureIndexClient
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
@@ -65,10 +65,10 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
     }
 
     /**
-     * {@inheritDoc}
+     * Create index using the mapping and settings defined in resource
      */
     @Suppress("TooGenericExceptionCaught")
-    override fun createIndex() {
+    private fun createIndex() {
         if (!isIndexExists()) {
             val classLoader = ReportInstancesIndex::class.java.classLoader
             val indexMappingSource = classLoader.getResource(REPORT_INSTANCES_MAPPING_FILE_NAME)?.readText()!!
@@ -93,9 +93,10 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
     }
 
     /**
-     * {@inheritDoc}
+     * Check if the index is created and available.
+     * @return true if index is available, false otherwise
      */
-    override fun isIndexExists(): Boolean {
+    private fun isIndexExists(): Boolean {
         val clusterState = clusterService.state()
         return clusterState.routingTable.hasIndex(REPORT_INSTANCES_INDEX_NAME)
     }
@@ -104,6 +105,7 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
      * {@inheritDoc}
      */
     override fun createReportInstance(reportInstance: ReportInstance): String? {
+        createIndex()
         val indexRequest = IndexRequest(REPORT_INSTANCES_INDEX_NAME)
             .source(reportInstance.toXContent(false))
             .create(true)
@@ -121,6 +123,7 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
      * {@inheritDoc}
      */
     override fun getReportInstance(id: String): ReportInstance? {
+        createIndex()
         val getRequest = GetRequest(REPORT_INSTANCES_INDEX_NAME).id(id)
         val actionFuture = client.get(getRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
@@ -139,8 +142,9 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
     /**
      * {@inheritDoc}
      */
-    override fun getAllReportInstances(ownerId: String, from: Int): List<ReportInstance> {
-        val query = QueryBuilders.matchQuery(USER_ID_FIELD, ownerId)
+    override fun getAllReportInstances(roles: List<String>, from: Int): List<ReportInstance> {
+        createIndex()
+        val query = QueryBuilders.termsQuery(ROLE_LIST_FIELD, roles)
         val sourceBuilder = SearchSourceBuilder()
             .timeout(TimeValue(PluginSettings.operationTimeoutMs, TimeUnit.MILLISECONDS))
             .sort(UPDATED_TIME_FIELD)
@@ -167,6 +171,7 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
      * {@inheritDoc}
      */
     override fun updateReportInstance(reportInstance: ReportInstance): Boolean {
+        createIndex()
         val updateRequest = UpdateRequest()
             .index(REPORT_INSTANCES_INDEX_NAME)
             .id(reportInstance.id)
@@ -184,6 +189,7 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
      * {@inheritDoc}
      */
     override fun updateReportInstanceDoc(reportInstanceDoc: ReportInstanceDoc): Boolean {
+        createIndex()
         val updateRequest = UpdateRequest()
             .index(REPORT_INSTANCES_INDEX_NAME)
             .id(reportInstanceDoc.reportInstance.id)
@@ -203,6 +209,7 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
      * {@inheritDoc}
      */
     override fun deleteReportInstance(id: String): Boolean {
+        createIndex()
         val deleteRequest = DeleteRequest()
             .index(REPORT_INSTANCES_INDEX_NAME)
             .id(id)
@@ -218,9 +225,10 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
      * {@inheritDoc}
      */
     override fun getPendingReportInstances(): MutableList<ReportInstanceDoc> {
+        createIndex()
         val query = QueryBuilders.termsQuery(STATUS_FIELD,
-            State.Scheduled.name,
-            State.Executing.name
+            Status.Scheduled.name,
+            Status.Executing.name
         )
         val sourceBuilder = SearchSourceBuilder()
             .timeout(TimeValue(PluginSettings.operationTimeoutMs, TimeUnit.MILLISECONDS))
@@ -241,7 +249,7 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
                 it.sourceAsString)
             parser.nextToken()
             val reportInstance = ReportInstance.parse(parser, it.id)
-            if (reportInstance.currentState == State.Scheduled || // If still in Scheduled state
+            if (reportInstance.status == Status.Scheduled || // If still in Scheduled state
                 reportInstance.updatedTime.isBefore(refTime)) { // or when timeout happened
                 mutableList.add(ReportInstanceDoc(reportInstance, it.seqNo, it.primaryTerm))
             }

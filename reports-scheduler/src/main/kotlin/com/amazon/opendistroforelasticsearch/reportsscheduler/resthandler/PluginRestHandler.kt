@@ -16,11 +16,14 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.IRestResponse
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.elasticsearch.client.node.NodeClient
+import org.elasticsearch.common.xcontent.ToXContent
+import org.elasticsearch.common.xcontent.XContentType
 import org.elasticsearch.rest.BaseRestHandler
 import org.elasticsearch.rest.BaseRestHandler.RestChannelConsumer
 import org.elasticsearch.rest.BytesRestResponse
@@ -39,15 +42,16 @@ internal abstract class PluginRestHandler : BaseRestHandler() {
         const val STATUS_TEXT_FIELD = "statusText"
         const val UPDATED_TIME_FIELD = "lastUpdatedTimeMs"
         const val CREATED_TIME_FIELD = "createdTimeMs"
-        const val OWNER_ID_FIELD = "ownerId"
-        const val USER_ID_FIELD = "userId"
+        const val ROLE_LIST_FIELD = "roles"
         const val REPORT_DEFINITION_LIST_FIELD = "reportDefinitionDetailsList"
         const val REPORT_INSTANCE_LIST_FIELD = "reportInstanceList"
         const val REPORT_INSTANCE_FIELD = "reportInstance"
+        const val REPORT_INSTANCE_ID_FIELD = "reportDefinitionId"
         const val IN_CONTEXT_DOWNLOAD_URL_FIELD = "inContextDownloadUrlPath"
         const val BEGIN_TIME_FIELD = "beginTimeMs"
         const val END_TIME_FIELD = "endTimeMs"
         const val REPORT_DEFINITION_FIELD = "reportDefinition"
+        const val REPORT_DEFINITION_ID_FIELD = "reportDefinitionId"
         const val REPORT_DEFINITION_DETAILS_FIELD = "reportDefinitionDetails"
         const val FROM_INDEX_FIELD = "fromIndex"
         const val RETRY_AFTER_FIELD = "retryAfter"
@@ -73,7 +77,10 @@ internal abstract class PluginRestHandler : BaseRestHandler() {
     private fun executeRequestInScope(request: RestRequest, client: NodeClient, channel: RestChannel) {
         scope.launch {
             try {
-                executeRequest(request, client, channel)
+                val response = executeRequest(request, client, channel)
+                val contentBuilder = channel.newBuilder(XContentType.JSON, false)
+                response.toXContent(contentBuilder, ToXContent.EMPTY_PARAMS)
+                channel.sendResponse(BytesRestResponse(response.restStatus, contentBuilder))
             } catch (exception: IllegalArgumentException) {
                 log.warn("executeRequestInScope:", exception)
                 channel.sendResponse(BytesRestResponse(RestStatus.BAD_REQUEST, exception.message))
@@ -96,5 +103,5 @@ internal abstract class PluginRestHandler : BaseRestHandler() {
      * @param client client for executing actions on the local node
      * @param channel Rest channel to send response to
      */
-    abstract fun executeRequest(request: RestRequest, client: NodeClient, channel: RestChannel)
+    abstract fun executeRequest(request: RestRequest, client: NodeClient, channel: RestChannel): IRestResponse
 }

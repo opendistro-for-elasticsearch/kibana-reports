@@ -16,9 +16,12 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
-import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportInstanceRequest
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.IRestResponse
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestErrorResponse
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportInstanceStatusRequest
 import org.elasticsearch.client.node.NodeClient
-import org.elasticsearch.rest.BytesRestResponse
 import org.elasticsearch.rest.RestChannel
 import org.elasticsearch.rest.RestHandler.Route
 import org.elasticsearch.rest.RestRequest
@@ -28,7 +31,7 @@ import org.elasticsearch.rest.RestStatus
 
 /**
  * Rest handler for report instances lifecycle management.
- * This handler uses [ReportInstanceAction].
+ * This handler uses [ReportInstanceActions].
  */
 internal class ReportInstanceRestHandler : PluginRestHandler() {
     companion object {
@@ -48,11 +51,19 @@ internal class ReportInstanceRestHandler : PluginRestHandler() {
      */
     override fun routes(): List<Route> {
         return listOf(
-            // update report instance (only modifiable fields to be present)
-            // POST REPORT_INSTANCE_URL?id=<reportInstanceId>
+            /**
+             * Update report instance status
+             * Request URL: POST REPORT_INSTANCE_URL?id=<reportInstanceId>
+             * Request body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportInstanceStatusRequest]
+             * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportInstanceStatusResponse]
+             */
             Route(POST, REPORT_INSTANCE_URL),
-            // get a report instance information
-            // GET REPORT_INSTANCE_URL?id=<reportInstanceId>
+            /**
+             * Get a report instance information
+             * Request URL: GET REPORT_INSTANCE_URL?id=<reportInstanceId>
+             * Request body: None
+             * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportInstanceResponse]
+             */
             Route(GET, REPORT_INSTANCE_URL)
         )
     }
@@ -67,13 +78,16 @@ internal class ReportInstanceRestHandler : PluginRestHandler() {
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: RestRequest, client: NodeClient, channel: RestChannel) {
+    override fun executeRequest(request: RestRequest, client: NodeClient, channel: RestChannel): IRestResponse {
         val reportInstanceId = request.param(ID_FIELD) ?: throw IllegalArgumentException("Must specify id")
-        val handler = ReportInstanceAction(request, client, channel)
-        when (request.method()) {
-            POST -> handler.update(reportInstanceId)
-            GET -> handler.info(reportInstanceId)
-            else -> channel.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))
+        return when (request.method()) {
+            POST -> {
+                val parser = request.contentParser()
+                parser.nextToken()
+                ReportInstanceActions.update(UpdateReportInstanceStatusRequest.parse(parser, reportInstanceId))
+            }
+            GET -> ReportInstanceActions.info(GetReportInstanceRequest(reportInstanceId))
+            else -> RestErrorResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed")
         }
     }
 }
