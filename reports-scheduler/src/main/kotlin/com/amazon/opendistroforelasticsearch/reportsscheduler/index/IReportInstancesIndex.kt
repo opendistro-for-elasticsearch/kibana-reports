@@ -24,17 +24,6 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstan
  */
 internal interface IReportInstancesIndex {
     /**
-     * Create index using the mapping and settings defined in resource
-     */
-    fun createIndex()
-
-    /**
-     * Check if the index is created and available.
-     * @return true if index is available, false otherwise
-     */
-    fun isIndexExists(): Boolean
-
-    /**
      * create a new doc for reportInstance
      * @param reportInstance the report instance
      * @return ReportInstance.id if successful, null otherwise
@@ -50,12 +39,12 @@ internal interface IReportInstancesIndex {
     fun getReportInstance(id: String): ReportInstance?
 
     /**
-     * Query index for report instance for given ownerId
-     * @param ownerId the owner ID
+     * Query index for report instance for given roles
+     * @param roles the list of roles to search reports for.
      * @param from the paginated start index
      * @return list of Report instance details
      */
-    fun getAllReportInstances(ownerId: String, from: Int = 0): List<ReportInstance>
+    fun getAllReportInstances(roles: List<String>, from: Int = 0): List<ReportInstance>
 
     /**
      * update Report instance details for given id

@@ -18,18 +18,37 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.util
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.elasticsearch.common.xcontent.ToXContent
+import org.elasticsearch.common.xcontent.ToXContentObject
+import org.elasticsearch.common.xcontent.XContentBuilder
 import org.elasticsearch.common.xcontent.XContentParser
+import org.elasticsearch.common.xcontent.XContentParser.Token
 import org.elasticsearch.common.xcontent.XContentParserUtils
 
 internal fun XContentParser.stringList(): List<String> {
     val retList: MutableList<String> = mutableListOf()
-    XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_ARRAY, currentToken(), this::getTokenLocation)
-    while (nextToken() != XContentParser.Token.END_ARRAY) {
+    XContentParserUtils.ensureExpectedToken(Token.START_ARRAY, currentToken(), this::getTokenLocation)
+    while (nextToken() != Token.END_ARRAY) {
         retList.add(text())
     }
     return retList
 }
 
-fun <T : Any> logger(forClass: Class<T>): Lazy<Logger> {
+internal fun <T : Any> logger(forClass: Class<T>): Lazy<Logger> {
     return lazy { LogManager.getLogger(forClass) }
+}
+
+internal fun XContentBuilder.fieldIfNotNull(name: String, value: Any?): XContentBuilder {
+    if (value != null) {
+        this.field(name, value)
+    }
+    return this
+}
+
+internal fun XContentBuilder.objectIfNotNull(name: String, xContentObject: ToXContentObject?): XContentBuilder {
+    if (xContentObject != null) {
+        this.field(name)
+        xContentObject.toXContent(this, ToXContent.EMPTY_PARAMS)
+    }
+    return this
 }

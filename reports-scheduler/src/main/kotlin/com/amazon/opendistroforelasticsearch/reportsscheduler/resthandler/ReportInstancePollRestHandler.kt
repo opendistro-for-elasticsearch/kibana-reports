@@ -16,9 +16,10 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
-import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.IRestResponse
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestErrorResponse
 import org.elasticsearch.client.node.NodeClient
-import org.elasticsearch.rest.BytesRestResponse
 import org.elasticsearch.rest.RestChannel
 import org.elasticsearch.rest.RestHandler.Route
 import org.elasticsearch.rest.RestRequest
@@ -27,7 +28,7 @@ import org.elasticsearch.rest.RestStatus
 
 /**
  * Rest handler for getting list of report instances.
- * This handler uses [ReportInstanceAction].
+ * This handler uses [ReportInstanceActions].
  */
 internal class ReportInstancePollRestHandler : PluginRestHandler() {
     companion object {
@@ -47,8 +48,12 @@ internal class ReportInstancePollRestHandler : PluginRestHandler() {
      */
     override fun routes(): List<Route> {
         return listOf(
-            // Poll report instances for pending job
-            // GET POLL_REPORT_INSTANCE_URL
+            /**
+             * Poll report instances for pending job
+             * Request URL: GET POLL_REPORT_INSTANCE_URL
+             * Request body: None
+             * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.PollReportInstanceResponse]
+             */
             Route(GET, POLL_REPORT_INSTANCE_URL)
         )
     }
@@ -63,11 +68,10 @@ internal class ReportInstancePollRestHandler : PluginRestHandler() {
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: RestRequest, client: NodeClient, channel: RestChannel) {
-        val handler = ReportInstanceAction(request, client, channel)
-        when (request.method()) {
-            GET -> handler.poll()
-            else -> channel.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))
+    override fun executeRequest(request: RestRequest, client: NodeClient, channel: RestChannel): IRestResponse {
+        return when (request.method()) {
+            GET -> ReportInstanceActions.poll()
+            else -> RestErrorResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed")
         }
     }
 }

@@ -16,7 +16,7 @@
 ##
 
 # Schema file for the report definitions index
-# Since we only search based on "ownerId", sort on lastUpdatedTimeMs & createdTimeMs,
+# Since we only search based on "roles", sort on lastUpdatedTimeMs & createdTimeMs,
 # other fields are not used in mapping to avoid index on those fields.
 # Also "dynamic" is set to "false" so that other fields can be added.
 dynamic: false
@@ -27,7 +27,7 @@ properties:
   createdTimeMs:
     type: date
     format: epoch_millis
-  ownerId:
+  roles: # Array of role name
     type: keyword
   reportDefinition:
     type: object

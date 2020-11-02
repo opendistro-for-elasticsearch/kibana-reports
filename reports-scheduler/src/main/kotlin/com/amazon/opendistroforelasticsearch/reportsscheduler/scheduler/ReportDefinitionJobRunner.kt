@@ -32,6 +32,7 @@ import java.time.Instant
 internal object ReportDefinitionJobRunner : ScheduledJobRunner {
     private val log by logger(ReportDefinitionJobRunner::class.java)
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    private const val TEMP_ROLE_ID = "roleId" // TODO get this from request
 
     override fun runJob(job: ScheduledJobParameter, context: JobExecutionContext) {
         if (job !is ReportDefinitionDetails) {
@@ -48,9 +49,9 @@ internal object ReportDefinitionJobRunner : ScheduledJobRunner {
                 currentTime,
                 beginTime,
                 endTime,
-                reportDefinitionDetails.ownerId,
+                listOf(TEMP_ROLE_ID),
                 reportDefinitionDetails,
-                ReportInstance.State.Scheduled)
+                ReportInstance.Status.Scheduled)
             val id = IndexManager.createReportInstance(reportInstance)
             if (id == null) {
                 log.warn("$LOG_PREFIX:runJob-job creation failed for $reportInstance")

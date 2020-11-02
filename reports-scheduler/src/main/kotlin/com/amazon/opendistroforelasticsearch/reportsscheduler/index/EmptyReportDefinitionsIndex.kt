@@ -25,20 +25,6 @@ internal object EmptyReportDefinitionsIndex : IReportDefinitionsIndex {
     /**
      * {@inheritDoc}
      */
-    override fun createIndex() {
-        notInitializedError()
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    override fun isIndexExists(): Boolean {
-        notInitializedError()
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     override fun createReportDefinition(reportDefinitionDetails: ReportDefinitionDetails): String? {
         notInitializedError()
     }
@@ -53,7 +39,7 @@ internal object EmptyReportDefinitionsIndex : IReportDefinitionsIndex {
     /**
      * {@inheritDoc}
      */
-    override fun getAllReportDefinitions(ownerId: String, from: Int): List<ReportDefinitionDetails> {
+    override fun getAllReportDefinitions(roles: List<String>, from: Int): List<ReportDefinitionDetails> {
         notInitializedError()
     }
 

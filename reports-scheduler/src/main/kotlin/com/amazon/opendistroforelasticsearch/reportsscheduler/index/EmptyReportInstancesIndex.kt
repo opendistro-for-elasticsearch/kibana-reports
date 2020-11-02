@@ -26,20 +26,6 @@ internal object EmptyReportInstancesIndex : IReportInstancesIndex {
     /**
      * {@inheritDoc}
      */
-    override fun createIndex() {
-        notInitializedError()
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    override fun isIndexExists(): Boolean {
-        notInitializedError()
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     override fun createReportInstance(reportInstance: ReportInstance): String? {
         notInitializedError()
     }
@@ -54,7 +40,7 @@ internal object EmptyReportInstancesIndex : IReportInstancesIndex {
     /**
      * {@inheritDoc}
      */
-    override fun getAllReportInstances(ownerId: String, from: Int): List<ReportInstance> {
+    override fun getAllReportInstances(roles: List<String>, from: Int): List<ReportInstance> {
         notInitializedError()
     }
 

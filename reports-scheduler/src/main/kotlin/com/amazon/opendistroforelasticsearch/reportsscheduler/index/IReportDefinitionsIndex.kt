@@ -23,17 +23,6 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefini
  */
 internal interface IReportDefinitionsIndex {
     /**
-     * Create index using the mapping and settings defined in resource
-     */
-    fun createIndex()
-
-    /**
-     * Check if the index is created and available.
-     * @return true if index is available, false otherwise
-     */
-    fun isIndexExists(): Boolean
-
-    /**
      * create a new doc for reportDefinitionDetails
      * @param reportDefinitionDetails the Report definition details
      * @return ReportDefinition.id if successful, null otherwise
@@ -49,12 +38,12 @@ internal interface IReportDefinitionsIndex {
     fun getReportDefinition(id: String): ReportDefinitionDetails?
 
     /**
-     * Query index for report definition for given ownerId
-     * @param ownerId the owner ID
+     * Query index for report definition for given roles
+     * @param roles the list of roles to search reports for.
      * @param from the paginated start index
      * @return list of Report definition details
      */
-    fun getAllReportDefinitions(ownerId: String, from: Int = 0): List<ReportDefinitionDetails>
+    fun getAllReportDefinitions(roles: List<String>, from: Int = 0): List<ReportDefinitionDetails>
 
     /**
      * update Report definition details for given id

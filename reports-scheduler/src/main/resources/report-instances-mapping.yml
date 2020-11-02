@@ -16,7 +16,7 @@
 ##
 
 # Schema file for the report instances index
-# Since we only search based on "userId" & currentState, sort on lastUpdatedTimeMs & createdTimeMs,
+# Since we only search based on "roles" & currentState, sort on lastUpdatedTimeMs & createdTimeMs,
 # other fields are not used in mapping to avoid index on those fields.
 # Also "dynamic" is set to "false" so that other fields can be added.
 dynamic: false
@@ -27,7 +27,7 @@ properties:
   createdTimeMs:
     type: date
     format: epoch_millis
-  userId:
+  roles: # Array of role name
     type: keyword
   status:
     type: keyword

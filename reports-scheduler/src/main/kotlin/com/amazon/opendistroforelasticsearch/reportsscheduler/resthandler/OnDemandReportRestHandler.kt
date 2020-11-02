@@ -16,9 +16,12 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
-import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.IRestResponse
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.InContextReportCreateRequest
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.OnDemandReportCreateRequest
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestErrorResponse
 import org.elasticsearch.client.node.NodeClient
-import org.elasticsearch.rest.BytesRestResponse
 import org.elasticsearch.rest.RestChannel
 import org.elasticsearch.rest.RestHandler.Route
 import org.elasticsearch.rest.RestRequest
@@ -28,7 +31,7 @@ import org.elasticsearch.rest.RestStatus
 
 /**
  * Rest handler for creating on-demand report instances.
- * This handler uses [ReportInstanceAction].
+ * This handler uses [ReportInstanceActions].
  */
 internal class OnDemandReportRestHandler : PluginRestHandler() {
     companion object {
@@ -48,11 +51,20 @@ internal class OnDemandReportRestHandler : PluginRestHandler() {
      */
     override fun routes(): List<Route> {
         return listOf(
-            // create a new report instance from provided definition
-            // POST ON_DEMAND_REPORT_URL
+            /**
+             * Create a new report instance from provided definition
+             * Request URL: PUT ON_DEMAND_REPORT_URL
+             * Request body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.InContextReportCreateRequest]
+             * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.InContextReportCreateResponse]
+             */
             Route(PUT, ON_DEMAND_REPORT_URL),
-            // create a new report from definition and return instance
-            // GET ON_DEMAND_REPORT_URL?id=<reportDefinitionId>
+
+            /**
+             * Create a new report from definition and return instance
+             * Request URL: POST ON_DEMAND_REPORT_URL?id=<reportDefinitionId>
+             * Request body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.OnDemandReportCreateRequest]
+             * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.OnDemandReportCreateResponse]
+             */
             Route(POST, ON_DEMAND_REPORT_URL)
         )
     }
@@ -67,15 +79,16 @@ internal class OnDemandReportRestHandler : PluginRestHandler() {
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: RestRequest, client: NodeClient, channel: RestChannel) {
-        val handler = ReportInstanceAction(request, client, channel)
-        when (request.method()) {
-            PUT -> handler.createOnDemand()
+    override fun executeRequest(request: RestRequest, client: NodeClient, channel: RestChannel): IRestResponse {
+        val parser = request.contentParser()
+        parser.nextToken()
+        return when (request.method()) {
+            PUT -> ReportInstanceActions.createOnDemand(InContextReportCreateRequest.parse(parser))
             POST -> {
                 val reportDefinitionId = request.param(ID_FIELD) ?: throw IllegalArgumentException("Must specify id")
-                handler.createOnDemandFromDefinition(reportDefinitionId)
+                ReportInstanceActions.createOnDemandFromDefinition(OnDemandReportCreateRequest.parse(parser, reportDefinitionId))
             }
-            else -> channel.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))
+            else -> RestErrorResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed")
         }
     }
 }
