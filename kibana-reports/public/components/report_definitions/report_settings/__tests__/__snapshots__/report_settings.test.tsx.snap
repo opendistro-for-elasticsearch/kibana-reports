@@ -27,7 +27,7 @@ exports[`<ReportSettings /> panel dashboard create from in-context 1`] = `
       >
         <div
           class="euiFormRow"
-          id="random_html_id-row"
+          id="reportSettingsName-row"
         >
           <div
             class="euiFormRow__labelWrapper"
@@ -35,7 +35,7 @@ exports[`<ReportSettings /> panel dashboard create from in-context 1`] = `
             <label
               aria-invalid="false"
               class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
+              for="reportSettingsName"
             >
               Name
             </label>
@@ -50,9 +50,9 @@ exports[`<ReportSettings /> panel dashboard create from in-context 1`] = `
                 class="euiFormControlLayout__childrenWrapper"
               >
                 <input
-                  aria-describedby="random_html_id-help"
+                  aria-describedby="reportSettingsName-help"
                   class="euiFieldText"
-                  id="random_html_id"
+                  id="reportSettingsName"
                   placeholder="Report name (e.g Log Traffic Daily Report)"
                   type="text"
                   value=""
@@ -61,7 +61,7 @@ exports[`<ReportSettings /> panel dashboard create from in-context 1`] = `
             </div>
             <div
               class="euiFormHelpText euiFormRow__text"
-              id="random_html_id-help"
+              id="reportSettingsName-help"
             >
               Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space).
             </div>
@@ -78,14 +78,14 @@ exports[`<ReportSettings /> panel dashboard create from in-context 1`] = `
       >
         <div
           class="euiFormRow"
-          id="random_html_id-row"
+          id="reportSettingsDescription-row"
         >
           <div
             class="euiFormRow__labelWrapper"
           >
             <label
               class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
+              for="reportSettingsDescription"
             >
               Description (optional)
             </label>
@@ -95,7 +95,7 @@ exports[`<ReportSettings /> panel dashboard create from in-context 1`] = `
           >
             <textarea
               class="euiTextArea euiTextArea--resizeVertical"
-              id="random_html_id"
+              id="reportSettingsDescription"
               placeholder="Describe this report (e.g Morning daily reports for log traffic)"
               rows="6"
             />
@@ -1089,7 +1089,7 @@ exports[`<ReportSettings /> panel display errors on create 1`] = `
       >
         <div
           class="euiFormRow"
-          id="random_html_id-row"
+          id="reportSettingsName-row"
         >
           <div
             class="euiFormRow__labelWrapper"
@@ -1097,7 +1097,7 @@ exports[`<ReportSettings /> panel display errors on create 1`] = `
             <label
               aria-invalid="true"
               class="euiFormLabel euiFormRow__label euiFormLabel-isInvalid"
-              for="random_html_id"
+              for="reportSettingsName"
             >
               Name
             </label>
@@ -1112,9 +1112,9 @@ exports[`<ReportSettings /> panel display errors on create 1`] = `
                 class="euiFormControlLayout__childrenWrapper"
               >
                 <input
-                  aria-describedby="random_html_id-help"
+                  aria-describedby="reportSettingsName-help"
                   class="euiFieldText"
-                  id="random_html_id"
+                  id="reportSettingsName"
                   placeholder="Report name (e.g Log Traffic Daily Report)"
                   type="text"
                   value=""
@@ -1123,7 +1123,7 @@ exports[`<ReportSettings /> panel display errors on create 1`] = `
             </div>
             <div
               class="euiFormHelpText euiFormRow__text"
-              id="random_html_id-help"
+              id="reportSettingsName-help"
             >
               Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space).
             </div>
@@ -1140,14 +1140,14 @@ exports[`<ReportSettings /> panel display errors on create 1`] = `
       >
         <div
           class="euiFormRow"
-          id="random_html_id-row"
+          id="reportSettingsDescription-row"
         >
           <div
             class="euiFormRow__labelWrapper"
           >
             <label
               class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
+              for="reportSettingsDescription"
             >
               Description (optional)
             </label>
@@ -1157,7 +1157,7 @@ exports[`<ReportSettings /> panel display errors on create 1`] = `
           >
             <textarea
               class="euiTextArea euiTextArea--resizeVertical"
-              id="random_html_id"
+              id="reportSettingsDescription"
               placeholder="Describe this report (e.g Morning daily reports for log traffic)"
               rows="6"
             />
@@ -2151,7 +2151,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
       >
         <div
           class="euiFormRow"
-          id="random_html_id-row"
+          id="reportSettingsName-row"
         >
           <div
             class="euiFormRow__labelWrapper"
@@ -2159,7 +2159,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
             <label
               aria-invalid="false"
               class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
+              for="reportSettingsName"
             >
               Name
             </label>
@@ -2174,9 +2174,9 @@ exports[`<ReportSettings /> panel render component 1`] = `
                 class="euiFormControlLayout__childrenWrapper"
               >
                 <input
-                  aria-describedby="random_html_id-help"
+                  aria-describedby="reportSettingsName-help"
                   class="euiFieldText"
-                  id="random_html_id"
+                  id="reportSettingsName"
                   placeholder="Report name (e.g Log Traffic Daily Report)"
                   type="text"
                   value=""
@@ -2185,7 +2185,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
             </div>
             <div
               class="euiFormHelpText euiFormRow__text"
-              id="random_html_id-help"
+              id="reportSettingsName-help"
             >
               Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space).
             </div>
@@ -2202,14 +2202,14 @@ exports[`<ReportSettings /> panel render component 1`] = `
       >
         <div
           class="euiFormRow"
-          id="random_html_id-row"
+          id="reportSettingsDescription-row"
         >
           <div
             class="euiFormRow__labelWrapper"
           >
             <label
               class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
+              for="reportSettingsDescription"
             >
               Description (optional)
             </label>
@@ -2219,7 +2219,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
           >
             <textarea
               class="euiTextArea euiTextArea--resizeVertical"
-              id="random_html_id"
+              id="reportSettingsDescription"
               placeholder="Describe this report (e.g Morning daily reports for log traffic)"
               rows="6"
             />
@@ -2636,7 +2636,7 @@ exports[`<ReportSettings /> panel render edit, dashboard source 1`] = `
       >
         <div
           class="euiFormRow"
-          id="random_html_id-row"
+          id="reportSettingsName-row"
         >
           <div
             class="euiFormRow__labelWrapper"
@@ -2644,7 +2644,7 @@ exports[`<ReportSettings /> panel render edit, dashboard source 1`] = `
             <label
               aria-invalid="false"
               class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
+              for="reportSettingsName"
             >
               Name
             </label>
@@ -2659,9 +2659,9 @@ exports[`<ReportSettings /> panel render edit, dashboard source 1`] = `
                 class="euiFormControlLayout__childrenWrapper"
               >
                 <input
-                  aria-describedby="random_html_id-help"
+                  aria-describedby="reportSettingsName-help"
                   class="euiFieldText"
-                  id="random_html_id"
+                  id="reportSettingsName"
                   placeholder="Report name (e.g Log Traffic Daily Report)"
                   type="text"
                   value=""
@@ -2670,7 +2670,7 @@ exports[`<ReportSettings /> panel render edit, dashboard source 1`] = `
             </div>
             <div
               class="euiFormHelpText euiFormRow__text"
-              id="random_html_id-help"
+              id="reportSettingsName-help"
             >
               Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space).
             </div>
@@ -2687,14 +2687,14 @@ exports[`<ReportSettings /> panel render edit, dashboard source 1`] = `
       >
         <div
           class="euiFormRow"
-          id="random_html_id-row"
+          id="reportSettingsDescription-row"
         >
           <div
             class="euiFormRow__labelWrapper"
           >
             <label
               class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
+              for="reportSettingsDescription"
             >
               Description (optional)
             </label>
@@ -2704,7 +2704,7 @@ exports[`<ReportSettings /> panel render edit, dashboard source 1`] = `
           >
             <textarea
               class="euiTextArea euiTextArea--resizeVertical"
-              id="random_html_id"
+              id="reportSettingsDescription"
               placeholder="Describe this report (e.g Morning daily reports for log traffic)"
               rows="6"
             />
@@ -3136,7 +3136,7 @@ exports[`<ReportSettings /> panel render edit, saved search source 1`] = `
       >
         <div
           class="euiFormRow"
-          id="random_html_id-row"
+          id="reportSettingsName-row"
         >
           <div
             class="euiFormRow__labelWrapper"
@@ -3144,7 +3144,7 @@ exports[`<ReportSettings /> panel render edit, saved search source 1`] = `
             <label
               aria-invalid="false"
               class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
+              for="reportSettingsName"
             >
               Name
             </label>
@@ -3159,9 +3159,9 @@ exports[`<ReportSettings /> panel render edit, saved search source 1`] = `
                 class="euiFormControlLayout__childrenWrapper"
               >
                 <input
-                  aria-describedby="random_html_id-help"
+                  aria-describedby="reportSettingsName-help"
                   class="euiFieldText"
-                  id="random_html_id"
+                  id="reportSettingsName"
                   placeholder="Report name (e.g Log Traffic Daily Report)"
                   type="text"
                   value=""
@@ -3170,7 +3170,7 @@ exports[`<ReportSettings /> panel render edit, saved search source 1`] = `
             </div>
             <div
               class="euiFormHelpText euiFormRow__text"
-              id="random_html_id-help"
+              id="reportSettingsName-help"
             >
               Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space).
             </div>
@@ -3187,14 +3187,14 @@ exports[`<ReportSettings /> panel render edit, saved search source 1`] = `
       >
         <div
           class="euiFormRow"
-          id="random_html_id-row"
+          id="reportSettingsDescription-row"
         >
           <div
             class="euiFormRow__labelWrapper"
           >
             <label
               class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
+              for="reportSettingsDescription"
             >
               Description (optional)
             </label>
@@ -3204,7 +3204,7 @@ exports[`<ReportSettings /> panel render edit, saved search source 1`] = `
           >
             <textarea
               class="euiTextArea euiTextArea--resizeVertical"
-              id="random_html_id"
+              id="reportSettingsDescription"
               placeholder="Describe this report (e.g Morning daily reports for log traffic)"
               rows="6"
             />
@@ -3636,7 +3636,7 @@ exports[`<ReportSettings /> panel render edit, visualization source 1`] = `
       >
         <div
           class="euiFormRow"
-          id="random_html_id-row"
+          id="reportSettingsName-row"
         >
           <div
             class="euiFormRow__labelWrapper"
@@ -3644,7 +3644,7 @@ exports[`<ReportSettings /> panel render edit, visualization source 1`] = `
             <label
               aria-invalid="false"
               class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
+              for="reportSettingsName"
             >
               Name
             </label>
@@ -3659,9 +3659,9 @@ exports[`<ReportSettings /> panel render edit, visualization source 1`] = `
                 class="euiFormControlLayout__childrenWrapper"
               >
                 <input
-                  aria-describedby="random_html_id-help"
+                  aria-describedby="reportSettingsName-help"
                   class="euiFieldText"
-                  id="random_html_id"
+                  id="reportSettingsName"
                   placeholder="Report name (e.g Log Traffic Daily Report)"
                   type="text"
                   value=""
@@ -3670,7 +3670,7 @@ exports[`<ReportSettings /> panel render edit, visualization source 1`] = `
             </div>
             <div
               class="euiFormHelpText euiFormRow__text"
-              id="random_html_id-help"
+              id="reportSettingsName-help"
             >
               Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space).
             </div>
@@ -3687,14 +3687,14 @@ exports[`<ReportSettings /> panel render edit, visualization source 1`] = `
       >
         <div
           class="euiFormRow"
-          id="random_html_id-row"
+          id="reportSettingsDescription-row"
         >
           <div
             class="euiFormRow__labelWrapper"
           >
             <label
               class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
+              for="reportSettingsDescription"
             >
               Description (optional)
             </label>
@@ -3704,7 +3704,7 @@ exports[`<ReportSettings /> panel render edit, visualization source 1`] = `
           >
             <textarea
               class="euiTextArea euiTextArea--resizeVertical"
-              id="random_html_id"
+              id="reportSettingsDescription"
               placeholder="Describe this report (e.g Morning daily reports for log traffic)"
               rows="6"
             />
@@ -4136,7 +4136,7 @@ exports[`<ReportSettings /> panel saved search create from in-context 1`] = `
       >
         <div
           class="euiFormRow"
-          id="random_html_id-row"
+          id="reportSettingsName-row"
         >
           <div
             class="euiFormRow__labelWrapper"
@@ -4144,7 +4144,7 @@ exports[`<ReportSettings /> panel saved search create from in-context 1`] = `
             <label
               aria-invalid="false"
               class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
+              for="reportSettingsName"
             >
               Name
             </label>
@@ -4159,9 +4159,9 @@ exports[`<ReportSettings /> panel saved search create from in-context 1`] = `
                 class="euiFormControlLayout__childrenWrapper"
               >
                 <input
-                  aria-describedby="random_html_id-help"
+                  aria-describedby="reportSettingsName-help"
                   class="euiFieldText"
-                  id="random_html_id"
+                  id="reportSettingsName"
                   placeholder="Report name (e.g Log Traffic Daily Report)"
                   type="text"
                   value=""
@@ -4170,7 +4170,7 @@ exports[`<ReportSettings /> panel saved search create from in-context 1`] = `
             </div>
             <div
               class="euiFormHelpText euiFormRow__text"
-              id="random_html_id-help"
+              id="reportSettingsName-help"
             >
               Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space).
             </div>
@@ -4187,14 +4187,14 @@ exports[`<ReportSettings /> panel saved search create from in-context 1`] = `
       >
         <div
           class="euiFormRow"
-          id="random_html_id-row"
+          id="reportSettingsDescription-row"
         >
           <div
             class="euiFormRow__labelWrapper"
           >
             <label
               class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
+              for="reportSettingsDescription"
             >
               Description (optional)
             </label>
@@ -4204,7 +4204,7 @@ exports[`<ReportSettings /> panel saved search create from in-context 1`] = `
           >
             <textarea
               class="euiTextArea euiTextArea--resizeVertical"
-              id="random_html_id"
+              id="reportSettingsDescription"
               placeholder="Describe this report (e.g Morning daily reports for log traffic)"
               rows="6"
             />
@@ -5198,7 +5198,7 @@ exports[`<ReportSettings /> panel visualization create from in-context 1`] = `
       >
         <div
           class="euiFormRow"
-          id="random_html_id-row"
+          id="reportSettingsName-row"
         >
           <div
             class="euiFormRow__labelWrapper"
@@ -5206,7 +5206,7 @@ exports[`<ReportSettings /> panel visualization create from in-context 1`] = `
             <label
               aria-invalid="false"
               class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
+              for="reportSettingsName"
             >
               Name
             </label>
@@ -5221,9 +5221,9 @@ exports[`<ReportSettings /> panel visualization create from in-context 1`] = `
                 class="euiFormControlLayout__childrenWrapper"
               >
                 <input
-                  aria-describedby="random_html_id-help"
+                  aria-describedby="reportSettingsName-help"
                   class="euiFieldText"
-                  id="random_html_id"
+                  id="reportSettingsName"
                   placeholder="Report name (e.g Log Traffic Daily Report)"
                   type="text"
                   value=""
@@ -5232,7 +5232,7 @@ exports[`<ReportSettings /> panel visualization create from in-context 1`] = `
             </div>
             <div
               class="euiFormHelpText euiFormRow__text"
-              id="random_html_id-help"
+              id="reportSettingsName-help"
             >
               Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space).
             </div>
@@ -5249,14 +5249,14 @@ exports[`<ReportSettings /> panel visualization create from in-context 1`] = `
       >
         <div
           class="euiFormRow"
-          id="random_html_id-row"
+          id="reportSettingsDescription-row"
         >
           <div
             class="euiFormRow__labelWrapper"
           >
             <label
               class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
+              for="reportSettingsDescription"
             >
               Description (optional)
             </label>
@@ -5266,7 +5266,7 @@ exports[`<ReportSettings /> panel visualization create from in-context 1`] = `
           >
             <textarea
               class="euiTextArea euiTextArea--resizeVertical"
-              id="random_html_id"
+              id="reportSettingsDescription"
               placeholder="Describe this report (e.g Morning daily reports for log traffic)"
               rows="6"
             />

@@ -21,14 +21,14 @@ exports[`<ReportTrigger /> panel Render edit on-demand component 1`] = `
   >
     <div
       class="euiFormRow"
-      id="random_html_id-row"
+      id="reportDefinitionTriggerTypes-row"
     >
       <div
         class="euiFormRow__labelWrapper"
       >
         <label
           class="euiFormLabel euiFormRow__label"
-          for="random_html_id"
+          for="reportDefinitionTriggerTypes"
         >
           Trigger type
         </label>
@@ -37,7 +37,7 @@ exports[`<ReportTrigger /> panel Render edit on-demand component 1`] = `
         class="euiFormRow__fieldWrapper"
       >
         <div
-          id="random_html_id"
+          id="reportDefinitionTriggerTypes"
         >
           <div
             class="euiRadio euiRadioGroup__item"
@@ -109,14 +109,14 @@ exports[`<ReportTrigger /> panel render create component 1`] = `
   >
     <div
       class="euiFormRow"
-      id="random_html_id-row"
+      id="reportDefinitionTriggerTypes-row"
     >
       <div
         class="euiFormRow__labelWrapper"
       >
         <label
           class="euiFormLabel euiFormRow__label"
-          for="random_html_id"
+          for="reportDefinitionTriggerTypes"
         >
           Trigger type
         </label>
@@ -125,7 +125,7 @@ exports[`<ReportTrigger /> panel render create component 1`] = `
         class="euiFormRow__fieldWrapper"
       >
         <div
-          id="random_html_id"
+          id="reportDefinitionTriggerTypes"
         >
           <div
             class="euiRadio euiRadioGroup__item"
@@ -197,14 +197,14 @@ exports[`<ReportTrigger /> panel render edit Cron schedule component 1`] = `
   >
     <div
       class="euiFormRow"
-      id="random_html_id-row"
+      id="reportDefinitionTriggerTypes-row"
     >
       <div
         class="euiFormRow__labelWrapper"
       >
         <label
           class="euiFormLabel euiFormRow__label"
-          for="random_html_id"
+          for="reportDefinitionTriggerTypes"
         >
           Trigger type
         </label>
@@ -213,7 +213,7 @@ exports[`<ReportTrigger /> panel render edit Cron schedule component 1`] = `
         class="euiFormRow__fieldWrapper"
       >
         <div
-          id="random_html_id"
+          id="reportDefinitionTriggerTypes"
         >
           <div
             class="euiRadio euiRadioGroup__item"
@@ -285,14 +285,14 @@ exports[`<ReportTrigger /> panel render edit recurring 5 hours schedule componen
   >
     <div
       class="euiFormRow"
-      id="random_html_id-row"
+      id="reportDefinitionTriggerTypes-row"
     >
       <div
         class="euiFormRow__labelWrapper"
       >
         <label
           class="euiFormLabel euiFormRow__label"
-          for="random_html_id"
+          for="reportDefinitionTriggerTypes"
         >
           Trigger type
         </label>
@@ -301,7 +301,7 @@ exports[`<ReportTrigger /> panel render edit recurring 5 hours schedule componen
         class="euiFormRow__fieldWrapper"
       >
         <div
-          id="random_html_id"
+          id="reportDefinitionTriggerTypes"
         >
           <div
             class="euiRadio euiRadioGroup__item"
@@ -373,14 +373,14 @@ exports[`<ReportTrigger /> panel render edit recurring 10 minutes schedule compo
   >
     <div
       class="euiFormRow"
-      id="random_html_id-row"
+      id="reportDefinitionTriggerTypes-row"
     >
       <div
         class="euiFormRow__labelWrapper"
       >
         <label
           class="euiFormLabel euiFormRow__label"
-          for="random_html_id"
+          for="reportDefinitionTriggerTypes"
         >
           Trigger type
         </label>
@@ -389,7 +389,7 @@ exports[`<ReportTrigger /> panel render edit recurring 10 minutes schedule compo
         class="euiFormRow__fieldWrapper"
       >
         <div
-          id="random_html_id"
+          id="reportDefinitionTriggerTypes"
         >
           <div
             class="euiRadio euiRadioGroup__item"
@@ -461,14 +461,14 @@ exports[`<ReportTrigger /> panel render edit recurring daily schedule component 
   >
     <div
       class="euiFormRow"
-      id="random_html_id-row"
+      id="reportDefinitionTriggerTypes-row"
     >
       <div
         class="euiFormRow__labelWrapper"
       >
         <label
           class="euiFormLabel euiFormRow__label"
-          for="random_html_id"
+          for="reportDefinitionTriggerTypes"
         >
           Trigger type
         </label>
@@ -477,7 +477,7 @@ exports[`<ReportTrigger /> panel render edit recurring daily schedule component 
         class="euiFormRow__fieldWrapper"
       >
         <div
-          id="random_html_id"
+          id="reportDefinitionTriggerTypes"
         >
           <div
             class="euiRadio euiRadioGroup__item"
