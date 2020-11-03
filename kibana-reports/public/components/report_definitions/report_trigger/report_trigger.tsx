@@ -680,7 +680,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
       </EuiPageHeader>
       <EuiHorizontalRule />
       <EuiPageContentBody>
-        <EuiFormRow label="Trigger type">
+        <EuiFormRow label="Trigger type" id="reportDefinitionTriggerTypes">
           <EuiRadioGroup
             options={TRIGGER_TYPE_OPTIONS}
             idSelected={reportTriggerType}

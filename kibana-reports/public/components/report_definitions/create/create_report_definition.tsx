@@ -364,6 +364,7 @@ export function CreateReport(props) {
                   timeRange
                 )
               }
+              id={'createNewReportDefinition'}
             >
               Create
             </EuiButton>

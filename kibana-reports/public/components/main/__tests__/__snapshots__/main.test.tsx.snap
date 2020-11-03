@@ -495,6 +495,7 @@ exports[`<Main /> panel render component 1`] = `
       >
         <button
           class="euiButton euiButton--primary euiButton--fill"
+          id="createReportHomepageButton"
           type="button"
         >
           <span
@@ -1382,6 +1383,7 @@ exports[`<Main /> panel render component after create success 1`] = `
       >
         <button
           class="euiButton euiButton--primary euiButton--fill"
+          id="createReportHomepageButton"
           type="button"
         >
           <span
@@ -2328,6 +2330,7 @@ exports[`<Main /> panel render component after edit success 1`] = `
       >
         <button
           class="euiButton euiButton--primary euiButton--fill"
+          id="createReportHomepageButton"
           type="button"
         >
           <span
