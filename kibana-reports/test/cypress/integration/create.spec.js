@@ -49,8 +49,6 @@ describe('Cypress', () => {
 
     // create an on-demand report definition
     cy.get('#createNewReportDefinition').click();
-
-    // cy.location('pathname').should('include', '/opendistro_kibana_reports#/');
   });
 
   it('Create a new scheduled report definition', () => {

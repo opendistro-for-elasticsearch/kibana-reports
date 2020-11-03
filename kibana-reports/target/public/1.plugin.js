@@ -732,7 +732,8 @@ function ReportDefinitionDetails(props) {
   const ScheduledDefinitionStatus = () => {
     const status = reportDefinitionDetails.status === 'Active' ? 'Disable' : 'Enable';
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiButton"], {
-      onClick: () => changeScheduledReportDefinitionStatus(status)
+      onClick: () => changeScheduledReportDefinitionStatus(status),
+      id: 'changeStatusFromDetailsButton'
     }, status);
   };
 
@@ -770,7 +771,8 @@ function ReportDefinitionDetails(props) {
   };
 
   const showActionButton = reportDefinitionDetails.triggerType === ON_DEMAND ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiButton"], {
-    onClick: () => generateReportFromDetails()
+    onClick: () => generateReportFromDetails(),
+    id: 'generateReportFromDetailsButton'
   }, "Generate report") : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(ScheduledDefinitionStatus, null);
   const triggerSection = reportDefinitionDetails.triggerType === ON_DEMAND ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_report_details_report_details__WEBPACK_IMPORTED_MODULE_2__["ReportDetailsComponent"], {
     reportDetailsComponentTitle: 'Trigger type',
@@ -799,7 +801,8 @@ function ReportDefinitionDetails(props) {
     grow: false
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiButton"], {
     color: 'danger',
-    onClick: deleteReportDefinition
+    onClick: deleteReportDefinition,
+    id: 'deleteReportDefinitionButton'
   }, "Delete")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexItem"], {
     grow: false
   }, showActionButton), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexItem"], {
@@ -808,7 +811,8 @@ function ReportDefinitionDetails(props) {
     fill: true,
     onClick: () => {
       window.location.assign(`opendistro_kibana_reports#/edit/${reportDefinitionId}`);
-    }
+    },
+    id: 'editReportDefinitionButton'
   }, "Edit")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiHorizontalRule"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiTitle"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Report settings")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexGroup"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_report_details_report_details__WEBPACK_IMPORTED_MODULE_2__["ReportDetailsComponent"], {
     reportDetailsComponentTitle: 'Name',
     reportDetailsComponentContent: reportDefinitionDetails.name
@@ -937,7 +941,8 @@ function ReportDefinitions(props) {
     field: 'reportName',
     name: 'Name',
     render: name => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiLink"], {
-      onClick: () => navigateToDefinitionDetails(name)
+      onClick: () => navigateToDefinitionDetails(name),
+      id: 'reportDefinitionDetailsLink'
     }, name)
   }, {
     field: 'source',
@@ -1374,7 +1379,8 @@ function ReportsTable(props) {
       disabled: item.state === 'Pending',
       onClick: () => {
         window.location.assign(`opendistro_kibana_reports#/report_details/${item.id}`);
-      }
+      },
+      id: 'reportDetailsLink'
     }, reportName)
   }, {
     // TODO: link to dashboard/visualization snapshot, use "queryUrl" field. Display dashboard name?
