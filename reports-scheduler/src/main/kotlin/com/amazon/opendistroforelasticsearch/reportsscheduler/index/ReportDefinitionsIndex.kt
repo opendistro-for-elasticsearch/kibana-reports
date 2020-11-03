@@ -44,20 +44,25 @@ import java.util.concurrent.TimeUnit
 /**
  * Class for doing ES index operation to maintain report definitions in cluster.
  */
-internal class ReportDefinitionsIndex(client: Client, private val clusterService: ClusterService) : IReportDefinitionsIndex {
-    private val client: Client
+internal object ReportDefinitionsIndex {
+    private val log by logger(ReportDefinitionsIndex::class.java)
+    const val REPORT_DEFINITIONS_INDEX_NAME = ".opendistro-reports-definitions"
+    private const val REPORT_DEFINITIONS_MAPPING_FILE_NAME = "report-definitions-mapping.yml"
+    private const val REPORT_DEFINITIONS_SETTINGS_FILE_NAME = "report-definitions-settings.yml"
+    private const val MAPPING_TYPE = "_doc"
+    private const val MAX_ITEMS_TO_QUERY = 10000
 
-    init {
+    private lateinit var client: Client
+    private lateinit var clusterService: ClusterService
+
+    /**
+     * Initialize the class
+     * @param client The ES client
+     * @param clusterService The ES cluster service
+     */
+    fun initialize(client: Client, clusterService: ClusterService) {
         this.client = SecureIndexClient(client)
-    }
-
-    companion object {
-        private val log by logger(ReportDefinitionsIndex::class.java)
-        const val REPORT_DEFINITIONS_INDEX_NAME = ".opendistro-reports-definitions"
-        private const val REPORT_DEFINITIONS_MAPPING_FILE_NAME = "report-definitions-mapping.yml"
-        private const val REPORT_DEFINITIONS_SETTINGS_FILE_NAME = "report-definitions-settings.yml"
-        private const val MAPPING_TYPE = "_doc"
-        private const val MAX_ITEMS_TO_QUERY = 10000
+        this.clusterService = clusterService
     }
 
     /**
@@ -98,9 +103,12 @@ internal class ReportDefinitionsIndex(client: Client, private val clusterService
     }
 
     /**
-     * {@inheritDoc}
+     * create a new doc for reportDefinitionDetails
+     * @param reportDefinitionDetails the Report definition details
+     * @return ReportDefinition.id if successful, null otherwise
+     * @throws java.util.concurrent.ExecutionException with a cause
      */
-    override fun createReportDefinition(reportDefinitionDetails: ReportDefinitionDetails): String? {
+    fun createReportDefinition(reportDefinitionDetails: ReportDefinitionDetails): String? {
         createIndex()
         val indexRequest = IndexRequest(REPORT_DEFINITIONS_INDEX_NAME)
             .source(reportDefinitionDetails.toXContent(false))
@@ -116,9 +124,11 @@ internal class ReportDefinitionsIndex(client: Client, private val clusterService
     }
 
     /**
-     * {@inheritDoc}
+     * Query index for report definition ID
+     * @param id the id for the document
+     * @return Report definition details on success, null otherwise
      */
-    override fun getReportDefinition(id: String): ReportDefinitionDetails? {
+    fun getReportDefinition(id: String): ReportDefinitionDetails? {
         createIndex()
         val getRequest = GetRequest(REPORT_DEFINITIONS_INDEX_NAME).id(id)
         val actionFuture = client.get(getRequest)
@@ -136,9 +146,12 @@ internal class ReportDefinitionsIndex(client: Client, private val clusterService
     }
 
     /**
-     * {@inheritDoc}
+     * Query index for report definition for given roles
+     * @param roles the list of roles to search reports for.
+     * @param from the paginated start index
+     * @return list of Report definition details
      */
-    override fun getAllReportDefinitions(roles: List<String>, from: Int): List<ReportDefinitionDetails> {
+    fun getAllReportDefinitions(roles: List<String>, from: Int): List<ReportDefinitionDetails> {
         createIndex()
         val query = QueryBuilders.termsQuery(ROLE_LIST_FIELD, roles)
         val sourceBuilder = SearchSourceBuilder()
@@ -164,9 +177,12 @@ internal class ReportDefinitionsIndex(client: Client, private val clusterService
     }
 
     /**
-     * {@inheritDoc}
+     * update Report definition details for given id
+     * @param id the id for the document
+     * @param reportDefinitionDetails the Report definition details data
+     * @return true if successful, false otherwise
      */
-    override fun updateReportDefinition(id: String, reportDefinitionDetails: ReportDefinitionDetails): Boolean {
+    fun updateReportDefinition(id: String, reportDefinitionDetails: ReportDefinitionDetails): Boolean {
         createIndex()
         val updateRequest = UpdateRequest()
             .index(REPORT_DEFINITIONS_INDEX_NAME)
@@ -182,9 +198,11 @@ internal class ReportDefinitionsIndex(client: Client, private val clusterService
     }
 
     /**
-     * {@inheritDoc}
+     * delete Report definition details for given id
+     * @param id the id for the document
+     * @return true if successful, false otherwise
      */
-    override fun deleteReportDefinition(id: String): Boolean {
+    fun deleteReportDefinition(id: String): Boolean {
         createIndex()
         val deleteRequest = DeleteRequest()
             .index(REPORT_DEFINITIONS_INDEX_NAME)
