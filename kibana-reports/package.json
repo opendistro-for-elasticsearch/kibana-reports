@@ -18,7 +18,9 @@
     "test:browser": "plugin-helpers test:browser",
     "build": "plugin-helpers build",
     "test:jest": "../../node_modules/.bin/jest --config ./test/jest.config.js",
-    "test": "jest --config ./test/jest.config.js"
+    "test": "jest --config ./test/jest.config.js",
+    "cypress:run": "./node_modules/.bin/cypress run",
+    "cypress:open": "./node_modules/.bin/cypress open"
   },
   "dependencies": {
     "@babel/core": "^7.10.2",
