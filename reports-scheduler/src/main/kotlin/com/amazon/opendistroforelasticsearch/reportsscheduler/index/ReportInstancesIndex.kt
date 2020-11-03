@@ -48,20 +48,25 @@ import java.util.concurrent.TimeUnit
 /**
  * Class for doing ES index operation to maintain report instances in cluster.
  */
-internal class ReportInstancesIndex(client: Client, private val clusterService: ClusterService) : IReportInstancesIndex {
-    private val client: Client
+internal object ReportInstancesIndex {
+    private val log by logger(ReportInstancesIndex::class.java)
+    private const val REPORT_INSTANCES_INDEX_NAME = ".opendistro-reports-instances"
+    private const val REPORT_INSTANCES_MAPPING_FILE_NAME = "report-instances-mapping.yml"
+    private const val REPORT_INSTANCES_SETTINGS_FILE_NAME = "report-instances-settings.yml"
+    private const val MAPPING_TYPE = "_doc"
+    private const val MAX_ITEMS_TO_QUERY = 10000
 
-    init {
+    private lateinit var client: Client
+    private lateinit var clusterService: ClusterService
+
+    /**
+     * Initialize the class
+     * @param client The ES client
+     * @param clusterService The ES cluster service
+     */
+    fun initialize(client: Client, clusterService: ClusterService) {
         this.client = SecureIndexClient(client)
-    }
-
-    companion object {
-        private val log by logger(ReportInstancesIndex::class.java)
-        private const val REPORT_INSTANCES_INDEX_NAME = ".opendistro-reports-instances"
-        private const val REPORT_INSTANCES_MAPPING_FILE_NAME = "report-instances-mapping.yml"
-        private const val REPORT_INSTANCES_SETTINGS_FILE_NAME = "report-instances-settings.yml"
-        private const val MAPPING_TYPE = "_doc"
-        private const val MAX_ITEMS_TO_QUERY = 10000
+        this.clusterService = clusterService
     }
 
     /**
@@ -102,9 +107,12 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
     }
 
     /**
-     * {@inheritDoc}
+     * create a new doc for reportInstance
+     * @param reportInstance the report instance
+     * @return ReportInstance.id if successful, null otherwise
+     * @throws java.util.concurrent.ExecutionException with a cause
      */
-    override fun createReportInstance(reportInstance: ReportInstance): String? {
+    fun createReportInstance(reportInstance: ReportInstance): String? {
         createIndex()
         val indexRequest = IndexRequest(REPORT_INSTANCES_INDEX_NAME)
             .source(reportInstance.toXContent(false))
@@ -120,9 +128,11 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
     }
 
     /**
-     * {@inheritDoc}
+     * Query index for report instance ID
+     * @param id the id for the document
+     * @return Report instance details on success, null otherwise
      */
-    override fun getReportInstance(id: String): ReportInstance? {
+    fun getReportInstance(id: String): ReportInstance? {
         createIndex()
         val getRequest = GetRequest(REPORT_INSTANCES_INDEX_NAME).id(id)
         val actionFuture = client.get(getRequest)
@@ -140,9 +150,12 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
     }
 
     /**
-     * {@inheritDoc}
+     * Query index for report instance for given roles
+     * @param roles the list of roles to search reports for.
+     * @param from the paginated start index
+     * @return list of Report instance details
      */
-    override fun getAllReportInstances(roles: List<String>, from: Int): List<ReportInstance> {
+    fun getAllReportInstances(roles: List<String>, from: Int): List<ReportInstance> {
         createIndex()
         val query = QueryBuilders.termsQuery(ROLE_LIST_FIELD, roles)
         val sourceBuilder = SearchSourceBuilder()
@@ -168,9 +181,11 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
     }
 
     /**
-     * {@inheritDoc}
+     * update Report instance details for given id
+     * @param reportInstance the Report instance details data
+     * @return true if successful, false otherwise
      */
-    override fun updateReportInstance(reportInstance: ReportInstance): Boolean {
+    fun updateReportInstance(reportInstance: ReportInstance): Boolean {
         createIndex()
         val updateRequest = UpdateRequest()
             .index(REPORT_INSTANCES_INDEX_NAME)
@@ -186,9 +201,11 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
     }
 
     /**
-     * {@inheritDoc}
+     * update Report instance details for given id
+     * @param reportInstanceDoc the Report instance details doc data
+     * @return true if successful, false otherwise
      */
-    override fun updateReportInstanceDoc(reportInstanceDoc: ReportInstanceDoc): Boolean {
+    fun updateReportInstanceDoc(reportInstanceDoc: ReportInstanceDoc): Boolean {
         createIndex()
         val updateRequest = UpdateRequest()
             .index(REPORT_INSTANCES_INDEX_NAME)
@@ -206,9 +223,11 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
     }
 
     /**
-     * {@inheritDoc}
+     * delete Report instance details for given id
+     * @param id the id for the document
+     * @return true if successful, false otherwise
      */
-    override fun deleteReportInstance(id: String): Boolean {
+    fun deleteReportInstance(id: String): Boolean {
         createIndex()
         val deleteRequest = DeleteRequest()
             .index(REPORT_INSTANCES_INDEX_NAME)
@@ -222,9 +241,10 @@ internal class ReportInstancesIndex(client: Client, private val clusterService: 
     }
 
     /**
-     * {@inheritDoc}
+     * Get pending report instances
+     * @return ReportInstanceDoc list
      */
-    override fun getPendingReportInstances(): MutableList<ReportInstanceDoc> {
+    fun getPendingReportInstances(): MutableList<ReportInstanceDoc> {
         createIndex()
         val query = QueryBuilders.termsQuery(STATUS_FIELD,
             Status.Scheduled.name,

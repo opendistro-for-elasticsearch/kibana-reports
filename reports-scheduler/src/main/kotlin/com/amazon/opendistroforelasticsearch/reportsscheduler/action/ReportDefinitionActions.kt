@@ -17,7 +17,7 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.action
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.index.IndexManager
+import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportDefinitionsIndex
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.CreateReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.CreateReportDefinitionResponse
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.DeleteReportDefinitionRequest
@@ -54,7 +54,7 @@ internal object ReportDefinitionActions {
             listOf(TEMP_ROLE_ID), // TODO update with actual requester ID
             request.reportDefinition
         )
-        val docId = IndexManager.createReportDefinition(reportDefinitionDetails)
+        val docId = ReportDefinitionsIndex.createReportDefinition(reportDefinitionDetails)
         return if (docId == null) {
             CreateReportDefinitionResponse(RestStatus.INTERNAL_SERVER_ERROR,
                 "Report Definition Creation failed",
@@ -73,7 +73,7 @@ internal object ReportDefinitionActions {
      */
     fun update(request: UpdateReportDefinitionRequest): UpdateReportDefinitionResponse {
         log.info("$LOG_PREFIX:ReportDefinition-update ${request.reportDefinitionId}")
-        val currentReportDefinitionDetails = IndexManager.getReportDefinition(request.reportDefinitionId)
+        val currentReportDefinitionDetails = ReportDefinitionsIndex.getReportDefinition(request.reportDefinitionId)
         return if (currentReportDefinitionDetails == null) { // TODO verify actual requester ID
             UpdateReportDefinitionResponse(RestStatus.NOT_FOUND,
                 "Report Definition ${request.reportDefinitionId} not found",
@@ -86,7 +86,7 @@ internal object ReportDefinitionActions {
                 currentReportDefinitionDetails.roles,
                 request.reportDefinition
             )
-            val isUpdated = IndexManager.updateReportDefinition(request.reportDefinitionId, reportDefinitionDetails)
+            val isUpdated = ReportDefinitionsIndex.updateReportDefinition(request.reportDefinitionId, reportDefinitionDetails)
             if (isUpdated) {
                 UpdateReportDefinitionResponse(RestStatus.OK,
                     null,
@@ -106,7 +106,7 @@ internal object ReportDefinitionActions {
      */
     fun info(request: GetReportDefinitionRequest): GetReportDefinitionsResponse {
         log.info("$LOG_PREFIX:ReportDefinition-info ${request.reportDefinitionId}")
-        val reportDefinitionDetails = IndexManager.getReportDefinition(request.reportDefinitionId)
+        val reportDefinitionDetails = ReportDefinitionsIndex.getReportDefinition(request.reportDefinitionId)
         return if (reportDefinitionDetails == null) { // TODO verify actual requester ID
             GetReportDefinitionsResponse(RestStatus.NOT_FOUND,
                 "Report Definition ${request.reportDefinitionId} not found",
@@ -125,13 +125,13 @@ internal object ReportDefinitionActions {
      */
     fun delete(request: DeleteReportDefinitionRequest): DeleteReportDefinitionResponse {
         log.info("$LOG_PREFIX:ReportDefinition-delete ${request.reportDefinitionId}")
-        val reportDefinitionDetails = IndexManager.getReportDefinition(request.reportDefinitionId)
+        val reportDefinitionDetails = ReportDefinitionsIndex.getReportDefinition(request.reportDefinitionId)
         return if (reportDefinitionDetails == null) { // TODO verify actual requester ID
             DeleteReportDefinitionResponse(RestStatus.NOT_FOUND,
                 "Report Definition ${request.reportDefinitionId} not found",
                 null)
         } else {
-            val isDeleted = IndexManager.deleteReportDefinition(request.reportDefinitionId)
+            val isDeleted = ReportDefinitionsIndex.deleteReportDefinition(request.reportDefinitionId)
             if (!isDeleted) {
                 DeleteReportDefinitionResponse(RestStatus.REQUEST_TIMEOUT,
                     "Report Definition ${request.reportDefinitionId} delete failed",
@@ -152,7 +152,7 @@ internal object ReportDefinitionActions {
     fun getAll(request: GetAllReportDefinitionsRequest): GetAllReportDefinitionsResponse {
         log.info("$LOG_PREFIX:ReportDefinition-getAll ${request.fromIndex}")
         // TODO verify actual requester ID
-        val reportDefinitionsList = IndexManager.getAllReportDefinitions(listOf(TEMP_ROLE_ID), request.fromIndex)
+        val reportDefinitionsList = ReportDefinitionsIndex.getAllReportDefinitions(listOf(TEMP_ROLE_ID), request.fromIndex)
         return if (reportDefinitionsList.isEmpty()) {
             GetAllReportDefinitionsResponse(RestStatus.NOT_FOUND,
                 "No Report Definitions found",

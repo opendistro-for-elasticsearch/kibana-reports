@@ -17,7 +17,8 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.action
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.index.IndexManager
+import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportDefinitionsIndex
+import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportInstancesIndex
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportInstancesRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportInstancesResponse
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportInstanceRequest
@@ -62,7 +63,7 @@ internal object ReportInstanceActions {
             request.status,
             request.statusText,
             request.inContextDownloadUrlPath)
-        val docId = IndexManager.createReportInstance(reportInstance)
+        val docId = ReportInstancesIndex.createReportInstance(reportInstance)
         return if (docId == null) {
             InContextReportCreateResponse(RestStatus.INTERNAL_SERVER_ERROR,
                 "Report Instance Creation failed",
@@ -83,7 +84,7 @@ internal object ReportInstanceActions {
     fun createOnDemandFromDefinition(request: OnDemandReportCreateRequest): OnDemandReportCreateResponse {
         log.info("$LOG_PREFIX:ReportInstance-createOnDemandFromDefinition ${request.reportDefinitionId}")
         val currentTime = Instant.now()
-        val reportDefinitionDetails = IndexManager.getReportDefinition(request.reportDefinitionId)
+        val reportDefinitionDetails = ReportDefinitionsIndex.getReportDefinition(request.reportDefinitionId)
         return if (reportDefinitionDetails == null) { // TODO verify actual requester ID
             OnDemandReportCreateResponse(RestStatus.INTERNAL_SERVER_ERROR,
                 "Report Definition ${request.reportDefinitionId} not found",
@@ -100,7 +101,7 @@ internal object ReportInstanceActions {
                 reportDefinitionDetails.roles,
                 reportDefinitionDetails,
                 currentStatus)
-            val docId = IndexManager.createReportInstance(reportInstance)
+            val docId = ReportInstancesIndex.createReportInstance(reportInstance)
             if (docId == null) {
                 OnDemandReportCreateResponse(RestStatus.INTERNAL_SERVER_ERROR,
                     "Report Instance Creation failed",
@@ -121,7 +122,7 @@ internal object ReportInstanceActions {
      */
     fun update(request: UpdateReportInstanceStatusRequest): UpdateReportInstanceStatusResponse {
         log.info("$LOG_PREFIX:ReportInstance-update ${request.reportInstanceId}")
-        val currentReportInstance = IndexManager.getReportInstance(request.reportInstanceId)
+        val currentReportInstance = ReportInstancesIndex.getReportInstance(request.reportInstanceId)
         return if (currentReportInstance == null) { // TODO verify actual requester ID
             UpdateReportInstanceStatusResponse(RestStatus.NOT_FOUND,
                 "Report Instance not found",
@@ -135,7 +136,7 @@ internal object ReportInstanceActions {
             val updatedReportInstance = currentReportInstance.copy(updatedTime = currentTime,
                 status = request.status,
                 statusText = request.statusText)
-            val isUpdated = IndexManager.updateReportInstance(updatedReportInstance)
+            val isUpdated = ReportInstancesIndex.updateReportInstance(updatedReportInstance)
             if (isUpdated) {
                 UpdateReportInstanceStatusResponse(RestStatus.OK,
                     null,
@@ -155,7 +156,7 @@ internal object ReportInstanceActions {
      */
     fun info(request: GetReportInstanceRequest): GetReportInstanceResponse {
         log.info("$LOG_PREFIX:ReportInstance-info ${request.reportInstanceId}")
-        val reportInstance = IndexManager.getReportInstance(request.reportInstanceId)
+        val reportInstance = ReportInstancesIndex.getReportInstance(request.reportInstanceId)
         return if (reportInstance == null) { // TODO verify actual requester ID
             GetReportInstanceResponse(RestStatus.NOT_FOUND,
                 "Report Instance ${request.reportInstanceId} not found",
@@ -175,7 +176,7 @@ internal object ReportInstanceActions {
     fun getAll(request: GetAllReportInstancesRequest): GetAllReportInstancesResponse {
         log.info("$LOG_PREFIX:ReportInstance-getAll ${request.fromIndex}")
         // TODO verify actual requester ID
-        val reportInstanceList = IndexManager.getAllReportInstances(listOf(TEMP_ROLE_ID), request.fromIndex)
+        val reportInstanceList = ReportInstancesIndex.getAllReportInstances(listOf(TEMP_ROLE_ID), request.fromIndex)
         return if (reportInstanceList.isEmpty()) {
             GetAllReportInstancesResponse(RestStatus.NOT_FOUND,
                 "No Report Instances found",
@@ -189,7 +190,7 @@ internal object ReportInstanceActions {
         log.info("$LOG_PREFIX:ReportInstance-poll")
         val currentTime = Instant.now()
         // TODO verify actual requester ID to be kibana background task
-        val reportInstances = IndexManager.getPendingReportInstances()
+        val reportInstances = ReportInstancesIndex.getPendingReportInstances()
         return if (reportInstances.isEmpty()) {
             PollReportInstanceResponse(RestStatus.MULTI_STATUS,
                 "No Scheduled Report Instance found",
@@ -209,7 +210,7 @@ internal object ReportInstanceActions {
                     updatedTime = currentTime,
                     status = Status.Executing
                 ))
-                IndexManager.updateReportInstanceDoc(updatedInstance)
+                ReportInstancesIndex.updateReportInstanceDoc(updatedInstance)
             }
             if (lockedJob == null) {
                 PollReportInstanceResponse(RestStatus.MULTI_STATUS,

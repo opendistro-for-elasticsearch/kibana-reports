@@ -18,7 +18,8 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.JobSchedulerExtension
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobParser
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobRunner
-import com.amazon.opendistroforelasticsearch.reportsscheduler.index.IndexManager
+import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportDefinitionsIndex
+import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportInstancesIndex
 import com.amazon.opendistroforelasticsearch.reportsscheduler.job.ReportsSchedulerJobRunnerProxy
 import com.amazon.opendistroforelasticsearch.reportsscheduler.job.ScheduledReportJobParser
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.OnDemandReportRestHandler
@@ -98,7 +99,8 @@ class ReportsSchedulerPlugin : Plugin(), ActionPlugin, JobSchedulerExtension {
     ): Collection<Any> {
         this.clusterService = clusterService
         PluginSettings.addSettingsUpdateConsumer(clusterService)
-        IndexManager.initialize(client, clusterService)
+        ReportDefinitionsIndex.initialize(client, clusterService)
+        ReportInstancesIndex.initialize(client, clusterService)
         jobRunner.createRunnerInstance(clusterService, threadPool, client)
         return emptyList()
     }
@@ -114,7 +116,7 @@ class ReportsSchedulerPlugin : Plugin(), ActionPlugin, JobSchedulerExtension {
      * {@inheritDoc}
      */
     override fun getJobIndex(): String {
-        return JOB_INDEX_NAME // return ReportDefinitionsIndex.REPORT_DEFINITIONS_INDEX_NAME
+        return JOB_INDEX_NAME // return REPORT_DEFINITIONS_INDEX_NAME
     }
 
     /**
