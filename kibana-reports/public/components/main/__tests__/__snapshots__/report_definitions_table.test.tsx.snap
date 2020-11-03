@@ -266,6 +266,7 @@ exports[`<ReportDefinitions /> panel render component 1`] = `
                 >
                   <button
                     class="euiLink euiLink--primary"
+                    id="reportDefinitionDetailsLink"
                     type="button"
                   >
                     test report name
@@ -378,6 +379,7 @@ exports[`<ReportDefinitions /> panel render component 1`] = `
                 >
                   <button
                     class="euiLink euiLink--primary"
+                    id="reportDefinitionDetailsLink"
                     type="button"
                   >
                     test report name 2

@@ -344,6 +344,7 @@ exports[`<ReportsTable /> panel render component 1`] = `
               >
                 <button
                   class="euiLink euiLink--primary"
+                  id="reportDetailsLink"
                   type="button"
                 >
                   test report table item

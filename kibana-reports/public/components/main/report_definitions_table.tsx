@@ -98,7 +98,10 @@ export function ReportDefinitions(props) {
       field: 'reportName',
       name: 'Name',
       render: (name) => (
-        <EuiLink onClick={() => navigateToDefinitionDetails(name)}>
+        <EuiLink
+          onClick={() => navigateToDefinitionDetails(name)}
+          id={'reportDefinitionDetailsLink'}
+        >
           {name}
         </EuiLink>
       ),

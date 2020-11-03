@@ -159,6 +159,7 @@ export function ReportsTable(props) {
               `opendistro_kibana_reports#/report_details/${item.id}`
             );
           }}
+          id={'reportDetailsLink'}
         >
           {reportName}
         </EuiLink>
