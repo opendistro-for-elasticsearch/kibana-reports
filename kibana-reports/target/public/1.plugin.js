@@ -3354,7 +3354,6 @@ function ReportTrigger(props) {
     ['monCheckbox']: true
   });
   const [monthlySelect, setMonthlySelect] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(_report_trigger_constants__WEBPACK_IMPORTED_MODULE_3__["MONTHLY_ON_THE_OPTIONS"][0].value);
-  const [monthlyDaySelect, setMonthlyDaySelect] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(_report_trigger_constants__WEBPACK_IMPORTED_MODULE_3__["MONTHLY_DAY_SELECT_OPTIONS"][0].value);
 
   const handleReportTriggerType = e => {
     setReportTriggerType(e);
@@ -3395,10 +3394,6 @@ function ReportTrigger(props) {
 
   const handleMonthlySelect = e => {
     setMonthlySelect(e.target.value);
-  };
-
-  const handleMonthlyDaySelect = e => {
-    setMonthlyDaySelect(e.target.value);
   };
 
   const RequestTime = () => {
@@ -3590,17 +3585,6 @@ function ReportTrigger(props) {
       setMonthlyDayNumber(e.target.value);
     };
 
-    const on_the_day = monthlySelect === 'day' ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFieldText"], {
-      placeholder: 'Day of month',
-      value: monthlyDayNumber,
-      onChange: handleMonthlyDayNumber
-    })) : null;
-    const select = monthlySelect != 'day' ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSelect"], {
-      id: "monthlySelect",
-      options: _report_trigger_constants__WEBPACK_IMPORTED_MODULE_3__["MONTHLY_DAY_SELECT_OPTIONS"],
-      value: monthlyDaySelect,
-      onChange: handleMonthlyDaySelect
-    })) : null;
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFormRow"], {
       label: "On the"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexGroup"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexItem"], {
@@ -3610,7 +3594,11 @@ function ReportTrigger(props) {
       options: _report_trigger_constants__WEBPACK_IMPORTED_MODULE_3__["MONTHLY_ON_THE_OPTIONS"],
       value: monthlySelect,
       onChange: handleMonthlySelect
-    })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexItem"], null, on_the_day, select))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], {
+    })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexItem"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFieldNumber"], {
+      placeholder: 'Day of month',
+      value: monthlyDayNumber,
+      onChange: handleMonthlyDayNumber
+    })))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], {
       size: "s"
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(RequestTime, null));
   };
@@ -3795,7 +3783,7 @@ function ReportTrigger(props) {
 /*!******************************************************************************************!*\
   !*** ./public/components/report_definitions/report_trigger/report_trigger_constants.tsx ***!
   \******************************************************************************************/
-/*! exports provided: TRIGGER_TYPE_OPTIONS, SCHEDULE_TYPE_OPTIONS, SCHEDULE_RECURRING_OPTIONS, INTERVAL_TIME_PERIODS, WEEKLY_CHECKBOX_OPTIONS, MONTHLY_ON_THE_OPTIONS, MONTHLY_DAY_SELECT_OPTIONS, TIMEZONE_OPTIONS */
+/*! exports provided: TRIGGER_TYPE_OPTIONS, SCHEDULE_TYPE_OPTIONS, SCHEDULE_RECURRING_OPTIONS, INTERVAL_TIME_PERIODS, WEEKLY_CHECKBOX_OPTIONS, MONTHLY_ON_THE_OPTIONS, TIMEZONE_OPTIONS */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3806,7 +3794,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "INTERVAL_TIME_PERIODS", function() { return INTERVAL_TIME_PERIODS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WEEKLY_CHECKBOX_OPTIONS", function() { return WEEKLY_CHECKBOX_OPTIONS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MONTHLY_ON_THE_OPTIONS", function() { return MONTHLY_ON_THE_OPTIONS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MONTHLY_DAY_SELECT_OPTIONS", function() { return MONTHLY_DAY_SELECT_OPTIONS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TIMEZONE_OPTIONS", function() { return TIMEZONE_OPTIONS; });
 /* harmony import */ var moment_timezone__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment-timezone */ "moment-timezone");
 /* harmony import */ var moment_timezone__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment_timezone__WEBPACK_IMPORTED_MODULE_0__);
@@ -3845,16 +3832,14 @@ const SCHEDULE_RECURRING_OPTIONS = [{
 }, {
   value: 'byInterval',
   text: 'By interval'
-} // TODO: disable on UI. Add them back once we support
-// {
-//   value: 'weekly',
-//   text: 'Weekly',
-// },
-// {
-//   value: 'monthly',
-//   text: 'Monthly',
-// },
-];
+}, // TODO: disable on UI. Add them back once we support
+{
+  value: 'weekly',
+  text: 'Weekly'
+}, {
+  value: 'monthly',
+  text: 'Monthly'
+}];
 const INTERVAL_TIME_PERIODS = [{
   value: 'MINUTES',
   text: 'Minutes'
@@ -3890,52 +3875,6 @@ const WEEKLY_CHECKBOX_OPTIONS = [{
 const MONTHLY_ON_THE_OPTIONS = [{
   value: 'day',
   text: 'Day'
-}, {
-  value: 'first',
-  text: 'First'
-}, {
-  value: 'second',
-  text: 'Second'
-}, {
-  value: 'third',
-  text: 'Third'
-}, {
-  value: 'fourth',
-  text: 'Fourth'
-}, {
-  value: 'last',
-  text: 'Last'
-}];
-const MONTHLY_DAY_SELECT_OPTIONS = [{
-  value: 'day',
-  text: 'Day'
-}, {
-  value: 'weekday',
-  text: 'Weekday'
-}, {
-  value: 'weekendDay',
-  text: 'Weekend day'
-}, {
-  value: 'sunday',
-  text: 'Sunday'
-}, {
-  value: 'monday',
-  text: 'Monday'
-}, {
-  value: 'tuesday',
-  text: 'Tuesday'
-}, {
-  value: 'wednesday',
-  text: 'Wednesday'
-}, {
-  value: 'thursday',
-  text: 'Thursday'
-}, {
-  value: 'friday',
-  text: 'Friday'
-}, {
-  value: 'saturday',
-  text: 'Saturday'
 }];
 const TIMEZONE_OPTIONS = moment_timezone__WEBPACK_IMPORTED_MODULE_0___default.a.tz.names().map(tz => ({
   value: tz,

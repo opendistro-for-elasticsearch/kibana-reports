@@ -47,14 +47,14 @@ export const SCHEDULE_RECURRING_OPTIONS = [
     text: 'By interval',
   },
   // TODO: disable on UI. Add them back once we support
-  // {
-  //   value: 'weekly',
-  //   text: 'Weekly',
-  // },
-  // {
-  //   value: 'monthly',
-  //   text: 'Monthly',
-  // },
+  {
+    value: 'weekly',
+    text: 'Weekly',
+  },
+  {
+    value: 'monthly',
+    text: 'Monthly',
+  },
 ];
 
 export const INTERVAL_TIME_PERIODS = [
@@ -107,69 +107,6 @@ export const MONTHLY_ON_THE_OPTIONS = [
   {
     value: 'day',
     text: 'Day',
-  },
-  {
-    value: 'first',
-    text: 'First',
-  },
-  {
-    value: 'second',
-    text: 'Second',
-  },
-  {
-    value: 'third',
-    text: 'Third',
-  },
-  {
-    value: 'fourth',
-    text: 'Fourth',
-  },
-  {
-    value: 'last',
-    text: 'Last',
-  },
-];
-
-export const MONTHLY_DAY_SELECT_OPTIONS = [
-  {
-    value: 'day',
-    text: 'Day',
-  },
-  {
-    value: 'weekday',
-    text: 'Weekday',
-  },
-  {
-    value: 'weekendDay',
-    text: 'Weekend day',
-  },
-  {
-    value: 'sunday',
-    text: 'Sunday',
-  },
-  {
-    value: 'monday',
-    text: 'Monday',
-  },
-  {
-    value: 'tuesday',
-    text: 'Tuesday',
-  },
-  {
-    value: 'wednesday',
-    text: 'Wednesday',
-  },
-  {
-    value: 'thursday',
-    text: 'Thursday',
-  },
-  {
-    value: 'friday',
-    text: 'Friday',
-  },
-  {
-    value: 'saturday',
-    text: 'Saturday',
   },
 ];
 
