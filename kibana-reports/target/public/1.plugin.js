@@ -677,7 +677,7 @@ function ReportDefinitionDetails(props) {
 
   const sourceURL = data => {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiLink"], {
-      href: `${location.host}${data.baseUrl}`,
+      href: `${data.baseUrl}`,
       target: "_blank"
     }, data['source']);
   };
@@ -1199,7 +1199,7 @@ function ReportDetails(props) {
 
   const sourceURL = data => {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiLink"], {
-      href: `${location.host}${data.queryUrl}`,
+      href: `${data.queryUrl}`,
       target: "_blank"
     }, data['source']);
   };
@@ -3833,14 +3833,16 @@ const SCHEDULE_RECURRING_OPTIONS = [{
 }, {
   value: 'byInterval',
   text: 'By interval'
-}, // TODO: disable on UI. Add them back once we support
-{
-  value: 'weekly',
-  text: 'Weekly'
-}, {
-  value: 'monthly',
-  text: 'Monthly'
-}];
+} // TODO: disable on UI. Add them back once we support
+//   {
+//     value: 'weekly',
+//     text: 'Weekly',
+//   },
+//   {
+//     value: 'monthly',
+//     text: 'Monthly',
+//   },
+];
 const INTERVAL_TIME_PERIODS = [{
   value: 'MINUTES',
   text: 'Minutes'

@@ -148,7 +148,7 @@ exports[`<ReportDetails /> panel render 5 hours recurring component 1`] = `
             >
               <a
                 class="euiLink euiLink--primary"
-                href="localhosthttp://localhost:5601/app/kibana#/dashboard/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(time:(from:'2020-10-23T20:53:35.315Z',to:'2020-10-23T21:23:35.316Z'))"
+                href="http://localhost:5601/app/kibana#/dashboard/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(time:(from:'2020-10-23T20:53:35.315Z',to:'2020-10-23T21:23:35.316Z'))"
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -622,7 +622,7 @@ exports[`<ReportDetails /> panel render on-demand component 1`] = `
             >
               <a
                 class="euiLink euiLink--primary"
-                href="localhosthttp://localhost:5601/app/kibana#/dashboard/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(time:(from:'2020-10-23T20:53:35.315Z',to:'2020-10-23T21:23:35.316Z'))"
+                href="http://localhost:5601/app/kibana#/dashboard/7adfa750-4c81-11e8-b3d7-01146121b73d?_g=(time:(from:'2020-10-23T20:53:35.315Z',to:'2020-10-23T21:23:35.316Z'))"
                 rel="noopener noreferrer"
                 target="_blank"
               >
