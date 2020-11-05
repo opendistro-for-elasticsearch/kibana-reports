@@ -66,7 +66,7 @@ export const mockReportsTableItems = [
     reportSource: 'Dashboard',
     timeCreated: undefined,
     state: undefined,
-    url: 'localhosttest_query_url_value.com',
+    url: 'test_query_url_value.com',
     format: 'pdf',
   },
 ];
@@ -124,7 +124,7 @@ export const reportDefinitionsTableMockContent = [
     type: 'Schedule',
     owner: '—',
     source: 'Dashboard',
-    baseUrl: 'localhosttest_base_url.com',
+    baseUrl: 'test_base_url.com',
     lastUpdated: 1602713211007,
     details: 'Recurring',
     status: 'Disabled',
