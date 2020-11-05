@@ -202,9 +202,9 @@
 /******/ ({
 
 /***/ "../../node_modules/css-loader/dist/cjs.js?!../../node_modules/postcss-loader/src/index.js?!../../node_modules/resolve-url-loader/index.js?!../../node_modules/sass-loader/dist/cjs.js?!./public/index.scss?v7dark":
-/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/css-loader/dist/cjs.js??ref--6-oneOf-0-1!/Users/davidcui/kibana-master/kibana/node_modules/postcss-loader/src??ref--6-oneOf-0-2!/Users/davidcui/kibana-master/kibana/node_modules/resolve-url-loader??ref--6-oneOf-0-3!/Users/davidcui/kibana-master/kibana/node_modules/sass-loader/dist/cjs.js??ref--6-oneOf-0-4!./public/index.scss?v7dark ***!
-  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/css-loader/dist/cjs.js??ref--6-oneOf-0-1!/Users/szhongna/Desktop/reporting/kibana/node_modules/postcss-loader/src??ref--6-oneOf-0-2!/Users/szhongna/Desktop/reporting/kibana/node_modules/resolve-url-loader??ref--6-oneOf-0-3!/Users/szhongna/Desktop/reporting/kibana/node_modules/sass-loader/dist/cjs.js??ref--6-oneOf-0-4!./public/index.scss?v7dark ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -220,9 +220,9 @@ module.exports = exports;
 /***/ }),
 
 /***/ "../../node_modules/css-loader/dist/cjs.js?!../../node_modules/postcss-loader/src/index.js?!../../node_modules/resolve-url-loader/index.js?!../../node_modules/sass-loader/dist/cjs.js?!./public/index.scss?v7light":
-/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/css-loader/dist/cjs.js??ref--6-oneOf-1-1!/Users/davidcui/kibana-master/kibana/node_modules/postcss-loader/src??ref--6-oneOf-1-2!/Users/davidcui/kibana-master/kibana/node_modules/resolve-url-loader??ref--6-oneOf-1-3!/Users/davidcui/kibana-master/kibana/node_modules/sass-loader/dist/cjs.js??ref--6-oneOf-1-4!./public/index.scss?v7light ***!
-  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/css-loader/dist/cjs.js??ref--6-oneOf-1-1!/Users/szhongna/Desktop/reporting/kibana/node_modules/postcss-loader/src??ref--6-oneOf-1-2!/Users/szhongna/Desktop/reporting/kibana/node_modules/resolve-url-loader??ref--6-oneOf-1-3!/Users/szhongna/Desktop/reporting/kibana/node_modules/sass-loader/dist/cjs.js??ref--6-oneOf-1-4!./public/index.scss?v7light ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -238,9 +238,9 @@ module.exports = exports;
 /***/ }),
 
 /***/ "../../node_modules/css-loader/dist/runtime/api.js":
-/*!****************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/css-loader/dist/runtime/api.js ***!
-  \****************************************************************************************/
+/*!********************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/css-loader/dist/runtime/api.js ***!
+  \********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -343,9 +343,9 @@ function toComment(sourceMap) {
 /***/ }),
 
 /***/ "../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js":
-/*!***************************************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js ***!
-  \***************************************************************************************************************/
+/*!*******************************************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js ***!
+  \*******************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -623,9 +623,9 @@ module.exports = function (list, options) {
 /***/ }),
 
 /***/ "../../node_modules/val-loader/dist/cjs.js?key=opendistroKibanaReports!../../packages/kbn-ui-shared-deps/public_path_module_creator.js":
-/*!***********************************************************************************************************************************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/val-loader/dist/cjs.js?key=opendistroKibanaReports!/Users/davidcui/kibana-master/kibana/packages/kbn-ui-shared-deps/public_path_module_creator.js ***!
-  \***********************************************************************************************************************************************************************************************************/
+/*!*******************************************************************************************************************************************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/val-loader/dist/cjs.js?key=opendistroKibanaReports!/Users/szhongna/Desktop/reporting/kibana/packages/kbn-ui-shared-deps/public_path_module_creator.js ***!
+  \*******************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -665,9 +665,9 @@ module.exports = g;
 /***/ }),
 
 /***/ "../../packages/elastic-datemath/target/index.js":
-/*!**************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/packages/elastic-datemath/target/index.js ***!
-  \**************************************************************************************/
+/*!******************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/packages/elastic-datemath/target/index.js ***!
+  \******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -919,9 +919,9 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ "../../packages/kbn-optimizer/target/worker/entry_point_creator.js":
-/*!********************************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/packages/kbn-optimizer/target/worker/entry_point_creator.js ***!
-  \********************************************************************************************************/
+/*!************************************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/packages/kbn-optimizer/target/worker/entry_point_creator.js ***!
+  \************************************************************************************************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -937,7 +937,7 @@ __kbnBundles__.define('plugin/opendistroKibanaReports/public', __webpack_require
 /*!*************************!*\
   !*** ./common/index.ts ***!
   \*************************/
-/*! exports provided: PLUGIN_ID, PLUGIN_NAME, API_PREFIX, REPORTS_SCHEDULER_API, NOTIFICATION_API */
+/*! exports provided: PLUGIN_ID, PLUGIN_NAME, API_PREFIX, REPORTS_SCHEDULER_API, NOTIFICATION_API, ES_REPORTS_API */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -947,6 +947,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "API_PREFIX", function() { return API_PREFIX; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "REPORTS_SCHEDULER_API", function() { return REPORTS_SCHEDULER_API; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NOTIFICATION_API", function() { return NOTIFICATION_API; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ES_REPORTS_API", function() { return ES_REPORTS_API; });
 const PLUGIN_ID = 'opendistroKibanaReports';
 const PLUGIN_NAME = 'opendistro_kibana_reports';
 const API_PREFIX = '/api/reporting';
@@ -956,6 +957,12 @@ const REPORTS_SCHEDULER_API = {
 };
 const NOTIFICATION_API = {
   SEND: '/_opendistro/_notifications/send'
+};
+const BASE_REPORTS_URI = '/_opendistro/_reports';
+const ES_REPORTS_API = {
+  ON_DEMAND_REPORT: `${BASE_REPORTS_URI}/on-demand`,
+  REPORT_INSTANCE: `${BASE_REPORTS_URI}/instance`,
+  LIST_REPORT_INSTANCES: `${BASE_REPORTS_URI}/instances`
 };
 
 /***/ }),
@@ -12327,7 +12334,7 @@ const getTimeFieldsFromUrl = () => {
   let toDateString = timeString.substring(timeString.lastIndexOf('to:') + 3, timeString.length);
   toDateString = toDateString.replace(/[']+/g, '');
   let toDateFormat = _elastic_datemath__WEBPACK_IMPORTED_MODULE_0___default.a.parse(toDateString);
-  const timeDuration = moment__WEBPACK_IMPORTED_MODULE_1___default.a.duration(_elastic_datemath__WEBPACK_IMPORTED_MODULE_0___default.a.parse(fromDateString).diff(_elastic_datemath__WEBPACK_IMPORTED_MODULE_0___default.a.parse(toDateString)));
+  const timeDuration = moment__WEBPACK_IMPORTED_MODULE_1___default.a.duration(_elastic_datemath__WEBPACK_IMPORTED_MODULE_0___default.a.parse(toDateString).diff(_elastic_datemath__WEBPACK_IMPORTED_MODULE_0___default.a.parse(fromDateString)));
   return {
     time_from: fromDateFormat,
     time_to: toDateFormat,

@@ -46,6 +46,11 @@ export const createReport = async (
   const notificationClient: ILegacyScopedClusterClient = context.reporting_plugin.notificationClient.asScoped(
     request
   );
+  // @ts-ignore
+  const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
+    request
+  );
+
   const esClient = context.core.elasticsearch.legacy.client;
 
   let createReportResult: CreateReportResultType;
@@ -54,8 +59,9 @@ export const createReport = async (
   if (savedReportId) {
     reportId = savedReportId;
   } else {
-    const esResp = await saveReport(isScheduledTask, report, esClient);
-    reportId = esResp._id;
+    const esResp = await saveReport(isScheduledTask, report, esReportsClient);
+    // reportId = esResp._id;
+    reportId = esResp.reportInstance.id;
   }
 
   const reportDefinition = report.report_definition;
@@ -101,7 +107,7 @@ export const createReport = async (
       await updateReportState(
         isScheduledTask,
         reportId,
-        esClient,
+        esReportsClient,
         REPORT_STATE.created,
         createReportResult
       );

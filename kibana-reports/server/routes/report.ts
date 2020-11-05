@@ -19,9 +19,9 @@ import {
   IKibanaResponse,
   ResponseError,
   Logger,
+  ILegacyScopedClusterClient,
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
-import { RequestParams } from '@elastic/elasticsearch';
 import { createReport } from './lib/createReport';
 import { reportSchema } from '../model';
 import { errorResponse } from './utils/helpers';
@@ -30,6 +30,7 @@ import {
   DEFAULT_MAX_SIZE,
   DELIVERY_TYPE,
 } from './utils/constants';
+import { backendToUiReport, backendToUiReportsList } from './utils/converters';
 
 export default function (router: IRouter) {
   // generate report
@@ -100,18 +101,23 @@ export default function (router: IRouter) {
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       //@ts-ignore
       const logger: Logger = context.reporting_plugin.logger;
-      // get report
+
       try {
         const savedReportId = request.params.reportId;
-        const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
-          'get',
+        // @ts-ignore
+        const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
+          request
+        );
+        // get report
+        const esResp = await esReportsClient.callAsCurrentUser(
+          'es_reports.getReportById',
           {
-            index: CONFIG_INDEX_NAME.report,
-            id: request.params.reportId,
+            reportId: savedReportId,
           }
         );
-        const report = esResp._source;
-
+        // convert report to use UI model
+        const report = backendToUiReport(esResp.reportInstance);
+        // generate report
         const reportData = await createReport(
           request,
           context,
@@ -142,6 +148,7 @@ export default function (router: IRouter) {
           size: schema.maybe(schema.string()),
           sortField: schema.maybe(schema.string()),
           sortDirection: schema.maybe(schema.string()),
+          fromIndex: schema.maybe(schema.string()),
         }),
       },
     },
@@ -150,30 +157,48 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
-      const { size, sortField, sortDirection } = request.query as {
+      const { size, sortField, sortDirection, fromIndex } = request.query as {
         size: string;
         sortField: string;
         sortDirection: string;
+        fromIndex: string;
       };
-      const params: RequestParams.Search = {
-        index: CONFIG_INDEX_NAME.report,
-        size: size ? parseInt(size, 10) : DEFAULT_MAX_SIZE, // ES search API use 10 as size default
-        sort:
-          sortField && sortDirection
-            ? `${sortField}:${sortDirection}`
-            : undefined,
-      };
+      // const params: RequestParams.Search = {
+      //   index: CONFIG_INDEX_NAME.report,
+      //   size: size ? parseInt(size, 10) : DEFAULT_MAX_SIZE, // ES search API use 10 as size default
+      //   sort:
+      //     sortField && sortDirection
+      //       ? `${sortField}:${sortDirection}`
+      //       : undefined,
+      // };
+
       try {
-        const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
-          'search',
-          params
+        // @ts-ignore
+        const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
+          request
         );
+
+        const esResp = await esReportsClient.callAsCurrentUser(
+          'es_reports.getReports',
+          {
+            fromIndex: fromIndex,
+          }
+        );
+
+        const reportsList = backendToUiReportsList(esResp.reportInstanceList);
+
         return response.ok({
           body: {
-            total: esResp.hits.total.value,
-            data: esResp.hits.hits,
+            data: reportsList,
           },
         });
+
+        // return response.ok({
+        //   body: {
+        //     total: esResp.hits.total.value,
+        //     data: esResp.hits.hits,
+        //   },
+        // });
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
@@ -200,54 +225,27 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
-        const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
-          'get',
+        // @ts-ignore
+        const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
+          request
+        );
+
+        const esResp = await esReportsClient.callAsCurrentUser(
+          'es_reports.getReportById',
           {
-            index: CONFIG_INDEX_NAME.report,
-            id: request.params.reportId,
+            reportId: request.params.reportId,
           }
         );
+
+        const report = backendToUiReport(esResp.reportInstance);
+
         return response.ok({
-          body: esResp._source,
+          body: report,
         });
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(
           `Failed to get single report details: ${error}`
-        );
-        return errorResponse(response, error);
-      }
-    }
-  );
-
-  // Delete single report by id
-  router.delete(
-    {
-      path: `${API_PREFIX}/reports/{reportId}`,
-      validate: {
-        params: schema.object({
-          reportId: schema.string(),
-        }),
-      },
-    },
-    async (
-      context,
-      request,
-      response
-    ): Promise<IKibanaResponse<any | ResponseError>> => {
-      try {
-        const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
-          'delete',
-          {
-            index: CONFIG_INDEX_NAME.report,
-            id: request.params.reportId,
-          }
-        );
-        return response.ok();
-      } catch (error) {
-        //@ts-ignore
-        context.reporting_plugin.logger.error(
-          `Failed to delete report: ${error}`
         );
         return errorResponse(response, error);
       }

@@ -10,3 +10,11 @@ export const REPORTS_SCHEDULER_API = {
 export const NOTIFICATION_API = {
   SEND: '/_opendistro/_notifications/send',
 };
+
+const BASE_REPORTS_URI = '/_opendistro/_reports';
+
+export const ES_REPORTS_API = {
+  ON_DEMAND_REPORT: `${BASE_REPORTS_URI}/on-demand`,
+  REPORT_INSTANCE: `${BASE_REPORTS_URI}/instance`,
+  LIST_REPORT_INSTANCES: `${BASE_REPORTS_URI}/instances`,
+};

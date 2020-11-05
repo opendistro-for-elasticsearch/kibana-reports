@@ -46,7 +46,6 @@ export enum DELIVERY_CHANNEL {
 
 export enum SCHEDULE_TYPE {
   recurring = 'Recurring',
-  future = 'Future date',
   cron = 'Cron based',
 }
 
@@ -63,7 +62,6 @@ export enum DATA_REPORT_CONFIG {
 export enum TRIGGER_TYPE {
   schedule = 'Schedule',
   onDemand = 'On demand',
-  alerting = 'Alerting',
 }
 
 export enum DELIVERY_TYPE {

@@ -22,12 +22,22 @@ import {
 import { RequestParams } from '@elastic/elasticsearch';
 import {
   CONFIG_INDEX_NAME,
+  FORMAT,
   REPORT_DEFINITION_STATUS,
   REPORT_STATE,
+  REPORT_TYPE,
   TRIGGER_TYPE,
 } from './constants';
 import { CreateReportResultType } from './types';
 import { ReportDefinitionSchemaType, ReportSchemaType } from 'server/model';
+import {
+  BACKEND_REPORT_FORMAT,
+  BACKEND_REPORT_SOURCE,
+  BACKEND_REPORT_STATE,
+  REPORT_FORMAT_DICT,
+  REPORT_SOURCE_DICT,
+  REPORT_STATE_DICT,
+} from '../../model/backendModel';
 
 export function parseEsErrorResponse(error: any) {
   if (error.response) {
@@ -83,24 +93,81 @@ export const saveReport = async (
   report: ReportSchemaType,
   esClient: ILegacyClusterClient | ILegacyScopedClusterClient
 ) => {
-  const timePending = Date.now();
-  const saveParams: RequestParams.Index = {
-    index: CONFIG_INDEX_NAME.report,
-    body: {
-      ...report,
-      state: REPORT_STATE.pending,
-      last_updated: timePending,
-      time_created: timePending,
-    },
-  };
+  const reqBody = buildReqBody(report);
+
   const esResp = await callCluster(
     esClient,
-    'index',
-    saveParams,
+    'es_reports.createReport',
+    {
+      body: reqBody,
+    },
     isScheduledTask
   );
 
   return esResp;
+};
+
+export const buildReqBody = (report: ReportSchemaType): any => {
+  const timePending = Date.now();
+  const {
+    report_params: {
+      report_name: reportName,
+      description,
+      report_source: reportSource,
+      core_params: {
+        time_duration: timeDuration,
+        report_format: reportFormat,
+        saved_search_id: savedSearchId,
+      },
+    },
+  } = report.report_definition;
+
+  const reqBody = {
+    beginTimeMs: report.time_from,
+    endTimeMs: report.time_to,
+    reportDefinitionDetails: {
+      id: uuidv1(),
+      lastUpdatedTimeMs: timePending,
+      createdTimeMs: timePending,
+      reportDefinition: {
+        name: reportName,
+        isEnabled: true,
+        source: {
+          description: description,
+          type: getBackendReportSource(reportSource),
+          id: savedSearchId || 'fakeDashboardAndVisualizationIdForNow', //TODO:
+        },
+        format: {
+          duration: timeDuration,
+          fileFormat: getBackendReportFormat(reportFormat),
+        },
+        trigger: {
+          triggerType: 'Download', // TODO:
+        },
+      },
+    },
+    status: getBackendReportState(REPORT_STATE.pending), // download from in-context menu should always pass executing state to backend
+    inContextDownloadUrlPath: report.query_url,
+  };
+  return reqBody;
+};
+
+const getBackendReportFormat = (
+  reportFormat: FORMAT
+): BACKEND_REPORT_FORMAT => {
+  return REPORT_FORMAT_DICT[reportFormat];
+};
+
+export const getBackendReportState = (
+  reportState: REPORT_STATE
+): BACKEND_REPORT_STATE => {
+  return REPORT_STATE_DICT[reportState];
+};
+
+export const getBackendReportSource = (
+  reportSource: REPORT_TYPE
+): BACKEND_REPORT_SOURCE => {
+  return REPORT_SOURCE_DICT[reportSource];
 };
 
 // The only thing can be updated of a report instance is its "state"
@@ -108,28 +175,38 @@ export const updateReportState = async (
   isScheduledTask: boolean,
   reportId: string,
   esClient: ILegacyClusterClient | ILegacyScopedClusterClient,
-  state: string,
+  state: REPORT_STATE,
   createReportResult?: CreateReportResultType
 ) => {
-  const timeStamp = createReportResult
-    ? createReportResult.timeCreated
-    : Date.now();
-  // update report document with state "created" or "error"
-  const updateParams: RequestParams.Update = {
-    id: reportId,
-    index: CONFIG_INDEX_NAME.report,
-    body: {
-      doc: {
-        state: state,
-        last_updated: timeStamp,
-        time_created: timeStamp,
-      },
-    },
+  // const timeStamp = createReportResult
+  //   ? createReportResult.timeCreated
+  //   : Date.now();
+  // // update report document with state "created" or "error"
+  // const updateParams: RequestParams.Update = {
+  //   id: reportId,
+  //   index: CONFIG_INDEX_NAME.report,
+  //   body: {
+  //     doc: {
+  //       state: state,
+  //       last_updated: timeStamp,
+  //       time_created: timeStamp,
+  //     },
+  //   },
+  // };
+
+  //Build request body
+  const reqBody = {
+    reportInstanceId: reportId,
+    status: getBackendReportState(state),
   };
+
   const esResp = await callCluster(
     esClient,
-    'update',
-    updateParams,
+    'es_reports.updateReportInstanceStatus',
+    {
+      reportId: reportId,
+      body: reqBody,
+    },
     isScheduledTask
   );
 
