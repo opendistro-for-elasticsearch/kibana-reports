@@ -47,14 +47,14 @@ export const SCHEDULE_RECURRING_OPTIONS = [
     text: 'By interval',
   },
   // TODO: disable on UI. Add them back once we support
-  {
-    value: 'weekly',
-    text: 'Weekly',
-  },
-  {
-    value: 'monthly',
-    text: 'Monthly',
-  },
+//   {
+//     value: 'weekly',
+//     text: 'Weekly',
+//   },
+//   {
+//     value: 'monthly',
+//     text: 'Monthly',
+//   },
 ];
 
 export const INTERVAL_TIME_PERIODS = [
