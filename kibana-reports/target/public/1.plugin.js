@@ -2310,7 +2310,8 @@ function EditReportDefinition(props) {
     grow: false
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiButton"], {
     fill: true,
-    onClick: () => editReportDefinition(editReportDefinitionRequest)
+    onClick: () => editReportDefinition(editReportDefinitionRequest),
+    id: 'editReportDefinitionButton'
   }, "Save Changes"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiGlobalToastList"], {
     toasts: toasts,
     dismissToast: removeToast,
