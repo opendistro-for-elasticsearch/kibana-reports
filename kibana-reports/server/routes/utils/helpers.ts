@@ -143,28 +143,11 @@ export const updateReportState = async (
   esReportsClient: ILegacyClusterClient | ILegacyScopedClusterClient,
   state: REPORT_STATE
 ) => {
-  // const timeStamp = createReportResult
-  //   ? createReportResult.timeCreated
-  //   : Date.now();
-  // // update report document with state "created" or "error"
-  // const updateParams: RequestParams.Update = {
-  //   id: reportId,
-  //   index: CONFIG_INDEX_NAME.report,
-  //   body: {
-  //     doc: {
-  //       state: state,
-  //       last_updated: timeStamp,
-  //       time_created: timeStamp,
-  //     },
-  //   },
-  // };
-
   //Build request body
   const reqBody = {
     reportInstanceId: reportId,
     status: getBackendReportState(state),
   };
-  console.log(reqBody);
 
   const esResp = await callCluster(
     esReportsClient,

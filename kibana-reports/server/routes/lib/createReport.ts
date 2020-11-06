@@ -108,8 +108,7 @@ export const createReport = async (
         isScheduledTask,
         reportId,
         esReportsClient,
-        REPORT_STATE.created,
-        createReportResult
+        REPORT_STATE.created
       );
     }
 

@@ -103,6 +103,13 @@ export class OpendistroKibanaReportsPlugin
   public start(core: CoreStart) {
     this.logger.debug('opendistro_kibana_reports: Started');
 
+    const esReportsClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
+      'es_reports',
+      {
+        plugins: [esReportsPlugin],
+      }
+    );
+
     const schedulerClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
       'reports_scheduler',
       {
@@ -127,7 +134,7 @@ export class OpendistroKibanaReportsPlugin
     setIntervalAsync(
       pollAndExecuteJob,
       POLL_INTERVAL,
-      schedulerClient,
+      esReportsClient,
       notificationClient,
       esClient,
       this.logger

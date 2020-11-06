@@ -143,6 +143,6 @@ export default function (Client: any, config: any, components: any) {
     url: {
       fmt: `${ES_REPORTS_API.POLL_REPORT_INSTANCE}`,
     },
-    method: true,
+    method: 'GET',
   });
 }

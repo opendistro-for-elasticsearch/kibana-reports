@@ -27,25 +27,23 @@ import { createVisualReport } from '../routes/utils/visualReportHelper';
 import { deliverReport } from '../routes/lib/deliverReport';
 
 export const createScheduledReport = async (
+  reportId: string,
   report: ReportSchemaType,
   esClient: ILegacyClusterClient,
+  esReportsClient: ILegacyClusterClient,
   notificationClient: ILegacyClusterClient,
   logger: Logger
 ): Promise<CreateReportResultType> => {
   const isScheduledTask = true;
   let createReportResult: CreateReportResultType;
-  let reportId;
-  // create new report instance and set report state to "pending"
 
-  const esResp = await saveReport(isScheduledTask, report, esClient);
-  reportId = esResp._id;
+  const {
+    report_definition: { report_params: reportParams },
+  } = report;
+  const { report_source: reportSource } = reportParams;
 
-  const reportDefinition = report.report_definition;
-  const reportParams = reportDefinition.report_params;
-  const reportSource = reportParams.report_source;
-
-  // compose url
-  const queryUrl = `${LOCAL_HOST}${report.query_url}`;
+  // compose url with localhost
+  const completeQueryUrl = `${LOCAL_HOST}${report.query_url}`;
   try {
     // generate report
     if (reportSource === REPORT_TYPE.savedSearch) {
@@ -58,7 +56,7 @@ export const createScheduledReport = async (
       // report source can only be one of [saved search, visualization, dashboard]
       createReportResult = await createVisualReport(
         reportParams,
-        queryUrl,
+        completeQueryUrl,
         logger
       );
     }
@@ -66,9 +64,8 @@ export const createScheduledReport = async (
     await updateReportState(
       isScheduledTask,
       reportId,
-      esClient,
-      REPORT_STATE.created,
-      createReportResult
+      esReportsClient,
+      REPORT_STATE.created
     );
 
     // deliver report
@@ -88,7 +85,7 @@ export const createScheduledReport = async (
     await updateReportState(
       isScheduledTask,
       reportId,
-      esClient,
+      esReportsClient,
       REPORT_STATE.error
     );
     throw error;

@@ -70,9 +70,10 @@ export const uiToBackendReportDefinition = (
 };
 
 const getBackendIsEnabled = (trigger: TriggerSchemaType) => {
-  const {
-    trigger_params: { enabled },
-  } = trigger;
+  let enabled = true;
+  if (trigger.trigger_params) {
+    enabled = trigger.trigger_params.enabled;
+  }
   return enabled;
 };
 
@@ -147,9 +148,10 @@ export const getBackendReportSource = (
 //TODO: tmp solution, we are extracting the id from the baseUrl,
 // since currently dashboard/visualization id are not required in the UI model, will add in the future
 const getBackendReportSourceId = (baseUrl: string) => {
-  const id = baseUrl
+  const id = (baseUrl
     .split('/app')[1]
     .split('/')[3]
-    .search(/^([^?]+)/);
+    .match(/^([^?]+)/) || [])[0];
+
   return id;
 };
