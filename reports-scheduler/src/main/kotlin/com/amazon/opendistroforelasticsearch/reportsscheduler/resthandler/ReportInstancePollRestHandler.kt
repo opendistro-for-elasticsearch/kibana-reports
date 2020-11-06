@@ -16,21 +16,24 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.PollReportInstanceAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.IRestResponse
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestErrorResponse
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.PollReportInstanceRequest
 import org.elasticsearch.client.node.NodeClient
-import org.elasticsearch.rest.RestChannel
+import org.elasticsearch.rest.BaseRestHandler
+import org.elasticsearch.rest.BaseRestHandler.RestChannelConsumer
+import org.elasticsearch.rest.BytesRestResponse
 import org.elasticsearch.rest.RestHandler.Route
 import org.elasticsearch.rest.RestRequest
 import org.elasticsearch.rest.RestRequest.Method.GET
 import org.elasticsearch.rest.RestStatus
+import org.elasticsearch.rest.action.RestToXContentListener
 
 /**
  * Rest handler for getting list of report instances.
  * This handler uses [ReportInstanceActions].
  */
-internal class ReportInstancePollRestHandler : PluginRestHandler() {
+internal class ReportInstancePollRestHandler : BaseRestHandler() {
     companion object {
         private const val REPORT_INSTANCE_POLL_ACTION = "report_instance_poll_actions"
         private const val POLL_REPORT_INSTANCE_URL = "$BASE_REPORTS_URI/poll_instance"
@@ -68,10 +71,16 @@ internal class ReportInstancePollRestHandler : PluginRestHandler() {
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: RestRequest, client: NodeClient, channel: RestChannel): IRestResponse {
+    override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
         return when (request.method()) {
-            GET -> ReportInstanceActions.poll()
-            else -> RestErrorResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed")
+            GET -> RestChannelConsumer {
+                client.execute(PollReportInstanceAction.ACTION_TYPE,
+                    PollReportInstanceRequest(),
+                    RestToXContentListener(it))
+            }
+            else -> RestChannelConsumer {
+                it.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))
+            }
         }
     }
 }

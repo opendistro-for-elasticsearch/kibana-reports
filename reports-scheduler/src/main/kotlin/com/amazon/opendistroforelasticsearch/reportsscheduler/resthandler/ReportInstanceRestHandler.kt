@@ -16,24 +16,29 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetReportInstanceAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.UpdateReportInstanceStatusAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportInstanceRequest
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.IRestResponse
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestErrorResponse
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportInstanceStatusRequest
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ID_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.util.contentParserNextToken
 import org.elasticsearch.client.node.NodeClient
-import org.elasticsearch.rest.RestChannel
+import org.elasticsearch.rest.BaseRestHandler
+import org.elasticsearch.rest.BaseRestHandler.RestChannelConsumer
+import org.elasticsearch.rest.BytesRestResponse
 import org.elasticsearch.rest.RestHandler.Route
 import org.elasticsearch.rest.RestRequest
 import org.elasticsearch.rest.RestRequest.Method.GET
 import org.elasticsearch.rest.RestRequest.Method.POST
 import org.elasticsearch.rest.RestStatus
+import org.elasticsearch.rest.action.RestToXContentListener
 
 /**
  * Rest handler for report instances lifecycle management.
  * This handler uses [ReportInstanceActions].
  */
-internal class ReportInstanceRestHandler : PluginRestHandler() {
+internal class ReportInstanceRestHandler : BaseRestHandler() {
     companion object {
         private const val REPORT_INSTANCE_LIST_ACTION = "report_instance_actions"
         private const val REPORT_INSTANCE_URL = "$BASE_REPORTS_URI/instance"
@@ -78,16 +83,22 @@ internal class ReportInstanceRestHandler : PluginRestHandler() {
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: RestRequest, client: NodeClient, channel: RestChannel): IRestResponse {
+    override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
         val reportInstanceId = request.param(ID_FIELD) ?: throw IllegalArgumentException("Must specify id")
         return when (request.method()) {
-            POST -> {
-                val parser = request.contentParser()
-                parser.nextToken()
-                ReportInstanceActions.update(UpdateReportInstanceStatusRequest.parse(parser, reportInstanceId))
+            POST -> RestChannelConsumer {
+                client.execute(UpdateReportInstanceStatusAction.ACTION_TYPE,
+                    UpdateReportInstanceStatusRequest.parse(request.contentParserNextToken(), reportInstanceId),
+                    RestToXContentListener(it))
             }
-            GET -> ReportInstanceActions.info(GetReportInstanceRequest(reportInstanceId))
-            else -> RestErrorResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed")
+            GET -> RestChannelConsumer {
+                client.execute(GetReportInstanceAction.ACTION_TYPE,
+                    GetReportInstanceRequest(reportInstanceId),
+                    RestToXContentListener(it))
+            }
+            else -> RestChannelConsumer {
+                it.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))
+            }
         }
     }
 }

@@ -17,8 +17,12 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.REPORT_INSTANCE_ID_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_INSTANCE_ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
+import org.elasticsearch.action.ActionRequest
+import org.elasticsearch.action.ActionRequestValidationException
+import org.elasticsearch.common.io.stream.StreamInput
+import org.elasticsearch.common.io.stream.StreamOutput
 import org.elasticsearch.common.xcontent.ToXContent
 import org.elasticsearch.common.xcontent.ToXContentObject
 import org.elasticsearch.common.xcontent.XContentBuilder
@@ -26,6 +30,7 @@ import org.elasticsearch.common.xcontent.XContentFactory
 import org.elasticsearch.common.xcontent.XContentParser
 import org.elasticsearch.common.xcontent.XContentParser.Token
 import org.elasticsearch.common.xcontent.XContentParserUtils
+import java.io.IOException
 
 /**
  * Get report instance info request
@@ -37,9 +42,15 @@ import org.elasticsearch.common.xcontent.XContentParserUtils
  * }
  * }</pre>
  */
-internal data class GetReportInstanceRequest(
+internal class GetReportInstanceRequest(
     val reportInstanceId: String
-) : ToXContentObject {
+) : ActionRequest(), ToXContentObject {
+
+    @Throws(IOException::class)
+    constructor(input: StreamInput) : this(
+        reportInstanceId = input.readString()
+    )
+
     companion object {
         private val log by logger(GetReportInstanceRequest::class.java)
 
@@ -68,6 +79,14 @@ internal data class GetReportInstanceRequest(
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Throws(IOException::class)
+    override fun writeTo(output: StreamOutput) {
+        output.writeString(reportInstanceId)
+    }
+
+    /**
      * create XContentBuilder from this object using [XContentFactory.jsonBuilder()]
      * @return created XContentBuilder object
      */
@@ -82,5 +101,12 @@ internal data class GetReportInstanceRequest(
         return builder!!.startObject()
             .field(REPORT_INSTANCE_ID_FIELD, reportInstanceId)
             .endObject()
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    override fun validate(): ActionRequestValidationException? {
+        return null
     }
 }

@@ -17,20 +17,22 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.REPORT_INSTANCE_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.RETRY_AFTER_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.STATUS_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.STATUS_TEXT_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_INSTANCE_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.RETRY_AFTER_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
-import com.amazon.opendistroforelasticsearch.reportsscheduler.util.fieldIfNotNull
+import com.amazon.opendistroforelasticsearch.reportsscheduler.util.createJsonParser
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
+import org.elasticsearch.action.ActionResponse
+import org.elasticsearch.common.io.stream.StreamInput
+import org.elasticsearch.common.io.stream.StreamOutput
 import org.elasticsearch.common.xcontent.ToXContent
+import org.elasticsearch.common.xcontent.ToXContentObject
 import org.elasticsearch.common.xcontent.XContentBuilder
 import org.elasticsearch.common.xcontent.XContentFactory
 import org.elasticsearch.common.xcontent.XContentParser
 import org.elasticsearch.common.xcontent.XContentParser.Token
 import org.elasticsearch.common.xcontent.XContentParserUtils
-import org.elasticsearch.rest.RestStatus
+import java.io.IOException
 
 /**
  * Poll report instance info response.
@@ -42,56 +44,64 @@ import org.elasticsearch.rest.RestStatus
  *      // refer [com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance]
  *   }
  * }
- * // On Failure
+ * // if no job found
  * {
- *   "status":207,
- *   "statusText":"No Scheduled Report Instance found",
  *   "retryAfter":300
  * }
  * }</pre>
  */
-internal data class PollReportInstanceResponse(
-    override val restStatus: RestStatus,
-    override val restStatusText: String?,
-    val retryAfter: Int,
+internal class PollReportInstanceResponse : ActionResponse, ToXContentObject {
+    val retryAfter: Int
     val reportInstance: ReportInstance?
-) : IRestResponse {
-    companion object {
-        private val log by logger(PollReportInstanceResponse::class.java)
 
-        /**
-         * Parse the data from parser and create [PollReportInstanceResponse] object
-         * @param parser data referenced at parser
-         * @return created [PollReportInstanceResponse] object
-         */
-        fun parse(parser: XContentParser): PollReportInstanceResponse {
-            var restStatus: RestStatus = RestStatus.OK
-            var statusText: String? = null
-            var retryAfter: Int = PluginSettings.minPollingDurationSeconds
-            var reportInstance: ReportInstance? = null
-            XContentParserUtils.ensureExpectedToken(Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
-            while (Token.END_OBJECT != parser.nextToken()) {
-                val fieldName = parser.currentName()
-                parser.nextToken()
-                when (fieldName) {
-                    STATUS_FIELD -> restStatus = RestStatus.fromCode(parser.intValue())
-                    STATUS_TEXT_FIELD -> statusText = parser.text()
-                    RETRY_AFTER_FIELD -> retryAfter = parser.intValue()
-                    REPORT_INSTANCE_FIELD -> reportInstance = ReportInstance.parse(parser)
-                    else -> {
-                        parser.skipChildren()
-                        log.info("$LOG_PREFIX:Skipping Unknown field $fieldName")
-                    }
+    companion object {
+        private val log by logger(GetReportDefinitionResponse::class.java)
+    }
+
+    constructor(retryAfter: Int, reportInstance: ReportInstance?) : super() {
+        this.retryAfter = retryAfter
+        this.reportInstance = reportInstance
+    }
+
+    @Throws(IOException::class)
+    constructor(input: StreamInput) : this(input.createJsonParser())
+
+    /**
+     * Parse the data from parser and create [PollReportInstanceResponse] object
+     * @param parser data referenced at parser
+     */
+    constructor(parser: XContentParser) : super() {
+        var retryAfter: Int = PluginSettings.minPollingDurationSeconds
+        var reportInstance: ReportInstance? = null
+        XContentParserUtils.ensureExpectedToken(Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
+        while (Token.END_OBJECT != parser.nextToken()) {
+            val fieldName = parser.currentName()
+            parser.nextToken()
+            when (fieldName) {
+                RETRY_AFTER_FIELD -> retryAfter = parser.intValue()
+                REPORT_INSTANCE_FIELD -> reportInstance = ReportInstance.parse(parser)
+                else -> {
+                    parser.skipChildren()
+                    log.info("$LOG_PREFIX:Skipping Unknown field $fieldName")
                 }
             }
-            return PollReportInstanceResponse(restStatus, statusText, retryAfter, reportInstance)
         }
+        this.retryAfter = retryAfter
+        this.reportInstance = reportInstance
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun toXContent(): XContentBuilder {
+    @Throws(IOException::class)
+    override fun writeTo(output: StreamOutput) {
+        toXContent(XContentFactory.jsonBuilder(output), ToXContent.EMPTY_PARAMS)
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    fun toXContent(): XContentBuilder {
         return toXContent(XContentFactory.jsonBuilder(), ToXContent.EMPTY_PARAMS)
     }
 
@@ -106,8 +116,6 @@ internal data class PollReportInstanceResponse(
             builder.endObject()
         } else {
             builder!!.startObject()
-                .field(STATUS_FIELD, restStatus)
-                .fieldIfNotNull(STATUS_TEXT_FIELD, restStatusText)
                 .field(RETRY_AFTER_FIELD, retryAfter)
                 .endObject()
         }

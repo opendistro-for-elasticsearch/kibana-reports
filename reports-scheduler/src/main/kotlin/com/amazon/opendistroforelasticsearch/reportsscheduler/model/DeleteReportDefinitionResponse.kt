@@ -17,39 +17,38 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.REPORT_DEFINITION_ID_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.STATUS_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.STATUS_TEXT_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.util.fieldIfNotNull
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
+import org.elasticsearch.action.ActionResponse
+import org.elasticsearch.common.io.stream.StreamInput
+import org.elasticsearch.common.io.stream.StreamOutput
 import org.elasticsearch.common.xcontent.ToXContent
+import org.elasticsearch.common.xcontent.ToXContentObject
 import org.elasticsearch.common.xcontent.XContentBuilder
 import org.elasticsearch.common.xcontent.XContentFactory
 import org.elasticsearch.common.xcontent.XContentParser
 import org.elasticsearch.common.xcontent.XContentParser.Token
 import org.elasticsearch.common.xcontent.XContentParserUtils
-import org.elasticsearch.rest.RestStatus
+import java.io.IOException
 
 /**
  * Report Definition-delete response.
  * <pre> JSON format
  * {@code
- * // On Success
  * {
  *   "reportDefinitionId":"reportDefinitionId"
- * }
- * // On Failure
- * {
- *   "status":500,
- *   "statusText":"Report Definition Delete failed"
  * }
  * }</pre>
  */
 internal data class DeleteReportDefinitionResponse(
-    override val restStatus: RestStatus,
-    override val restStatusText: String?,
-    val reportDefinitionId: String?
-) : IRestResponse {
+    val reportDefinitionId: String
+) : ActionResponse(), ToXContentObject {
+
+    @Throws(IOException::class)
+    constructor(input: StreamInput) : this(
+        reportDefinitionId = input.readString()
+    )
+
     companion object {
         private val log by logger(DeleteReportDefinitionResponse::class.java)
 
@@ -59,16 +58,12 @@ internal data class DeleteReportDefinitionResponse(
          * @return created [DeleteReportDefinitionResponse] object
          */
         fun parse(parser: XContentParser): DeleteReportDefinitionResponse {
-            var restStatus: RestStatus = RestStatus.OK
-            var statusText: String? = null
             var reportDefinitionId: String? = null
             XContentParserUtils.ensureExpectedToken(Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
             while (Token.END_OBJECT != parser.nextToken()) {
                 val fieldName = parser.currentName()
                 parser.nextToken()
                 when (fieldName) {
-                    STATUS_FIELD -> restStatus = RestStatus.fromCode(parser.intValue())
-                    STATUS_TEXT_FIELD -> statusText = parser.text()
                     REPORT_DEFINITION_ID_FIELD -> reportDefinitionId = parser.text()
                     else -> {
                         parser.skipChildren()
@@ -76,15 +71,24 @@ internal data class DeleteReportDefinitionResponse(
                     }
                 }
             }
-            return DeleteReportDefinitionResponse(restStatus, statusText, reportDefinitionId)
+            reportDefinitionId ?: throw IllegalArgumentException("$REPORT_DEFINITION_ID_FIELD field absent")
+            return DeleteReportDefinitionResponse(reportDefinitionId)
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Throws(IOException::class)
+    override fun writeTo(output: StreamOutput) {
+        output.writeString(reportDefinitionId)
     }
 
     /**
      * create XContentBuilder from this object using [XContentFactory.jsonBuilder()]
      * @return created XContentBuilder object
      */
-    override fun toXContent(): XContentBuilder {
+    fun toXContent(): XContentBuilder {
         return toXContent(XContentFactory.jsonBuilder(), ToXContent.EMPTY_PARAMS)
     }
 
@@ -92,15 +96,8 @@ internal data class DeleteReportDefinitionResponse(
      * {@inheritDoc}
      */
     override fun toXContent(builder: XContentBuilder?, params: ToXContent.Params?): XContentBuilder {
-        return if (reportDefinitionId != null) {
-            builder!!.startObject()
-                .field(REPORT_DEFINITION_ID_FIELD, reportDefinitionId)
-                .endObject()
-        } else {
-            builder!!.startObject()
-                .field(STATUS_FIELD, restStatus)
-                .fieldIfNotNull(STATUS_TEXT_FIELD, restStatusText)
-                .endObject()
-        }
+        return builder!!.startObject()
+            .field(REPORT_DEFINITION_ID_FIELD, reportDefinitionId)
+            .endObject()
     }
 }

@@ -25,11 +25,12 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.model.DeleteReport
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportDefinitionsRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportDefinitionsResponse
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionRequest
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionsResponse
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionResponse
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinitionDetails
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportDefinitionResponse
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
+import org.elasticsearch.ElasticsearchStatusException
 import org.elasticsearch.rest.RestStatus
 import java.time.Instant
 
@@ -55,15 +56,9 @@ internal object ReportDefinitionActions {
             request.reportDefinition
         )
         val docId = ReportDefinitionsIndex.createReportDefinition(reportDefinitionDetails)
-        return if (docId == null) {
-            CreateReportDefinitionResponse(RestStatus.INTERNAL_SERVER_ERROR,
-                "Report Definition Creation failed",
-                null)
-        } else {
-            CreateReportDefinitionResponse(RestStatus.OK,
-                null,
-                docId)
-        }
+        docId ?: throw ElasticsearchStatusException("Report Definition Creation failed",
+            RestStatus.INTERNAL_SERVER_ERROR)
+        return CreateReportDefinitionResponse(docId)
     }
 
     /**
@@ -74,48 +69,34 @@ internal object ReportDefinitionActions {
     fun update(request: UpdateReportDefinitionRequest): UpdateReportDefinitionResponse {
         log.info("$LOG_PREFIX:ReportDefinition-update ${request.reportDefinitionId}")
         val currentReportDefinitionDetails = ReportDefinitionsIndex.getReportDefinition(request.reportDefinitionId)
-        return if (currentReportDefinitionDetails == null) { // TODO verify actual requester ID
-            UpdateReportDefinitionResponse(RestStatus.NOT_FOUND,
-                "Report Definition ${request.reportDefinitionId} not found",
-                null)
-        } else {
-            val currentTime = Instant.now()
-            val reportDefinitionDetails = ReportDefinitionDetails(request.reportDefinitionId,
-                currentTime,
-                currentReportDefinitionDetails.createdTime,
-                currentReportDefinitionDetails.roles,
-                request.reportDefinition
-            )
-            val isUpdated = ReportDefinitionsIndex.updateReportDefinition(request.reportDefinitionId, reportDefinitionDetails)
-            if (isUpdated) {
-                UpdateReportDefinitionResponse(RestStatus.OK,
-                    null,
-                    request.reportDefinitionId)
-            } else {
-                UpdateReportDefinitionResponse(RestStatus.INTERNAL_SERVER_ERROR,
-                    "Report Definition Update failed",
-                    null)
-            }
+        currentReportDefinitionDetails
+            ?: throw ElasticsearchStatusException("Report Definition ${request.reportDefinitionId} not found", RestStatus.NOT_FOUND)
+        // TODO verify actual requester ID
+        val currentTime = Instant.now()
+        val reportDefinitionDetails = ReportDefinitionDetails(request.reportDefinitionId,
+            currentTime,
+            currentReportDefinitionDetails.createdTime,
+            currentReportDefinitionDetails.roles,
+            request.reportDefinition
+        )
+        if (!ReportDefinitionsIndex.updateReportDefinition(request.reportDefinitionId, reportDefinitionDetails)) {
+            throw ElasticsearchStatusException("Report Definition Update failed", RestStatus.INTERNAL_SERVER_ERROR)
         }
+        return UpdateReportDefinitionResponse(request.reportDefinitionId)
     }
 
     /**
      * Get ReportDefinition info
      * @param request [GetReportDefinitionRequest] object
-     * @return [GetReportDefinitionsResponse]
+     * @return [GetReportDefinitionResponse]
      */
-    fun info(request: GetReportDefinitionRequest): GetReportDefinitionsResponse {
+    fun info(request: GetReportDefinitionRequest): GetReportDefinitionResponse {
         log.info("$LOG_PREFIX:ReportDefinition-info ${request.reportDefinitionId}")
         val reportDefinitionDetails = ReportDefinitionsIndex.getReportDefinition(request.reportDefinitionId)
-        return if (reportDefinitionDetails == null) { // TODO verify actual requester ID
-            GetReportDefinitionsResponse(RestStatus.NOT_FOUND,
-                "Report Definition ${request.reportDefinitionId} not found",
-                null)
-        } else {
-            GetReportDefinitionsResponse(RestStatus.OK,
-                null,
-                reportDefinitionDetails)
-        }
+        reportDefinitionDetails
+            ?: throw ElasticsearchStatusException("Report Definition ${request.reportDefinitionId} not found", RestStatus.NOT_FOUND)
+        // TODO verify actual requester ID
+        return GetReportDefinitionResponse(reportDefinitionDetails)
     }
 
     /**
@@ -126,22 +107,13 @@ internal object ReportDefinitionActions {
     fun delete(request: DeleteReportDefinitionRequest): DeleteReportDefinitionResponse {
         log.info("$LOG_PREFIX:ReportDefinition-delete ${request.reportDefinitionId}")
         val reportDefinitionDetails = ReportDefinitionsIndex.getReportDefinition(request.reportDefinitionId)
-        return if (reportDefinitionDetails == null) { // TODO verify actual requester ID
-            DeleteReportDefinitionResponse(RestStatus.NOT_FOUND,
-                "Report Definition ${request.reportDefinitionId} not found",
-                null)
-        } else {
-            val isDeleted = ReportDefinitionsIndex.deleteReportDefinition(request.reportDefinitionId)
-            if (!isDeleted) {
-                DeleteReportDefinitionResponse(RestStatus.REQUEST_TIMEOUT,
-                    "Report Definition ${request.reportDefinitionId} delete failed",
-                    null)
-            } else {
-                DeleteReportDefinitionResponse(RestStatus.OK,
-                    null,
-                    request.reportDefinitionId)
-            }
+        reportDefinitionDetails
+            ?: throw ElasticsearchStatusException("Report Definition ${request.reportDefinitionId} not found", RestStatus.NOT_FOUND)
+        // TODO verify actual requester ID
+        if (!ReportDefinitionsIndex.deleteReportDefinition(request.reportDefinitionId)) {
+            throw ElasticsearchStatusException("Report Definition ${request.reportDefinitionId} delete failed", RestStatus.REQUEST_TIMEOUT)
         }
+        return DeleteReportDefinitionResponse(request.reportDefinitionId)
     }
 
     /**
@@ -153,12 +125,6 @@ internal object ReportDefinitionActions {
         log.info("$LOG_PREFIX:ReportDefinition-getAll ${request.fromIndex}")
         // TODO verify actual requester ID
         val reportDefinitionsList = ReportDefinitionsIndex.getAllReportDefinitions(listOf(TEMP_ROLE_ID), request.fromIndex)
-        return if (reportDefinitionsList.isEmpty()) {
-            GetAllReportDefinitionsResponse(RestStatus.NOT_FOUND,
-                "No Report Definitions found",
-                null)
-        } else {
-            GetAllReportDefinitionsResponse(RestStatus.OK, null, reportDefinitionsList)
-        }
+        return GetAllReportDefinitionsResponse(reportDefinitionsList)
     }
 }

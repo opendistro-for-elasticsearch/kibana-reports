@@ -20,11 +20,11 @@ import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobParame
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.Schedule
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinition.TriggerType
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.CREATED_TIME_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.ID_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.REPORT_DEFINITION_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.ROLE_LIST_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.UPDATED_TIME_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.CREATED_TIME_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ID_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ROLE_LIST_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.UPDATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.stringList
@@ -119,7 +119,9 @@ internal data class ReportDefinitionDetails(
         }
         builder.field(UPDATED_TIME_FIELD, updatedTime.toEpochMilli())
             .field(CREATED_TIME_FIELD, createdTime.toEpochMilli())
-            .field(ROLE_LIST_FIELD, roles)
+        if (roles.isNotEmpty()) {
+            builder.field(ROLE_LIST_FIELD, roles)
+        }
         builder.field(REPORT_DEFINITION_FIELD)
         reportDefinition.toXContent(builder, ToXContent.EMPTY_PARAMS)
         builder.endObject()

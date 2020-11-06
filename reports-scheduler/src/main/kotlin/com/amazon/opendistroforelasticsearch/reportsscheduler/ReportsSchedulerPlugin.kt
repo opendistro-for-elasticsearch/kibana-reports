@@ -18,6 +18,17 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.JobSchedulerExtension
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobParser
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobRunner
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.CreateReportDefinitionAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.DeleteReportDefinitionAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetAllReportDefinitionsAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetAllReportInstancesAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetReportDefinitionAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetReportInstanceAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.InContextReportCreateAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.OnDemandReportCreateAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.PollReportInstanceAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.UpdateReportDefinitionAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.UpdateReportInstanceStatusAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportDefinitionsIndex
 import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportInstancesIndex
 import com.amazon.opendistroforelasticsearch.reportsscheduler.job.ReportsSchedulerJobRunnerProxy
@@ -32,6 +43,8 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.Report
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportsScheduleRestHandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import com.google.common.collect.ImmutableList
+import org.elasticsearch.action.ActionRequest
+import org.elasticsearch.action.ActionResponse
 import org.elasticsearch.client.Client
 import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver
 import org.elasticsearch.cluster.node.DiscoveryNodes
@@ -154,6 +167,25 @@ class ReportsSchedulerPlugin : Plugin(), ActionPlugin, JobSchedulerExtension {
             ReportsScheduleRestHandler(),
             ReportInstancePollRestHandler(),
             ReportsJobRestHandler(clusterService)
+        )
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    override fun getActions(): List<ActionPlugin.ActionHandler<out ActionRequest, out ActionResponse>> {
+        return listOf(
+            ActionPlugin.ActionHandler(CreateReportDefinitionAction.ACTION_TYPE, CreateReportDefinitionAction::class.java),
+            ActionPlugin.ActionHandler(DeleteReportDefinitionAction.ACTION_TYPE, DeleteReportDefinitionAction::class.java),
+            ActionPlugin.ActionHandler(GetAllReportDefinitionsAction.ACTION_TYPE, GetAllReportDefinitionsAction::class.java),
+            ActionPlugin.ActionHandler(GetAllReportInstancesAction.ACTION_TYPE, GetAllReportInstancesAction::class.java),
+            ActionPlugin.ActionHandler(GetReportDefinitionAction.ACTION_TYPE, GetReportDefinitionAction::class.java),
+            ActionPlugin.ActionHandler(GetReportInstanceAction.ACTION_TYPE, GetReportInstanceAction::class.java),
+            ActionPlugin.ActionHandler(InContextReportCreateAction.ACTION_TYPE, InContextReportCreateAction::class.java),
+            ActionPlugin.ActionHandler(OnDemandReportCreateAction.ACTION_TYPE, OnDemandReportCreateAction::class.java),
+            ActionPlugin.ActionHandler(PollReportInstanceAction.ACTION_TYPE, PollReportInstanceAction::class.java),
+            ActionPlugin.ActionHandler(UpdateReportDefinitionAction.ACTION_TYPE, UpdateReportDefinitionAction::class.java),
+            ActionPlugin.ActionHandler(UpdateReportInstanceStatusAction.ACTION_TYPE, UpdateReportInstanceStatusAction::class.java)
         )
     }
 }
