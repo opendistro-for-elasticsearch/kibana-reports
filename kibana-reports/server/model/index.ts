@@ -251,3 +251,4 @@ export type ChannelSchemaType = TypeOf<typeof channelSchema>;
 export type KibanaUserSchemaType = TypeOf<typeof kibanaUserSchema>;
 export type DeliverySchemaType = TypeOf<typeof deliverySchema>;
 export type TriggerSchemaType = TypeOf<typeof triggerSchema>;
+export type ScheduleSchemaType = TypeOf<typeof scheduleSchema>;

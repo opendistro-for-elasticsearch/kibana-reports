@@ -21,6 +21,9 @@ export default function (Client: any, config: any, components: any) {
   Client.prototype.es_reports = components.clientAction.namespaceFactory();
   const esReports = Client.prototype.es_reports.prototype;
 
+  /**
+   * report related APIs
+   */
   esReports.createReport = clientAction({
     url: {
       fmt: `${ES_REPORTS_API.ON_DEMAND_REPORT}`,
@@ -70,50 +73,76 @@ export default function (Client: any, config: any, components: any) {
     method: 'GET',
   });
 
-  // scheduler.createSchedule = clientAction({
-  //   url: {
-  //     fmt: `${REPORTS_SCHEDULER_API.SCHEDULE_BASE}?job_id=<%=jobId%>`,
-  //     req: {
-  //       jobId: {
-  //         type: 'string',
-  //         required: true,
-  //       },
-  //     },
-  //   },
-  //   method: 'POST',
-  //   needBody: true,
-  // });
+  /**
+   * report definition related APIs
+   */
+  esReports.createReportDefinition = clientAction({
+    url: {
+      fmt: `${ES_REPORTS_API.REPORT_DEFINITION}`,
+    },
+    method: 'POST',
+    needBody: true,
+  });
 
-  // scheduler.deleteSchedule = clientAction({
-  //   url: {
-  //     fmt: `${REPORTS_SCHEDULER_API.SCHEDULE_BASE}?job_id=<%=jobId%>`,
-  //     req: {
-  //       jobId: {
-  //         type: 'string',
-  //         required: true,
-  //       },
-  //     },
-  //   },
-  //   method: 'DELETE',
-  // });
+  esReports.updateReportDefinitionById = clientAction({
+    url: {
+      fmt: `${ES_REPORTS_API.REPORT_DEFINITION}?id=<%=reportDefinitionId%>`,
+      req: {
+        reportDefinitionId: {
+          type: 'string',
+          required: true,
+        },
+      },
+    },
+    method: 'PUT',
+    needBody: true,
+  });
 
-  // scheduler.getJob = clientAction({
-  //   url: {
-  //     fmt: `${REPORTS_SCHEDULER_API.JOB_BASE}`,
-  //   },
-  //   method: 'GET',
-  // });
+  esReports.getReportDefinitionById = clientAction({
+    url: {
+      fmt: `${ES_REPORTS_API.REPORT_DEFINITION}?id=<%=reportDefinitionId%>`,
+      req: {
+        reportDefinitionId: {
+          type: 'string',
+          required: true,
+        },
+      },
+    },
+    method: 'GET',
+  });
 
-  // scheduler.updateJobStatus = clientAction({
-  //   url: {
-  //     fmt: `${REPORTS_SCHEDULER_API.JOB_BASE}/<%=jobId%>`,
-  //     req: {
-  //       jobId: {
-  //         type: 'string',
-  //         required: true,
-  //       },
-  //     },
-  //   },
-  //   method: 'POST',
-  // });
+  esReports.getReportDefinitions = clientAction({
+    url: {
+      fmt: `${ES_REPORTS_API.LIST_REPORT_DEFINITIONS}`,
+      //TODO: wrong format error thrown even required = false, need to figure it out the correct setting to make it truly optional
+      // req: {
+      //   fromIndex: {
+      //     type: 'string',
+      //     required: false,
+      //   },
+      // },
+    },
+    method: 'GET',
+  });
+
+  esReports.deleteReportDefinitionById = clientAction({
+    url: {
+      fmt: `${ES_REPORTS_API.REPORT_DEFINITION}?id=<%=reportDefinitionId%>`,
+      req: {
+        reportDefinitionId: {
+          type: 'string',
+          required: true,
+        },
+      },
+    },
+    method: 'DELETE',
+  });
+
+  // poller API
+  esReports.pollReportInstance = clientAction({
+    url: {
+      fmt: `${ES_REPORTS_API.POLL_REPORT_INSTANCE}`,
+    },
+    method: true,
+  });
 }

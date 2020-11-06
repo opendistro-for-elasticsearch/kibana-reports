@@ -25,12 +25,11 @@ import { API_PREFIX } from '../../common';
 import { createReport } from './lib/createReport';
 import { reportSchema } from '../model';
 import { errorResponse } from './utils/helpers';
+import { DELIVERY_TYPE } from './utils/constants';
 import {
-  CONFIG_INDEX_NAME,
-  DEFAULT_MAX_SIZE,
-  DELIVERY_TYPE,
-} from './utils/constants';
-import { backendToUiReport, backendToUiReportsList } from './utils/converters';
+  backendToUiReport,
+  backendToUiReportsList,
+} from './utils/converters/backendToUi';
 
 export default function (router: IRouter) {
   // generate report
@@ -48,8 +47,8 @@ export default function (router: IRouter) {
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       //@ts-ignore
       const logger: Logger = context.reporting_plugin.logger;
-      // input validation
       let report = request.body;
+      // input validation
       try {
         report = reportSchema.validate(report);
       } catch (error) {
@@ -157,20 +156,12 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
-      const { size, sortField, sortDirection, fromIndex } = request.query as {
+      const { fromIndex } = request.query as {
         size: string;
         sortField: string;
         sortDirection: string;
         fromIndex: string;
       };
-      // const params: RequestParams.Search = {
-      //   index: CONFIG_INDEX_NAME.report,
-      //   size: size ? parseInt(size, 10) : DEFAULT_MAX_SIZE, // ES search API use 10 as size default
-      //   sort:
-      //     sortField && sortDirection
-      //       ? `${sortField}:${sortDirection}`
-      //       : undefined,
-      // };
 
       try {
         // @ts-ignore
@@ -192,13 +183,6 @@ export default function (router: IRouter) {
             data: reportsList,
           },
         });
-
-        // return response.ok({
-        //   body: {
-        //     total: esResp.hits.total.value,
-        //     data: esResp.hits.hits,
-        //   },
-        // });
       } catch (error) {
         //@ts-ignore
         context.reporting_plugin.logger.error(

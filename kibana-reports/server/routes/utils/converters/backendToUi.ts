@@ -2,13 +2,15 @@ import {
   dataReportSchema,
   DataReportSchemaType,
   DeliverySchemaType,
+  ReportDefinitionSchemaType,
   reportSchema,
   ReportSchemaType,
   TriggerSchemaType,
   visualReportSchema,
   VisualReportSchemaType,
-} from '../../model';
+} from '../../../model';
 import {
+  BackendReportDefinitionDetailsType,
   BackendReportInstanceType,
   BACKEND_REPORT_FORMAT,
   BACKEND_REPORT_SOURCE,
@@ -21,7 +23,7 @@ import {
   REPORT_STATE_DICT,
   TRIGGER_TYPE_DICT,
   URL_PREFIX_DICT,
-} from '../../model/backendModel';
+} from '../../../model/backendModel';
 import {
   DELIVERY_TYPE,
   FORMAT,
@@ -30,37 +32,29 @@ import {
   REPORT_TYPE,
   SCHEDULE_TYPE,
   TRIGGER_TYPE,
-} from './constants';
+} from '../constants';
 import moment from 'moment';
 
 export const backendToUiReport = (
   backendReportInstance: BackendReportInstanceType
 ): ReportSchemaType => {
   const {
-    id: reportId,
     inContextDownloadUrlPath,
     beginTimeMs,
     endTimeMs,
     status,
     lastUpdatedTimeMs: reportLastUpdatedTimeMs,
     createdTimeMs: reportCreatedTimeMs,
-    reportDefinitionDetails: {
-      id: reportDefinitionId,
-      lastUpdatedTimeMs,
-      createdTimeMs,
-      reportDefinition: {
-        name,
-        isEnabled,
-        source: { type: sourceType, description, id: sourceId },
-        format: { fileFormat, duration, header, footer, limit },
-        trigger: { triggerType, schedule },
-        delivery,
-      },
-    },
+    reportDefinitionDetails: backendReportDefinitionDetails,
   } = backendReportInstance;
 
+  const {
+    reportDefinition: {
+      source: { type: sourceType, id: sourceId },
+    },
+  } = backendReportDefinitionDetails;
+
   const baseUrl = getBaseUrl(sourceType, sourceId);
-  const reportSource = getUiReportSource(sourceType);
 
   let report: ReportSchemaType = {
     // inContextDownloadUrlPath may not exist for report instance created from scheduled job
@@ -72,41 +66,10 @@ export const backendToUiReport = (
     last_updated: reportLastUpdatedTimeMs,
     time_created: reportCreatedTimeMs,
     state: getUiReportState(status),
-    report_definition: {
-      report_params: {
-        report_name: name,
-        report_source: reportSource,
-        description: description,
-        core_params:
-          reportSource === REPORT_TYPE.savedSearch
-            ? getDataReportCoreParams(
-                limit,
-                sourceId,
-                fileFormat,
-                duration,
-                baseUrl
-              )
-            : getVisualReportCoreParams(
-                fileFormat,
-                header,
-                footer,
-                duration,
-                baseUrl
-              ),
-      },
-      trigger: getTriggerParams(
-        triggerType,
-        schedule,
-        createdTimeMs,
-        isEnabled
-      ),
-      delivery: getDeliveryParams(delivery), //TODO:
-      time_created: createdTimeMs,
-      last_updated: lastUpdatedTimeMs,
-      status: getReportDefinitionStatus(isEnabled),
-    },
+    report_definition: backendToUiReportDefinition(
+      backendReportDefinitionDetails
+    ),
   };
-  console.log(report);
   // validate to assign default values to some fields for UI model
   report = reportSchema.validate(report);
   return report;
@@ -118,6 +81,81 @@ export const backendToUiReportsList = (
   const res = backendReportsList.map((backendReport) => {
     return { _id: backendReport.id, _source: backendToUiReport(backendReport) };
   });
+  return res;
+};
+
+export const backendToUiReportDefinition = (
+  backendReportDefinitionDetails: BackendReportDefinitionDetailsType
+): ReportDefinitionSchemaType => {
+  const {
+    lastUpdatedTimeMs,
+    createdTimeMs,
+    reportDefinition: {
+      name,
+      isEnabled,
+      source: { type: sourceType, description, id: sourceId },
+      format: { fileFormat, duration, header, footer, limit },
+      trigger: { triggerType, schedule },
+      delivery,
+    },
+  } = backendReportDefinitionDetails;
+
+  const baseUrl = getBaseUrl(sourceType, sourceId);
+  const reportSource = getUiReportSource(sourceType);
+
+  let uiReportDefinition: ReportDefinitionSchemaType = {
+    report_params: {
+      report_name: name,
+      report_source: reportSource,
+      description: description,
+      core_params:
+        reportSource === REPORT_TYPE.savedSearch
+          ? getDataReportCoreParams(
+              limit,
+              sourceId,
+              fileFormat,
+              duration,
+              baseUrl
+            )
+          : getVisualReportCoreParams(
+              fileFormat,
+              header,
+              footer,
+              duration,
+              baseUrl
+            ),
+    },
+    trigger: getUiTriggerParams(
+      triggerType,
+      schedule,
+      createdTimeMs,
+      isEnabled
+    ),
+    delivery: getUiDeliveryParams(delivery), //TODO:
+    time_created: createdTimeMs,
+    last_updated: lastUpdatedTimeMs,
+    status: getUiReportDefinitionStatus(isEnabled),
+  };
+
+  return uiReportDefinition;
+};
+
+export const backendToUiReportDefinitionsList = (
+  backendReportDefinitionDetailsList: BackendReportDefinitionDetailsType[]
+) => {
+  const res = backendReportDefinitionDetailsList.map(
+    (backendReportDefinitionDetails) => {
+      return {
+        _id: backendReportDefinitionDetails.id,
+        _source: {
+          // TODO: this property can be removed, but need UI changes as well
+          report_definition: backendToUiReportDefinition(
+            backendReportDefinitionDetails
+          ),
+        },
+      };
+    }
+  );
   return res;
 };
 
@@ -237,7 +275,7 @@ const getUiReportSource = (type: BACKEND_REPORT_SOURCE): REPORT_TYPE => {
   return res;
 };
 
-const getReportDefinitionStatus = (
+const getUiReportDefinitionStatus = (
   isEnabled: any
 ): REPORT_DEFINITION_STATUS => {
   return isEnabled
@@ -245,7 +283,7 @@ const getReportDefinitionStatus = (
     : REPORT_DEFINITION_STATUS.disabled;
 };
 
-const getTriggerParams = (
+const getUiTriggerParams = (
   triggerType: any,
   schedule: CronType | IntervalType,
   createdTimeMs: number,
@@ -261,7 +299,7 @@ const getTriggerParams = (
 };
 
 // Delivery
-const getDeliveryParams = (
+const getUiDeliveryParams = (
   delivery: DeliveryType | undefined
 ): DeliverySchemaType => {
   const kibanaUserDeliveryParams = {

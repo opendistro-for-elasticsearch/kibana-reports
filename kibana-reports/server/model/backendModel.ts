@@ -20,28 +20,38 @@ export type BackendReportInstanceType = {
     lastUpdatedTimeMs: number;
     createdTimeMs: number;
     roles?: string[];
-    reportDefinition: {
-      name: string;
-      isEnabled: boolean;
-      source: {
-        description: string;
-        type: BACKEND_REPORT_SOURCE;
-        id: string;
-      };
-      format: {
-        duration: string;
-        fileFormat: string;
-        limit?: number;
-        header?: string;
-        footer?: string;
-      };
-      trigger: {
-        triggerType: string; //TODO:
-        schedule?: CronType | IntervalType;
-      };
-      delivery?: DeliveryType;
-    };
+    reportDefinition: BackendReportDefinitionType;
   };
+};
+
+export type BackendReportDefinitionType = {
+  name: string;
+  isEnabled: boolean;
+  source: {
+    description: string;
+    type: BACKEND_REPORT_SOURCE;
+    id: string;
+  };
+  format: {
+    duration: string;
+    fileFormat: string;
+    limit?: number;
+    header?: string;
+    footer?: string;
+  };
+  trigger: {
+    triggerType: string; //TODO:
+    schedule?: CronType | IntervalType;
+  };
+  delivery?: DeliveryType;
+};
+
+export type BackendReportDefinitionDetailsType = {
+  id?: string;
+  lastUpdatedTimeMs: number;
+  createdTimeMs: number;
+  roles?: string[];
+  reportDefinition: BackendReportDefinitionType;
 };
 
 export type CronType = {
@@ -64,7 +74,7 @@ export type DeliveryType = {
   deliveryFormat: BACKEND_DELIVERY_FORMAT;
   title: string;
   textDescription: string;
-  htmlDescription: string;
+  htmlDescription?: string;
   channelIds?: string[];
 };
 

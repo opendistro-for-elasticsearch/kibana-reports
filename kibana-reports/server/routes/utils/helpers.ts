@@ -19,25 +19,13 @@ import {
   ILegacyClusterClient,
   ILegacyScopedClusterClient,
 } from '../../../../../src/core/server';
-import { RequestParams } from '@elastic/elasticsearch';
+import { REPORT_STATE } from './constants';
+import { ReportSchemaType } from 'server/model';
 import {
-  CONFIG_INDEX_NAME,
-  FORMAT,
-  REPORT_DEFINITION_STATUS,
-  REPORT_STATE,
-  REPORT_TYPE,
-  TRIGGER_TYPE,
-} from './constants';
-import { CreateReportResultType } from './types';
-import { ReportDefinitionSchemaType, ReportSchemaType } from 'server/model';
-import {
-  BACKEND_REPORT_FORMAT,
-  BACKEND_REPORT_SOURCE,
   BACKEND_REPORT_STATE,
-  REPORT_FORMAT_DICT,
-  REPORT_SOURCE_DICT,
   REPORT_STATE_DICT,
 } from '../../model/backendModel';
+import { uiToBackendReportDefinition } from './converters/uiToBackend';
 
 export function parseEsErrorResponse(error: any) {
   if (error.response) {
@@ -81,9 +69,15 @@ export const callCluster = async (
 ) => {
   let esResp;
   if (isScheduledTask) {
-    esResp = await client.callAsInternalUser(endpoint, params);
+    esResp = await (client as ILegacyClusterClient).callAsInternalUser(
+      endpoint,
+      params
+    );
   } else {
-    esResp = await client.callAsCurrentUser(endpoint, params);
+    esResp = await (client as ILegacyScopedClusterClient).callAsCurrentUser(
+      endpoint,
+      params
+    );
   }
   return esResp;
 };
@@ -110,52 +104,30 @@ export const saveReport = async (
 export const buildReqBody = (report: ReportSchemaType): any => {
   const timePending = Date.now();
   const {
-    report_params: {
-      report_name: reportName,
-      description,
-      report_source: reportSource,
-      core_params: {
-        time_duration: timeDuration,
-        report_format: reportFormat,
-        saved_search_id: savedSearchId,
-      },
-    },
-  } = report.report_definition;
+    time_from: timeFrom,
+    time_to: timeTo,
+    query_url: queryUrl,
+    report_definition: reportDefinition,
+  } = report;
 
   const reqBody = {
-    beginTimeMs: report.time_from,
-    endTimeMs: report.time_to,
+    beginTimeMs: timeFrom,
+    endTimeMs: timeTo,
     reportDefinitionDetails: {
       id: uuidv1(),
       lastUpdatedTimeMs: timePending,
       createdTimeMs: timePending,
       reportDefinition: {
-        name: reportName,
-        isEnabled: true,
-        source: {
-          description: description,
-          type: getBackendReportSource(reportSource),
-          id: savedSearchId || 'fakeDashboardAndVisualizationIdForNow', //TODO:
-        },
-        format: {
-          duration: timeDuration,
-          fileFormat: getBackendReportFormat(reportFormat),
-        },
+        ...uiToBackendReportDefinition(reportDefinition),
         trigger: {
-          triggerType: 'Download', // TODO:
+          triggerType: 'Download', // TODO: this is a corner case for in-context menu button download only
         },
       },
     },
     status: getBackendReportState(REPORT_STATE.pending), // download from in-context menu should always pass executing state to backend
-    inContextDownloadUrlPath: report.query_url,
+    inContextDownloadUrlPath: queryUrl,
   };
   return reqBody;
-};
-
-const getBackendReportFormat = (
-  reportFormat: FORMAT
-): BACKEND_REPORT_FORMAT => {
-  return REPORT_FORMAT_DICT[reportFormat];
 };
 
 export const getBackendReportState = (
@@ -164,19 +136,12 @@ export const getBackendReportState = (
   return REPORT_STATE_DICT[reportState];
 };
 
-export const getBackendReportSource = (
-  reportSource: REPORT_TYPE
-): BACKEND_REPORT_SOURCE => {
-  return REPORT_SOURCE_DICT[reportSource];
-};
-
 // The only thing can be updated of a report instance is its "state"
 export const updateReportState = async (
   isScheduledTask: boolean,
   reportId: string,
-  esClient: ILegacyClusterClient | ILegacyScopedClusterClient,
-  state: REPORT_STATE,
-  createReportResult?: CreateReportResultType
+  esReportsClient: ILegacyClusterClient | ILegacyScopedClusterClient,
+  state: REPORT_STATE
 ) => {
   // const timeStamp = createReportResult
   //   ? createReportResult.timeCreated
@@ -199,9 +164,10 @@ export const updateReportState = async (
     reportInstanceId: reportId,
     status: getBackendReportState(state),
   };
+  console.log(reqBody);
 
   const esResp = await callCluster(
-    esClient,
+    esReportsClient,
     'es_reports.updateReportInstanceStatus',
     {
       reportId: reportId,
@@ -209,65 +175,6 @@ export const updateReportState = async (
     },
     isScheduledTask
   );
-
-  return esResp;
-};
-
-export const saveReportDefinition = async (
-  reportDefinition: ReportDefinitionSchemaType,
-  esClient: ILegacyScopedClusterClient
-) => {
-  const toSave = {
-    report_definition: {
-      ...reportDefinition,
-      time_created: Date.now(),
-      last_updated: Date.now(),
-      status: REPORT_DEFINITION_STATUS.active,
-    },
-  };
-
-  const params: RequestParams.Index = {
-    index: CONFIG_INDEX_NAME.reportDefinition,
-    body: toSave,
-  };
-
-  const esResp = await esClient.callAsCurrentUser('index', params);
-
-  return esResp;
-};
-
-export const updateReportDefinition = async (
-  reportDefinitionId: string,
-  reportDefinition: ReportDefinitionSchemaType,
-  esClient: ILegacyScopedClusterClient
-) => {
-  let newStatus = REPORT_DEFINITION_STATUS.active;
-  /**
-   * "enabled = false" means de-scheduling a job.
-   * TODO: also need to remove any job in queue and release lock, consider do that
-   * within the createSchedule API exposed from reports-scheduler
-   */
-  if (reportDefinition.trigger.trigger_type == TRIGGER_TYPE.schedule) {
-    const enabled = reportDefinition.trigger.trigger_params.enabled;
-    newStatus = enabled
-      ? REPORT_DEFINITION_STATUS.active
-      : REPORT_DEFINITION_STATUS.disabled;
-  }
-
-  const toUpdate = {
-    report_definition: {
-      ...reportDefinition,
-      last_updated: Date.now(),
-      status: newStatus,
-    },
-  };
-
-  const params: RequestParams.Index = {
-    id: reportDefinitionId,
-    index: CONFIG_INDEX_NAME.reportDefinition,
-    body: toUpdate,
-  };
-  const esResp = await esClient.callAsCurrentUser('index', params);
 
   return esResp;
 };

@@ -119,7 +119,7 @@ export const createReport = async (
         report,
         createReportResult,
         notificationClient,
-        esClient,
+        esReportsClient,
         reportId,
         isScheduledTask,
         logger
@@ -132,7 +132,7 @@ export const createReport = async (
       await updateReportState(
         isScheduledTask,
         reportId,
-        esClient,
+        esReportsClient,
         REPORT_STATE.error
       );
     }
