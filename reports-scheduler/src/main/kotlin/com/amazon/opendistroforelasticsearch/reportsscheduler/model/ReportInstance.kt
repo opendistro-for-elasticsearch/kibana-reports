@@ -17,16 +17,16 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.BEGIN_TIME_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.CREATED_TIME_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.END_TIME_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.ID_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.IN_CONTEXT_DOWNLOAD_URL_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.REPORT_DEFINITION_DETAILS_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.ROLE_LIST_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.STATUS_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.STATUS_TEXT_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.UPDATED_TIME_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.BEGIN_TIME_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.CREATED_TIME_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.END_TIME_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ID_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.IN_CONTEXT_DOWNLOAD_URL_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_DETAILS_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ROLE_LIST_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATUS_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATUS_TEXT_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.UPDATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.stringList
 import org.elasticsearch.common.xcontent.ToXContent
@@ -158,7 +158,9 @@ internal data class ReportInstance(
             .field(CREATED_TIME_FIELD, createdTime.toEpochMilli())
             .field(BEGIN_TIME_FIELD, beginTime.toEpochMilli())
             .field(END_TIME_FIELD, endTime.toEpochMilli())
-            .field(ROLE_LIST_FIELD, roles)
+        if (roles.isNotEmpty()) {
+            builder.field(ROLE_LIST_FIELD, roles)
+        }
         if (reportDefinitionDetails != null) {
             builder.field(REPORT_DEFINITION_DETAILS_FIELD)
             reportDefinitionDetails.toXContent(builder, ToXContent.EMPTY_PARAMS, true)

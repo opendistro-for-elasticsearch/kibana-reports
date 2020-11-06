@@ -18,8 +18,8 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.index
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinitionDetails
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.ROLE_LIST_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.UPDATED_TIME_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ROLE_LIST_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.UPDATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.SecureIndexClient
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger

@@ -17,69 +17,66 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.REPORT_INSTANCE_LIST_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.STATUS_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.STATUS_TEXT_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.util.fieldIfNotNull
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_INSTANCE_LIST_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.util.createJsonParser
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
+import org.elasticsearch.action.ActionResponse
+import org.elasticsearch.common.io.stream.StreamInput
+import org.elasticsearch.common.io.stream.StreamOutput
 import org.elasticsearch.common.xcontent.ToXContent
+import org.elasticsearch.common.xcontent.ToXContentObject
 import org.elasticsearch.common.xcontent.XContentBuilder
 import org.elasticsearch.common.xcontent.XContentFactory
 import org.elasticsearch.common.xcontent.XContentParser
 import org.elasticsearch.common.xcontent.XContentParser.Token
 import org.elasticsearch.common.xcontent.XContentParserUtils
-import org.elasticsearch.rest.RestStatus
+import java.io.IOException
 
 /**
  * Get all report instances info response.
  * <pre> JSON format
  * {@code
- * // On Success
  * {
  *   "reportInstanceList":[
  *      // refer [com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance]
  *   ]
  * }
- * // On Failure
- * {
- *   "status":404,
- *   "statusText":"No Report Definitions found"
- * }
  * }</pre>
  */
-internal data class GetAllReportInstancesResponse(
-    override val restStatus: RestStatus,
-    override val restStatusText: String?,
-    val reportInstanceList: List<ReportInstance>?
-) : IRestResponse {
-    companion object {
-        private val log by logger(GetAllReportInstancesResponse::class.java)
+internal class GetAllReportInstancesResponse : ActionResponse, ToXContentObject {
+    val reportInstanceList: List<ReportInstance>
 
-        /**
-         * Parse the data from parser and create [GetAllReportInstancesResponse] object
-         * @param parser data referenced at parser
-         * @return created [GetAllReportInstancesResponse] object
-         */
-        fun parse(parser: XContentParser): GetAllReportInstancesResponse {
-            var restStatus: RestStatus = RestStatus.OK
-            var statusText: String? = null
-            var reportInstanceList: List<ReportInstance>? = null
-            XContentParserUtils.ensureExpectedToken(Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
-            while (Token.END_OBJECT != parser.nextToken()) {
-                val fieldName = parser.currentName()
-                parser.nextToken()
-                when (fieldName) {
-                    STATUS_FIELD -> restStatus = RestStatus.fromCode(parser.intValue())
-                    STATUS_TEXT_FIELD -> statusText = parser.text()
-                    REPORT_INSTANCE_LIST_FIELD -> reportInstanceList = parseReportInstanceList(parser)
-                    else -> {
-                        parser.skipChildren()
-                        log.info("$LOG_PREFIX:Skipping Unknown field $fieldName")
-                    }
+    constructor(reportInstanceList: List<ReportInstance>) : super() {
+        this.reportInstanceList = reportInstanceList
+    }
+
+    @Throws(IOException::class)
+    constructor(input: StreamInput) : this(input.createJsonParser())
+
+    /**
+     * Parse the data from parser and create [GetAllReportInstancesResponse] object
+     * @param parser data referenced at parser
+     */
+    constructor(parser: XContentParser) : super() {
+        var reportInstanceList: List<ReportInstance>? = null
+        XContentParserUtils.ensureExpectedToken(Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
+        while (Token.END_OBJECT != parser.nextToken()) {
+            val fieldName = parser.currentName()
+            parser.nextToken()
+            when (fieldName) {
+                REPORT_INSTANCE_LIST_FIELD -> reportInstanceList = parseReportInstanceList(parser)
+                else -> {
+                    parser.skipChildren()
+                    log.info("$LOG_PREFIX:Skipping Unknown field $fieldName")
                 }
             }
-            return GetAllReportInstancesResponse(restStatus, statusText, reportInstanceList)
         }
+        reportInstanceList ?: throw IllegalArgumentException("$REPORT_INSTANCE_LIST_FIELD field absent")
+        this.reportInstanceList = reportInstanceList
+    }
+
+    companion object {
+        private val log by logger(GetAllReportInstancesResponse::class.java)
 
         /**
          * Parse the report instance list from parser
@@ -99,7 +96,15 @@ internal data class GetAllReportInstancesResponse(
     /**
      * {@inheritDoc}
      */
-    override fun toXContent(): XContentBuilder {
+    @Throws(IOException::class)
+    override fun writeTo(output: StreamOutput) {
+        toXContent(XContentFactory.jsonBuilder(output), ToXContent.EMPTY_PARAMS)
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    fun toXContent(): XContentBuilder {
         return toXContent(XContentFactory.jsonBuilder(), ToXContent.EMPTY_PARAMS)
     }
 
@@ -107,16 +112,9 @@ internal data class GetAllReportInstancesResponse(
      * {@inheritDoc}
      */
     override fun toXContent(builder: XContentBuilder?, params: ToXContent.Params?): XContentBuilder {
-        return if (reportInstanceList != null) {
-            builder!!.startObject()
-                .startArray(REPORT_INSTANCE_LIST_FIELD)
-            reportInstanceList.forEach { it.toXContent(builder, ToXContent.EMPTY_PARAMS, true) }
-            builder.endArray().endObject()
-        } else {
-            builder!!.startObject()
-                .field(STATUS_FIELD, restStatus)
-                .fieldIfNotNull(STATUS_TEXT_FIELD, restStatusText)
-                .endObject()
-        }
+        builder!!.startObject()
+            .startArray(REPORT_INSTANCE_LIST_FIELD)
+        reportInstanceList.forEach { it.toXContent(builder, ToXContent.EMPTY_PARAMS, true) }
+        return builder.endArray().endObject()
     }
 }

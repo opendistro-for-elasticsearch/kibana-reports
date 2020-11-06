@@ -16,22 +16,25 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetAllReportDefinitionsAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportDefinitionActions
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportDefinitionsRequest
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.IRestResponse
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestErrorResponse
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.FROM_INDEX_FIELD
 import org.elasticsearch.client.node.NodeClient
-import org.elasticsearch.rest.RestChannel
+import org.elasticsearch.rest.BaseRestHandler
+import org.elasticsearch.rest.BaseRestHandler.RestChannelConsumer
+import org.elasticsearch.rest.BytesRestResponse
 import org.elasticsearch.rest.RestHandler.Route
 import org.elasticsearch.rest.RestRequest
 import org.elasticsearch.rest.RestRequest.Method.GET
 import org.elasticsearch.rest.RestStatus
+import org.elasticsearch.rest.action.RestToXContentListener
 
 /**
  * Rest handler for getting list of report definitions.
  * This handler uses [ReportDefinitionActions].
  */
-internal class ReportDefinitionListRestHandler : PluginRestHandler() {
+internal class ReportDefinitionListRestHandler : BaseRestHandler() {
     companion object {
         private const val REPORT_DEFINITION_LIST_ACTION = "report_definition_list_actions"
         private const val LIST_REPORT_DEFINITIONS_URL = "$BASE_REPORTS_URI/definitions"
@@ -62,18 +65,24 @@ internal class ReportDefinitionListRestHandler : PluginRestHandler() {
     /**
      * {@inheritDoc}
      */
-    override fun responseParams(): Set<String> {
-        return setOf(FROM_INDEX_FIELD)
+    override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
+        val from = request.param(FROM_INDEX_FIELD)?.toIntOrNull() ?: 0
+        return when (request.method()) {
+            GET -> RestChannelConsumer {
+                client.execute(GetAllReportDefinitionsAction.ACTION_TYPE,
+                    GetAllReportDefinitionsRequest(from),
+                    RestToXContentListener(it))
+            }
+            else -> RestChannelConsumer {
+                it.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))
+            }
+        }
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: RestRequest, client: NodeClient, channel: RestChannel): IRestResponse {
-        val from = request.param(FROM_INDEX_FIELD)?.toIntOrNull() ?: 0
-        return when (request.method()) {
-            GET -> ReportDefinitionActions.getAll(GetAllReportDefinitionsRequest(from))
-            else -> RestErrorResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed")
-        }
+    override fun responseParams(): Set<String> {
+        return setOf(FROM_INDEX_FIELD)
     }
 }

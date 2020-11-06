@@ -16,22 +16,25 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetAllReportInstancesAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportInstancesRequest
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.IRestResponse
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestErrorResponse
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.FROM_INDEX_FIELD
 import org.elasticsearch.client.node.NodeClient
-import org.elasticsearch.rest.RestChannel
+import org.elasticsearch.rest.BaseRestHandler
+import org.elasticsearch.rest.BaseRestHandler.RestChannelConsumer
+import org.elasticsearch.rest.BytesRestResponse
 import org.elasticsearch.rest.RestHandler.Route
 import org.elasticsearch.rest.RestRequest
 import org.elasticsearch.rest.RestRequest.Method.GET
 import org.elasticsearch.rest.RestStatus
+import org.elasticsearch.rest.action.RestToXContentListener
 
 /**
  * Rest handler for getting list of report instances.
  * This handler uses [ReportInstanceActions].
  */
-internal class ReportInstanceListRestHandler : PluginRestHandler() {
+internal class ReportInstanceListRestHandler : BaseRestHandler() {
     companion object {
         private const val REPORT_INSTANCE_LIST_ACTION = "report_instance_list_actions"
         private const val LIST_REPORT_INSTANCES_URL = "$BASE_REPORTS_URI/instances"
@@ -69,11 +72,17 @@ internal class ReportInstanceListRestHandler : PluginRestHandler() {
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: RestRequest, client: NodeClient, channel: RestChannel): IRestResponse {
+    override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
         val from = request.param(FROM_INDEX_FIELD)?.toIntOrNull() ?: 0
         return when (request.method()) {
-            GET -> ReportInstanceActions.getAll(GetAllReportInstancesRequest(from))
-            else -> RestErrorResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed")
+            GET -> RestChannelConsumer {
+                client.execute(GetAllReportInstancesAction.ACTION_TYPE,
+                    GetAllReportInstancesRequest(from),
+                    RestToXContentListener(it))
+            }
+            else -> RestChannelConsumer {
+                it.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))
+            }
         }
     }
 }

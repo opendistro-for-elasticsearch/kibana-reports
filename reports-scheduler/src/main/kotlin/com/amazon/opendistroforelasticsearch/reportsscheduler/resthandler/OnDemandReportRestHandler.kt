@@ -16,24 +16,29 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.InContextReportCreateAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.OnDemandReportCreateAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.IRestResponse
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.InContextReportCreateRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.OnDemandReportCreateRequest
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestErrorResponse
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ID_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.util.contentParserNextToken
 import org.elasticsearch.client.node.NodeClient
-import org.elasticsearch.rest.RestChannel
+import org.elasticsearch.rest.BaseRestHandler
+import org.elasticsearch.rest.BaseRestHandler.RestChannelConsumer
+import org.elasticsearch.rest.BytesRestResponse
 import org.elasticsearch.rest.RestHandler.Route
 import org.elasticsearch.rest.RestRequest
 import org.elasticsearch.rest.RestRequest.Method.POST
 import org.elasticsearch.rest.RestRequest.Method.PUT
 import org.elasticsearch.rest.RestStatus
+import org.elasticsearch.rest.action.RestToXContentListener
 
 /**
  * Rest handler for creating on-demand report instances.
  * This handler uses [ReportInstanceActions].
  */
-internal class OnDemandReportRestHandler : PluginRestHandler() {
+internal class OnDemandReportRestHandler : BaseRestHandler() {
     companion object {
         private const val REPORT_INSTANCE_LIST_ACTION = "on_demand_report_actions"
         private const val ON_DEMAND_REPORT_URL = "$BASE_REPORTS_URI/on-demand"
@@ -79,16 +84,21 @@ internal class OnDemandReportRestHandler : PluginRestHandler() {
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: RestRequest, client: NodeClient, channel: RestChannel): IRestResponse {
-        val parser = request.contentParser()
-        parser.nextToken()
+    override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
         return when (request.method()) {
-            PUT -> ReportInstanceActions.createOnDemand(InContextReportCreateRequest.parse(parser))
-            POST -> {
-                val reportDefinitionId = request.param(ID_FIELD) ?: throw IllegalArgumentException("Must specify id")
-                ReportInstanceActions.createOnDemandFromDefinition(OnDemandReportCreateRequest.parse(parser, reportDefinitionId))
+            PUT -> RestChannelConsumer {
+                client.execute(InContextReportCreateAction.ACTION_TYPE,
+                    InContextReportCreateRequest(request.contentParserNextToken()),
+                    RestToXContentListener(it))
             }
-            else -> RestErrorResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed")
+            POST -> RestChannelConsumer {
+                client.execute(OnDemandReportCreateAction.ACTION_TYPE,
+                    OnDemandReportCreateRequest.parse(request.contentParserNextToken(), request.param(ID_FIELD)),
+                    RestToXContentListener(it))
+            }
+            else -> RestChannelConsumer {
+                it.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))
+            }
         }
     }
 }
