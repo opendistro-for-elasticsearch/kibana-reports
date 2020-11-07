@@ -73,7 +73,7 @@ export const createScheduledReport = async (
       report,
       createReportResult,
       notificationClient,
-      esClient,
+      esReportsClient,
       reportId,
       isScheduledTask,
       logger

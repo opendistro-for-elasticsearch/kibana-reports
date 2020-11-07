@@ -173,7 +173,6 @@ const getVisualReportCoreParams = (
     footer: footer,
     time_duration: duration,
   };
-  res = visualReportSchema.validate(res);
   return res;
 };
 
@@ -208,7 +207,6 @@ const getDataReportCoreParams = (
     time_duration: duration,
     saved_search_id: sourceId,
   };
-  res = dataReportSchema.validate(res);
   return res;
 };
 

@@ -88,7 +88,7 @@ export const intervalSchema = schema.object({
       schema.literal('MINUTES'),
       schema.literal('HOURS'),
       schema.literal('DAYS'),
-      // TODO: remove following after testing
+      // TODO: Backend always saves as following format, maintain one set of format later
       schema.literal('Minutes'),
       schema.literal('Hours'),
       schema.literal('Days'),

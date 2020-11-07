@@ -64,9 +64,10 @@ export const createReport = async (
     reportId = esResp.reportInstance.id;
   }
 
-  const reportDefinition = report.report_definition;
-  const reportParams = reportDefinition.report_params;
-  const reportSource = reportParams.report_source;
+  const {
+    report_definition: { report_params: reportParams },
+  } = report;
+  const { report_source: reportSource } = reportParams;
 
   // compose url
   const queryUrl = `${LOCAL_HOST}${report.query_url}`;
@@ -80,6 +81,7 @@ export const createReport = async (
       );
     } else {
       // report source can only be one of [saved search, visualization, dashboard]
+      // Check if security is enabled. TODO: is there a better way to check?
       let cookieObject: SetCookie | undefined;
       if (request.headers.cookie) {
         const cookies = request.headers.cookie.split(';');

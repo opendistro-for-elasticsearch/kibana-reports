@@ -138,7 +138,9 @@ export default function (Client: any, config: any, components: any) {
     method: 'DELETE',
   });
 
-  // poller API
+  /**
+   * Poller API
+   */
   esReports.pollReportInstance = clientAction({
     url: {
       fmt: `${ES_REPORTS_API.POLL_REPORT_INSTANCE}`,
