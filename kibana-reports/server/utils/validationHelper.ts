@@ -13,15 +13,22 @@
  * permissions and limitations under the License.
  */
 
-import { LOCAL_HOST } from '../routes/utils/constants';
+import path from 'path';
 
 export const isValidRelativeUrl = (relativeUrl: string) => {
-  try {
-    new URL(`${LOCAL_HOST}${relativeUrl}`);
-  } catch (_) {
-    return false;
+  let isValid = false;
+  const normalizedRelativeUrl = path.normalize(relativeUrl);
+  // check pattern
+  // ODFE pattern: /app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g
+  // AES pattern: /_plugin/kibana/app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g
+  if (
+    normalizedRelativeUrl.startsWith('/app/') ||
+    normalizedRelativeUrl.startsWith('/_plugin/kibana/app/')
+  ) {
+    isValid = regexRelativeUrl.test(normalizedRelativeUrl);
   }
-  return true;
+
+  return isValid;
 };
 
 /**
@@ -31,3 +38,4 @@ export const isValidRelativeUrl = (relativeUrl: string) => {
 export const regexDuration = /^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$/;
 export const regexEmailAddress = /\S+@\S+\.\S+/;
 export const regexReportName = /^[\w\-\s\(\)\[\]\,\_\-+]+$/;
+export const regexRelativeUrl = /\S*\/app\/(dashboards|visualize|discover)#\/(view|edit)\/\S+/i;

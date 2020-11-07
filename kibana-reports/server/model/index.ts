@@ -39,6 +39,7 @@ export const dataReportSchema = schema.object({
         return `invalid relative url: ${value}`;
       }
     },
+    minLength: 1,
   }),
   saved_search_id: schema.string(),
   //ISO duration format. 'PT10M' means 10 min
@@ -62,6 +63,7 @@ const visualReportSchema = schema.object({
         return `invalid relative url: ${value}`;
       }
     },
+    minLength: 1,
   }),
   window_width: schema.number({ defaultValue: 1200, min: 0 }),
   window_height: schema.number({ defaultValue: 800, min: 0 }),
@@ -221,8 +223,9 @@ export const reportSchema = schema.object({
         return `invalid relative url: ${value}`;
       }
     },
+    minLength: 1,
   }),
-  time_from: schema.number({ min: 1 }),
+  time_from: schema.number(),
   time_to: schema.number(),
   report_definition: reportDefinitionSchema,
 
