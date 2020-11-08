@@ -18,7 +18,7 @@ import {
   REPORT_STATE,
   LOCAL_HOST,
 } from '../routes/utils/constants';
-import { updateReportState, saveReport } from '../routes/utils/helpers';
+import { updateReportState } from '../routes/utils/helpers';
 import { ILegacyClusterClient, Logger } from '../../../../src/core/server';
 import { createSavedSearchReport } from '../routes/utils/savedSearchReportHelper';
 import { ReportSchemaType } from '../model';
@@ -81,7 +81,6 @@ export const createScheduledReport = async (
   } catch (error) {
     // update report instance with "error" state
     //TODO: save error detail and display on UI
-
     await updateReportState(
       isScheduledTask,
       reportId,
