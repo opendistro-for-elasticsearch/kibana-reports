@@ -39,3 +39,4 @@ export const regexDuration = /^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW
 export const regexEmailAddress = /\S+@\S+\.\S+/;
 export const regexReportName = /^[\w\-\s\(\)\[\]\,\_\-+]+$/;
 export const regexRelativeUrl = /\S*\/app\/(dashboards|visualize|discover)#\/(view|edit)\/\S+/i;
+// updated:  /^\/(_plugin\/kibana\/app|app)\/(dashboards|visualize|discover)#\/(view|edit)\/\S+$/
