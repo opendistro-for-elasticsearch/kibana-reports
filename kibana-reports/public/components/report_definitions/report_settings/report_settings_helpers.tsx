@@ -34,7 +34,7 @@ export const getDashboardBaseUrlCreate = (
   if (!fromInContext) {
     baseUrl = location.pathname + location.hash;
   } else {
-    baseUrl = '/app/kibana#/dashboard/';
+    baseUrl = '/app/dashboards#/view/';
   }
   if (edit) {
     return baseUrl.replace(
@@ -46,7 +46,7 @@ export const getDashboardBaseUrlCreate = (
   }
   return baseUrl.replace(
     'opendistro_kibana_reports#/create',
-    'kibana#/dashboard/'
+    'dashboards#/view/'
   );
 };
 
@@ -58,19 +58,19 @@ export const getVisualizationBaseUrlCreate = (
   if (!fromInContext) {
     baseUrl = location.pathname + location.hash;
   } else {
-    baseUrl = '/app/kibana#/visualize/edit/';
+    baseUrl = '/app/visualize#/edit/';
   }
   if (edit) {
     return baseUrl.replace(
       'opendistro_kibana_reports#/edit',
-      'kibana#/visualize/edit'
+      'visualize#/edit/'
     );
   } else if (fromInContext) {
     return baseUrl;
   }
   return baseUrl.replace(
     'opendistro_kibana_reports#/create',
-    'kibana#/visualize/edit/'
+    'visualize#/edit/'
   );
 };
 
@@ -82,19 +82,19 @@ export const getSavedSearchBaseUrlCreate = (
   if (!fromInContext) {
     baseUrl = location.pathname + location.hash;
   } else {
-    baseUrl = '/app/kibana#/discover/';
+    baseUrl = '/app/discover#/view/';
   }
   if (edit) {
     return baseUrl.replace(
       'opendistro_kibana_reports#/edit',
-      'kibana#/discover/'
+      'discover#/view/'
     );
   } else if (fromInContext) {
     return baseUrl;
   }
   return baseUrl.replace(
     'opendistro_kibana_reports#/create',
-    'kibana#/discover/'
+    'discover#/view/'
   );
 };
 

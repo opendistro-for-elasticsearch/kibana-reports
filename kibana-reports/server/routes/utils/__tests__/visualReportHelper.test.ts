@@ -30,7 +30,7 @@ const mockLogger: Logger = {
 };
 
 const input = {
-  query_url: '/app/dashboard#/view/7adfa750-4c81-11e8-b3d7-01146121b73d',
+  query_url: '/app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d',
   time_from: 1343576635300,
   time_to: 1596037435301,
   report_definition: {
@@ -39,7 +39,7 @@ const input = {
       report_source: 'Dashboard',
       description: 'Hi this is your Dashboard on demand',
       core_params: {
-        base_url: '/app/dashboard#/view/7adfa750-4c81-11e8-b3d7-01146121b73d',
+        base_url: '/app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d',
         window_width: 1300,
         window_height: 900,
         report_format: 'png',
