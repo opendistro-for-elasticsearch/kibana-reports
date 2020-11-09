@@ -33,6 +33,7 @@ import {
   EuiTextArea,
   EuiLink,
   EuiButton,
+  EuiFieldNumber,
 } from '@elastic/eui';
 import moment, { Moment } from 'moment';
 import { reportDefinitionParams } from '../create/create_report_definition';
@@ -41,7 +42,6 @@ import {
   INTERVAL_TIME_PERIODS,
   WEEKLY_CHECKBOX_OPTIONS,
   MONTHLY_ON_THE_OPTIONS,
-  MONTHLY_DAY_SELECT_OPTIONS,
   TRIGGER_TYPE_OPTIONS,
   SCHEDULE_TYPE_OPTIONS,
   TIMEZONE_OPTIONS,
@@ -85,9 +85,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
   });
   const [monthlySelect, setMonthlySelect] = useState(
     MONTHLY_ON_THE_OPTIONS[0].value
-  );
-  const [monthlyDaySelect, setMonthlyDaySelect] = useState(
-    MONTHLY_DAY_SELECT_OPTIONS[0].value
   );
 
   const handleReportTriggerType = (e: string) => {
@@ -133,12 +130,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
     target: { value: React.SetStateAction<string> };
   }) => {
     setMonthlySelect(e.target.value);
-  };
-
-  const handleMonthlyDaySelect = (e: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    setMonthlyDaySelect(e.target.value);
   };
 
   const RequestTime = () => {
@@ -397,29 +388,6 @@ export function ReportTrigger(props: ReportTriggerProps) {
       setMonthlyDayNumber(e.target.value);
     };
 
-    const on_the_day =
-      monthlySelect === 'day' ? (
-        <div>
-          <EuiFieldText
-            placeholder={'Day of month'}
-            value={monthlyDayNumber}
-            onChange={handleMonthlyDayNumber}
-          />
-        </div>
-      ) : null;
-
-    const select =
-      monthlySelect != 'day' ? (
-        <div>
-          <EuiSelect
-            id="monthlySelect"
-            options={MONTHLY_DAY_SELECT_OPTIONS}
-            value={monthlyDaySelect}
-            onChange={handleMonthlyDaySelect}
-          />
-        </div>
-      ) : null;
-
     return (
       <div>
         <EuiFormRow label="On the">
@@ -433,8 +401,11 @@ export function ReportTrigger(props: ReportTriggerProps) {
               />
             </EuiFlexItem>
             <EuiFlexItem>
-              {on_the_day}
-              {select}
+              <EuiFieldNumber
+                placeholder={'Day of month'}
+                value={monthlyDayNumber}
+                onChange={handleMonthlyDayNumber}
+              />
             </EuiFlexItem>
           </EuiFlexGroup>
         </EuiFormRow>

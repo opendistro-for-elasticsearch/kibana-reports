@@ -17,8 +17,13 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.REPORT_DEFINITION_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.util.createJsonParser
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
+import org.elasticsearch.action.ActionRequest
+import org.elasticsearch.action.ActionRequestValidationException
+import org.elasticsearch.common.io.stream.StreamInput
+import org.elasticsearch.common.io.stream.StreamOutput
 import org.elasticsearch.common.xcontent.ToXContent
 import org.elasticsearch.common.xcontent.ToXContentObject
 import org.elasticsearch.common.xcontent.XContentBuilder
@@ -26,6 +31,7 @@ import org.elasticsearch.common.xcontent.XContentFactory
 import org.elasticsearch.common.xcontent.XContentParser
 import org.elasticsearch.common.xcontent.XContentParser.Token
 import org.elasticsearch.common.xcontent.XContentParserUtils
+import java.io.IOException
 
 /**
  * Report Definition-create request.
@@ -38,34 +44,48 @@ import org.elasticsearch.common.xcontent.XContentParserUtils
  * }
  * }</pre>
  */
-internal data class CreateReportDefinitionRequest(
+internal class CreateReportDefinitionRequest : ActionRequest, ToXContentObject {
     val reportDefinition: ReportDefinition
-) : ToXContentObject {
+
     companion object {
         private val log by logger(CreateReportDefinitionRequest::class.java)
+    }
 
-        /**
-         * Parse the data from parser and create [CreateReportDefinitionRequest] object
-         * @param parser data referenced at parser
-         * @return created [CreateReportDefinitionRequest] object
-         */
-        fun parse(parser: XContentParser): CreateReportDefinitionRequest {
-            var reportDefinition: ReportDefinition? = null
-            XContentParserUtils.ensureExpectedToken(Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
-            while (Token.END_OBJECT != parser.nextToken()) {
-                val fieldName = parser.currentName()
-                parser.nextToken()
-                when (fieldName) {
-                    REPORT_DEFINITION_FIELD -> reportDefinition = ReportDefinition.parse(parser)
-                    else -> {
-                        parser.skipChildren()
-                        log.info("$LOG_PREFIX:Skipping Unknown field $fieldName")
-                    }
+    constructor(reportDefinition: ReportDefinition) : super() {
+        this.reportDefinition = reportDefinition
+    }
+
+    @Throws(IOException::class)
+    constructor(input: StreamInput) : this(input.createJsonParser())
+
+    /**
+     * Parse the data from parser and create [GetAllReportDefinitionsResponse] object
+     * @param parser data referenced at parser
+     */
+    constructor(parser: XContentParser) : super() {
+        var reportDefinition: ReportDefinition? = null
+        XContentParserUtils.ensureExpectedToken(Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
+        while (Token.END_OBJECT != parser.nextToken()) {
+            val fieldName = parser.currentName()
+            parser.nextToken()
+            when (fieldName) {
+                REPORT_DEFINITION_FIELD -> reportDefinition = ReportDefinition.parse(parser)
+                else -> {
+                    parser.skipChildren()
+                    log.info("$LOG_PREFIX:Skipping Unknown field $fieldName")
                 }
             }
-            reportDefinition ?: throw IllegalArgumentException("$REPORT_DEFINITION_FIELD field absent")
-            return CreateReportDefinitionRequest(reportDefinition)
         }
+        reportDefinition ?: throw IllegalArgumentException("$REPORT_DEFINITION_FIELD field absent")
+        this.reportDefinition = reportDefinition
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Throws(IOException::class)
+    override fun writeTo(output: StreamOutput) {
+        toXContent(XContentFactory.jsonBuilder(output), ToXContent.EMPTY_PARAMS)
     }
 
     /**
@@ -83,5 +103,12 @@ internal data class CreateReportDefinitionRequest(
         return builder!!.startObject()
             .field(REPORT_DEFINITION_FIELD, reportDefinition)
             .endObject()
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    override fun validate(): ActionRequestValidationException? {
+        return null
     }
 }

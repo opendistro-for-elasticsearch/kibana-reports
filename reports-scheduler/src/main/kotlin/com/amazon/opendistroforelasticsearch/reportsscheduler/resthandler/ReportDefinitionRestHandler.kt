@@ -16,16 +16,21 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.CreateReportDefinitionAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.DeleteReportDefinitionAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetReportDefinitionAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportDefinitionActions
+import com.amazon.opendistroforelasticsearch.reportsscheduler.action.UpdateReportDefinitionAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.CreateReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.DeleteReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionRequest
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.IRestResponse
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestErrorResponse
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportDefinitionRequest
+import com.amazon.opendistroforelasticsearch.reportsscheduler.util.contentParserNextToken
 import org.elasticsearch.client.node.NodeClient
-import org.elasticsearch.common.xcontent.XContentParser
-import org.elasticsearch.rest.RestChannel
+import org.elasticsearch.rest.BaseRestHandler
+import org.elasticsearch.rest.BaseRestHandler.RestChannelConsumer
+import org.elasticsearch.rest.BytesRestResponse
 import org.elasticsearch.rest.RestHandler.Route
 import org.elasticsearch.rest.RestRequest
 import org.elasticsearch.rest.RestRequest.Method.DELETE
@@ -38,7 +43,7 @@ import org.elasticsearch.rest.RestStatus
  * Rest handler for report definitions lifecycle management.
  * This handler uses [ReportDefinitionActions].
  */
-internal class ReportDefinitionRestHandler : PluginRestHandler() {
+internal class ReportDefinitionRestHandler : BaseRestHandler() {
     companion object {
         private const val REPORT_DEFINITION_ACTION = "report_definition_actions"
         private const val REPORT_DEFINITION_URL = "$BASE_REPORTS_URI/definition"
@@ -74,7 +79,7 @@ internal class ReportDefinitionRestHandler : PluginRestHandler() {
              * Get a report definition
              * Request URL: GET REPORT_DEFINITION_URL?id=<reportDefinitionId>
              * Request body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionRequest]
-             * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionsResponse]
+             * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionResponse]
              */
             Route(GET, REPORT_DEFINITION_URL),
             /**
@@ -97,19 +102,32 @@ internal class ReportDefinitionRestHandler : PluginRestHandler() {
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: RestRequest, client: NodeClient, channel: RestChannel): IRestResponse {
+    override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
         return when (request.method()) {
-            POST -> ReportDefinitionActions.create(CreateReportDefinitionRequest.parse(contentParser(request)))
-            PUT -> ReportDefinitionActions.update(UpdateReportDefinitionRequest.parse(contentParser(request), request.param(ID_FIELD)))
-            GET -> ReportDefinitionActions.info(GetReportDefinitionRequest(request.param(ID_FIELD)))
-            DELETE -> ReportDefinitionActions.delete(DeleteReportDefinitionRequest(request.param(ID_FIELD)))
-            else -> RestErrorResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed")
+            POST -> RestChannelConsumer {
+                client.execute(CreateReportDefinitionAction.ACTION_TYPE,
+                    CreateReportDefinitionRequest(request.contentParserNextToken()),
+                    RestResponseToXContentListener(it))
+            }
+            PUT -> RestChannelConsumer {
+                client.execute(
+                    UpdateReportDefinitionAction.ACTION_TYPE,
+                    UpdateReportDefinitionRequest(request.contentParserNextToken(), request.param(ID_FIELD)),
+                    RestResponseToXContentListener(it))
+            }
+            GET -> RestChannelConsumer {
+                client.execute(GetReportDefinitionAction.ACTION_TYPE,
+                    GetReportDefinitionRequest(request.param(ID_FIELD)),
+                    RestResponseToXContentListener(it))
+            }
+            DELETE -> RestChannelConsumer {
+                client.execute(DeleteReportDefinitionAction.ACTION_TYPE,
+                    DeleteReportDefinitionRequest(request.param(ID_FIELD)),
+                    RestResponseToXContentListener(it))
+            }
+            else -> RestChannelConsumer {
+                it.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))
+            }
         }
-    }
-
-    private fun contentParser(request: RestRequest): XContentParser {
-        val parser = request.contentParser()
-        parser.nextToken()
-        return parser
     }
 }

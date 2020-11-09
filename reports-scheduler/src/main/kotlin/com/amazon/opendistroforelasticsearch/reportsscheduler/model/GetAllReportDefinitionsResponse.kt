@@ -17,69 +17,64 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.REPORT_DEFINITION_LIST_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.STATUS_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.STATUS_TEXT_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.util.fieldIfNotNull
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_LIST_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.util.createJsonParser
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
+import org.elasticsearch.common.io.stream.StreamInput
+import org.elasticsearch.common.io.stream.StreamOutput
 import org.elasticsearch.common.xcontent.ToXContent
 import org.elasticsearch.common.xcontent.XContentBuilder
 import org.elasticsearch.common.xcontent.XContentFactory
 import org.elasticsearch.common.xcontent.XContentParser
 import org.elasticsearch.common.xcontent.XContentParser.Token
 import org.elasticsearch.common.xcontent.XContentParserUtils
-import org.elasticsearch.rest.RestStatus
+import java.io.IOException
 
 /**
- * Get all report instances info response.
+ * Get all report definitions response.
  * <pre> JSON format
  * {@code
- * // On Success
  * {
  *   "reportDefinitionDetailsList":[
  *      // refer [com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinitionDetails]
  *   ]
  * }
- * // On Failure
- * {
- *   "status":404,
- *   "statusText":"No Report Definitions found"
- * }
  * }</pre>
  */
-internal data class GetAllReportDefinitionsResponse(
-    override val restStatus: RestStatus,
-    override val restStatusText: String?,
-    val reportDefinitionList: List<ReportDefinitionDetails>?
-) : IRestResponse {
-    companion object {
-        private val log by logger(GetAllReportDefinitionsResponse::class.java)
+internal class GetAllReportDefinitionsResponse : BaseResponse {
+    val reportDefinitionList: List<ReportDefinitionDetails>
 
-        /**
-         * Parse the data from parser and create [GetAllReportDefinitionsResponse] object
-         * @param parser data referenced at parser
-         * @return created [GetAllReportDefinitionsResponse] object
-         */
-        fun parse(parser: XContentParser): GetAllReportDefinitionsResponse {
-            var restStatus: RestStatus = RestStatus.OK
-            var statusText: String? = null
-            var reportInstances: List<ReportDefinitionDetails>? = null
-            XContentParserUtils.ensureExpectedToken(Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
-            while (Token.END_OBJECT != parser.nextToken()) {
-                val fieldName = parser.currentName()
-                parser.nextToken()
-                when (fieldName) {
-                    STATUS_FIELD -> restStatus = RestStatus.fromCode(parser.intValue())
-                    STATUS_TEXT_FIELD -> statusText = parser.text()
-                    REPORT_DEFINITION_LIST_FIELD -> reportInstances = parseReportDefinitionList(parser)
-                    else -> {
-                        parser.skipChildren()
-                        log.info("$LOG_PREFIX:Skipping Unknown field $fieldName")
-                    }
+    constructor(reportDefinitionList: List<ReportDefinitionDetails>) : super() {
+        this.reportDefinitionList = reportDefinitionList
+    }
+
+    @Throws(IOException::class)
+    constructor(input: StreamInput) : this(input.createJsonParser())
+
+    /**
+     * Parse the data from parser and create [GetAllReportDefinitionsResponse] object
+     * @param parser data referenced at parser
+     */
+    constructor(parser: XContentParser) : super() {
+        var reportDefinitions: List<ReportDefinitionDetails>? = null
+        XContentParserUtils.ensureExpectedToken(Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
+        while (Token.END_OBJECT != parser.nextToken()) {
+            val fieldName = parser.currentName()
+            parser.nextToken()
+            when (fieldName) {
+                REPORT_DEFINITION_LIST_FIELD -> reportDefinitions = parseReportDefinitionList(parser)
+                else -> {
+                    parser.skipChildren()
+                    log.info("$LOG_PREFIX:Skipping Unknown field $fieldName")
                 }
             }
-            return GetAllReportDefinitionsResponse(restStatus, statusText, reportInstances)
         }
+        reportDefinitions ?: throw IllegalArgumentException("$REPORT_DEFINITION_LIST_FIELD field absent")
+        this.reportDefinitionList = reportDefinitions
+    }
+
+    companion object {
+        private val log by logger(GetAllReportDefinitionsResponse::class.java)
 
         /**
          * Parse the report definition list from parser
@@ -99,24 +94,18 @@ internal data class GetAllReportDefinitionsResponse(
     /**
      * {@inheritDoc}
      */
-    override fun toXContent(): XContentBuilder {
-        return toXContent(XContentFactory.jsonBuilder(), ToXContent.EMPTY_PARAMS)
+    @Throws(IOException::class)
+    override fun writeTo(output: StreamOutput) {
+        toXContent(XContentFactory.jsonBuilder(output), ToXContent.EMPTY_PARAMS)
     }
 
     /**
      * {@inheritDoc}
      */
     override fun toXContent(builder: XContentBuilder?, params: ToXContent.Params?): XContentBuilder {
-        return if (reportDefinitionList != null) {
-            builder!!.startObject()
-                .startArray(REPORT_DEFINITION_LIST_FIELD)
-            reportDefinitionList.forEach { it.toXContent(builder, ToXContent.EMPTY_PARAMS, true) }
-            builder.endArray().endObject()
-        } else {
-            builder!!.startObject()
-                .field(STATUS_FIELD, restStatus)
-                .fieldIfNotNull(STATUS_TEXT_FIELD, restStatusText)
-                .endObject()
-        }
+        builder!!.startObject()
+            .startArray(REPORT_DEFINITION_LIST_FIELD)
+        reportDefinitionList.forEach { it.toXContent(builder, ToXContent.EMPTY_PARAMS, true) }
+        return builder.endArray().endObject()
     }
 }

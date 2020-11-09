@@ -29,7 +29,7 @@ describe('Cypress', () => {
       '/opendistro_kibana_reports'
     );
     cy.wait(12500); // wait for the page to load
-    cy.get('#createReportHomepageButton').click();
+    cy.get('#createReportHomepageButton').click({ force: true });
   });
 
   it('Create a new on-demand report definition', () => {
@@ -48,9 +48,7 @@ describe('Cypress', () => {
     cy.get('#reportSettingsDescription').type('Description for cypress test');
 
     // create an on-demand report definition
-    cy.get('#createNewReportDefinition').click();
-
-    // cy.location('pathname').should('include', '/opendistro_kibana_reports#/');
+    cy.get('#createNewReportDefinition').click({ force: true });
   });
 
   it('Create a new scheduled report definition', () => {
@@ -72,6 +70,6 @@ describe('Cypress', () => {
     cy.get('[type="radio"]').check({ force: true });
 
     // create scheduled report definition
-    cy.get('#createNewReportDefinition').click();
+    cy.get('#createNewReportDefinition').click({ force: true });
   });
 });

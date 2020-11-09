@@ -20,7 +20,7 @@ import com.amazon.opendistroforelasticsearch.jobscheduler.spi.JobExecutionContex
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobParameter
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobRunner
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.index.IndexManager
+import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportInstancesIndex
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinitionDetails
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
@@ -52,7 +52,7 @@ internal object ReportDefinitionJobRunner : ScheduledJobRunner {
                 listOf(TEMP_ROLE_ID),
                 reportDefinitionDetails,
                 ReportInstance.Status.Scheduled)
-            val id = IndexManager.createReportInstance(reportInstance)
+            val id = ReportInstancesIndex.createReportInstance(reportInstance)
             if (id == null) {
                 log.warn("$LOG_PREFIX:runJob-job creation failed for $reportInstance")
             } else {

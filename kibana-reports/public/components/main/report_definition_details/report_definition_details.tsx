@@ -325,7 +325,7 @@ export function ReportDefinitionDetails(props) {
 
   const sourceURL = (data) => {
     return (
-      <EuiLink href={`${location.host}${data.baseUrl}`} target="_blank">
+      <EuiLink href={`${data.baseUrl}`} target="_blank">
         {data['source']}
       </EuiLink>
     );
@@ -381,7 +381,10 @@ export function ReportDefinitionDetails(props) {
       reportDefinitionDetails.status === 'Active' ? 'Disable' : 'Enable';
 
     return (
-      <EuiButton onClick={() => changeScheduledReportDefinitionStatus(status)}>
+      <EuiButton
+        onClick={() => changeScheduledReportDefinitionStatus(status)}
+        id={'changeStatusFromDetailsButton'}
+      >
         {status}
       </EuiButton>
     );
@@ -427,7 +430,10 @@ export function ReportDefinitionDetails(props) {
 
   const showActionButton =
     reportDefinitionDetails.triggerType === ON_DEMAND ? (
-      <EuiButton onClick={() => generateReportFromDetails()}>
+      <EuiButton
+        onClick={() => generateReportFromDetails()}
+        id={'generateReportFromDetailsButton'}
+      >
         Generate report
       </EuiButton>
     ) : (
@@ -484,7 +490,11 @@ export function ReportDefinitionDetails(props) {
               gutterSize="l"
             >
               <EuiFlexItem grow={false}>
-                <EuiButton color={'danger'} onClick={deleteReportDefinition}>
+                <EuiButton
+                  color={'danger'}
+                  onClick={deleteReportDefinition}
+                  id={'deleteReportDefinitionButton'}
+                >
                   Delete
                 </EuiButton>
               </EuiFlexItem>
@@ -497,6 +507,7 @@ export function ReportDefinitionDetails(props) {
                       `opendistro_kibana_reports#/edit/${reportDefinitionId}`
                     );
                   }}
+                  id={'editReportDefinitionButton'}
                 >
                   Edit
                 </EuiButton>

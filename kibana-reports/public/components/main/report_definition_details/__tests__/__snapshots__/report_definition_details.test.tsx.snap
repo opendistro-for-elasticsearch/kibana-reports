@@ -44,6 +44,7 @@ exports[`<ReportDefinitionDetails /> panel render 5 hours recurring definition d
           >
             <button
               class="euiButton euiButton--danger"
+              id="deleteReportDefinitionButton"
               type="button"
             >
               <span
@@ -62,6 +63,7 @@ exports[`<ReportDefinitionDetails /> panel render 5 hours recurring definition d
           >
             <button
               class="euiButton euiButton--primary"
+              id="changeStatusFromDetailsButton"
               type="button"
             >
               <span
@@ -80,6 +82,7 @@ exports[`<ReportDefinitionDetails /> panel render 5 hours recurring definition d
           >
             <button
               class="euiButton euiButton--primary euiButton--fill"
+              id="editReportDefinitionButton"
               type="button"
             >
               <span
@@ -196,7 +199,7 @@ exports[`<ReportDefinitionDetails /> panel render 5 hours recurring definition d
             >
               <a
                 class="euiLink euiLink--primary"
-                href="localhostundefined"
+                href="undefined"
                 rel="noopener noreferrer"
                 target="_blank"
               />
@@ -515,6 +518,7 @@ exports[`<ReportDefinitionDetails /> panel render disabled daily definition, cli
           >
             <button
               class="euiButton euiButton--danger"
+              id="deleteReportDefinitionButton"
               type="button"
             >
               <span
@@ -533,6 +537,7 @@ exports[`<ReportDefinitionDetails /> panel render disabled daily definition, cli
           >
             <button
               class="euiButton euiButton--primary"
+              id="changeStatusFromDetailsButton"
               type="button"
             >
               <span
@@ -551,6 +556,7 @@ exports[`<ReportDefinitionDetails /> panel render disabled daily definition, cli
           >
             <button
               class="euiButton euiButton--primary euiButton--fill"
+              id="editReportDefinitionButton"
               type="button"
             >
               <span
@@ -667,7 +673,7 @@ exports[`<ReportDefinitionDetails /> panel render disabled daily definition, cli
             >
               <a
                 class="euiLink euiLink--primary"
-                href="localhostundefined"
+                href="undefined"
                 rel="noopener noreferrer"
                 target="_blank"
               />
@@ -986,6 +992,7 @@ exports[`<ReportDefinitionDetails /> panel render on demand definition details 1
           >
             <button
               class="euiButton euiButton--danger"
+              id="deleteReportDefinitionButton"
               type="button"
             >
               <span
@@ -1004,6 +1011,7 @@ exports[`<ReportDefinitionDetails /> panel render on demand definition details 1
           >
             <button
               class="euiButton euiButton--primary"
+              id="changeStatusFromDetailsButton"
               type="button"
             >
               <span
@@ -1022,6 +1030,7 @@ exports[`<ReportDefinitionDetails /> panel render on demand definition details 1
           >
             <button
               class="euiButton euiButton--primary euiButton--fill"
+              id="editReportDefinitionButton"
               type="button"
             >
               <span
@@ -1138,7 +1147,7 @@ exports[`<ReportDefinitionDetails /> panel render on demand definition details 1
             >
               <a
                 class="euiLink euiLink--primary"
-                href="localhostundefined"
+                href="undefined"
                 rel="noopener noreferrer"
                 target="_blank"
               />

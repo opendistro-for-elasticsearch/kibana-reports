@@ -248,6 +248,7 @@ export function EditReportDefinition(props) {
             <EuiButton
               fill
               onClick={() => editReportDefinition(editReportDefinitionRequest)}
+              id={'editReportDefinitionButton'}
             >
               Save Changes
             </EuiButton>

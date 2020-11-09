@@ -17,16 +17,16 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.BEGIN_TIME_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.CREATED_TIME_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.END_TIME_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.ID_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.IN_CONTEXT_DOWNLOAD_URL_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.REPORT_DEFINITION_DETAILS_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.ROLE_LIST_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.STATUS_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.STATUS_TEXT_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.PluginRestHandler.Companion.UPDATED_TIME_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ACCESS_LIST_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.BEGIN_TIME_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.CREATED_TIME_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.END_TIME_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ID_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.IN_CONTEXT_DOWNLOAD_URL_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_DETAILS_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATUS_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATUS_TEXT_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.UPDATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.stringList
 import org.elasticsearch.common.xcontent.ToXContent
@@ -47,7 +47,7 @@ import java.time.Instant
  *   "createdTimeMs":1603506908773,
  *   "beginTimeMs":1603506908773,
  *   "endTimeMs":1603506908773,
- *   "roles":["sample_role"]
+ *   "access":["u:user", "r:sample_role", "ber:sample_backend_role"]
  *   "reportDefinitionDetails":{
  *      // refer [com.amazon.opendistroforelasticsearch.reportsscheduler.model.reportDefinitionDetails]
  *   },
@@ -63,7 +63,7 @@ internal data class ReportInstance(
     val createdTime: Instant,
     val beginTime: Instant,
     val endTime: Instant,
-    val roles: List<String>,
+    val access: List<String>,
     val reportDefinitionDetails: ReportDefinitionDetails?,
     val status: Status,
     val statusText: String? = null,
@@ -85,7 +85,7 @@ internal data class ReportInstance(
             var createdTime: Instant? = null
             var beginTime: Instant? = null
             var endTime: Instant? = null
-            var roles: List<String> = listOf()
+            var access: List<String> = listOf()
             var reportDefinitionDetails: ReportDefinitionDetails? = null
             var status: Status? = null
             var statusText: String? = null
@@ -100,7 +100,7 @@ internal data class ReportInstance(
                     CREATED_TIME_FIELD -> createdTime = Instant.ofEpochMilli(parser.longValue())
                     BEGIN_TIME_FIELD -> beginTime = Instant.ofEpochMilli(parser.longValue())
                     END_TIME_FIELD -> endTime = Instant.ofEpochMilli(parser.longValue())
-                    ROLE_LIST_FIELD -> roles = parser.stringList()
+                    ACCESS_LIST_FIELD -> access = parser.stringList()
                     REPORT_DEFINITION_DETAILS_FIELD -> reportDefinitionDetails = ReportDefinitionDetails.parse(parser)
                     STATUS_FIELD -> status = Status.valueOf(parser.text())
                     STATUS_TEXT_FIELD -> statusText = parser.text()
@@ -122,7 +122,7 @@ internal data class ReportInstance(
                 createdTime,
                 beginTime,
                 endTime,
-                roles,
+                access,
                 reportDefinitionDetails,
                 status,
                 statusText,
@@ -158,7 +158,9 @@ internal data class ReportInstance(
             .field(CREATED_TIME_FIELD, createdTime.toEpochMilli())
             .field(BEGIN_TIME_FIELD, beginTime.toEpochMilli())
             .field(END_TIME_FIELD, endTime.toEpochMilli())
-            .field(ROLE_LIST_FIELD, roles)
+        if (access.isNotEmpty()) {
+            builder.field(ACCESS_LIST_FIELD, access)
+        }
         if (reportDefinitionDetails != null) {
             builder.field(REPORT_DEFINITION_DETAILS_FIELD)
             reportDefinitionDetails.toXContent(builder, ToXContent.EMPTY_PARAMS, true)

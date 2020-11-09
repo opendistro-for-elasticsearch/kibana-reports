@@ -18,12 +18,27 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.util
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.elasticsearch.common.io.stream.StreamInput
+import org.elasticsearch.common.xcontent.DeprecationHandler
+import org.elasticsearch.common.xcontent.NamedXContentRegistry
 import org.elasticsearch.common.xcontent.ToXContent
 import org.elasticsearch.common.xcontent.ToXContentObject
 import org.elasticsearch.common.xcontent.XContentBuilder
 import org.elasticsearch.common.xcontent.XContentParser
 import org.elasticsearch.common.xcontent.XContentParser.Token
 import org.elasticsearch.common.xcontent.XContentParserUtils
+import org.elasticsearch.common.xcontent.XContentType
+import org.elasticsearch.rest.RestRequest
+
+internal fun StreamInput.createJsonParser(): XContentParser {
+    return XContentType.JSON.xContent().createParser(NamedXContentRegistry.EMPTY, DeprecationHandler.IGNORE_DEPRECATIONS, this)
+}
+
+internal fun RestRequest.contentParserNextToken(): XContentParser {
+    val parser = this.contentParser()
+    parser.nextToken()
+    return parser
+}
 
 internal fun XContentParser.stringList(): List<String> {
     val retList: MutableList<String> = mutableListOf()

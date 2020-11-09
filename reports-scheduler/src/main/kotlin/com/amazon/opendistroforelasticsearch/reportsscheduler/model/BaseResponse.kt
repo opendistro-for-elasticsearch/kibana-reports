@@ -16,20 +16,30 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
+import org.elasticsearch.action.ActionResponse
+import org.elasticsearch.common.xcontent.ToXContent
 import org.elasticsearch.common.xcontent.ToXContentObject
 import org.elasticsearch.common.xcontent.XContentBuilder
+import org.elasticsearch.common.xcontent.XContentFactory
 import org.elasticsearch.rest.RestStatus
 
 /**
- * Interface for REST response.
+ * Base response which give REST status.
  */
-interface IRestResponse : ToXContentObject {
-    val restStatus: RestStatus
-    val restStatusText: String?
+internal abstract class BaseResponse : ActionResponse(), ToXContentObject {
 
     /**
-     * create XContentBuilder from this object using [XContentFactory.jsonBuilder()]
-     * @return created XContentBuilder object
+     * {@inheritDoc}
      */
-    fun toXContent(): XContentBuilder
+    fun toXContent(): XContentBuilder {
+        return toXContent(XContentFactory.jsonBuilder(), ToXContent.EMPTY_PARAMS)
+    }
+
+    /**
+     * get rest status for the response. Useful override for multi-status response.
+     * @return RestStatus for the response
+     */
+    open fun getStatus(): RestStatus {
+        return RestStatus.OK
+    }
 }

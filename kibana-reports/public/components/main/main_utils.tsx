@@ -62,7 +62,7 @@ export const addReportsTableContent = (data) => {
       //TODO: wrong name
       timeCreated: report.time_created,
       state: report.state,
-      url: `${location.host}${report.query_url}`,
+      url: report.query_url,
       format: reportParams.core_params.report_format,
     };
     reportsTableItems.push(reportsTableEntry);
@@ -84,7 +84,7 @@ export const addReportDefinitionsTableContent = (data: any) => {
       type: trigger.trigger_type,
       owner: `\u2014`, // Todo: replace
       source: reportParams.report_source,
-      baseUrl: `${location.host}${reportParams.core_params.base_url}`,
+      baseUrl: reportParams.core_params.base_url,
       lastUpdated: reportDefinition.last_updated,
       details:
         trigger.trigger_type === 'On demand'
