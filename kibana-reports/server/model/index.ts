@@ -33,6 +33,8 @@ import {
 } from '../routes/utils/constants';
 
 export const dataReportSchema = schema.object({
+  // Need this to build the links in email
+  origin: schema.uri(), //e.g. https://xxxxx.com
   base_url: schema.string({
     validate(value) {
       if (!isValidRelativeUrl(value)) {
@@ -56,6 +58,8 @@ export const dataReportSchema = schema.object({
 });
 
 export const visualReportSchema = schema.object({
+  // Need this to build the links in email
+  origin: schema.uri(), //e.g. https://xxxxx.com
   base_url: schema.string({
     validate(value) {
       if (!isValidRelativeUrl(value)) {
@@ -148,7 +152,7 @@ export const channelSchema = schema.object({
   ),
   // TODO: consider add this field next to url-related fields.
   // Need this to build the links in email
-  origin: schema.uri(), //e.g. https://xxxxx.com
+  // origin: schema.uri(), //e.g. https://xxxxx.com
   title: schema.string(),
   textDescription: schema.string(),
   htmlDescription: schema.maybe(schema.string()),

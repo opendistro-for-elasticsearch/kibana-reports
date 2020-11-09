@@ -50,6 +50,8 @@ export default function (router: IRouter) {
       let report = request.body;
       // input validation
       try {
+        report.report_definition.report_params.core_params.origin =
+          request.headers.origin;
         report = reportSchema.validate(report);
       } catch (error) {
         logger.error(`Failed input validation for create report ${error}`);

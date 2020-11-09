@@ -25,7 +25,10 @@ import {
   BACKEND_REPORT_STATE,
   REPORT_STATE_DICT,
 } from '../../model/backendModel';
-import { uiToBackendReportDefinition } from './converters/uiToBackend';
+import {
+  getBackendReportState,
+  uiToBackendReportDefinition,
+} from './converters/uiToBackend';
 
 export function parseEsErrorResponse(error: any) {
   if (error.response) {
@@ -124,16 +127,10 @@ export const buildReqBody = (report: ReportSchemaType): any => {
         },
       },
     },
-    status: getBackendReportState(REPORT_STATE.pending), // download from in-context menu should always pass executing state to backend
+    status: BACKEND_REPORT_STATE.executing, // download from in-context menu should always pass executing state to backend
     inContextDownloadUrlPath: queryUrl,
   };
   return reqBody;
-};
-
-export const getBackendReportState = (
-  reportState: REPORT_STATE
-): BACKEND_REPORT_STATE => {
-  return REPORT_STATE_DICT[reportState];
 };
 
 // The only thing can be updated of a report instance is its "state"

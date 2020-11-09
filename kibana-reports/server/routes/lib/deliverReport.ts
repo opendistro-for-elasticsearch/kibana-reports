@@ -51,7 +51,7 @@ export const deliverReport = async (
       },
     } = report;
     const { htmlDescription } = deliveryParams;
-    const { origin, ...rest } = deliveryParams;
+    const origin = report.report_definition.report_params.core_params.origin;
     const originalQueryUrl = origin + queryUrl;
     /**
      * have to manually compose the url because the Kibana url for AES is.../_plugin/kibana/app/opendistro_kibana_reports#/report_details/${reportId}
@@ -70,7 +70,7 @@ export const deliverReport = async (
     );
 
     const deliveryBody = {
-      ...rest,
+      ...deliveryParams,
       htmlDescription: template,
       refTag: reportId,
     };

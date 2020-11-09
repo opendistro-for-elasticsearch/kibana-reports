@@ -105,7 +105,6 @@ export const EmailDelivery = (props: ReportDeliveryProps) => {
 
       setEmailSubject(title);
       reportDefinitionRequest.delivery.delivery_params.title = title;
-      reportDefinitionRequest.delivery.delivery_params.origin = location.origin;
       handleEmailBody(textDescription);
     }
   };
@@ -114,8 +113,6 @@ export const EmailDelivery = (props: ReportDeliveryProps) => {
     reportDefinitionRequest.delivery.delivery_params = {
       recipients: selectedEmailRecipients.map((option) => option.label),
       title: emailSubject,
-      origin: location.origin,
-      //TODO: need better render
       textDescription: emailBody,
       htmlDescription: converter.makeHtml(emailBody),
     };

@@ -1,12 +1,10 @@
 import {
-  dataReportSchema,
   DataReportSchemaType,
   DeliverySchemaType,
   ReportDefinitionSchemaType,
   reportSchema,
   ReportSchemaType,
   TriggerSchemaType,
-  visualReportSchema,
   VisualReportSchemaType,
 } from '../../../model';
 import {
@@ -51,6 +49,7 @@ export const backendToUiReport = (
   const {
     reportDefinition: {
       source: { type: sourceType, id: sourceId },
+      delivery,
     },
   } = backendReportDefinitionDetails;
 
@@ -65,7 +64,7 @@ export const backendToUiReport = (
     time_to: endTimeMs,
     last_updated: reportLastUpdatedTimeMs,
     time_created: reportCreatedTimeMs,
-    state: getUiReportState(status),
+    state: getUiReportState(status, delivery),
     report_definition: backendToUiReportDefinition(
       backendReportDefinitionDetails
     ),
@@ -93,7 +92,7 @@ export const backendToUiReportDefinition = (
     reportDefinition: {
       name,
       isEnabled,
-      source: { type: sourceType, description, id: sourceId },
+      source: { type: sourceType, description, id: sourceId, origin },
       format: { fileFormat, duration, header, footer, limit },
       trigger: { triggerType, schedule },
       delivery,
@@ -115,14 +114,16 @@ export const backendToUiReportDefinition = (
               sourceId,
               fileFormat,
               duration,
-              baseUrl
+              baseUrl,
+              origin
             )
           : getVisualReportCoreParams(
               fileFormat,
               header,
               footer,
               duration,
-              baseUrl
+              baseUrl,
+              origin
             ),
     },
     trigger: getUiTriggerParams(
@@ -160,11 +161,12 @@ export const backendToUiReportDefinitionsList = (
 };
 
 const getVisualReportCoreParams = (
-  fileFormat,
-  header,
-  footer,
-  duration,
-  baseUrl: string
+  fileFormat: BACKEND_REPORT_FORMAT,
+  header: string,
+  footer: string,
+  duration: string,
+  baseUrl: string,
+  origin: string
 ): VisualReportSchemaType => {
   let res: VisualReportSchemaType = {
     base_url: baseUrl,
@@ -172,6 +174,7 @@ const getVisualReportCoreParams = (
     header: header,
     footer: footer,
     time_duration: duration,
+    origin: origin,
   };
   return res;
 };
@@ -189,6 +192,7 @@ const getUiQueryUrl = (
 };
 
 const getBaseUrl = (sourceType: BACKEND_REPORT_SOURCE, sourceId: string) => {
+  //TODO: AES domain has different prefix, need figure out a general solution
   const baseUrl = `${URL_PREFIX_DICT[sourceType]}${sourceId}`;
   return baseUrl;
 };
@@ -198,7 +202,8 @@ const getDataReportCoreParams = (
   sourceId: string,
   fileFormat: BACKEND_REPORT_FORMAT,
   duration: string,
-  baseUrl: string
+  baseUrl: string,
+  origin: string
 ): DataReportSchemaType => {
   let res: DataReportSchemaType = {
     base_url: baseUrl,
@@ -206,6 +211,7 @@ const getDataReportCoreParams = (
     limit: limit,
     time_duration: duration,
     saved_search_id: sourceId,
+    origin: origin,
   };
   return res;
 };
@@ -249,12 +255,19 @@ const getUiReportFormat = (backendField: string): FORMAT => {
   return res;
 };
 
-const getUiReportState = (status: BACKEND_REPORT_STATE): REPORT_STATE => {
+const getUiReportState = (
+  status: BACKEND_REPORT_STATE,
+  delivery: any
+): REPORT_STATE => {
   let res: any;
   for (let [ui, backend] of Object.entries(REPORT_STATE_DICT)) {
     if (backend === status) {
-      // TODO: need to distinguish "shared" and "created"
-      res = <REPORT_STATE>ui;
+      // distinguish "shared" and "created"
+      if (status === BACKEND_REPORT_STATE.success && delivery) {
+        res = REPORT_STATE.shared;
+      } else {
+        res = <REPORT_STATE>ui;
+      }
     } else if (status === BACKEND_REPORT_STATE.scheduled) {
       // corner case
       res = REPORT_STATE.pending;
@@ -314,7 +327,6 @@ const getUiDeliveryParams = (
       delivery_type: DELIVERY_TYPE.channel,
       delivery_params: {
         ...rest,
-        origin: 'http://www.google.com', //TODO: may need to add field in backend model
       },
     };
   } else {

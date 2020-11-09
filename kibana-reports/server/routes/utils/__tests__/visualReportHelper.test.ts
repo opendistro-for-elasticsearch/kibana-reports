@@ -44,6 +44,7 @@ const input = {
         window_height: 900,
         report_format: 'png',
         time_duration: 'PT5M',
+        origin: 'http://localhost:5601',
       },
     },
     delivery: {

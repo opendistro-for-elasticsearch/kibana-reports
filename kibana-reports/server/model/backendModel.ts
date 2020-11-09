@@ -31,6 +31,7 @@ export type BackendReportDefinitionType = {
     description: string;
     type: BACKEND_REPORT_SOURCE;
     id: string;
+    origin: string;
   };
   format: {
     duration: string;

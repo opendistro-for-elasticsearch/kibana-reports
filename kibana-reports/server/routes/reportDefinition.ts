@@ -49,6 +49,8 @@ export default function (router: IRouter) {
       const logger = context.reporting_plugin.logger;
       // input validation
       try {
+        reportDefinition.report_params.core_params.origin =
+          request.headers.origin;
         reportDefinition = reportDefinitionSchema.validate(reportDefinition);
       } catch (error) {
         logger.error(
@@ -99,6 +101,8 @@ export default function (router: IRouter) {
       const logger = context.reporting_plugin.logger;
       // input validation
       try {
+        reportDefinition.report_params.core_params.origin =
+          request.headers.origin;
         reportDefinition = reportDefinitionSchema.validate(reportDefinition);
       } catch (error) {
         logger.error(

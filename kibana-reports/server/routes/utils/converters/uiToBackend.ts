@@ -37,10 +37,10 @@ export const uiToBackendReportDefinition = (
         base_url: baseUrl,
         time_duration: timeDuration,
         report_format: reportFormat,
-        saved_search_id: savedSearchId,
         header,
         footer,
         limit,
+        origin,
       },
     },
     trigger,
@@ -53,7 +53,8 @@ export const uiToBackendReportDefinition = (
     source: {
       description: description,
       type: getBackendReportSource(reportSource),
-      id: savedSearchId || getBackendReportSourceId(baseUrl), //TODO:
+      id: getBackendReportSourceId(baseUrl),
+      origin: origin,
     },
     format: {
       duration: timeDuration,
@@ -90,10 +91,9 @@ const getBackendDelivery = (
       break;
 
     case DELIVERY_TYPE.channel:
-      const { origin, ...rest } = deliveryParams as ChannelSchemaType;
       res = {
-        ...rest,
-        deliveryFormat: BACKEND_DELIVERY_FORMAT.attachment,
+        ...(deliveryParams as ChannelSchemaType),
+        deliveryFormat: BACKEND_DELIVERY_FORMAT.embedded, //TODO: now we only support one delivery format
       };
       break;
   }
@@ -147,7 +147,7 @@ export const getBackendReportSource = (
 };
 //TODO: tmp solution, we are extracting the id from the baseUrl, e.g. /app/dashboards#/view/<id>
 // since currently dashboard/visualization id are not required in the UI model, will add in the future
-const getBackendReportSourceId = (baseUrl: string) => {
-  const id = baseUrl.split('/').pop();
+const getBackendReportSourceId = (baseUrl: string): string => {
+  const id = baseUrl.split('/').pop() || '';
   return id;
 };
