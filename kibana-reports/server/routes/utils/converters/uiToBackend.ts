@@ -145,13 +145,9 @@ export const getBackendReportSource = (
 ): BACKEND_REPORT_SOURCE => {
   return REPORT_SOURCE_DICT[reportSource];
 };
-//TODO: tmp solution, we are extracting the id from the baseUrl,
+//TODO: tmp solution, we are extracting the id from the baseUrl, e.g. /app/dashboards#/view/<id>
 // since currently dashboard/visualization id are not required in the UI model, will add in the future
 const getBackendReportSourceId = (baseUrl: string) => {
-  const id = (baseUrl
-    .split('/app')[1]
-    .split('/')[3]
-    .match(/^([^?]+)/) || [])[0];
-
+  const id = baseUrl.split('/').pop();
   return id;
 };
