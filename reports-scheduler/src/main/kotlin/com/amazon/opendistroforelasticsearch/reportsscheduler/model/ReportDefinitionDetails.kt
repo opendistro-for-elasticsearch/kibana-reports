@@ -20,10 +20,10 @@ import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobParame
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.Schedule
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinition.TriggerType
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ACCESS_LIST_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.CREATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_FIELD
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ROLE_LIST_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.UPDATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
@@ -43,7 +43,7 @@ import java.time.Instant
  *   "id":"id",
  *   "lastUpdatedTimeMs":1603506908773,
  *   "createdTimeMs":1603506908773,
- *   "roles":["sample_role"]
+ *   "access":["u:user", "r:sample_role", "ber:sample_backend_role"]
  *   "reportDefinition":{
  *      // refer [com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinition]
  *   }
@@ -54,7 +54,7 @@ internal data class ReportDefinitionDetails(
     val id: String,
     val updatedTime: Instant,
     val createdTime: Instant,
-    val roles: List<String>,
+    val access: List<String>,
     val reportDefinition: ReportDefinition
 ) : ScheduledJobParameter {
     internal companion object {
@@ -70,7 +70,7 @@ internal data class ReportDefinitionDetails(
             var id: String? = useId
             var updatedTime: Instant? = null
             var createdTime: Instant? = null
-            var roles: List<String> = listOf()
+            var access: List<String> = listOf()
             var reportDefinition: ReportDefinition? = null
             XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
             while (XContentParser.Token.END_OBJECT != parser.nextToken()) {
@@ -80,7 +80,7 @@ internal data class ReportDefinitionDetails(
                     ID_FIELD -> id = parser.text()
                     UPDATED_TIME_FIELD -> updatedTime = Instant.ofEpochMilli(parser.longValue())
                     CREATED_TIME_FIELD -> createdTime = Instant.ofEpochMilli(parser.longValue())
-                    ROLE_LIST_FIELD -> roles = parser.stringList()
+                    ACCESS_LIST_FIELD -> access = parser.stringList()
                     REPORT_DEFINITION_FIELD -> reportDefinition = ReportDefinition.parse(parser)
                     else -> {
                         parser.skipChildren()
@@ -95,7 +95,7 @@ internal data class ReportDefinitionDetails(
             return ReportDefinitionDetails(id,
                 updatedTime,
                 createdTime,
-                roles,
+                access,
                 reportDefinition)
         }
     }
@@ -119,8 +119,8 @@ internal data class ReportDefinitionDetails(
         }
         builder.field(UPDATED_TIME_FIELD, updatedTime.toEpochMilli())
             .field(CREATED_TIME_FIELD, createdTime.toEpochMilli())
-        if (roles.isNotEmpty()) {
-            builder.field(ROLE_LIST_FIELD, roles)
+        if (access.isNotEmpty()) {
+            builder.field(ACCESS_LIST_FIELD, access)
         }
         builder.field(REPORT_DEFINITION_FIELD)
         reportDefinition.toXContent(builder, ToXContent.EMPTY_PARAMS)

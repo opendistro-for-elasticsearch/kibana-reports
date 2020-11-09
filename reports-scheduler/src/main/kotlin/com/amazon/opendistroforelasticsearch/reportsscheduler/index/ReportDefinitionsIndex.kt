@@ -18,7 +18,7 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.index
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinitionDetails
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ROLE_LIST_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ACCESS_LIST_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.UPDATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.SecureIndexClient
@@ -146,14 +146,14 @@ internal object ReportDefinitionsIndex {
     }
 
     /**
-     * Query index for report definition for given roles
-     * @param roles the list of roles to search reports for.
+     * Query index for report definition for given access details
+     * @param access the list of access details to search reports for.
      * @param from the paginated start index
      * @return list of Report definition details
      */
-    fun getAllReportDefinitions(roles: List<String>, from: Int): List<ReportDefinitionDetails> {
+    fun getAllReportDefinitions(access: List<String>, from: Int): List<ReportDefinitionDetails> {
         createIndex()
-        val query = QueryBuilders.termsQuery(ROLE_LIST_FIELD, roles)
+        val query = QueryBuilders.termsQuery(ACCESS_LIST_FIELD, access)
         val sourceBuilder = SearchSourceBuilder()
             .timeout(TimeValue(PluginSettings.operationTimeoutMs, TimeUnit.MILLISECONDS))
             .sort(UPDATED_TIME_FIELD)

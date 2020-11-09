@@ -20,8 +20,8 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetReportIn
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.UpdateReportInstanceStatusAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportInstanceRequest
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportInstanceStatusRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ID_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportInstanceStatusRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.contentParserNextToken
 import org.elasticsearch.client.node.NodeClient
 import org.elasticsearch.rest.BaseRestHandler
@@ -32,7 +32,6 @@ import org.elasticsearch.rest.RestRequest
 import org.elasticsearch.rest.RestRequest.Method.GET
 import org.elasticsearch.rest.RestRequest.Method.POST
 import org.elasticsearch.rest.RestStatus
-import org.elasticsearch.rest.action.RestToXContentListener
 
 /**
  * Rest handler for report instances lifecycle management.
@@ -89,12 +88,12 @@ internal class ReportInstanceRestHandler : BaseRestHandler() {
             POST -> RestChannelConsumer {
                 client.execute(UpdateReportInstanceStatusAction.ACTION_TYPE,
                     UpdateReportInstanceStatusRequest.parse(request.contentParserNextToken(), reportInstanceId),
-                    RestToXContentListener(it))
+                    RestResponseToXContentListener(it))
             }
             GET -> RestChannelConsumer {
                 client.execute(GetReportInstanceAction.ACTION_TYPE,
                     GetReportInstanceRequest(reportInstanceId),
-                    RestToXContentListener(it))
+                    RestResponseToXContentListener(it))
             }
             else -> RestChannelConsumer {
                 it.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))

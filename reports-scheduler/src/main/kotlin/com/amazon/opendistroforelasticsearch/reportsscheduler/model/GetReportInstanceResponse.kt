@@ -20,11 +20,9 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPl
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_INSTANCE_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.createJsonParser
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
-import org.elasticsearch.action.ActionResponse
 import org.elasticsearch.common.io.stream.StreamInput
 import org.elasticsearch.common.io.stream.StreamOutput
 import org.elasticsearch.common.xcontent.ToXContent
-import org.elasticsearch.common.xcontent.ToXContentObject
 import org.elasticsearch.common.xcontent.XContentBuilder
 import org.elasticsearch.common.xcontent.XContentFactory
 import org.elasticsearch.common.xcontent.XContentParser
@@ -43,7 +41,7 @@ import java.io.IOException
  * }
  * }</pre>
  */
-internal class GetReportInstanceResponse : ActionResponse, ToXContentObject {
+internal class GetReportInstanceResponse : BaseResponse {
     val reportInstance: ReportInstance
 
     companion object {
@@ -85,13 +83,6 @@ internal class GetReportInstanceResponse : ActionResponse, ToXContentObject {
     @Throws(IOException::class)
     override fun writeTo(output: StreamOutput) {
         toXContent(XContentFactory.jsonBuilder(output), ToXContent.EMPTY_PARAMS)
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    fun toXContent(): XContentBuilder {
-        return toXContent(XContentFactory.jsonBuilder(), ToXContent.EMPTY_PARAMS)
     }
 
     /**

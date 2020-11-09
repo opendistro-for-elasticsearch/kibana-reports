@@ -90,7 +90,7 @@ internal object ReportInstanceActions {
             currentTime,
             beginTime,
             endTime,
-            reportDefinitionDetails.roles,
+            reportDefinitionDetails.access,
             reportDefinitionDetails,
             currentStatus)
         val docId = ReportInstancesIndex.createReportInstance(reportInstance)
