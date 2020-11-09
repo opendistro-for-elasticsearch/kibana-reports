@@ -28,7 +28,6 @@ import org.elasticsearch.rest.RestHandler.Route
 import org.elasticsearch.rest.RestRequest
 import org.elasticsearch.rest.RestRequest.Method.GET
 import org.elasticsearch.rest.RestStatus
-import org.elasticsearch.rest.action.RestToXContentListener
 
 /**
  * Rest handler for getting list of report instances.
@@ -78,7 +77,7 @@ internal class ReportInstanceListRestHandler : BaseRestHandler() {
             GET -> RestChannelConsumer {
                 client.execute(GetAllReportInstancesAction.ACTION_TYPE,
                     GetAllReportInstancesRequest(from),
-                    RestToXContentListener(it))
+                    RestResponseToXContentListener(it))
             }
             else -> RestChannelConsumer {
                 it.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))

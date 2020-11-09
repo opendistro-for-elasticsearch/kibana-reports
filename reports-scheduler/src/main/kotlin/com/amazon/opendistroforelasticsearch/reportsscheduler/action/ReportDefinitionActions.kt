@@ -76,7 +76,7 @@ internal object ReportDefinitionActions {
         val reportDefinitionDetails = ReportDefinitionDetails(request.reportDefinitionId,
             currentTime,
             currentReportDefinitionDetails.createdTime,
-            currentReportDefinitionDetails.roles,
+            currentReportDefinitionDetails.access,
             request.reportDefinition
         )
         if (!ReportDefinitionsIndex.updateReportDefinition(request.reportDefinitionId, reportDefinitionDetails)) {

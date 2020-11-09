@@ -39,6 +39,7 @@ import java.time.Duration
  *   "source":{
  *      "description":"description",
  *      "type":"Dashboard", // Dashboard, Visualization, SavedSearch
+ *      "origin":"http://localhost:5601",
  *      "id":"id"
  *   },
  *   "format":{
@@ -175,11 +176,13 @@ internal data class ReportDefinition(
     internal data class Source(
         val description: String,
         val type: SourceType,
+        val origin: String,
         val id: String
     ) : ToXContentObject {
         internal companion object {
             private const val DESCRIPTION_TAG = "description"
             private const val TYPE_TAG = "type"
+            private const val ORIGIN_TAG = "origin"
             private const val ID_TAG = "id"
 
             /**
@@ -190,6 +193,7 @@ internal data class ReportDefinition(
             fun parse(parser: XContentParser): Source {
                 var description: String? = null
                 var type: SourceType? = null
+                var origin: String? = null
                 var id: String? = null
                 XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
                 while (XContentParser.Token.END_OBJECT != parser.nextToken()) {
@@ -198,6 +202,7 @@ internal data class ReportDefinition(
                     when (fieldName) {
                         DESCRIPTION_TAG -> description = parser.text()
                         TYPE_TAG -> type = SourceType.valueOf(parser.text())
+                        ORIGIN_TAG -> origin = parser.text()
                         ID_TAG -> id = parser.text()
                         else -> {
                             parser.skipChildren()
@@ -207,9 +212,11 @@ internal data class ReportDefinition(
                 }
                 description ?: throw IllegalArgumentException("$DESCRIPTION_TAG field absent")
                 type ?: throw IllegalArgumentException("$TYPE_TAG field absent")
+                origin ?: throw IllegalArgumentException("$ORIGIN_TAG field absent")
                 id ?: throw IllegalArgumentException("$ID_TAG field absent")
                 return Source(description,
                     type,
+                    origin,
                     id
                 )
             }
@@ -223,6 +230,7 @@ internal data class ReportDefinition(
             builder.startObject()
                 .field(DESCRIPTION_TAG, description)
                 .field(TYPE_TAG, type.name)
+                .field(ORIGIN_TAG, origin)
                 .field(ID_TAG, id)
                 .endObject()
             return builder

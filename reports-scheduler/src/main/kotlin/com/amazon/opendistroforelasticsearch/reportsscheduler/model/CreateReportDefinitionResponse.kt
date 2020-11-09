@@ -19,13 +19,10 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
-import org.elasticsearch.action.ActionResponse
 import org.elasticsearch.common.io.stream.StreamInput
 import org.elasticsearch.common.io.stream.StreamOutput
 import org.elasticsearch.common.xcontent.ToXContent
-import org.elasticsearch.common.xcontent.ToXContentObject
 import org.elasticsearch.common.xcontent.XContentBuilder
-import org.elasticsearch.common.xcontent.XContentFactory
 import org.elasticsearch.common.xcontent.XContentParser
 import org.elasticsearch.common.xcontent.XContentParser.Token
 import org.elasticsearch.common.xcontent.XContentParserUtils
@@ -42,7 +39,7 @@ import java.io.IOException
  */
 internal class CreateReportDefinitionResponse(
     val reportDefinitionId: String
-) : ActionResponse(), ToXContentObject {
+) : BaseResponse() {
 
     @Throws(IOException::class)
     constructor(input: StreamInput) : this(
@@ -82,14 +79,6 @@ internal class CreateReportDefinitionResponse(
     @Throws(IOException::class)
     override fun writeTo(output: StreamOutput) {
         output.writeString(reportDefinitionId)
-    }
-
-    /**
-     * create XContentBuilder from this object using [XContentFactory.jsonBuilder()]
-     * @return created XContentBuilder object
-     */
-    fun toXContent(): XContentBuilder {
-        return toXContent(XContentFactory.jsonBuilder(), ToXContent.EMPTY_PARAMS)
     }
 
     /**
