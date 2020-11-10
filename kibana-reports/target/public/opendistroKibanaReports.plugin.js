@@ -937,7 +937,7 @@ __kbnBundles__.define('plugin/opendistroKibanaReports/public', __webpack_require
 /*!*************************!*\
   !*** ./common/index.ts ***!
   \*************************/
-/*! exports provided: PLUGIN_ID, PLUGIN_NAME, API_PREFIX, REPORTS_SCHEDULER_API, NOTIFICATION_API, ES_REPORTS_API */
+/*! exports provided: PLUGIN_ID, PLUGIN_NAME, API_PREFIX, NOTIFICATION_API, ES_REPORTS_API */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -945,16 +945,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PLUGIN_ID", function() { return PLUGIN_ID; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PLUGIN_NAME", function() { return PLUGIN_NAME; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "API_PREFIX", function() { return API_PREFIX; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "REPORTS_SCHEDULER_API", function() { return REPORTS_SCHEDULER_API; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NOTIFICATION_API", function() { return NOTIFICATION_API; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ES_REPORTS_API", function() { return ES_REPORTS_API; });
 const PLUGIN_ID = 'opendistroKibanaReports';
 const PLUGIN_NAME = 'opendistro_kibana_reports';
 const API_PREFIX = '/api/reporting';
-const REPORTS_SCHEDULER_API = {
-  SCHEDULE_BASE: '/_opendistro/reports_scheduler/schedule',
-  JOB_BASE: '/_opendistro/reports_scheduler/job'
-};
 const NOTIFICATION_API = {
   SEND: '/_opendistro/_notifications/send'
 };

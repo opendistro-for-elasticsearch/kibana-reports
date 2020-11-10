@@ -21,10 +21,7 @@ import {
 } from '../../../../../src/core/server';
 import { REPORT_STATE } from './constants';
 import { ReportSchemaType } from 'server/model';
-import {
-  BACKEND_REPORT_STATE,
-  REPORT_STATE_DICT,
-} from '../../model/backendModel';
+import { BACKEND_REPORT_STATE } from '../../model/backendModel';
 import {
   getBackendReportState,
   uiToBackendReportDefinition,

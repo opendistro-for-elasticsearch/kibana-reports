@@ -25,30 +25,37 @@ import {
 } from './constants';
 import { getFileName } from './helpers';
 import { CreateReportResultType } from './types';
+import { ReportParamsSchemaType, VisualReportSchemaType } from 'server/model';
 
 export const createVisualReport = async (
-  reportParams: any,
+  reportParams: ReportParamsSchemaType,
   queryUrl: string,
   logger: Logger,
   cookie?: SetCookie
 ): Promise<CreateReportResultType> => {
-  const coreParams = reportParams.core_params;
-  // parse params
-  const reportSource = reportParams.report_source;
-  const reportName = reportParams.report_name;
-  const windowWidth = coreParams.window_width;
-  const windowHeight = coreParams.window_height;
-  const reportFormat = coreParams.report_format;
+  const {
+    core_params,
+    report_name: reportName,
+    report_source: reportSource,
+  } = reportParams;
+  const coreParams = core_params as VisualReportSchemaType;
+  const {
+    header,
+    footer,
+    window_height: windowHeight,
+    window_width: windowWidth,
+    report_format: reportFormat,
+  } = coreParams;
 
   // TODO: polish default header, maybe add a logo, depends on UX design
   const window = new JSDOM('').window;
   const DOMPurify = createDOMPurify(window);
 
-  const header = coreParams.header
-    ? DOMPurify.sanitize(coreParams.header)
+  const reportHeader = header
+    ? DOMPurify.sanitize(header)
     : DEFAULT_REPORT_HEADER;
-  const footer = coreParams.footer
-    ? DOMPurify.sanitize(coreParams.footer)
+  const reportFooter = footer
+    ? DOMPurify.sanitize(footer)
     : DEFAULT_REPORT_FOOTER;
 
   // set up puppeteer
@@ -99,9 +106,9 @@ export const createVisualReport = async (
     <!DOCTYPE html>
     <html>
       <div>
-      ${header}
+      ${reportHeader}
         <img src="data:image/png;base64,${screenshot.toString('base64')}">
-      ${footer}
+      ${reportFooter}
       </div>
     </html>
     `);

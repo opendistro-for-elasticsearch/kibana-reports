@@ -17,6 +17,7 @@
     "noUnusedParameters": false,
     "alwaysStrict": false,
     "noImplicitUseStrict": false,
+    "types": ["jest", "node"]
   },
   "include": [
     "test/**/*",

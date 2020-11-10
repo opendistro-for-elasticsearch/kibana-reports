@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+
 import {
   DataReportSchemaType,
   DeliverySchemaType,
@@ -23,6 +38,7 @@ import {
   URL_PREFIX_DICT,
 } from '../../../model/backendModel';
 import {
+  DEFAULT_MAX_SIZE,
   DELIVERY_TYPE,
   FORMAT,
   REPORT_DEFINITION_STATUS,
@@ -162,15 +178,15 @@ export const backendToUiReportDefinitionsList = (
 
 const getVisualReportCoreParams = (
   fileFormat: BACKEND_REPORT_FORMAT,
-  header: string,
-  footer: string,
+  header: string = '',
+  footer: string = '',
   duration: string,
   baseUrl: string,
   origin: string
 ): VisualReportSchemaType => {
   let res: VisualReportSchemaType = {
     base_url: baseUrl,
-    report_format: getUiReportFormat(fileFormat),
+    report_format: <FORMAT.pdf | FORMAT.png>getUiReportFormat(fileFormat),
     header: header,
     footer: footer,
     time_duration: duration,
@@ -198,7 +214,7 @@ const getBaseUrl = (sourceType: BACKEND_REPORT_SOURCE, sourceId: string) => {
 };
 
 const getDataReportCoreParams = (
-  limit: number,
+  limit: number = DEFAULT_MAX_SIZE,
   sourceId: string,
   fileFormat: BACKEND_REPORT_FORMAT,
   duration: string,
@@ -207,7 +223,7 @@ const getDataReportCoreParams = (
 ): DataReportSchemaType => {
   let res: DataReportSchemaType = {
     base_url: baseUrl,
-    report_format: getUiReportFormat(fileFormat),
+    report_format: <FORMAT.csv>getUiReportFormat(fileFormat),
     limit: limit,
     time_duration: duration,
     saved_search_id: sourceId,
@@ -217,7 +233,7 @@ const getDataReportCoreParams = (
 };
 
 const getUiScheduleParams = (
-  schedule: CronType | IntervalType,
+  schedule: CronType | IntervalType | undefined,
   createdTimeMs: number,
   isEnabled: boolean
 ) => {
@@ -226,7 +242,9 @@ const getUiScheduleParams = (
       enabled_time: createdTimeMs,
       enabled: isEnabled,
       schedule_type:
-        'cron' in schedule ? SCHEDULE_TYPE.cron : SCHEDULE_TYPE.recurring, //TODO: optimize to use additional function
+        schedule && 'cron' in schedule
+          ? SCHEDULE_TYPE.cron
+          : SCHEDULE_TYPE.recurring,
       schedule: schedule,
     },
   };
@@ -296,7 +314,7 @@ const getUiReportDefinitionStatus = (
 
 const getUiTriggerParams = (
   triggerType: any,
-  schedule: CronType | IntervalType,
+  schedule: CronType | IntervalType | undefined,
   createdTimeMs: number,
   isEnabled: boolean
 ): TriggerSchemaType => {
