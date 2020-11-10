@@ -40,7 +40,7 @@ import org.elasticsearch.rest.RestStatus
 internal class OnDemandReportRestHandler : BaseRestHandler() {
     companion object {
         private const val REPORT_INSTANCE_LIST_ACTION = "on_demand_report_actions"
-        private const val ON_DEMAND_REPORT_URL = "$BASE_REPORTS_URI/on-demand"
+        private const val ON_DEMAND_REPORT_URL = "$BASE_REPORTS_URI/on_demand"
     }
 
     /**

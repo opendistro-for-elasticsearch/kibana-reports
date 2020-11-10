@@ -38,7 +38,7 @@ internal class OnDemandReportCreateAction @Inject constructor(
     actionFilters,
     ::OnDemandReportCreateRequest) {
     companion object {
-        private const val NAME = "cluster:admin/opendistro/reports/definition/ondemand"
+        private const val NAME = "cluster:admin/opendistro/reports/definition/on_demand"
         internal val ACTION_TYPE = ActionType(NAME, ::OnDemandReportCreateResponse)
     }
 
