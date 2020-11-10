@@ -32,15 +32,12 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.action.UpdateRepor
 import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportDefinitionsIndex
 import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportDefinitionsIndex.REPORT_DEFINITIONS_INDEX_NAME
 import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportInstancesIndex
-import com.amazon.opendistroforelasticsearch.reportsscheduler.job.ReportsSchedulerJobRunnerProxy
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.OnDemandReportRestHandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportDefinitionListRestHandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportDefinitionRestHandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportInstanceListRestHandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportInstancePollRestHandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportInstanceRestHandler
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportsJobRestHandler
-import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportsScheduleRestHandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.scheduler.ReportDefinitionJobParser
 import com.amazon.opendistroforelasticsearch.reportsscheduler.scheduler.ReportDefinitionJobRunner
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
@@ -79,15 +76,8 @@ class ReportsSchedulerPlugin : Plugin(), ActionPlugin, JobSchedulerExtension {
     companion object {
         const val PLUGIN_NAME = "opendistro-reports-scheduler"
         const val LOG_PREFIX = "reports"
-        const val BASE_SCHEDULER_URI = "/_opendistro/reports_scheduler"
         const val BASE_REPORTS_URI = "/_opendistro/_reports"
-        const val JOB_INDEX_NAME = ".reports_scheduler"
-        const val JOB_QUEUE_INDEX_NAME = ".reports_scheduler_job_queue"
-        const val LOCK_DURATION_SECONDS = 300L
     }
-
-    private val jobRunner = ReportsSchedulerJobRunnerProxy.getJobRunnerInstance()
-    private lateinit var clusterService: ClusterService // initialized in createComponents()
 
     /**
      * {@inheritDoc}
@@ -112,11 +102,9 @@ class ReportsSchedulerPlugin : Plugin(), ActionPlugin, JobSchedulerExtension {
         indexNameExpressionResolver: IndexNameExpressionResolver,
         repositoriesServiceSupplier: Supplier<RepositoriesService>
     ): Collection<Any> {
-        this.clusterService = clusterService
         PluginSettings.addSettingsUpdateConsumer(clusterService)
         ReportDefinitionsIndex.initialize(client, clusterService)
         ReportInstancesIndex.initialize(client, clusterService)
-        jobRunner.createRunnerInstance(clusterService, threadPool, client)
         return emptyList()
     }
 
@@ -166,9 +154,7 @@ class ReportsSchedulerPlugin : Plugin(), ActionPlugin, JobSchedulerExtension {
             ReportInstanceRestHandler(),
             ReportInstanceListRestHandler(),
             OnDemandReportRestHandler(),
-            ReportsScheduleRestHandler(),
-            ReportInstancePollRestHandler(),
-            ReportsJobRestHandler(clusterService)
+            ReportInstancePollRestHandler()
         )
     }
 
