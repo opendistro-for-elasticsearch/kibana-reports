@@ -18,6 +18,7 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.index
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinitionDetails
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinitionDetailsSearchResults
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ACCESS_LIST_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.UPDATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
@@ -50,7 +51,6 @@ internal object ReportDefinitionsIndex {
     private const val REPORT_DEFINITIONS_MAPPING_FILE_NAME = "report-definitions-mapping.yml"
     private const val REPORT_DEFINITIONS_SETTINGS_FILE_NAME = "report-definitions-settings.yml"
     private const val MAPPING_TYPE = "_doc"
-    private const val MAX_ITEMS_TO_QUERY = 10000
 
     private lateinit var client: Client
     private lateinit var clusterService: ClusterService
@@ -149,15 +149,16 @@ internal object ReportDefinitionsIndex {
      * Query index for report definition for given access details
      * @param access the list of access details to search reports for.
      * @param from the paginated start index
-     * @return list of Report definition details
+     * @param maxItems the max items to query
+     * @return search result of Report definition details
      */
-    fun getAllReportDefinitions(access: List<String>, from: Int): List<ReportDefinitionDetails> {
+    fun getAllReportDefinitions(access: List<String>, from: Int, maxItems: Int): ReportDefinitionDetailsSearchResults {
         createIndex()
         val query = QueryBuilders.termsQuery(ACCESS_LIST_FIELD, access)
         val sourceBuilder = SearchSourceBuilder()
             .timeout(TimeValue(PluginSettings.operationTimeoutMs, TimeUnit.MILLISECONDS))
             .sort(UPDATED_TIME_FIELD)
-            .size(MAX_ITEMS_TO_QUERY)
+            .size(maxItems)
             .from(from)
             .query(query)
         val searchRequest = SearchRequest()
@@ -165,15 +166,7 @@ internal object ReportDefinitionsIndex {
             .source(sourceBuilder)
         val actionFuture = client.search(searchRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
-        val mutableList: MutableList<ReportDefinitionDetails> = mutableListOf()
-        response.hits.forEach {
-            val parser = XContentType.JSON.xContent().createParser(NamedXContentRegistry.EMPTY,
-                LoggingDeprecationHandler.INSTANCE,
-                it.sourceAsString)
-            parser.nextToken()
-            mutableList.add(ReportDefinitionDetails.parse(parser, it.id))
-        }
-        return mutableList
+        return ReportDefinitionDetailsSearchResults(from.toLong(), response)
     }
 
     /**

@@ -20,6 +20,7 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPl
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance.Status
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstanceDoc
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstanceSearchResults
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ACCESS_LIST_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATUS_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.UPDATED_TIME_FIELD
@@ -54,7 +55,6 @@ internal object ReportInstancesIndex {
     private const val REPORT_INSTANCES_MAPPING_FILE_NAME = "report-instances-mapping.yml"
     private const val REPORT_INSTANCES_SETTINGS_FILE_NAME = "report-instances-settings.yml"
     private const val MAPPING_TYPE = "_doc"
-    private const val MAX_ITEMS_TO_QUERY = 10000
 
     private lateinit var client: Client
     private lateinit var clusterService: ClusterService
@@ -153,15 +153,16 @@ internal object ReportInstancesIndex {
      * Query index for report instance for given access details
      * @param access the list of access details to search reports for.
      * @param from the paginated start index
-     * @return list of Report instance details
+     * @param maxItems the max items to query
+     * @return search result of Report instance details
      */
-    fun getAllReportInstances(access: List<String>, from: Int): List<ReportInstance> {
+    fun getAllReportInstances(access: List<String>, from: Int, maxItems: Int): ReportInstanceSearchResults {
         createIndex()
         val query = QueryBuilders.termsQuery(ACCESS_LIST_FIELD, access)
         val sourceBuilder = SearchSourceBuilder()
             .timeout(TimeValue(PluginSettings.operationTimeoutMs, TimeUnit.MILLISECONDS))
             .sort(UPDATED_TIME_FIELD)
-            .size(MAX_ITEMS_TO_QUERY)
+            .size(maxItems)
             .from(from)
             .query(query)
         val searchRequest = SearchRequest()
@@ -169,15 +170,7 @@ internal object ReportInstancesIndex {
             .source(sourceBuilder)
         val actionFuture = client.search(searchRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
-        val mutableList: MutableList<ReportInstance> = mutableListOf()
-        response.hits.forEach {
-            val parser = XContentType.JSON.xContent().createParser(NamedXContentRegistry.EMPTY,
-                LoggingDeprecationHandler.INSTANCE,
-                it.sourceAsString)
-            parser.nextToken()
-            mutableList.add(ReportInstance.parse(parser, it.id))
-        }
-        return mutableList
+        return ReportInstanceSearchResults(from.toLong(), response)
     }
 
     /**
@@ -252,7 +245,7 @@ internal object ReportInstancesIndex {
         )
         val sourceBuilder = SearchSourceBuilder()
             .timeout(TimeValue(PluginSettings.operationTimeoutMs, TimeUnit.MILLISECONDS))
-            .size(MAX_ITEMS_TO_QUERY)
+            .size(PluginSettings.defaultItemsQueryCount)
             .query(query)
         val searchRequest = SearchRequest()
             .indices(REPORT_INSTANCES_INDEX_NAME)

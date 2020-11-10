@@ -143,9 +143,9 @@ internal object ReportInstanceActions {
      * @return [GetAllReportInstancesResponse]
      */
     fun getAll(request: GetAllReportInstancesRequest): GetAllReportInstancesResponse {
-        log.info("$LOG_PREFIX:ReportInstance-getAll ${request.fromIndex}")
+        log.info("$LOG_PREFIX:ReportInstance-getAll fromIndex:${request.fromIndex} maxItems:${request.maxItems}")
         // TODO verify actual requester ID
-        val reportInstanceList = ReportInstancesIndex.getAllReportInstances(listOf(TEMP_ROLE_ID), request.fromIndex)
+        val reportInstanceList = ReportInstancesIndex.getAllReportInstances(listOf(TEMP_ROLE_ID), request.fromIndex, request.maxItems)
         return GetAllReportInstancesResponse(reportInstanceList)
     }
 
