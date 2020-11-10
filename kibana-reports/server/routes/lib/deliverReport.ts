@@ -28,23 +28,20 @@ export const deliverReport = async (
   report: ReportSchemaType,
   reportData: CreateReportResultType,
   notificationClient: ILegacyScopedClusterClient | ILegacyClusterClient,
-  esClient: ILegacyClusterClient | ILegacyScopedClusterClient,
+  esReportsClient: ILegacyClusterClient | ILegacyScopedClusterClient,
   reportId: string,
   isScheduledTask: boolean,
   logger: Logger
 ) => {
+  const {
+    report_definition: {
+      delivery: {
+        delivery_params: deliveryParams,
+        delivery_type: deliveryType,
+      },
+    },
+  } = report;
   // check delivery type
-  const delivery = report.report_definition.delivery;
-
-  let deliveryType;
-  let deliveryParams;
-  if (delivery) {
-    deliveryType = delivery.delivery_type;
-    deliveryParams = delivery.delivery_params;
-  } else {
-    return reportData;
-  }
-
   if (deliveryType === DELIVERY_TYPE.channel) {
     // deliver through one of [Slack, Chime, Email]
     const {
@@ -53,7 +50,8 @@ export const deliverReport = async (
         report_params: { report_name: reportName },
       },
     } = report;
-    const { htmlDescription, origin } = deliveryParams;
+    const { htmlDescription } = deliveryParams;
+    const origin = report.report_definition.report_params.core_params.origin;
     const originalQueryUrl = origin + queryUrl;
     /**
      * have to manually compose the url because the Kibana url for AES is.../_plugin/kibana/app/opendistro_kibana_reports#/report_details/${reportId}
@@ -63,17 +61,20 @@ export const deliverReport = async (
       /\/app\/.*$/i,
       ''
     )}/app/opendistro_kibana_reports#/report_details/${reportId}`;
+
     const template = composeEmbeddedHtml(
       htmlDescription,
       originalQueryUrl,
       reportDetailUrl,
       reportName
     );
+
     const deliveryBody = {
       ...deliveryParams,
       htmlDescription: template,
       refTag: reportId,
     };
+
     // send email
     const notificationResp = await callCluster(
       notificationClient,
@@ -83,6 +84,7 @@ export const deliverReport = async (
       },
       isScheduledTask
     );
+
     /**
      * notification plugin response example:
      * {
@@ -104,6 +106,7 @@ export const deliverReport = async (
     logger.info(
       `notification plugin response: ${JSON.stringify(notificationResp)}`
     );
+
     notificationResp.recipients.map((recipient) => {
       if (recipient.statusCode !== 200) {
         throw new Error(
@@ -121,13 +124,12 @@ export const deliverReport = async (
       return reportData;
     }
   }
-  // update report document with state "shared" and time_created
+  // update report document
   await updateReportState(
     isScheduledTask,
     reportId,
-    esClient,
-    REPORT_STATE.shared,
-    reportData
+    esReportsClient,
+    REPORT_STATE.shared
   );
 
   return reportData;

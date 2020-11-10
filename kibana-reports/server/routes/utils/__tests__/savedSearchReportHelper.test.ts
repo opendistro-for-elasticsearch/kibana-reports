@@ -36,6 +36,7 @@ const input = {
         time_duration: 'PT5M',
         limit: 10000,
         excel: true,
+        origin: 'http://localhost:5601',
       },
     },
     delivery: {

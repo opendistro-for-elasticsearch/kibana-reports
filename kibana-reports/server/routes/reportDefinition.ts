@@ -18,21 +18,17 @@ import {
   IRouter,
   IKibanaResponse,
   ResponseError,
+  ILegacyScopedClusterClient,
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
-import { RequestParams } from '@elastic/elasticsearch';
-import { reportDefinitionSchema, ReportDefinitionSchemaType } from '../model';
+import { reportDefinitionSchema } from '../model';
+import { errorResponse } from './utils/helpers';
+import { createReportDefinition } from './lib/createReportDefinition';
 import {
-  errorResponse,
-  saveReportDefinition,
-  updateReportDefinition,
-} from './utils/helpers';
-import {
-  TRIGGER_TYPE,
-  CONFIG_INDEX_NAME,
-  DEFAULT_MAX_SIZE,
-} from './utils/constants';
-import { createSchedule } from './lib/createSchedule';
+  backendToUiReportDefinition,
+  backendToUiReportDefinitionsList,
+} from './utils/converters/backendToUi';
+import { updateReportDefinition } from './lib/updateReportDefinition';
 
 export default function (router: IRouter) {
   // Create report Definition
@@ -49,11 +45,12 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       let reportDefinition = request.body;
-      const esClient = context.core.elasticsearch.legacy.client;
       //@ts-ignore
       const logger = context.reporting_plugin.logger;
       // input validation
       try {
+        reportDefinition.report_params.core_params.origin =
+          request.headers.origin;
         reportDefinition = reportDefinitionSchema.validate(reportDefinition);
       } catch (error) {
         logger.error(
@@ -63,13 +60,12 @@ export default function (router: IRouter) {
       }
 
       // save metadata
-      // TODO: consider create uuid manually and save report after it's scheduled with reports-scheduler
       try {
-        // save report definition to ES
-        const esResp = await saveReportDefinition(reportDefinition, esClient);
-        // create scheduled job by reports-scheduler
-        const reportDefinitionId = esResp._id;
-        const res = await createSchedule(request, reportDefinitionId, context);
+        const res = await createReportDefinition(
+          request,
+          context,
+          reportDefinition
+        );
 
         return response.ok({
           body: {
@@ -101,12 +97,12 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       let reportDefinition = request.body;
-      const savedReportDefinitionId = request.params.reportDefinitionId;
-      const esClient = context.core.elasticsearch.legacy.client;
       //@ts-ignore
       const logger = context.reporting_plugin.logger;
       // input validation
       try {
+        reportDefinition.report_params.core_params.origin =
+          request.headers.origin;
         reportDefinition = reportDefinitionSchema.validate(reportDefinition);
       } catch (error) {
         logger.error(
@@ -117,18 +113,15 @@ export default function (router: IRouter) {
       // Update report definition metadata
       try {
         const esResp = await updateReportDefinition(
-          savedReportDefinitionId,
-          reportDefinition,
-          esClient
+          request,
+          context,
+          reportDefinition
         );
-        // update scheduled job by calling reports-scheduler
-        const reportDefinitionId = esResp._id;
-        const res = await createSchedule(request, reportDefinitionId, context);
 
         return response.ok({
           body: {
             state: 'Report definition updated',
-            scheduler_response: res,
+            scheduler_response: esResp,
           },
         });
       } catch (error) {
@@ -147,6 +140,7 @@ export default function (router: IRouter) {
           size: schema.maybe(schema.string()),
           sortField: schema.maybe(schema.string()),
           sortDirection: schema.maybe(schema.string()),
+          fromIndex: schema.maybe(schema.string()),
         }),
       },
     },
@@ -155,28 +149,31 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
-      const { size, sortField, sortDirection } = request.query as {
+      const { fromIndex } = request.query as {
         size: string;
         sortField: string;
         sortDirection: string;
+        fromIndex: string;
       };
-      const params: RequestParams.Search = {
-        index: CONFIG_INDEX_NAME.reportDefinition,
-        size: size ? parseInt(size, 10) : DEFAULT_MAX_SIZE,
-        sort:
-          sortField && sortDirection
-            ? `${sortField}:${sortDirection}`
-            : undefined,
-      };
+
       try {
-        const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
-          'search',
-          params
+        const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
+          request
+        );
+
+        const esResp = await esReportsClient.callAsCurrentUser(
+          'es_reports.getReportDefinitions',
+          {
+            fromIndex: fromIndex,
+          }
+        );
+
+        const reportDefinitionsList = backendToUiReportDefinitionsList(
+          esResp.reportDefinitionDetailsList
         );
         return response.ok({
           body: {
-            total: esResp.hits.total.value,
-            data: esResp.hits.hits,
+            data: reportDefinitionsList,
           },
         });
       } catch (error) {
@@ -189,7 +186,7 @@ export default function (router: IRouter) {
     }
   );
 
-  // get single report definition detail by id
+  // get report definition detail by id
   router.get(
     {
       path: `${API_PREFIX}/reportDefinitions/{reportDefinitionId}`,
@@ -205,15 +202,24 @@ export default function (router: IRouter) {
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       try {
-        const esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
-          'get',
+        // @ts-ignore
+        const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
+          request
+        );
+
+        const esResp = await esReportsClient.callAsCurrentUser(
+          'es_reports.getReportDefinitionById',
           {
-            index: CONFIG_INDEX_NAME.reportDefinition,
-            id: request.params.reportDefinitionId,
+            reportDefinitionId: request.params.reportDefinitionId,
           }
         );
+
+        const reportDefinition = backendToUiReportDefinition(
+          esResp.reportDefinitionDetails
+        );
+
         return response.ok({
-          body: esResp._source,
+          body: { report_definition: reportDefinition },
         });
       } catch (error) {
         //@ts-ignore
@@ -225,7 +231,7 @@ export default function (router: IRouter) {
     }
   );
 
-  // Delete single report definition by id
+  // Delete report definition by id
   router.delete(
     {
       path: `${API_PREFIX}/reportDefinitions/{reportDefinitionId}`,
@@ -240,48 +246,18 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
-      // @ts-ignore
-      const schedulerClient = context.reporting_plugin.schedulerClient.asScoped(
-        request
-      );
-      const reportDefinitionId = request.params.reportDefinitionId;
-
       try {
-        // retrieve report definition
-        const getReportDefinitionResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
-          'get',
-          {
-            index: CONFIG_INDEX_NAME.reportDefinition,
-            id: reportDefinitionId,
-          }
+        // @ts-ignore
+        const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
+          request
         );
-        const reportDefinition: ReportDefinitionSchemaType =
-          getReportDefinitionResp._source.report_definition;
-        const triggerType = reportDefinition.trigger.trigger_type;
-        let esResp;
 
-        // delete job from report definition index
-        esResp = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
-          'delete',
+        const esResp = await esReportsClient.callAsCurrentUser(
+          'es_reports.deleteReportDefinitionById',
           {
-            index: CONFIG_INDEX_NAME.reportDefinition,
-            id: reportDefinitionId,
+            reportDefinitionId: request.params.reportDefinitionId,
           }
         );
-        if (triggerType === TRIGGER_TYPE.schedule) {
-          // send to reports-scheduler to delete a scheduled job
-          esResp = await schedulerClient.callAsCurrentUser(
-            'reports_scheduler.deleteSchedule',
-            {
-              // the scheduled job is using the same id as its report definition
-              jobId: reportDefinitionId,
-            }
-          );
-          /* 
-          TODO: also remove any job in queue and release lock, consider do that
-          within the deleteSchedule API exposed by reports-scheduler
-          */
-        }
 
         return response.ok({
           body: {

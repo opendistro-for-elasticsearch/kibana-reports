@@ -46,6 +46,11 @@ export const createReport = async (
   const notificationClient: ILegacyScopedClusterClient = context.reporting_plugin.notificationClient.asScoped(
     request
   );
+  // @ts-ignore
+  const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
+    request
+  );
+
   const esClient = context.core.elasticsearch.legacy.client;
 
   let createReportResult: CreateReportResultType;
@@ -54,13 +59,14 @@ export const createReport = async (
   if (savedReportId) {
     reportId = savedReportId;
   } else {
-    const esResp = await saveReport(isScheduledTask, report, esClient);
-    reportId = esResp._id;
+    const esResp = await saveReport(isScheduledTask, report, esReportsClient);
+    reportId = esResp.reportInstance.id;
   }
 
-  const reportDefinition = report.report_definition;
-  const reportParams = reportDefinition.report_params;
-  const reportSource = reportParams.report_source;
+  const {
+    report_definition: { report_params: reportParams },
+  } = report;
+  const { report_source: reportSource } = reportParams;
 
   // compose url
   const queryUrl = `${LOCAL_HOST}${report.query_url}`;
@@ -74,6 +80,7 @@ export const createReport = async (
       );
     } else {
       // report source can only be one of [saved search, visualization, dashboard]
+      // Check if security is enabled. TODO: is there a better way to check?
       let cookieObject: SetCookie | undefined;
       if (request.headers.cookie) {
         const cookies = request.headers.cookie.split(';');
@@ -101,9 +108,8 @@ export const createReport = async (
       await updateReportState(
         isScheduledTask,
         reportId,
-        esClient,
-        REPORT_STATE.created,
-        createReportResult
+        esReportsClient,
+        REPORT_STATE.created
       );
     }
 
@@ -113,7 +119,7 @@ export const createReport = async (
         report,
         createReportResult,
         notificationClient,
-        esClient,
+        esReportsClient,
         reportId,
         isScheduledTask,
         logger
@@ -126,7 +132,7 @@ export const createReport = async (
       await updateReportState(
         isScheduledTask,
         reportId,
-        esClient,
+        esReportsClient,
         REPORT_STATE.error
       );
     }

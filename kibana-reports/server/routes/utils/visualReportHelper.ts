@@ -76,8 +76,8 @@ export const createVisualReport = async (
     height: windowHeight,
   });
 
-  let buffer;
-  let element;
+  let buffer: any;
+  let element: any;
   // crop content
   if (reportSource === REPORT_TYPE.dashboard) {
     await page.waitForSelector('#dashboardViewport');

@@ -16,17 +16,12 @@
 import { ILegacyClusterClient, Logger } from '../../../../src/core/server';
 import { createScheduledReport } from './createScheduledReport';
 import { POLL_INTERVAL } from '../utils/constants';
-import {
-  ReportSchemaType,
-  DataReportSchemaType,
-  VisualReportSchemaType,
-} from '../model';
-import moment from 'moment';
-import { CONFIG_INDEX_NAME } from '../routes/utils/constants';
 import { parseEsErrorResponse } from '../routes/utils/helpers';
+import { backendToUiReport } from '../routes/utils/converters/backendToUi';
+import { BackendReportInstanceType } from 'server/model/backendModel';
 
 async function pollAndExecuteJob(
-  schedulerClient: ILegacyClusterClient,
+  esReportsClient: ILegacyClusterClient,
   notificationClient: ILegacyClusterClient,
   esClient: ILegacyClusterClient,
   logger: Logger
@@ -35,38 +30,32 @@ async function pollAndExecuteJob(
     `start polling at time: ${new Date().toISOString()} with fixed interval: ${POLL_INTERVAL} milliseconds`
   );
   try {
-    const getJobRes = await schedulerClient.callAsInternalUser(
-      'reports_scheduler.getJob'
+    // poll job
+    const esResp = await esReportsClient.callAsInternalUser(
+      'es_reports.pollReportInstance'
     );
+    const job: BackendReportInstanceType = esResp.reportInstance;
 
     // job retrieved, otherwise will be undefined because 204 No-content is returned
-    if (getJobRes) {
-      const reportDefinitionId = getJobRes._source.report_definition_id;
-      const triggeredTime = getJobRes._source.triggered_time;
-      const jobId = getJobRes._id;
+    if (job) {
+      const reportMetadata = backendToUiReport(job);
+      const reportId = job.id;
       logger.info(
-        `scheduled job sent from scheduler with report definition id: ${reportDefinitionId}`
+        `scheduled job sent from scheduler with report id: ${reportId}`
       );
 
-      await executeScheduledJob(
-        reportDefinitionId,
-        triggeredTime,
+      const reportData = await createScheduledReport(
+        reportId,
+        reportMetadata,
         esClient,
+        esReportsClient,
         notificationClient,
         logger
       );
-
-      // updateJobStatus, release/delete lock of the job
-      const updateJobStatusRes = await schedulerClient.callAsInternalUser(
-        'reports_scheduler.updateJobStatus',
-        {
-          jobId: jobId,
-        }
-      );
-      logger.info(`done executing job. ${updateJobStatusRes}`);
+      logger.info('done executing job');
     } else {
       // 204 no content is returned, 204 doesn't have response body
-      logger.info('no available job in queue');
+      logger.info(`no available job in queue ${JSON.stringify(esResp)}`);
     }
   } catch (error) {
     // TODO: need better error handling
@@ -77,63 +66,6 @@ async function pollAndExecuteJob(
       logger.error(`${error.statusCode} ${parseEsErrorResponse(error)}`);
     }
   }
-}
-
-async function executeScheduledJob(
-  reportDefinitionId: string,
-  triggeredTime: number,
-  esClient: ILegacyClusterClient,
-  notificationClient: ILegacyClusterClient,
-  logger: Logger
-) {
-  try {
-    // retrieve report definition
-    const esResp = await esClient.callAsInternalUser('get', {
-      index: CONFIG_INDEX_NAME.reportDefinition,
-      id: reportDefinitionId,
-    });
-    const reportDefinition = esResp._source.report_definition;
-    // compose query_url and create report object based on report definition and triggered_time
-    const reportMetaData = createReportMetaData(
-      reportDefinition,
-      triggeredTime
-    );
-
-    const reportData = await createScheduledReport(
-      reportMetaData,
-      esClient,
-      notificationClient,
-      logger
-    );
-
-    logger.info(`new scheduled report created: ${reportData.fileName}`);
-  } catch (error) {
-    logger.error(
-      `fail to create scheduled report(report definition id:${reportDefinitionId}): ${error}`
-    );
-  }
-}
-
-function createReportMetaData(
-  reportDefinition: any,
-  triggeredTime: number
-): ReportSchemaType {
-  const coreParams: DataReportSchemaType | VisualReportSchemaType =
-    reportDefinition.report_params.core_params;
-  const duration = moment.duration(coreParams.time_duration);
-  const base_url = coreParams.base_url;
-  const timeTo = moment(triggeredTime);
-  const timeFrom = moment(timeTo).subtract(duration);
-  const queryUrl = `${base_url}?_g=(time:(from:'${timeFrom.toISOString()}',to:'${timeTo.toISOString()}'))`;
-  const report: ReportSchemaType = {
-    query_url: queryUrl,
-    time_from: timeFrom.valueOf(),
-    time_to: triggeredTime,
-    report_definition: {
-      ...reportDefinition,
-    },
-  };
-  return report;
 }
 
 export { pollAndExecuteJob };

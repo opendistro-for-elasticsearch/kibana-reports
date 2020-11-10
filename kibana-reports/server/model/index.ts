@@ -33,6 +33,8 @@ import {
 } from '../routes/utils/constants';
 
 export const dataReportSchema = schema.object({
+  // Need this to build the links in email
+  origin: schema.uri(), //e.g. https://xxxxx.com
   base_url: schema.string({
     validate(value) {
       if (!isValidRelativeUrl(value)) {
@@ -55,7 +57,9 @@ export const dataReportSchema = schema.object({
   excel: schema.boolean({ defaultValue: true }),
 });
 
-const visualReportSchema = schema.object({
+export const visualReportSchema = schema.object({
+  // Need this to build the links in email
+  origin: schema.uri(), //e.g. https://xxxxx.com
   base_url: schema.string({
     validate(value) {
       if (!isValidRelativeUrl(value)) {
@@ -88,6 +92,10 @@ export const intervalSchema = schema.object({
       schema.literal('MINUTES'),
       schema.literal('HOURS'),
       schema.literal('DAYS'),
+      // TODO: Backend always saves as following format, maintain one set of format later
+      schema.literal('Minutes'),
+      schema.literal('Hours'),
+      schema.literal('Days'),
     ]),
     // timestamp
     start_time: schema.number(),
@@ -142,13 +150,27 @@ export const channelSchema = schema.object({
     }),
     { minSize: 1 }
   ),
-  // TODO: consider add this field next to url-related fields.
-  // Need this to build the links in email
-  origin: schema.uri(), //e.g. https://xxxxx.com
   title: schema.string(),
   textDescription: schema.string(),
   htmlDescription: schema.maybe(schema.string()),
   channelIds: schema.maybe(schema.arrayOf(schema.string())),
+});
+
+export const triggerSchema = schema.object({
+  trigger_type: schema.oneOf([
+    /*
+      TODO: Alerting will be added in the future.
+      Currently @kbn/config-schema has no support for more than 2 conditions, keep an eye on library update
+    */
+    schema.literal(TRIGGER_TYPE.schedule),
+    schema.literal(TRIGGER_TYPE.onDemand),
+  ]),
+  trigger_params: schema.conditional(
+    schema.siblingRef('trigger_type'),
+    TRIGGER_TYPE.onDemand,
+    schema.never(),
+    scheduleSchema
+  ),
 });
 
 export const deliverySchema = schema.object({
@@ -187,23 +209,7 @@ export const reportDefinitionSchema = schema.object({
     ),
   }),
   delivery: deliverySchema,
-  trigger: schema.object({
-    trigger_type: schema.oneOf([
-      /*
-        TODO: Alerting will be added in the future.
-        Currently @kbn/config-schema has no support for more than 2 conditions, keep an eye on library update
-      */
-      schema.literal(TRIGGER_TYPE.schedule),
-      schema.literal(TRIGGER_TYPE.onDemand),
-    ]),
-    trigger_params: schema.conditional(
-      schema.siblingRef('trigger_type'),
-      TRIGGER_TYPE.onDemand,
-      schema.never(),
-      scheduleSchema
-    ),
-  }),
-
+  trigger: triggerSchema,
   time_created: schema.maybe(schema.number()),
   last_updated: schema.maybe(schema.number()),
   status: schema.maybe(
@@ -232,6 +238,8 @@ export const reportSchema = schema.object({
     schema.oneOf([
       schema.literal(REPORT_STATE.created),
       schema.literal(REPORT_STATE.error),
+      schema.literal(REPORT_STATE.pending),
+      schema.literal(REPORT_STATE.shared),
     ])
   ),
 });
@@ -243,3 +251,5 @@ export type VisualReportSchemaType = TypeOf<typeof visualReportSchema>;
 export type ChannelSchemaType = TypeOf<typeof channelSchema>;
 export type KibanaUserSchemaType = TypeOf<typeof kibanaUserSchema>;
 export type DeliverySchemaType = TypeOf<typeof deliverySchema>;
+export type TriggerSchemaType = TypeOf<typeof triggerSchema>;
+export type ScheduleSchemaType = TypeOf<typeof scheduleSchema>;

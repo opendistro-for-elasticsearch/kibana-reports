@@ -79,7 +79,7 @@ export const getTimeFieldsFromUrl = () => {
   let toDateFormat = dateMath.parse(toDateString);
 
   const timeDuration = moment.duration(
-    dateMath.parse(fromDateString).diff(dateMath.parse(toDateString))
+    dateMath.parse(toDateString).diff(dateMath.parse(fromDateString))
   );
 
   return {

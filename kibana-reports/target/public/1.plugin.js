@@ -1994,7 +1994,6 @@ const EmailDelivery = props => {
       setEmailRecipients(recipientsOptions);
       setEmailSubject(title);
       reportDefinitionRequest.delivery.delivery_params.title = title;
-      reportDefinitionRequest.delivery.delivery_params.origin = location.origin;
       handleEmailBody(textDescription);
     }
   };
@@ -2003,8 +2002,6 @@ const EmailDelivery = props => {
     reportDefinitionRequest.delivery.delivery_params = {
       recipients: selectedEmailRecipients.map(option => option.label),
       title: emailSubject,
-      origin: location.origin,
-      //TODO: need better render
       textDescription: emailBody,
       htmlDescription: _utils__WEBPACK_IMPORTED_MODULE_3__["converter"].makeHtml(emailBody)
     };
