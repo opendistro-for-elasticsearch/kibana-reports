@@ -150,9 +150,6 @@ export const channelSchema = schema.object({
     }),
     { minSize: 1 }
   ),
-  // TODO: consider add this field next to url-related fields.
-  // Need this to build the links in email
-  // origin: schema.uri(), //e.g. https://xxxxx.com
   title: schema.string(),
   textDescription: schema.string(),
   htmlDescription: schema.maybe(schema.string()),

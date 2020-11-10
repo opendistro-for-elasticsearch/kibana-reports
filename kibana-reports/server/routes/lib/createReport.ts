@@ -60,7 +60,6 @@ export const createReport = async (
     reportId = savedReportId;
   } else {
     const esResp = await saveReport(isScheduledTask, report, esReportsClient);
-    // reportId = esResp._id;
     reportId = esResp.reportInstance.id;
   }
 

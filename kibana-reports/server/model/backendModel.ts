@@ -41,7 +41,7 @@ export type BackendReportDefinitionType = {
     footer?: string;
   };
   trigger: {
-    triggerType: string; //TODO:
+    triggerType: BACKEND_TRIGGER_TYPE;
     schedule?: CronType | IntervalType;
   };
   delivery?: DeliveryType;

@@ -960,7 +960,7 @@ const NOTIFICATION_API = {
 };
 const BASE_REPORTS_URI = '/_opendistro/_reports';
 const ES_REPORTS_API = {
-  ON_DEMAND_REPORT: `${BASE_REPORTS_URI}/on-demand`,
+  ON_DEMAND_REPORT: `${BASE_REPORTS_URI}/on_demand`,
   REPORT_INSTANCE: `${BASE_REPORTS_URI}/instance`,
   LIST_REPORT_INSTANCES: `${BASE_REPORTS_URI}/instances`,
   REPORT_DEFINITION: `${BASE_REPORTS_URI}/definition`,
