@@ -16,18 +16,13 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
-import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_INSTANCE_LIST_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.createJsonParser
-import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import org.elasticsearch.common.io.stream.StreamInput
 import org.elasticsearch.common.io.stream.StreamOutput
 import org.elasticsearch.common.xcontent.ToXContent
 import org.elasticsearch.common.xcontent.XContentBuilder
 import org.elasticsearch.common.xcontent.XContentFactory
 import org.elasticsearch.common.xcontent.XContentParser
-import org.elasticsearch.common.xcontent.XContentParser.Token
-import org.elasticsearch.common.xcontent.XContentParserUtils
 import java.io.IOException
 
 /**
@@ -35,6 +30,9 @@ import java.io.IOException
  * <pre> JSON format
  * {@code
  * {
+ *   "startIndex":"0",
+ *   "totalHits":"100",
+ *   "totalHitRelation":"eq",
  *   "reportInstanceList":[
  *      // refer [com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance]
  *   ]
@@ -42,9 +40,9 @@ import java.io.IOException
  * }</pre>
  */
 internal class GetAllReportInstancesResponse : BaseResponse {
-    val reportInstanceList: List<ReportInstance>
+    val reportInstanceList: ReportInstanceSearchResults
 
-    constructor(reportInstanceList: List<ReportInstance>) : super() {
+    constructor(reportInstanceList: ReportInstanceSearchResults) : super() {
         this.reportInstanceList = reportInstanceList
     }
 
@@ -56,39 +54,7 @@ internal class GetAllReportInstancesResponse : BaseResponse {
      * @param parser data referenced at parser
      */
     constructor(parser: XContentParser) : super() {
-        var reportInstanceList: List<ReportInstance>? = null
-        XContentParserUtils.ensureExpectedToken(Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
-        while (Token.END_OBJECT != parser.nextToken()) {
-            val fieldName = parser.currentName()
-            parser.nextToken()
-            when (fieldName) {
-                REPORT_INSTANCE_LIST_FIELD -> reportInstanceList = parseReportInstanceList(parser)
-                else -> {
-                    parser.skipChildren()
-                    log.info("$LOG_PREFIX:Skipping Unknown field $fieldName")
-                }
-            }
-        }
-        reportInstanceList ?: throw IllegalArgumentException("$REPORT_INSTANCE_LIST_FIELD field absent")
-        this.reportInstanceList = reportInstanceList
-    }
-
-    companion object {
-        private val log by logger(GetAllReportInstancesResponse::class.java)
-
-        /**
-         * Parse the report instance list from parser
-         * @param parser data referenced at parser
-         * @return created list of ReportInstance
-         */
-        private fun parseReportInstanceList(parser: XContentParser): List<ReportInstance> {
-            val retList: MutableList<ReportInstance> = mutableListOf()
-            XContentParserUtils.ensureExpectedToken(Token.START_ARRAY, parser.currentToken(), parser::getTokenLocation)
-            while (parser.nextToken() != Token.END_ARRAY) {
-                retList.add(ReportInstance.parse(parser))
-            }
-            return retList
-        }
+        this.reportInstanceList = ReportInstanceSearchResults(parser)
     }
 
     /**
@@ -103,9 +69,6 @@ internal class GetAllReportInstancesResponse : BaseResponse {
      * {@inheritDoc}
      */
     override fun toXContent(builder: XContentBuilder?, params: ToXContent.Params?): XContentBuilder {
-        builder!!.startObject()
-            .startArray(REPORT_INSTANCE_LIST_FIELD)
-        reportInstanceList.forEach { it.toXContent(builder, ToXContent.EMPTY_PARAMS, true) }
-        return builder.endArray().endObject()
+        return reportInstanceList.toXContent(builder, params)
     }
 }

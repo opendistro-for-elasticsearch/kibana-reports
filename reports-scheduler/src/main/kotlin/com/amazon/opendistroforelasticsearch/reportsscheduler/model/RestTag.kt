@@ -36,5 +36,6 @@ internal object RestTag {
     const val REPORT_DEFINITION_ID_FIELD = "reportDefinitionId"
     const val REPORT_DEFINITION_DETAILS_FIELD = "reportDefinitionDetails"
     const val FROM_INDEX_FIELD = "fromIndex"
+    const val MAX_ITEMS_FIELD = "maxItems"
     const val RETRY_AFTER_FIELD = "retryAfter"
 }

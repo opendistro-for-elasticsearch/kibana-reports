@@ -20,6 +20,8 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetAllRepor
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportInstancesRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.FROM_INDEX_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.MAX_ITEMS_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import org.elasticsearch.client.node.NodeClient
 import org.elasticsearch.rest.BaseRestHandler
 import org.elasticsearch.rest.BaseRestHandler.RestChannelConsumer
@@ -53,7 +55,7 @@ internal class ReportInstanceListRestHandler : BaseRestHandler() {
         return listOf(
             /**
              * Get all report instances (from optional fromIndex)
-             * Request URL: GET LIST_REPORT_INSTANCES_URL[?fromIndex=1000]
+             * Request URL: GET LIST_REPORT_INSTANCES_URL[?[fromIndex=1000]&[maxItems=100]]
              * Request body: None
              * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportInstancesResponse]
              */
@@ -65,7 +67,7 @@ internal class ReportInstanceListRestHandler : BaseRestHandler() {
      * {@inheritDoc}
      */
     override fun responseParams(): Set<String> {
-        return setOf(FROM_INDEX_FIELD)
+        return setOf(FROM_INDEX_FIELD, MAX_ITEMS_FIELD)
     }
 
     /**
@@ -73,10 +75,11 @@ internal class ReportInstanceListRestHandler : BaseRestHandler() {
      */
     override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
         val from = request.param(FROM_INDEX_FIELD)?.toIntOrNull() ?: 0
+        val maxItems = request.param(MAX_ITEMS_FIELD)?.toIntOrNull() ?: PluginSettings.defaultItemsQueryCount
         return when (request.method()) {
             GET -> RestChannelConsumer {
                 client.execute(GetAllReportInstancesAction.ACTION_TYPE,
-                    GetAllReportInstancesRequest(from),
+                    GetAllReportInstancesRequest(from, maxItems),
                     RestResponseToXContentListener(it))
             }
             else -> RestChannelConsumer {

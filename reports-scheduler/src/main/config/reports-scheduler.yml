@@ -24,3 +24,4 @@ opendistro.reports.scheduler:
     minPollingDurationSeconds: 300 # 5 Minutes, Minimum 60 seconds
     maxPollingDurationSeconds: 900 # 15 Minutes, Minimum 5 Minutes
     maxLockRetries: 1 # Max number of retries to retry locking
+    defaultItemsQueryCount: 100 # default number of items to query

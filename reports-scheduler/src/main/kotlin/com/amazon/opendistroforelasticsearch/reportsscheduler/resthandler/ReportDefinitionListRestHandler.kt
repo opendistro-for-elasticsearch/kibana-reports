@@ -20,6 +20,8 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetAllRepor
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportDefinitionActions
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportDefinitionsRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.FROM_INDEX_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.MAX_ITEMS_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import org.elasticsearch.client.node.NodeClient
 import org.elasticsearch.rest.BaseRestHandler
 import org.elasticsearch.rest.BaseRestHandler.RestChannelConsumer
@@ -53,7 +55,7 @@ internal class ReportDefinitionListRestHandler : BaseRestHandler() {
         return listOf(
             /**
              * Get all report definitions (from optional fromIndex)
-             * Request URL: GET LIST_REPORT_DEFINITIONS_URL[?fromIndex=1000]
+             * Request URL: GET LIST_REPORT_DEFINITIONS_URL[?[fromIndex=1000]&[maxItems=100]]
              * Request body: None
              * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportDefinitionsResponse]
              */
@@ -66,10 +68,11 @@ internal class ReportDefinitionListRestHandler : BaseRestHandler() {
      */
     override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
         val from = request.param(FROM_INDEX_FIELD)?.toIntOrNull() ?: 0
+        val maxItems = request.param(MAX_ITEMS_FIELD)?.toIntOrNull() ?: PluginSettings.defaultItemsQueryCount
         return when (request.method()) {
             GET -> RestChannelConsumer {
                 client.execute(GetAllReportDefinitionsAction.ACTION_TYPE,
-                    GetAllReportDefinitionsRequest(from),
+                    GetAllReportDefinitionsRequest(from, maxItems),
                     RestResponseToXContentListener(it))
             }
             else -> RestChannelConsumer {
@@ -82,6 +85,6 @@ internal class ReportDefinitionListRestHandler : BaseRestHandler() {
      * {@inheritDoc}
      */
     override fun responseParams(): Set<String> {
-        return setOf(FROM_INDEX_FIELD)
+        return setOf(FROM_INDEX_FIELD, MAX_ITEMS_FIELD)
     }
 }

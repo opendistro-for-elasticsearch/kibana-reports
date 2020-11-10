@@ -74,6 +74,11 @@ internal object PluginSettings {
     private const val MAX_LOCK_RETRIES_KEY = "$POLLING_KEY_PREFIX.maxLockRetries"
 
     /**
+     * Setting to choose default number of items to query.
+     */
+    private const val DEFAULT_ITEMS_QUERY_COUNT_KEY = "$POLLING_KEY_PREFIX.defaultItemsQueryCount"
+
+    /**
      * Default operation timeout for network operations.
      */
     private const val DEFAULT_OPERATION_TIMEOUT_MS = 60000L
@@ -124,6 +129,16 @@ internal object PluginSettings {
     private const val MINIMUM_LOCK_RETRIES = 1
 
     /**
+     * Default number of items to query.
+     */
+    private const val DEFAULT_ITEMS_QUERY_COUNT_VALUE = 100
+
+    /**
+     * Minimum number of items to query.
+     */
+    private const val MINIMUM_ITEMS_QUERY_COUNT = 10
+
+    /**
      * Operation timeout setting in ms for I/O operations
      */
     @Volatile
@@ -153,6 +168,12 @@ internal object PluginSettings {
     @Volatile
     var maxLockRetries: Int
 
+    /**
+     * Default number of items to query.
+     */
+    @Volatile
+    var defaultItemsQueryCount: Int
+
     private const val DECIMAL_RADIX: Int = 10
 
     private val log = LogManager.getLogger(javaClass)
@@ -177,13 +198,16 @@ internal object PluginSettings {
         maxPollingDurationSeconds = (settings?.get(MAX_POLLING_DURATION_S_KEY)?.toInt())
             ?: DEFAULT_MAX_POLLING_DURATION_S
         maxLockRetries = (settings?.get(MAX_LOCK_RETRIES_KEY)?.toInt()) ?: DEFAULT_MAX_LOCK_RETRIES
+        defaultItemsQueryCount = (settings?.get(DEFAULT_ITEMS_QUERY_COUNT_KEY)?.toInt())
+            ?: DEFAULT_ITEMS_QUERY_COUNT_VALUE
 
         defaultSettings = mapOf(
             OPERATION_TIMEOUT_MS_KEY to operationTimeoutMs.toString(DECIMAL_RADIX),
             JOB_LOCK_DURATION_S_KEY to jobLockDurationSeconds.toString(DECIMAL_RADIX),
             MIN_POLLING_DURATION_S_KEY to minPollingDurationSeconds.toString(DECIMAL_RADIX),
             MAX_POLLING_DURATION_S_KEY to maxPollingDurationSeconds.toString(DECIMAL_RADIX),
-            MAX_LOCK_RETRIES_KEY to maxLockRetries.toString(DECIMAL_RADIX)
+            MAX_LOCK_RETRIES_KEY to maxLockRetries.toString(DECIMAL_RADIX),
+            DEFAULT_ITEMS_QUERY_COUNT_KEY to defaultItemsQueryCount.toString(DECIMAL_RADIX)
         )
     }
 
@@ -222,6 +246,13 @@ internal object PluginSettings {
         NodeScope, Dynamic
     )
 
+    private val DEFAULT_ITEMS_QUERY_COUNT: Setting<Int> = Setting.intSetting(
+        DEFAULT_ITEMS_QUERY_COUNT_KEY,
+        defaultSettings[DEFAULT_ITEMS_QUERY_COUNT_KEY]!!.toInt(),
+        MINIMUM_ITEMS_QUERY_COUNT,
+        NodeScope, Dynamic
+    )
+
     /**
      * Returns list of additional settings available specific to this plugin.
      *
@@ -232,7 +263,8 @@ internal object PluginSettings {
             JOB_LOCK_DURATION_S,
             MIN_POLLING_DURATION_S,
             MAX_POLLING_DURATION_S,
-            MAX_LOCK_RETRIES
+            MAX_LOCK_RETRIES,
+            DEFAULT_ITEMS_QUERY_COUNT
         )
     }
 
@@ -246,6 +278,7 @@ internal object PluginSettings {
         minPollingDurationSeconds = MIN_POLLING_DURATION_S.get(clusterService.settings)
         maxPollingDurationSeconds = MAX_POLLING_DURATION_S.get(clusterService.settings)
         maxLockRetries = MAX_LOCK_RETRIES.get(clusterService.settings)
+        defaultItemsQueryCount = DEFAULT_ITEMS_QUERY_COUNT.get(clusterService.settings)
     }
 
     /**
@@ -278,6 +311,11 @@ internal object PluginSettings {
             log.debug("$LOG_PREFIX:$MAX_LOCK_RETRIES_KEY -autoUpdatedTo-> $clusterMaxLockRetries")
             maxLockRetries = clusterMaxLockRetries
         }
+        val clusterDefaultItemsQueryCount = clusterService.clusterSettings.get(DEFAULT_ITEMS_QUERY_COUNT)
+        if (clusterDefaultItemsQueryCount != null) {
+            log.debug("$LOG_PREFIX:$DEFAULT_ITEMS_QUERY_COUNT_KEY -autoUpdatedTo-> $clusterDefaultItemsQueryCount")
+            defaultItemsQueryCount = clusterDefaultItemsQueryCount
+        }
     }
 
     /**
@@ -309,6 +347,10 @@ internal object PluginSettings {
         clusterService.clusterSettings.addSettingsUpdateConsumer(MAX_LOCK_RETRIES) {
             maxLockRetries = it
             log.info("$LOG_PREFIX:$MAX_LOCK_RETRIES_KEY -updatedTo-> $it")
+        }
+        clusterService.clusterSettings.addSettingsUpdateConsumer(DEFAULT_ITEMS_QUERY_COUNT) {
+            defaultItemsQueryCount = it
+            log.info("$LOG_PREFIX:$DEFAULT_ITEMS_QUERY_COUNT_KEY -updatedTo-> $it")
         }
     }
 }
