@@ -157,6 +157,7 @@ export default function (router: IRouter) {
       };
 
       try {
+        // @ts-ignore
         const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
           request
         );

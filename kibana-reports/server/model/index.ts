@@ -186,28 +186,30 @@ export const deliverySchema = schema.object({
   ),
 });
 
-export const reportDefinitionSchema = schema.object({
-  report_params: schema.object({
-    report_name: schema.string({
-      validate(value) {
-        if (!regexReportName.test(value)) {
-          return `invald report name ${value}.\nMust be non-empty, allow a-z, A-Z, 0-9, (), [], ',' - and _ and spaces`;
-        }
-      },
-    }),
-    report_source: schema.oneOf([
-      schema.literal(REPORT_TYPE.dashboard),
-      schema.literal(REPORT_TYPE.visualization),
-      schema.literal(REPORT_TYPE.savedSearch),
-    ]),
-    description: schema.string(),
-    core_params: schema.conditional(
-      schema.siblingRef('report_source'),
-      REPORT_TYPE.savedSearch,
-      dataReportSchema,
-      visualReportSchema
-    ),
+export const reportParamsSchema = schema.object({
+  report_name: schema.string({
+    validate(value) {
+      if (!regexReportName.test(value)) {
+        return `invald report name ${value}.\nMust be non-empty, allow a-z, A-Z, 0-9, (), [], ',' - and _ and spaces`;
+      }
+    },
   }),
+  report_source: schema.oneOf([
+    schema.literal(REPORT_TYPE.dashboard),
+    schema.literal(REPORT_TYPE.visualization),
+    schema.literal(REPORT_TYPE.savedSearch),
+  ]),
+  description: schema.string(),
+  core_params: schema.conditional(
+    schema.siblingRef('report_source'),
+    REPORT_TYPE.savedSearch,
+    dataReportSchema,
+    visualReportSchema
+  ),
+});
+
+export const reportDefinitionSchema = schema.object({
+  report_params: reportParamsSchema,
   delivery: deliverySchema,
   trigger: triggerSchema,
   time_created: schema.maybe(schema.number()),
@@ -253,3 +255,4 @@ export type KibanaUserSchemaType = TypeOf<typeof kibanaUserSchema>;
 export type DeliverySchemaType = TypeOf<typeof deliverySchema>;
 export type TriggerSchemaType = TypeOf<typeof triggerSchema>;
 export type ScheduleSchemaType = TypeOf<typeof scheduleSchema>;
+export type ReportParamsSchemaType = TypeOf<typeof reportParamsSchema>;

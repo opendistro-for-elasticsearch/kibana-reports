@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import { ReportSchemaType } from 'server/model';
+import { ChannelSchemaType, ReportSchemaType } from 'server/model';
 import {
   ILegacyScopedClusterClient,
   ILegacyClusterClient,
@@ -50,7 +50,7 @@ export const deliverReport = async (
         report_params: { report_name: reportName },
       },
     } = report;
-    const { htmlDescription } = deliveryParams;
+    const { htmlDescription } = deliveryParams as ChannelSchemaType;
     const origin = report.report_definition.report_params.core_params.origin;
     const originalQueryUrl = origin + queryUrl;
     /**
@@ -107,7 +107,7 @@ export const deliverReport = async (
       `notification plugin response: ${JSON.stringify(notificationResp)}`
     );
 
-    notificationResp.recipients.map((recipient) => {
+    notificationResp.recipients.map((recipient: any) => {
       if (recipient.statusCode !== 200) {
         throw new Error(
           `Fail to deliver report ${JSON.stringify(

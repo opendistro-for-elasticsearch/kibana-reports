@@ -58,13 +58,7 @@ async function pollAndExecuteJob(
       logger.info(`no available job in queue ${JSON.stringify(esResp)}`);
     }
   } catch (error) {
-    // TODO: need better error handling
-    if (error.statusCode === 404) {
-      logger.info(`${error.statusCode} ${parseEsErrorResponse(error)}`);
-    } else {
-      // for reports-scheduler getJob API and updateJobStatus API error
-      logger.error(`${error.statusCode} ${parseEsErrorResponse(error)}`);
-    }
+    logger.error(`${error.statusCode} ${parseEsErrorResponse(error)}`);
   }
 }
 
