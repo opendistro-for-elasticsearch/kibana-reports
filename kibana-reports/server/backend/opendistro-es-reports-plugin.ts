@@ -34,9 +34,9 @@ export default function (Client: any, config: any, components: any) {
 
   esReports.updateReportInstanceStatus = clientAction({
     url: {
-      fmt: `${ES_REPORTS_API.REPORT_INSTANCE}?id=<%=reportId%>`,
+      fmt: `${ES_REPORTS_API.REPORT_INSTANCE}/<%=reportInstanceId%>`,
       req: {
-        reportId: {
+        reportInstanceId: {
           type: 'string',
           required: true,
         },
@@ -48,9 +48,9 @@ export default function (Client: any, config: any, components: any) {
 
   esReports.getReportById = clientAction({
     url: {
-      fmt: `${ES_REPORTS_API.REPORT_INSTANCE}?id=<%=reportId%>`,
+      fmt: `${ES_REPORTS_API.REPORT_INSTANCE}/<%=reportInstanceId%>`,
       req: {
-        reportId: {
+        reportInstanceId: {
           type: 'string',
           required: true,
         },
@@ -86,7 +86,7 @@ export default function (Client: any, config: any, components: any) {
 
   esReports.updateReportDefinitionById = clientAction({
     url: {
-      fmt: `${ES_REPORTS_API.REPORT_DEFINITION}?id=<%=reportDefinitionId%>`,
+      fmt: `${ES_REPORTS_API.REPORT_DEFINITION}/<%=reportDefinitionId%>`,
       req: {
         reportDefinitionId: {
           type: 'string',
@@ -100,7 +100,7 @@ export default function (Client: any, config: any, components: any) {
 
   esReports.getReportDefinitionById = clientAction({
     url: {
-      fmt: `${ES_REPORTS_API.REPORT_DEFINITION}?id=<%=reportDefinitionId%>`,
+      fmt: `${ES_REPORTS_API.REPORT_DEFINITION}/<%=reportDefinitionId%>`,
       req: {
         reportDefinitionId: {
           type: 'string',
@@ -127,7 +127,7 @@ export default function (Client: any, config: any, components: any) {
 
   esReports.deleteReportDefinitionById = clientAction({
     url: {
-      fmt: `${ES_REPORTS_API.REPORT_DEFINITION}?id=<%=reportDefinitionId%>`,
+      fmt: `${ES_REPORTS_API.REPORT_DEFINITION}/<%=reportDefinitionId%>`,
       req: {
         reportDefinitionId: {
           type: 'string',
