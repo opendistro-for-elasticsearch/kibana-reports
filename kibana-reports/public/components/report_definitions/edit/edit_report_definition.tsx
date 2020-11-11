@@ -38,7 +38,7 @@ export function EditReportDefinition(props) {
 
   const addErrorUpdatingReportDefinitionToast = () => {
     const errorToast = {
-      title: 'Error updating report definition',
+      title: 'Error updating report definition.',
       color: 'danger',
       iconType: 'alert',
       id: 'errorToast',
@@ -52,7 +52,7 @@ export function EditReportDefinition(props) {
 
   const addErrorDeletingReportDefinitionToastHandler = () => {
     const errorToast = {
-      title: 'Error deleting old scheduled report definition',
+      title: 'Error deleting old scheduled report definition.',
       color: 'danger',
       iconType: 'alert',
       id: 'errorDeleteToast',

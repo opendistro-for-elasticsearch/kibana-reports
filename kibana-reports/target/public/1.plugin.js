@@ -211,7 +211,7 @@ function Main(props) {
 
   const addReportsTableContentErrorToastHandler = () => {
     const errorToast = {
-      title: 'Error generating reports table content',
+      title: 'Error generating reports table content.',
       color: 'danger',
       iconType: 'alert',
       id: 'reportsTableErrorToast'
@@ -225,7 +225,7 @@ function Main(props) {
 
   const addReportDefinitionsTableErrorToastHandler = () => {
     const errorToast = {
-      title: 'Error generating report definitions table content',
+      title: 'Error generating report definitions table content.',
       color: 'danger',
       iconType: 'alert',
       id: 'reportDefinitionsTableErrorToast'
@@ -449,7 +449,7 @@ function ReportDefinitionDetails(props) {
 
   const addErrorLoadingDetailsToastHandler = () => {
     const errorToast = {
-      title: 'Error loading report definition details',
+      title: 'Error loading report definition details.',
       color: 'danger',
       iconType: 'alert',
       id: 'reportDefinitionDetailsErrorToast'
@@ -477,7 +477,7 @@ function ReportDefinitionDetails(props) {
 
   const addErrorGeneratingReportToastHandler = () => {
     const errorToast = {
-      title: 'Error generating report',
+      title: 'Error generating report.',
       color: 'danger',
       iconType: 'alert',
       id: 'generateReportErrorToast'
@@ -505,7 +505,7 @@ function ReportDefinitionDetails(props) {
 
   const addErrorEnablingScheduleToastHandler = () => {
     const errorToast = {
-      title: 'Error enabling schedule',
+      title: 'Error enabling schedule.',
       color: 'danger',
       iconType: 'alert',
       id: 'errorToast'
@@ -533,7 +533,7 @@ function ReportDefinitionDetails(props) {
 
   const addErrorDisablingScheduleToastHandler = () => {
     const errorToast = {
-      title: 'Error disabling schedule',
+      title: 'Error disabling schedule.',
       color: 'danger',
       iconType: 'alert',
       id: 'errorDisableToast'
@@ -547,7 +547,7 @@ function ReportDefinitionDetails(props) {
 
   const addErrorDeletingReportDefinitionToastHandler = () => {
     const errorToast = {
-      title: 'Error deleting report definition',
+      title: 'Error deleting report definition.',
       color: 'danger',
       iconType: 'alert',
       id: 'errorDeleteToast'
@@ -1061,7 +1061,7 @@ function ReportDetails(props) {
 
   const addErrorToastHandler = () => {
     const errorToast = {
-      title: 'Error loading report details',
+      title: 'Error loading report details.',
       color: 'danger',
       iconType: 'alert',
       id: 'reportDetailsErrorToast'
@@ -1555,7 +1555,7 @@ function CreateReport(props) {
 
   const addErrorToastHandler = () => {
     const errorToast = {
-      title: 'Error creating report definition',
+      title: 'Error creating report definition.',
       color: 'danger',
       iconType: 'alert',
       id: 'errorToast'
@@ -1569,7 +1569,7 @@ function CreateReport(props) {
 
   const addInvalidTimeRangeToastHandler = () => {
     const errorToast = {
-      title: 'Invalid time range selected',
+      title: 'Invalid time range selected.',
       color: 'danger',
       iconType: 'alert',
       id: 'timeRangeErrorToast'
@@ -2126,7 +2126,7 @@ function EditReportDefinition(props) {
 
   const addErrorUpdatingReportDefinitionToast = () => {
     const errorToast = {
-      title: 'Error updating report definition',
+      title: 'Error updating report definition.',
       color: 'danger',
       iconType: 'alert',
       id: 'errorToast'
@@ -2140,7 +2140,7 @@ function EditReportDefinition(props) {
 
   const addErrorDeletingReportDefinitionToastHandler = () => {
     const errorToast = {
-      title: 'Error deleting old scheduled report definition',
+      title: 'Error deleting old scheduled report definition.',
       color: 'danger',
       iconType: 'alert',
       id: 'errorDeleteToast'
