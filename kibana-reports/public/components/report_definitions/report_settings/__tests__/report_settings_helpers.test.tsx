@@ -44,26 +44,26 @@ describe('report_settings_helpers tests', () => {
 
   test('getDashboardBaseUrlCreate', () => {
     const baseUrl = getDashboardBaseUrlCreate(true, '12345', true);
-    expect(baseUrl).toBe('/app/kibana#/dashboard/');
+    expect(baseUrl).toBe('/app/dashboards#/view/');
 
     const baseUrlNotFromEdit = getDashboardBaseUrlCreate(false, '12345', true);
-    expect(baseUrlNotFromEdit).toBe('/app/kibana#/dashboard/');
+    expect(baseUrlNotFromEdit).toBe('/app/dashboards#/view/');
   });
 
   test('getVisualizationBaseUrlCreate', () => {
     const baseUrl = getVisualizationBaseUrlCreate(true, true);
-    expect(baseUrl).toBe('/app/kibana#/visualize/edit/');
+    expect(baseUrl).toBe('/app/visualize#/edit/');
 
     const baseUrlNotFromEdit = getVisualizationBaseUrlCreate(false, true);
-    expect(baseUrlNotFromEdit).toBe('/app/kibana#/visualize/edit/');
+    expect(baseUrlNotFromEdit).toBe('/app/visualize#/edit/');
   });
 
   test('getSavedSearchBaseUrlCreate', () => {
     const baseUrl = getSavedSearchBaseUrlCreate(true, true);
-    expect(baseUrl).toBe('/app/kibana#/discover/');
+    expect(baseUrl).toBe('/app/discover#/view/');
 
     const baseUrlNotFromEdit = getSavedSearchBaseUrlCreate(false, true);
-    expect(baseUrlNotFromEdit).toBe('/app/kibana#/discover/');
+    expect(baseUrlNotFromEdit).toBe('/app/discover#/view/');
   });
 
   test('getDashboardOptions', () => {

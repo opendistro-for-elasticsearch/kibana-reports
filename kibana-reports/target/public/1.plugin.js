@@ -2965,7 +2965,7 @@ const getDashboardBaseUrlCreate = (edit, editDefinitionId, fromInContext) => {
   if (!fromInContext) {
     baseUrl = location.pathname + location.hash;
   } else {
-    baseUrl = '/app/kibana#/dashboard/';
+    baseUrl = '/app/dashboards#/view/';
   }
 
   if (edit) {
@@ -2974,7 +2974,7 @@ const getDashboardBaseUrlCreate = (edit, editDefinitionId, fromInContext) => {
     return baseUrl;
   }
 
-  return baseUrl.replace('opendistro_kibana_reports#/create', 'kibana#/dashboard/');
+  return baseUrl.replace('opendistro_kibana_reports#/create', 'dashboards#/view/');
 };
 const getVisualizationBaseUrlCreate = (edit, fromInContext) => {
   let baseUrl;
@@ -2982,16 +2982,16 @@ const getVisualizationBaseUrlCreate = (edit, fromInContext) => {
   if (!fromInContext) {
     baseUrl = location.pathname + location.hash;
   } else {
-    baseUrl = '/app/kibana#/visualize/edit/';
+    baseUrl = '/app/visualize#/edit/';
   }
 
   if (edit) {
-    return baseUrl.replace('opendistro_kibana_reports#/edit', 'kibana#/visualize/edit');
+    return baseUrl.replace('opendistro_kibana_reports#/edit', 'visualize#/edit/');
   } else if (fromInContext) {
     return baseUrl;
   }
 
-  return baseUrl.replace('opendistro_kibana_reports#/create', 'kibana#/visualize/edit/');
+  return baseUrl.replace('opendistro_kibana_reports#/create', 'visualize#/edit/');
 };
 const getSavedSearchBaseUrlCreate = (edit, fromInContext) => {
   let baseUrl;
@@ -2999,16 +2999,16 @@ const getSavedSearchBaseUrlCreate = (edit, fromInContext) => {
   if (!fromInContext) {
     baseUrl = location.pathname + location.hash;
   } else {
-    baseUrl = '/app/kibana#/discover/';
+    baseUrl = '/app/discover#/view/';
   }
 
   if (edit) {
-    return baseUrl.replace('opendistro_kibana_reports#/edit', 'kibana#/discover/');
+    return baseUrl.replace('opendistro_kibana_reports#/edit', 'discover#/view/');
   } else if (fromInContext) {
     return baseUrl;
   }
 
-  return baseUrl.replace('opendistro_kibana_reports#/create', 'kibana#/discover/');
+  return baseUrl.replace('opendistro_kibana_reports#/create', 'discover#/view/');
 };
 const getDashboardOptions = data => {
   let index;
