@@ -21,7 +21,6 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.action.OnDemandRep
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.InContextReportCreateRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.OnDemandReportCreateRequest
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.contentParserNextToken
 import org.elasticsearch.client.node.NodeClient
