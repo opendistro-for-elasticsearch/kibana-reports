@@ -42,7 +42,7 @@ import {
 
 export const uiToBackendReportDefinition = (
   reportDefinition: ReportDefinitionSchemaType
-) => {
+): BackendReportDefinitionType => {
   const {
     report_params: {
       report_name: reportName,
@@ -74,14 +74,15 @@ export const uiToBackendReportDefinition = (
     format: {
       duration: timeDuration,
       fileFormat: getBackendReportFormat(reportFormat),
-      limit: limit,
-      header: header,
-      footer: footer,
+      ...(limit && { limit: limit }),
+      ...(header && { header: header }),
+      ...(footer && { footer: footer }),
     },
     trigger: getBackendTrigger(trigger),
-    delivery: getBackendDelivery(delivery),
+    ...(getBackendDelivery(delivery) && {
+      delivery: getBackendDelivery(delivery),
+    }),
   };
-
   return backendReportDefinition;
 };
 

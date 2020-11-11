@@ -26,17 +26,11 @@ export type BackendReportInstanceType = {
   createdTimeMs?: number;
   beginTimeMs: number;
   endTimeMs: number;
-  roles?: Array<string>;
+  access?: string[];
   status: BACKEND_REPORT_STATE;
   statusText?: string;
   inContextDownloadUrlPath?: string;
-  reportDefinitionDetails: {
-    id: string;
-    lastUpdatedTimeMs: number;
-    createdTimeMs: number;
-    roles?: string[];
-    reportDefinition: BackendReportDefinitionType;
-  };
+  reportDefinitionDetails: BackendReportDefinitionDetailsType;
 };
 
 export type BackendReportDefinitionType = {
@@ -66,7 +60,7 @@ export type BackendReportDefinitionDetailsType = {
   id?: string;
   lastUpdatedTimeMs: number;
   createdTimeMs: number;
-  roles?: string[];
+  access?: string[];
   reportDefinition: BackendReportDefinitionType;
 };
 

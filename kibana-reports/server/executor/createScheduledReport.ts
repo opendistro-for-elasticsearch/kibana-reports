@@ -18,13 +18,13 @@ import {
   REPORT_STATE,
   LOCAL_HOST,
 } from '../routes/utils/constants';
-import { updateReportState } from '../routes/utils/helpers';
 import { ILegacyClusterClient, Logger } from '../../../../src/core/server';
 import { createSavedSearchReport } from '../routes/utils/savedSearchReportHelper';
 import { ReportSchemaType } from '../model';
 import { CreateReportResultType } from '../routes/utils/types';
 import { createVisualReport } from '../routes/utils/visualReportHelper';
 import { deliverReport } from '../routes/lib/deliverReport';
+import { updateReportState } from '../routes/lib/updateReportState';
 
 export const createScheduledReport = async (
   reportId: string,

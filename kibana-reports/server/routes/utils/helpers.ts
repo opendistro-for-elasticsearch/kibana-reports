@@ -19,13 +19,6 @@ import {
   ILegacyClusterClient,
   ILegacyScopedClusterClient,
 } from '../../../../../src/core/server';
-import { REPORT_STATE } from './constants';
-import { ReportSchemaType } from 'server/model';
-import { BACKEND_REPORT_STATE } from '../../model/backendModel';
-import {
-  getBackendReportState,
-  uiToBackendReportDefinition,
-} from './converters/uiToBackend';
 
 export function parseEsErrorResponse(error: any) {
   if (error.response) {
@@ -79,79 +72,5 @@ export const callCluster = async (
       params
     );
   }
-  return esResp;
-};
-
-export const saveReport = async (
-  isScheduledTask: boolean,
-  report: ReportSchemaType,
-  esClient: ILegacyClusterClient | ILegacyScopedClusterClient
-) => {
-  const reqBody = buildReqBody(report);
-
-  const esResp = await callCluster(
-    esClient,
-    'es_reports.createReport',
-    {
-      body: reqBody,
-    },
-    isScheduledTask
-  );
-
-  return esResp;
-};
-
-export const buildReqBody = (report: ReportSchemaType): any => {
-  const timePending = Date.now();
-  const {
-    time_from: timeFrom,
-    time_to: timeTo,
-    query_url: queryUrl,
-    report_definition: reportDefinition,
-  } = report;
-
-  const reqBody = {
-    beginTimeMs: timeFrom,
-    endTimeMs: timeTo,
-    reportDefinitionDetails: {
-      id: uuidv1(),
-      lastUpdatedTimeMs: timePending,
-      createdTimeMs: timePending,
-      reportDefinition: {
-        ...uiToBackendReportDefinition(reportDefinition),
-        trigger: {
-          triggerType: 'Download', // TODO: this is a corner case for in-context menu button download only
-        },
-      },
-    },
-    status: BACKEND_REPORT_STATE.executing, // download from in-context menu should always pass executing state to backend
-    inContextDownloadUrlPath: queryUrl,
-  };
-  return reqBody;
-};
-
-// The only thing can be updated of a report instance is its "state"
-export const updateReportState = async (
-  isScheduledTask: boolean,
-  reportId: string,
-  esReportsClient: ILegacyClusterClient | ILegacyScopedClusterClient,
-  state: REPORT_STATE
-) => {
-  //Build request body
-  const reqBody = {
-    reportInstanceId: reportId,
-    status: getBackendReportState(state),
-  };
-
-  const esResp = await callCluster(
-    esReportsClient,
-    'es_reports.updateReportInstanceStatus',
-    {
-      reportId: reportId,
-      body: reqBody,
-    },
-    isScheduledTask
-  );
-
   return esResp;
 };

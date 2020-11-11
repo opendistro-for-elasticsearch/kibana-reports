@@ -19,7 +19,7 @@ import {
   LOCAL_HOST,
   SECURITY_AUTH_COOKIE_NAME,
 } from '../utils/constants';
-import { updateReportState, saveReport } from '../utils/helpers';
+
 import {
   ILegacyScopedClusterClient,
   KibanaRequest,
@@ -32,6 +32,8 @@ import { CreateReportResultType } from '../utils/types';
 import { createVisualReport } from '../utils/visualReportHelper';
 import { SetCookie } from 'puppeteer';
 import { deliverReport } from './deliverReport';
+import { updateReportState } from './updateReportState';
+import { saveReport } from './saveReport';
 
 export const createReport = async (
   request: KibanaRequest,
