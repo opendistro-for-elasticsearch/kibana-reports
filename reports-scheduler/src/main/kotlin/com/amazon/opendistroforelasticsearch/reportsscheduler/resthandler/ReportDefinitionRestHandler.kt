@@ -24,7 +24,7 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.action.UpdateRepor
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.CreateReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.DeleteReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionRequest
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ID_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.contentParserNextToken
 import org.elasticsearch.client.node.NodeClient
@@ -70,25 +70,25 @@ internal class ReportDefinitionRestHandler : BaseRestHandler() {
             Route(POST, REPORT_DEFINITION_URL),
             /**
              * Update report definition
-             * Request URL: PUT REPORT_DEFINITION_URL?id=<reportDefinitionId>
+             * Request URL: PUT REPORT_DEFINITION_URL/{reportDefinitionId}
              * Request body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportDefinitionRequest]
              * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportDefinitionResponse]
              */
-            Route(PUT, REPORT_DEFINITION_URL),
+            Route(PUT, "$REPORT_DEFINITION_URL/{$REPORT_DEFINITION_ID_FIELD}"),
             /**
              * Get a report definition
-             * Request URL: GET REPORT_DEFINITION_URL?id=<reportDefinitionId>
+             * Request URL: GET REPORT_DEFINITION_URL/{reportDefinitionId}
              * Request body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionRequest]
              * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionResponse]
              */
-            Route(GET, REPORT_DEFINITION_URL),
+            Route(GET, "$REPORT_DEFINITION_URL/{$REPORT_DEFINITION_ID_FIELD}"),
             /**
              * Delete report definition
-             * Request URL: DELETE REPORT_DEFINITION_URL?id=<reportDefinitionId>
+             * Request URL: DELETE REPORT_DEFINITION_URL/{reportDefinitionId}
              * Request body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.DeleteReportDefinitionRequest]
              * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.DeleteReportDefinitionResponse]
              */
-            Route(DELETE, REPORT_DEFINITION_URL)
+            Route(DELETE, "$REPORT_DEFINITION_URL/{$REPORT_DEFINITION_ID_FIELD}")
         )
     }
 
@@ -96,7 +96,7 @@ internal class ReportDefinitionRestHandler : BaseRestHandler() {
      * {@inheritDoc}
      */
     override fun responseParams(): Set<String> {
-        return setOf(ID_FIELD)
+        return setOf(REPORT_DEFINITION_ID_FIELD)
     }
 
     /**
@@ -112,17 +112,17 @@ internal class ReportDefinitionRestHandler : BaseRestHandler() {
             PUT -> RestChannelConsumer {
                 client.execute(
                     UpdateReportDefinitionAction.ACTION_TYPE,
-                    UpdateReportDefinitionRequest(request.contentParserNextToken(), request.param(ID_FIELD)),
+                    UpdateReportDefinitionRequest(request.contentParserNextToken(), request.param(REPORT_DEFINITION_ID_FIELD)),
                     RestResponseToXContentListener(it))
             }
             GET -> RestChannelConsumer {
                 client.execute(GetReportDefinitionAction.ACTION_TYPE,
-                    GetReportDefinitionRequest(request.param(ID_FIELD)),
+                    GetReportDefinitionRequest(request.param(REPORT_DEFINITION_ID_FIELD)),
                     RestResponseToXContentListener(it))
             }
             DELETE -> RestChannelConsumer {
                 client.execute(DeleteReportDefinitionAction.ACTION_TYPE,
-                    DeleteReportDefinitionRequest(request.param(ID_FIELD)),
+                    DeleteReportDefinitionRequest(request.param(REPORT_DEFINITION_ID_FIELD)),
                     RestResponseToXContentListener(it))
             }
             else -> RestChannelConsumer {

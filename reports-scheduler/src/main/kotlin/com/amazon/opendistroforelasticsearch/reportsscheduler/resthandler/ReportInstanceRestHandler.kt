@@ -20,7 +20,7 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetReportIn
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.UpdateReportInstanceStatusAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportInstanceRequest
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ID_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_INSTANCE_ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportInstanceStatusRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.contentParserNextToken
 import org.elasticsearch.client.node.NodeClient
@@ -57,18 +57,18 @@ internal class ReportInstanceRestHandler : BaseRestHandler() {
         return listOf(
             /**
              * Update report instance status
-             * Request URL: POST REPORT_INSTANCE_URL?id=<reportInstanceId>
+             * Request URL: POST REPORT_INSTANCE_URL/{reportInstanceId}
              * Request body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportInstanceStatusRequest]
              * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportInstanceStatusResponse]
              */
-            Route(POST, REPORT_INSTANCE_URL),
+            Route(POST, "$REPORT_INSTANCE_URL/{$REPORT_INSTANCE_ID_FIELD}"),
             /**
              * Get a report instance information
-             * Request URL: GET REPORT_INSTANCE_URL?id=<reportInstanceId>
+             * Request URL: GET REPORT_INSTANCE_URL/{reportInstanceId}
              * Request body: None
              * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportInstanceResponse]
              */
-            Route(GET, REPORT_INSTANCE_URL)
+            Route(GET, "$REPORT_INSTANCE_URL/{$REPORT_INSTANCE_ID_FIELD}")
         )
     }
 
@@ -76,14 +76,14 @@ internal class ReportInstanceRestHandler : BaseRestHandler() {
      * {@inheritDoc}
      */
     override fun responseParams(): Set<String> {
-        return setOf(ID_FIELD)
+        return setOf(REPORT_INSTANCE_ID_FIELD)
     }
 
     /**
      * {@inheritDoc}
      */
     override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
-        val reportInstanceId = request.param(ID_FIELD) ?: throw IllegalArgumentException("Must specify id")
+        val reportInstanceId = request.param(REPORT_INSTANCE_ID_FIELD) ?: throw IllegalArgumentException("Must specify id")
         return when (request.method()) {
             POST -> RestChannelConsumer {
                 client.execute(UpdateReportInstanceStatusAction.ACTION_TYPE,

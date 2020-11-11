@@ -113,7 +113,7 @@ export default function (router: IRouter) {
         const esResp = await esReportsClient.callAsCurrentUser(
           'es_reports.getReportById',
           {
-            reportId: savedReportId,
+            reportInstanceId: savedReportId,
           }
         );
         // convert report to use UI model
@@ -219,7 +219,7 @@ export default function (router: IRouter) {
         const esResp = await esReportsClient.callAsCurrentUser(
           'es_reports.getReportById',
           {
-            reportId: request.params.reportId,
+            reportInstanceId: request.params.reportId,
           }
         );
 

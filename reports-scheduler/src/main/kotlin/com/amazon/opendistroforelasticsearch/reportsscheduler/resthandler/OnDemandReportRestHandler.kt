@@ -21,7 +21,7 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.action.OnDemandRep
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.InContextReportCreateRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.OnDemandReportCreateRequest
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ID_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.contentParserNextToken
 import org.elasticsearch.client.node.NodeClient
 import org.elasticsearch.rest.BaseRestHandler
@@ -65,11 +65,11 @@ internal class OnDemandReportRestHandler : BaseRestHandler() {
 
             /**
              * Create a new report from definition and return instance
-             * Request URL: POST ON_DEMAND_REPORT_URL?id=<reportDefinitionId>
+             * Request URL: POST ON_DEMAND_REPORT_URL/{reportDefinitionId}
              * Request body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.OnDemandReportCreateRequest]
              * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.OnDemandReportCreateResponse]
              */
-            Route(POST, ON_DEMAND_REPORT_URL)
+            Route(POST, "$ON_DEMAND_REPORT_URL/{$REPORT_DEFINITION_ID_FIELD}")
         )
     }
 
@@ -77,7 +77,7 @@ internal class OnDemandReportRestHandler : BaseRestHandler() {
      * {@inheritDoc}
      */
     override fun responseParams(): Set<String> {
-        return setOf(ID_FIELD)
+        return setOf(REPORT_DEFINITION_ID_FIELD)
     }
 
     /**
@@ -92,7 +92,7 @@ internal class OnDemandReportRestHandler : BaseRestHandler() {
             }
             POST -> RestChannelConsumer {
                 client.execute(OnDemandReportCreateAction.ACTION_TYPE,
-                    OnDemandReportCreateRequest.parse(request.contentParserNextToken(), request.param(ID_FIELD)),
+                    OnDemandReportCreateRequest.parse(request.contentParserNextToken(), request.param(REPORT_DEFINITION_ID_FIELD)),
                     RestResponseToXContentListener(it))
             }
             else -> RestChannelConsumer {
