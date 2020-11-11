@@ -87,7 +87,6 @@ export const backendToUiReport = (
   };
   // validate to assign default values to some fields for UI model
   report = reportSchema.validate(report);
-  console.log(JSON.stringify(report));
   return report;
 };
 

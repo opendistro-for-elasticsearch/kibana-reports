@@ -21,8 +21,9 @@ import {
 } from '../../../../../src/core/server';
 import { DELIVERY_TYPE, REPORT_STATE } from '../utils/constants';
 import { composeEmbeddedHtml } from '../utils/notification/deliveryContentHelper';
-import { callCluster, updateReportState } from '../utils/helpers';
+import { callCluster } from '../utils/helpers';
 import { CreateReportResultType } from '../utils/types';
+import { updateReportState } from './updateReportState';
 
 export const deliverReport = async (
   report: ReportSchemaType,

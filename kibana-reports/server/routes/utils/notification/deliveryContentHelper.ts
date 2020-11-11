@@ -22,7 +22,6 @@ export const composeEmbeddedHtml = (
   reportDetailUrl: string,
   reportName: string
 ) => {
-  //TODO: need to add AWS styling
   const logoAsBase64 = fs.readFileSync(
     `${__dirname}/notification_content_template/logo.png`,
     'base64'
