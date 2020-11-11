@@ -26,7 +26,7 @@ export type BackendReportInstanceType = {
   createdTimeMs?: number;
   beginTimeMs: number;
   endTimeMs: number;
-  roles?: Array<string>;
+  roles?: string[];
   status: BACKEND_REPORT_STATE;
   statusText?: string;
   inContextDownloadUrlPath?: string;
