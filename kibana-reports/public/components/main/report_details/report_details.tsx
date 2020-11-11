@@ -75,7 +75,7 @@ export function ReportDetails(props) {
 
   const addErrorToastHandler = () => {
     const errorToast = {
-      title: 'Error loading report details',
+      title: 'Error loading report details.',
       color: 'danger',
       iconType: 'alert',
       id: 'reportDetailsErrorToast',

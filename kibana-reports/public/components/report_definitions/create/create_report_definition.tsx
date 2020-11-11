@@ -141,7 +141,7 @@ export function CreateReport(props) {
 
   const addErrorToastHandler = () => {
     const errorToast = {
-      title: 'Error creating report definition',
+      title: 'Error creating report definition.',
       color: 'danger',
       iconType: 'alert',
       id: 'errorToast',
@@ -155,7 +155,7 @@ export function CreateReport(props) {
 
   const addInvalidTimeRangeToastHandler = () => {
     const errorToast = {
-      title: 'Invalid time range selected',
+      title: 'Invalid time range selected.',
       color: 'danger',
       iconType: 'alert',
       id: 'timeRangeErrorToast',

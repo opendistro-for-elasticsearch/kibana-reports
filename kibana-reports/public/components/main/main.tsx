@@ -48,7 +48,7 @@ export function Main(props) {
 
   const addReportsTableContentErrorToastHandler = () => {
     const errorToast = {
-      title: 'Error generating reports table content',
+      title: 'Error generating reports table content.',
       color: 'danger',
       iconType: 'alert',
       id: 'reportsTableErrorToast',
@@ -62,7 +62,7 @@ export function Main(props) {
 
   const addReportDefinitionsTableErrorToastHandler = () => {
     const errorToast = {
-      title: 'Error generating report definitions table content',
+      title: 'Error generating report definitions table content.',
       color: 'danger',
       iconType: 'alert',
       id: 'reportDefinitionsTableErrorToast',
