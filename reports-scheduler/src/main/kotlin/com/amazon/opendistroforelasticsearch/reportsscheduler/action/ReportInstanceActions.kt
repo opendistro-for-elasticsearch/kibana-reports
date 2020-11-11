@@ -16,6 +16,7 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.action
 
+import com.amazon.opendistroforelasticsearch.commons.authuser.User
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
 import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportDefinitionsIndex
 import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportInstancesIndex
@@ -32,6 +33,7 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstan
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance.Status
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportInstanceStatusRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportInstanceStatusResponse
+import com.amazon.opendistroforelasticsearch.reportsscheduler.security.UserAccessManager
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import org.elasticsearch.ElasticsearchStatusException
@@ -44,22 +46,22 @@ import kotlin.random.Random
  */
 internal object ReportInstanceActions {
     private val log by logger(ReportInstanceActions::class.java)
-    private const val TEMP_ROLE_ID = "roleId" // TODO get this from request
 
     /**
      * Create a new on-demand report from in-context menu.
      * @param request [InContextReportCreateRequest] object
      * @return [InContextReportCreateResponse]
      */
-    fun createOnDemand(request: InContextReportCreateRequest): InContextReportCreateResponse {
+    fun createOnDemand(request: InContextReportCreateRequest, user: User?): InContextReportCreateResponse {
         log.info("$LOG_PREFIX:ReportInstance-createOnDemand")
+        UserAccessManager.validateUser(user)
         val currentTime = Instant.now()
         val reportInstance = ReportInstance("ignore",
             currentTime,
             currentTime,
             request.beginTime,
             request.endTime,
-            listOf(TEMP_ROLE_ID),
+            UserAccessManager.getAllAccessInfo(user),
             request.reportDefinitionDetails,
             request.status,
             request.statusText,
@@ -75,13 +77,16 @@ internal object ReportInstanceActions {
      * @param request [OnDemandReportCreateRequest] object
      * @return [OnDemandReportCreateResponse]
      */
-    fun createOnDemandFromDefinition(request: OnDemandReportCreateRequest): OnDemandReportCreateResponse {
+    fun createOnDemandFromDefinition(request: OnDemandReportCreateRequest, user: User?): OnDemandReportCreateResponse {
         log.info("$LOG_PREFIX:ReportInstance-createOnDemandFromDefinition ${request.reportDefinitionId}")
+        UserAccessManager.validateUser(user)
         val currentTime = Instant.now()
         val reportDefinitionDetails = ReportDefinitionsIndex.getReportDefinition(request.reportDefinitionId)
         reportDefinitionDetails
             ?: throw ElasticsearchStatusException("Report Definition ${request.reportDefinitionId} not found", RestStatus.NOT_FOUND)
-        // TODO verify actual requester ID
+        if (!UserAccessManager.doesUserHasAccess(user, reportDefinitionDetails.access)) {
+            throw ElasticsearchStatusException("Permission denied for Report Definition ${request.reportDefinitionId}", RestStatus.FORBIDDEN)
+        }
         val beginTime: Instant = currentTime.minus(reportDefinitionDetails.reportDefinition.format.duration)
         val endTime: Instant = currentTime
         val currentStatus: Status = Status.Executing
@@ -104,12 +109,15 @@ internal object ReportInstanceActions {
      * @param request [UpdateReportInstanceStatusRequest] object
      * @return [UpdateReportInstanceStatusResponse]
      */
-    fun update(request: UpdateReportInstanceStatusRequest): UpdateReportInstanceStatusResponse {
+    fun update(request: UpdateReportInstanceStatusRequest, user: User?): UpdateReportInstanceStatusResponse {
         log.info("$LOG_PREFIX:ReportInstance-update ${request.reportInstanceId}")
+        UserAccessManager.validateUser(user)
         val currentReportInstance = ReportInstancesIndex.getReportInstance(request.reportInstanceId)
         currentReportInstance
             ?: throw ElasticsearchStatusException("Report Instance ${request.reportInstanceId} not found", RestStatus.NOT_FOUND)
-        // TODO verify actual requester ID
+        if (!UserAccessManager.doesUserHasAccess(user, currentReportInstance.access)) {
+            throw ElasticsearchStatusException("Permission denied for Report Definition ${request.reportInstanceId}", RestStatus.FORBIDDEN)
+        }
         if (request.status == Status.Scheduled) { // Don't allow changing status to Scheduled
             throw ElasticsearchStatusException("Status cannot be updated to ${Status.Scheduled}", RestStatus.BAD_REQUEST)
         }
@@ -128,12 +136,15 @@ internal object ReportInstanceActions {
      * @param request [GetReportInstanceRequest] object
      * @return [GetReportInstanceResponse]
      */
-    fun info(request: GetReportInstanceRequest): GetReportInstanceResponse {
+    fun info(request: GetReportInstanceRequest, user: User?): GetReportInstanceResponse {
         log.info("$LOG_PREFIX:ReportInstance-info ${request.reportInstanceId}")
+        UserAccessManager.validateUser(user)
         val reportInstance = ReportInstancesIndex.getReportInstance(request.reportInstanceId)
         reportInstance
             ?: throw ElasticsearchStatusException("Report Instance ${request.reportInstanceId} not found", RestStatus.NOT_FOUND)
-        // TODO verify actual requester ID
+        if (!UserAccessManager.doesUserHasAccess(user, reportInstance.access)) {
+            throw ElasticsearchStatusException("Permission denied for Report Definition ${request.reportInstanceId}", RestStatus.FORBIDDEN)
+        }
         return GetReportInstanceResponse(reportInstance)
     }
 
@@ -142,17 +153,19 @@ internal object ReportInstanceActions {
      * @param request [GetAllReportInstancesRequest] object
      * @return [GetAllReportInstancesResponse]
      */
-    fun getAll(request: GetAllReportInstancesRequest): GetAllReportInstancesResponse {
+    fun getAll(request: GetAllReportInstancesRequest, user: User?): GetAllReportInstancesResponse {
         log.info("$LOG_PREFIX:ReportInstance-getAll fromIndex:${request.fromIndex} maxItems:${request.maxItems}")
-        // TODO verify actual requester ID
-        val reportInstanceList = ReportInstancesIndex.getAllReportInstances(listOf(TEMP_ROLE_ID), request.fromIndex, request.maxItems)
+        UserAccessManager.validateUser(user)
+        val reportInstanceList = ReportInstancesIndex.getAllReportInstances(UserAccessManager.getSearchAccessInfo(user),
+            request.fromIndex,
+            request.maxItems)
         return GetAllReportInstancesResponse(reportInstanceList)
     }
 
-    fun poll(): PollReportInstanceResponse {
+    fun poll(user: User?): PollReportInstanceResponse {
         log.info("$LOG_PREFIX:ReportInstance-poll")
+        UserAccessManager.validatePollingUser(user)
         val currentTime = Instant.now()
-        // TODO verify actual requester ID to be kibana background task
         val reportInstances = ReportInstancesIndex.getPendingReportInstances()
         return if (reportInstances.isEmpty()) {
             PollReportInstanceResponse(getRetryAfterTime(), null)

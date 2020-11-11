@@ -158,13 +158,15 @@ internal object ReportInstancesIndex {
      */
     fun getAllReportInstances(access: List<String>, from: Int, maxItems: Int): ReportInstanceSearchResults {
         createIndex()
-        val query = QueryBuilders.termsQuery(ACCESS_LIST_FIELD, access)
         val sourceBuilder = SearchSourceBuilder()
             .timeout(TimeValue(PluginSettings.operationTimeoutMs, TimeUnit.MILLISECONDS))
             .sort(UPDATED_TIME_FIELD)
             .size(maxItems)
             .from(from)
-            .query(query)
+        if (access.isNotEmpty()) {
+            val query = QueryBuilders.termsQuery(ACCESS_LIST_FIELD, access)
+            sourceBuilder.query(query)
+        }
         val searchRequest = SearchRequest()
             .indices(REPORT_INSTANCES_INDEX_NAME)
             .source(sourceBuilder)

@@ -32,7 +32,6 @@ import java.time.Instant
 internal object ReportDefinitionJobRunner : ScheduledJobRunner {
     private val log by logger(ReportDefinitionJobRunner::class.java)
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    private const val TEMP_ROLE_ID = "roleId" // TODO get this from request
 
     override fun runJob(job: ScheduledJobParameter, context: JobExecutionContext) {
         if (job !is ReportDefinitionDetails) {
@@ -49,7 +48,7 @@ internal object ReportDefinitionJobRunner : ScheduledJobRunner {
                 currentTime,
                 beginTime,
                 endTime,
-                listOf(TEMP_ROLE_ID),
+                job.access,
                 reportDefinitionDetails,
                 ReportInstance.Status.Scheduled)
             val id = ReportInstancesIndex.createReportInstance(reportInstance)

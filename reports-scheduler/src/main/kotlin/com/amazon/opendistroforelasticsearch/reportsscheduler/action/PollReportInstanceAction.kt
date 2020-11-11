@@ -16,6 +16,7 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.action
 
+import com.amazon.opendistroforelasticsearch.commons.authuser.User
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.PollReportInstanceRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.PollReportInstanceResponse
 import org.elasticsearch.action.ActionType
@@ -30,11 +31,12 @@ import org.elasticsearch.transport.TransportService
  */
 internal class PollReportInstanceAction @Inject constructor(
     transportService: TransportService,
-    val client: Client,
+    client: Client,
     actionFilters: ActionFilters,
     val xContentRegistry: NamedXContentRegistry
 ) : PluginBaseAction<PollReportInstanceRequest, PollReportInstanceResponse>(NAME,
     transportService,
+    client,
     actionFilters,
     ::PollReportInstanceRequest) {
     companion object {
@@ -45,7 +47,7 @@ internal class PollReportInstanceAction @Inject constructor(
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: PollReportInstanceRequest): PollReportInstanceResponse {
-        return ReportInstanceActions.poll()
+    override fun executeRequest(request: PollReportInstanceRequest, user: User?): PollReportInstanceResponse {
+        return ReportInstanceActions.poll(user)
     }
 }

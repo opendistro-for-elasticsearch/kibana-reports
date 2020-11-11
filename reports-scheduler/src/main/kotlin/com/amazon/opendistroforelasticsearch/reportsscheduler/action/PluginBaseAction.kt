@@ -16,6 +16,7 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.action
 
+import com.amazon.opendistroforelasticsearch.commons.authuser.User
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import kotlinx.coroutines.CoroutineScope
@@ -28,6 +29,7 @@ import org.elasticsearch.action.ActionRequest
 import org.elasticsearch.action.ActionResponse
 import org.elasticsearch.action.support.ActionFilters
 import org.elasticsearch.action.support.HandledTransportAction
+import org.elasticsearch.client.Client
 import org.elasticsearch.common.io.stream.Writeable
 import org.elasticsearch.index.IndexNotFoundException
 import org.elasticsearch.index.engine.VersionConflictEngineException
@@ -40,12 +42,14 @@ import java.io.IOException
 abstract class PluginBaseAction<Request : ActionRequest, Response : ActionResponse>(
     name: String,
     transportService: TransportService,
+    val client: Client,
     actionFilters: ActionFilters,
     requestReader: Writeable.Reader<Request>
 ) : HandledTransportAction<Request, Response>(name, transportService, actionFilters, requestReader) {
     companion object {
         private val log by logger(PluginBaseAction::class.java)
         private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+        private const val OPENDISTRO_SECURITY_USER_AND_ROLES = "_opendistro_security_user_and_roles"
     }
 
     /**
@@ -57,9 +61,11 @@ abstract class PluginBaseAction<Request : ActionRequest, Response : ActionRespon
         request: Request,
         listener: ActionListener<Response>
     ) {
+        val userStr: String? = client.threadPool().threadContext.getTransient<String>(OPENDISTRO_SECURITY_USER_AND_ROLES)
+        val user: User? = User.parse(userStr)
         scope.launch {
             try {
-                listener.onResponse(executeRequest(request))
+                listener.onResponse(executeRequest(request, user))
             } catch (exception: ElasticsearchStatusException) {
                 log.warn("$LOG_PREFIX:ElasticsearchStatusException:", exception)
                 listener.onFailure(exception)
@@ -97,5 +103,5 @@ abstract class PluginBaseAction<Request : ActionRequest, Response : ActionRespon
      * @param request the request to execute
      * @return the response to return.
      */
-    abstract fun executeRequest(request: Request): Response
+    abstract fun executeRequest(request: Request, user: User?): Response
 }

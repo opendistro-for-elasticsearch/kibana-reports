@@ -16,6 +16,7 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.action
 
+import com.amazon.opendistroforelasticsearch.commons.authuser.User
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportInstanceStatusRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportInstanceStatusResponse
 import org.elasticsearch.action.ActionType
@@ -30,11 +31,12 @@ import org.elasticsearch.transport.TransportService
  */
 internal class UpdateReportInstanceStatusAction @Inject constructor(
     transportService: TransportService,
-    val client: Client,
+    client: Client,
     actionFilters: ActionFilters,
     val xContentRegistry: NamedXContentRegistry
 ) : PluginBaseAction<UpdateReportInstanceStatusRequest, UpdateReportInstanceStatusResponse>(NAME,
     transportService,
+    client,
     actionFilters,
     ::UpdateReportInstanceStatusRequest) {
     companion object {
@@ -45,7 +47,7 @@ internal class UpdateReportInstanceStatusAction @Inject constructor(
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: UpdateReportInstanceStatusRequest): UpdateReportInstanceStatusResponse {
-        return ReportInstanceActions.update(request)
+    override fun executeRequest(request: UpdateReportInstanceStatusRequest, user: User?): UpdateReportInstanceStatusResponse {
+        return ReportInstanceActions.update(request, user)
     }
 }

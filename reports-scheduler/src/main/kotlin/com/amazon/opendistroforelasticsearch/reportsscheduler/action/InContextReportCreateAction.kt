@@ -16,6 +16,7 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.action
 
+import com.amazon.opendistroforelasticsearch.commons.authuser.User
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.InContextReportCreateRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.InContextReportCreateResponse
 import org.elasticsearch.action.ActionType
@@ -30,11 +31,12 @@ import org.elasticsearch.transport.TransportService
  */
 internal class InContextReportCreateAction @Inject constructor(
     transportService: TransportService,
-    val client: Client,
+    client: Client,
     actionFilters: ActionFilters,
     val xContentRegistry: NamedXContentRegistry
 ) : PluginBaseAction<InContextReportCreateRequest, InContextReportCreateResponse>(NAME,
     transportService,
+    client,
     actionFilters,
     ::InContextReportCreateRequest) {
     companion object {
@@ -45,7 +47,7 @@ internal class InContextReportCreateAction @Inject constructor(
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: InContextReportCreateRequest): InContextReportCreateResponse {
-        return ReportInstanceActions.createOnDemand(request)
+    override fun executeRequest(request: InContextReportCreateRequest, user: User?): InContextReportCreateResponse {
+        return ReportInstanceActions.createOnDemand(request, user)
     }
 }

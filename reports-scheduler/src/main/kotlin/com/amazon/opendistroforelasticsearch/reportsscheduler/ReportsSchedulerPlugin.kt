@@ -41,7 +41,6 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.Report
 import com.amazon.opendistroforelasticsearch.reportsscheduler.scheduler.ReportDefinitionJobParser
 import com.amazon.opendistroforelasticsearch.reportsscheduler.scheduler.ReportDefinitionJobRunner
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
-import com.google.common.collect.ImmutableList
 import org.elasticsearch.action.ActionRequest
 import org.elasticsearch.action.ActionResponse
 import org.elasticsearch.client.Client
@@ -148,7 +147,7 @@ class ReportsSchedulerPlugin : Plugin(), ActionPlugin, JobSchedulerExtension {
         indexNameExpressionResolver: IndexNameExpressionResolver,
         nodesInCluster: Supplier<DiscoveryNodes>
     ): List<RestHandler> {
-        return ImmutableList.of<RestHandler>(
+        return listOf(
             ReportDefinitionRestHandler(),
             ReportDefinitionListRestHandler(),
             ReportInstanceRestHandler(),
