@@ -13,12 +13,6 @@
  * permissions and limitations under the License.
  */
 
-// TODO: need finalize the naming for plugin config index
-export enum CONFIG_INDEX_NAME {
-  report = 'report',
-  reportDefinition = 'report_definition',
-}
-
 export enum FORMAT {
   pdf = 'pdf',
   png = 'png',
@@ -46,7 +40,6 @@ export enum DELIVERY_CHANNEL {
 
 export enum SCHEDULE_TYPE {
   recurring = 'Recurring',
-  future = 'Future date',
   cron = 'Cron based',
 }
 
@@ -63,7 +56,6 @@ export enum DATA_REPORT_CONFIG {
 export enum TRIGGER_TYPE {
   schedule = 'Schedule',
   onDemand = 'On demand',
-  alerting = 'Alerting',
 }
 
 export enum DELIVERY_TYPE {

@@ -32,7 +32,6 @@ import org.elasticsearch.rest.RestRequest
 import org.elasticsearch.rest.RestRequest.Method.POST
 import org.elasticsearch.rest.RestRequest.Method.PUT
 import org.elasticsearch.rest.RestStatus
-import org.elasticsearch.rest.action.RestToXContentListener
 
 /**
  * Rest handler for creating on-demand report instances.
@@ -41,7 +40,7 @@ import org.elasticsearch.rest.action.RestToXContentListener
 internal class OnDemandReportRestHandler : BaseRestHandler() {
     companion object {
         private const val REPORT_INSTANCE_LIST_ACTION = "on_demand_report_actions"
-        private const val ON_DEMAND_REPORT_URL = "$BASE_REPORTS_URI/on-demand"
+        private const val ON_DEMAND_REPORT_URL = "$BASE_REPORTS_URI/on_demand"
     }
 
     /**
@@ -89,12 +88,12 @@ internal class OnDemandReportRestHandler : BaseRestHandler() {
             PUT -> RestChannelConsumer {
                 client.execute(InContextReportCreateAction.ACTION_TYPE,
                     InContextReportCreateRequest(request.contentParserNextToken()),
-                    RestToXContentListener(it))
+                    RestResponseToXContentListener(it))
             }
             POST -> RestChannelConsumer {
                 client.execute(OnDemandReportCreateAction.ACTION_TYPE,
                     OnDemandReportCreateRequest.parse(request.contentParserNextToken(), request.param(ID_FIELD)),
-                    RestToXContentListener(it))
+                    RestResponseToXContentListener(it))
             }
             else -> RestChannelConsumer {
                 it.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))

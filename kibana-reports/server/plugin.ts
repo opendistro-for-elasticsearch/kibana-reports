@@ -22,7 +22,7 @@ import {
   ILegacyClusterClient,
 } from '../../../src/core/server';
 import { setIntervalAsync } from 'set-interval-async/dynamic';
-import reportsSchedulerPlugin from './backend/opendistro-reports-scheduler-plugin';
+import esReportsPlugin from './backend/opendistro-es-reports-plugin';
 import notificationPlugin from './backend/opendistro-notification-plugin';
 import {
   OpendistroKibanaReportsPluginSetup,
@@ -58,15 +58,14 @@ export class OpendistroKibanaReportsPlugin
   public setup(core: CoreSetup) {
     this.logger.debug('opendistro_kibana_reports: Setup');
     const router = core.http.createRouter();
-
-    // TODO: create Elasticsearch client that aware of reports-scheduler API endpoints
     // Deprecated API. Switch to the new elasticsearch client as soon as https://github.com/elastic/kibana/issues/35508 done.
-    const schedulerClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
-      'reports_scheduler',
+    const esReportsClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
+      'es_reports',
       {
-        plugins: [reportsSchedulerPlugin],
+        plugins: [esReportsPlugin],
       }
     );
+
     const notificationClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
       'notification',
       {
@@ -84,8 +83,8 @@ export class OpendistroKibanaReportsPlugin
       (context, request) => {
         return {
           logger: this.logger,
-          schedulerClient,
           notificationClient,
+          esReportsClient,
         };
       }
     );
@@ -96,12 +95,13 @@ export class OpendistroKibanaReportsPlugin
   public start(core: CoreStart) {
     this.logger.debug('opendistro_kibana_reports: Started');
 
-    const schedulerClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
-      'reports_scheduler',
+    const esReportsClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
+      'es_reports',
       {
-        plugins: [reportsSchedulerPlugin],
+        plugins: [esReportsPlugin],
       }
     );
+
     const notificationClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
       'notification',
       {
@@ -120,7 +120,7 @@ export class OpendistroKibanaReportsPlugin
     setIntervalAsync(
       pollAndExecuteJob,
       POLL_INTERVAL,
-      schedulerClient,
+      esReportsClient,
       notificationClient,
       esClient,
       this.logger

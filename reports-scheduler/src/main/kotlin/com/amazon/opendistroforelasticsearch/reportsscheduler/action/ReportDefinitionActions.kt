@@ -76,7 +76,7 @@ internal object ReportDefinitionActions {
         val reportDefinitionDetails = ReportDefinitionDetails(request.reportDefinitionId,
             currentTime,
             currentReportDefinitionDetails.createdTime,
-            currentReportDefinitionDetails.roles,
+            currentReportDefinitionDetails.access,
             request.reportDefinition
         )
         if (!ReportDefinitionsIndex.updateReportDefinition(request.reportDefinitionId, reportDefinitionDetails)) {
@@ -122,9 +122,9 @@ internal object ReportDefinitionActions {
      * @return [GetAllReportDefinitionsResponse]
      */
     fun getAll(request: GetAllReportDefinitionsRequest): GetAllReportDefinitionsResponse {
-        log.info("$LOG_PREFIX:ReportDefinition-getAll ${request.fromIndex}")
+        log.info("$LOG_PREFIX:ReportDefinition-getAll fromIndex:${request.fromIndex} maxItems:${request.maxItems}")
         // TODO verify actual requester ID
-        val reportDefinitionsList = ReportDefinitionsIndex.getAllReportDefinitions(listOf(TEMP_ROLE_ID), request.fromIndex)
+        val reportDefinitionsList = ReportDefinitionsIndex.getAllReportDefinitions(listOf(TEMP_ROLE_ID), request.fromIndex, request.maxItems)
         return GetAllReportDefinitionsResponse(reportDefinitionsList)
     }
 }

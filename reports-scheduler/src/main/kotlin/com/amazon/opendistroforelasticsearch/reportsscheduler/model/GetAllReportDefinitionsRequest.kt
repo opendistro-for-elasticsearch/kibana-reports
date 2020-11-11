@@ -18,6 +18,8 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.FROM_INDEX_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.MAX_ITEMS_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import org.elasticsearch.action.ActionRequest
 import org.elasticsearch.action.ActionRequestValidationException
@@ -38,17 +40,20 @@ import java.io.IOException
  * <pre> JSON format
  * {@code
  * {
- *   "fromIndex":100
+ *   "fromIndex":100,
+ *   "maxItems":100
  * }
  * }</pre>
  */
 internal class GetAllReportDefinitionsRequest(
-    val fromIndex: Int
+    val fromIndex: Int,
+    val maxItems: Int
 ) : ActionRequest(), ToXContentObject {
 
     @Throws(IOException::class)
     constructor(input: StreamInput) : this(
-        fromIndex = input.readInt()
+        fromIndex = input.readInt(),
+        maxItems = input.readInt()
     )
 
     companion object {
@@ -60,20 +65,22 @@ internal class GetAllReportDefinitionsRequest(
          * @return created [GetAllReportDefinitionsRequest] object
          */
         fun parse(parser: XContentParser): GetAllReportDefinitionsRequest {
-            var reportInstanceId = 0
+            var fromIndex = 0
+            var maxItems = PluginSettings.defaultItemsQueryCount
             XContentParserUtils.ensureExpectedToken(Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
             while (Token.END_OBJECT != parser.nextToken()) {
                 val fieldName = parser.currentName()
                 parser.nextToken()
                 when (fieldName) {
-                    FROM_INDEX_FIELD -> reportInstanceId = parser.intValue()
+                    FROM_INDEX_FIELD -> fromIndex = parser.intValue()
+                    MAX_ITEMS_FIELD -> maxItems = parser.intValue()
                     else -> {
                         parser.skipChildren()
                         log.info("$LOG_PREFIX:Skipping Unknown field $fieldName")
                     }
                 }
             }
-            return GetAllReportDefinitionsRequest(reportInstanceId)
+            return GetAllReportDefinitionsRequest(fromIndex, maxItems)
         }
     }
 
@@ -83,6 +90,7 @@ internal class GetAllReportDefinitionsRequest(
     @Throws(IOException::class)
     override fun writeTo(output: StreamOutput) {
         output.writeInt(fromIndex)
+        output.writeInt(maxItems)
     }
 
     /**
@@ -112,6 +120,7 @@ internal class GetAllReportDefinitionsRequest(
     override fun toXContent(builder: XContentBuilder?, params: ToXContent.Params?): XContentBuilder {
         return builder!!.startObject()
             .field(FROM_INDEX_FIELD, fromIndex)
+            .field(MAX_ITEMS_FIELD, maxItems)
             .endObject()
     }
 }

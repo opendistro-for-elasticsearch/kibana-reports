@@ -17,7 +17,7 @@ import fs from 'fs';
 import cheerio from 'cheerio';
 
 export const composeEmbeddedHtml = (
-  htmlDescription: string,
+  htmlDescription: string = '',
   originalQueryUrl: string,
   reportDetailUrl: string,
   reportName: string

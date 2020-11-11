@@ -24,8 +24,8 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.action.UpdateRepor
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.CreateReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.DeleteReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionRequest
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ID_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.contentParserNextToken
 import org.elasticsearch.client.node.NodeClient
 import org.elasticsearch.rest.BaseRestHandler
@@ -38,7 +38,6 @@ import org.elasticsearch.rest.RestRequest.Method.GET
 import org.elasticsearch.rest.RestRequest.Method.POST
 import org.elasticsearch.rest.RestRequest.Method.PUT
 import org.elasticsearch.rest.RestStatus
-import org.elasticsearch.rest.action.RestToXContentListener
 
 /**
  * Rest handler for report definitions lifecycle management.
@@ -108,23 +107,23 @@ internal class ReportDefinitionRestHandler : BaseRestHandler() {
             POST -> RestChannelConsumer {
                 client.execute(CreateReportDefinitionAction.ACTION_TYPE,
                     CreateReportDefinitionRequest(request.contentParserNextToken()),
-                    RestToXContentListener(it))
+                    RestResponseToXContentListener(it))
             }
             PUT -> RestChannelConsumer {
                 client.execute(
                     UpdateReportDefinitionAction.ACTION_TYPE,
                     UpdateReportDefinitionRequest(request.contentParserNextToken(), request.param(ID_FIELD)),
-                    RestToXContentListener(it))
+                    RestResponseToXContentListener(it))
             }
             GET -> RestChannelConsumer {
                 client.execute(GetReportDefinitionAction.ACTION_TYPE,
                     GetReportDefinitionRequest(request.param(ID_FIELD)),
-                    RestToXContentListener(it))
+                    RestResponseToXContentListener(it))
             }
             DELETE -> RestChannelConsumer {
                 client.execute(DeleteReportDefinitionAction.ACTION_TYPE,
                     DeleteReportDefinitionRequest(request.param(ID_FIELD)),
-                    RestToXContentListener(it))
+                    RestResponseToXContentListener(it))
             }
             else -> RestChannelConsumer {
                 it.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))

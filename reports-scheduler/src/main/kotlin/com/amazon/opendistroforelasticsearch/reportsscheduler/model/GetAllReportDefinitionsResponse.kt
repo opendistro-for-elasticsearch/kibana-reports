@@ -16,20 +16,13 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
-import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_LIST_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.createJsonParser
-import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
-import org.elasticsearch.action.ActionResponse
 import org.elasticsearch.common.io.stream.StreamInput
 import org.elasticsearch.common.io.stream.StreamOutput
 import org.elasticsearch.common.xcontent.ToXContent
-import org.elasticsearch.common.xcontent.ToXContentObject
 import org.elasticsearch.common.xcontent.XContentBuilder
 import org.elasticsearch.common.xcontent.XContentFactory
 import org.elasticsearch.common.xcontent.XContentParser
-import org.elasticsearch.common.xcontent.XContentParser.Token
-import org.elasticsearch.common.xcontent.XContentParserUtils
 import java.io.IOException
 
 /**
@@ -37,16 +30,19 @@ import java.io.IOException
  * <pre> JSON format
  * {@code
  * {
+ *   "startIndex":"0",
+ *   "totalHits":"100",
+ *   "totalHitRelation":"eq",
  *   "reportDefinitionDetailsList":[
  *      // refer [com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinitionDetails]
  *   ]
  * }
  * }</pre>
  */
-internal class GetAllReportDefinitionsResponse : ActionResponse, ToXContentObject {
-    val reportDefinitionList: List<ReportDefinitionDetails>
+internal class GetAllReportDefinitionsResponse : BaseResponse {
+    val reportDefinitionList: ReportDefinitionDetailsSearchResults
 
-    constructor(reportDefinitionList: List<ReportDefinitionDetails>) : super() {
+    constructor(reportDefinitionList: ReportDefinitionDetailsSearchResults) : super() {
         this.reportDefinitionList = reportDefinitionList
     }
 
@@ -58,39 +54,7 @@ internal class GetAllReportDefinitionsResponse : ActionResponse, ToXContentObjec
      * @param parser data referenced at parser
      */
     constructor(parser: XContentParser) : super() {
-        var reportDefinitions: List<ReportDefinitionDetails>? = null
-        XContentParserUtils.ensureExpectedToken(Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
-        while (Token.END_OBJECT != parser.nextToken()) {
-            val fieldName = parser.currentName()
-            parser.nextToken()
-            when (fieldName) {
-                REPORT_DEFINITION_LIST_FIELD -> reportDefinitions = parseReportDefinitionList(parser)
-                else -> {
-                    parser.skipChildren()
-                    log.info("$LOG_PREFIX:Skipping Unknown field $fieldName")
-                }
-            }
-        }
-        reportDefinitions ?: throw IllegalArgumentException("$REPORT_DEFINITION_LIST_FIELD field absent")
-        this.reportDefinitionList = reportDefinitions
-    }
-
-    companion object {
-        private val log by logger(GetAllReportDefinitionsResponse::class.java)
-
-        /**
-         * Parse the report definition list from parser
-         * @param parser data referenced at parser
-         * @return created list of ReportDefinitionDetails
-         */
-        private fun parseReportDefinitionList(parser: XContentParser): List<ReportDefinitionDetails> {
-            val retList: MutableList<ReportDefinitionDetails> = mutableListOf()
-            XContentParserUtils.ensureExpectedToken(Token.START_ARRAY, parser.currentToken(), parser::getTokenLocation)
-            while (parser.nextToken() != Token.END_ARRAY) {
-                retList.add(ReportDefinitionDetails.parse(parser))
-            }
-            return retList
-        }
+        reportDefinitionList = ReportDefinitionDetailsSearchResults(parser)
     }
 
     /**
@@ -102,20 +66,9 @@ internal class GetAllReportDefinitionsResponse : ActionResponse, ToXContentObjec
     }
 
     /**
-     * create XContentBuilder from this object using [XContentFactory.jsonBuilder()]
-     * @return created XContentBuilder object
-     */
-    fun toXContent(): XContentBuilder {
-        return toXContent(XContentFactory.jsonBuilder(), ToXContent.EMPTY_PARAMS)
-    }
-
-    /**
      * {@inheritDoc}
      */
     override fun toXContent(builder: XContentBuilder?, params: ToXContent.Params?): XContentBuilder {
-        builder!!.startObject()
-            .startArray(REPORT_DEFINITION_LIST_FIELD)
-        reportDefinitionList.forEach { it.toXContent(builder, ToXContent.EMPTY_PARAMS, true) }
-        return builder.endArray().endObject()
+        return reportDefinitionList.toXContent(builder, params)
     }
 }

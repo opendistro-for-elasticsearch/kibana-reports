@@ -16,7 +16,7 @@
 import 'regenerator-runtime/runtime';
 import { createVisualReport } from '../visualReportHelper';
 import { Logger } from '../../../../../../src/core/server';
-import { reportSchema } from '../../../model';
+import { ReportParamsSchemaType, reportSchema } from '../../../model';
 
 const mockLogger: Logger = {
   info: jest.fn(),
@@ -44,6 +44,7 @@ const input = {
         window_height: 900,
         report_format: 'png',
         time_duration: 'PT5M',
+        origin: 'http://localhost:5601',
       },
     },
     delivery: {
@@ -71,7 +72,7 @@ describe('test create visual report', () => {
     expect.assertions(3);
     const reportParams = input.report_definition.report_params;
     const { dataUrl, fileName } = await createVisualReport(
-      reportParams,
+      reportParams as ReportParamsSchemaType,
       queryUrl,
       mockLogger
     );
@@ -86,7 +87,7 @@ describe('test create visual report', () => {
     reportParams.core_params.report_format = 'pdf';
 
     const { dataUrl, fileName } = await createVisualReport(
-      reportParams,
+      reportParams as ReportParamsSchemaType,
       queryUrl,
       mockLogger
     );

@@ -24,7 +24,7 @@ internal object RestTag {
     const val STATUS_TEXT_FIELD = "statusText"
     const val UPDATED_TIME_FIELD = "lastUpdatedTimeMs"
     const val CREATED_TIME_FIELD = "createdTimeMs"
-    const val ROLE_LIST_FIELD = "roles"
+    const val ACCESS_LIST_FIELD = "access"
     const val REPORT_DEFINITION_LIST_FIELD = "reportDefinitionDetailsList"
     const val REPORT_INSTANCE_LIST_FIELD = "reportInstanceList"
     const val REPORT_INSTANCE_FIELD = "reportInstance"
@@ -36,5 +36,6 @@ internal object RestTag {
     const val REPORT_DEFINITION_ID_FIELD = "reportDefinitionId"
     const val REPORT_DEFINITION_DETAILS_FIELD = "reportDefinitionDetails"
     const val FROM_INDEX_FIELD = "fromIndex"
+    const val MAX_ITEMS_FIELD = "maxItems"
     const val RETRY_AFTER_FIELD = "retryAfter"
 }
