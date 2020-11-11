@@ -16,6 +16,7 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.action
 
+import com.amazon.opendistroforelasticsearch.commons.authuser.User
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.CreateReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.CreateReportDefinitionResponse
 import org.elasticsearch.action.ActionType
@@ -30,11 +31,12 @@ import org.elasticsearch.transport.TransportService
  */
 internal class CreateReportDefinitionAction @Inject constructor(
     transportService: TransportService,
-    val client: Client,
+    client: Client,
     actionFilters: ActionFilters,
     val xContentRegistry: NamedXContentRegistry
 ) : PluginBaseAction<CreateReportDefinitionRequest, CreateReportDefinitionResponse>(NAME,
     transportService,
+    client,
     actionFilters,
     ::CreateReportDefinitionRequest) {
     companion object {
@@ -45,7 +47,7 @@ internal class CreateReportDefinitionAction @Inject constructor(
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: CreateReportDefinitionRequest): CreateReportDefinitionResponse {
-        return ReportDefinitionActions.create(request)
+    override fun executeRequest(request: CreateReportDefinitionRequest, user: User?): CreateReportDefinitionResponse {
+        return ReportDefinitionActions.create(request, user)
     }
 }

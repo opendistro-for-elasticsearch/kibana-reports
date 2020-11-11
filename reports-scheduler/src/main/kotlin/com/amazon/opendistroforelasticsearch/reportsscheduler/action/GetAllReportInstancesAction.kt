@@ -16,6 +16,7 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.action
 
+import com.amazon.opendistroforelasticsearch.commons.authuser.User
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportInstancesRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportInstancesResponse
 import org.elasticsearch.action.ActionType
@@ -30,22 +31,23 @@ import org.elasticsearch.transport.TransportService
  */
 internal class GetAllReportInstancesAction @Inject constructor(
     transportService: TransportService,
-    val client: Client,
+    client: Client,
     actionFilters: ActionFilters,
     val xContentRegistry: NamedXContentRegistry
 ) : PluginBaseAction<GetAllReportInstancesRequest, GetAllReportInstancesResponse>(NAME,
     transportService,
+    client,
     actionFilters,
     ::GetAllReportInstancesRequest) {
     companion object {
-        private const val NAME = "cluster:admin/opendistro/reports/instance/get_all"
+        private const val NAME = "cluster:admin/opendistro/reports/instance/list"
         internal val ACTION_TYPE = ActionType(NAME, ::GetAllReportInstancesResponse)
     }
 
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: GetAllReportInstancesRequest): GetAllReportInstancesResponse {
-        return ReportInstanceActions.getAll(request)
+    override fun executeRequest(request: GetAllReportInstancesRequest, user: User?): GetAllReportInstancesResponse {
+        return ReportInstanceActions.getAll(request, user)
     }
 }

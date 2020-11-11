@@ -16,7 +16,7 @@
 ##
 
 # configuration file for the reports scheduler plugin
-opendistro.reports.scheduler:
+opendistro.reports:
   general:
     operationTimeoutMs: 60000 # 60 seconds, Minimum 100ms
   polling:
@@ -25,3 +25,13 @@ opendistro.reports.scheduler:
     maxPollingDurationSeconds: 900 # 15 Minutes, Minimum 5 Minutes
     maxLockRetries: 1 # Max number of retries to retry locking
     defaultItemsQueryCount: 100 # default number of items to query
+  access:
+    adminAccess: "AllReports"
+    # adminAccess values:
+    ## Standard -> Admin user access follows standard user
+    ## AllReports -> Admin user with "all_access" role can see all reports of all users.
+    filterBy: "NoFilter"
+    # filterBy values:
+    ## NoFilter -> everyone see each other's reports
+    ## User -> reports are visible to only themselves
+    ## BackendRoles -> reports are visible to users having any one of the backend role of creator

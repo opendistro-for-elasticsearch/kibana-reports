@@ -16,6 +16,7 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.action
 
+import com.amazon.opendistroforelasticsearch.commons.authuser.User
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
 import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportDefinitionsIndex
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.CreateReportDefinitionRequest
@@ -29,6 +30,7 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDef
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinitionDetails
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportDefinitionResponse
+import com.amazon.opendistroforelasticsearch.reportsscheduler.security.UserAccessManager
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import org.elasticsearch.ElasticsearchStatusException
 import org.elasticsearch.rest.RestStatus
@@ -39,20 +41,20 @@ import java.time.Instant
  */
 internal object ReportDefinitionActions {
     private val log by logger(ReportDefinitionActions::class.java)
-    private const val TEMP_ROLE_ID = "roleId" // TODO get this from request
 
     /**
      * Create new ReportDefinition
      * @param request [CreateReportDefinitionRequest] object
      * @return [CreateReportDefinitionResponse]
      */
-    fun create(request: CreateReportDefinitionRequest): CreateReportDefinitionResponse {
+    fun create(request: CreateReportDefinitionRequest, user: User?): CreateReportDefinitionResponse {
         log.info("$LOG_PREFIX:ReportDefinition-create")
+        UserAccessManager.validateUser(user)
         val currentTime = Instant.now()
         val reportDefinitionDetails = ReportDefinitionDetails("ignore",
             currentTime,
             currentTime,
-            listOf(TEMP_ROLE_ID), // TODO update with actual requester ID
+            UserAccessManager.getAllAccessInfo(user),
             request.reportDefinition
         )
         val docId = ReportDefinitionsIndex.createReportDefinition(reportDefinitionDetails)
@@ -66,12 +68,15 @@ internal object ReportDefinitionActions {
      * @param request [UpdateReportDefinitionRequest] object
      * @return [UpdateReportDefinitionResponse]
      */
-    fun update(request: UpdateReportDefinitionRequest): UpdateReportDefinitionResponse {
+    fun update(request: UpdateReportDefinitionRequest, user: User?): UpdateReportDefinitionResponse {
         log.info("$LOG_PREFIX:ReportDefinition-update ${request.reportDefinitionId}")
+        UserAccessManager.validateUser(user)
         val currentReportDefinitionDetails = ReportDefinitionsIndex.getReportDefinition(request.reportDefinitionId)
         currentReportDefinitionDetails
             ?: throw ElasticsearchStatusException("Report Definition ${request.reportDefinitionId} not found", RestStatus.NOT_FOUND)
-        // TODO verify actual requester ID
+        if (!UserAccessManager.doesUserHasAccess(user, currentReportDefinitionDetails.access)) {
+            throw ElasticsearchStatusException("Permission denied for Report Definition ${request.reportDefinitionId}", RestStatus.FORBIDDEN)
+        }
         val currentTime = Instant.now()
         val reportDefinitionDetails = ReportDefinitionDetails(request.reportDefinitionId,
             currentTime,
@@ -90,12 +95,15 @@ internal object ReportDefinitionActions {
      * @param request [GetReportDefinitionRequest] object
      * @return [GetReportDefinitionResponse]
      */
-    fun info(request: GetReportDefinitionRequest): GetReportDefinitionResponse {
+    fun info(request: GetReportDefinitionRequest, user: User?): GetReportDefinitionResponse {
         log.info("$LOG_PREFIX:ReportDefinition-info ${request.reportDefinitionId}")
+        UserAccessManager.validateUser(user)
         val reportDefinitionDetails = ReportDefinitionsIndex.getReportDefinition(request.reportDefinitionId)
         reportDefinitionDetails
             ?: throw ElasticsearchStatusException("Report Definition ${request.reportDefinitionId} not found", RestStatus.NOT_FOUND)
-        // TODO verify actual requester ID
+        if (!UserAccessManager.doesUserHasAccess(user, reportDefinitionDetails.access)) {
+            throw ElasticsearchStatusException("Permission denied for Report Definition ${request.reportDefinitionId}", RestStatus.FORBIDDEN)
+        }
         return GetReportDefinitionResponse(reportDefinitionDetails)
     }
 
@@ -104,12 +112,15 @@ internal object ReportDefinitionActions {
      * @param request [DeleteReportDefinitionRequest] object
      * @return [DeleteReportDefinitionResponse]
      */
-    fun delete(request: DeleteReportDefinitionRequest): DeleteReportDefinitionResponse {
+    fun delete(request: DeleteReportDefinitionRequest, user: User?): DeleteReportDefinitionResponse {
         log.info("$LOG_PREFIX:ReportDefinition-delete ${request.reportDefinitionId}")
+        UserAccessManager.validateUser(user)
         val reportDefinitionDetails = ReportDefinitionsIndex.getReportDefinition(request.reportDefinitionId)
         reportDefinitionDetails
             ?: throw ElasticsearchStatusException("Report Definition ${request.reportDefinitionId} not found", RestStatus.NOT_FOUND)
-        // TODO verify actual requester ID
+        if (!UserAccessManager.doesUserHasAccess(user, reportDefinitionDetails.access)) {
+            throw ElasticsearchStatusException("Permission denied for Report Definition ${request.reportDefinitionId}", RestStatus.FORBIDDEN)
+        }
         if (!ReportDefinitionsIndex.deleteReportDefinition(request.reportDefinitionId)) {
             throw ElasticsearchStatusException("Report Definition ${request.reportDefinitionId} delete failed", RestStatus.REQUEST_TIMEOUT)
         }
@@ -121,10 +132,12 @@ internal object ReportDefinitionActions {
      * @param request [GetAllReportDefinitionsRequest] object
      * @return [GetAllReportDefinitionsResponse]
      */
-    fun getAll(request: GetAllReportDefinitionsRequest): GetAllReportDefinitionsResponse {
+    fun getAll(request: GetAllReportDefinitionsRequest, user: User?): GetAllReportDefinitionsResponse {
         log.info("$LOG_PREFIX:ReportDefinition-getAll fromIndex:${request.fromIndex} maxItems:${request.maxItems}")
-        // TODO verify actual requester ID
-        val reportDefinitionsList = ReportDefinitionsIndex.getAllReportDefinitions(listOf(TEMP_ROLE_ID), request.fromIndex, request.maxItems)
+        UserAccessManager.validateUser(user)
+        val reportDefinitionsList = ReportDefinitionsIndex.getAllReportDefinitions(UserAccessManager.getSearchAccessInfo(user),
+            request.fromIndex,
+            request.maxItems)
         return GetAllReportDefinitionsResponse(reportDefinitionsList)
     }
 }

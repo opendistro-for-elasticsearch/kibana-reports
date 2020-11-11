@@ -16,6 +16,7 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.action
 
+import com.amazon.opendistroforelasticsearch.commons.authuser.User
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.DeleteReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.DeleteReportDefinitionResponse
 import org.elasticsearch.action.ActionType
@@ -30,11 +31,12 @@ import org.elasticsearch.transport.TransportService
  */
 internal class DeleteReportDefinitionAction @Inject constructor(
     transportService: TransportService,
-    val client: Client,
+    client: Client,
     actionFilters: ActionFilters,
     val xContentRegistry: NamedXContentRegistry
 ) : PluginBaseAction<DeleteReportDefinitionRequest, DeleteReportDefinitionResponse>(NAME,
     transportService,
+    client,
     actionFilters,
     ::DeleteReportDefinitionRequest) {
     companion object {
@@ -45,7 +47,7 @@ internal class DeleteReportDefinitionAction @Inject constructor(
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: DeleteReportDefinitionRequest): DeleteReportDefinitionResponse {
-        return ReportDefinitionActions.delete(request)
+    override fun executeRequest(request: DeleteReportDefinitionRequest, user: User?): DeleteReportDefinitionResponse {
+        return ReportDefinitionActions.delete(request, user)
     }
 }

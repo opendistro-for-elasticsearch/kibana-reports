@@ -36,7 +36,7 @@ internal object PluginSettings {
     /**
      * Settings Key prefix for this plugin.
      */
-    private const val KEY_PREFIX = "opendistro.reports.scheduler"
+    private const val KEY_PREFIX = "opendistro.reports"
 
     /**
      * General settings Key prefix.
@@ -47,6 +47,11 @@ internal object PluginSettings {
      * Polling settings Key prefix.
      */
     private const val POLLING_KEY_PREFIX = "$KEY_PREFIX.polling"
+
+    /**
+     * Access settings Key prefix.
+     */
+    private const val ACCESS_KEY_PREFIX = "$KEY_PREFIX.access"
 
     /**
      * Operation timeout for network operations.
@@ -77,6 +82,16 @@ internal object PluginSettings {
      * Setting to choose default number of items to query.
      */
     private const val DEFAULT_ITEMS_QUERY_COUNT_KEY = "$POLLING_KEY_PREFIX.defaultItemsQueryCount"
+
+    /**
+     * Setting to choose admin access restriction.
+     */
+    private const val ADMIN_ACCESS_KEY = "$ACCESS_KEY_PREFIX.adminAccess"
+
+    /**
+     * Setting to choose filter method.
+     */
+    private const val FILTER_BY_KEY = "$ACCESS_KEY_PREFIX.filterBy"
 
     /**
      * Default operation timeout for network operations.
@@ -139,6 +154,16 @@ internal object PluginSettings {
     private const val MINIMUM_ITEMS_QUERY_COUNT = 10
 
     /**
+     * Default admin access method.
+     */
+    private const val DEFAULT_ADMIN_ACCESS_METHOD = "AllReports"
+
+    /**
+     * Default filter-by method.
+     */
+    private const val DEFAULT_FILTER_BY_METHOD = "NoFilter"
+
+    /**
      * Operation timeout setting in ms for I/O operations
      */
     @Volatile
@@ -174,6 +199,33 @@ internal object PluginSettings {
     @Volatile
     var defaultItemsQueryCount: Int
 
+    /**
+     * admin access method.
+     */
+    @Volatile
+    var adminAccess: AdminAccess
+
+    /**
+     * Filter-by method.
+     */
+    @Volatile
+    var filterBy: FilterBy
+
+    /**
+     * Enum for types of admin access
+     * "Standard" -> Admin user access follows standard user
+     * "AllReports" -> Admin user with "all_access" role can see all reports of all users.
+     */
+    internal enum class AdminAccess { Standard, AllReports }
+
+    /**
+     * Enum for types of filterBy options
+     * NoFilter -> everyone see each other's reports
+     * User -> reports are visible to only themselves
+     * BackendRoles -> reports are visible to users having any one of the backend role of creator
+     */
+    internal enum class FilterBy { NoFilter, User, BackendRoles }
+
     private const val DECIMAL_RADIX: Int = 10
 
     private val log = LogManager.getLogger(javaClass)
@@ -200,6 +252,8 @@ internal object PluginSettings {
         maxLockRetries = (settings?.get(MAX_LOCK_RETRIES_KEY)?.toInt()) ?: DEFAULT_MAX_LOCK_RETRIES
         defaultItemsQueryCount = (settings?.get(DEFAULT_ITEMS_QUERY_COUNT_KEY)?.toInt())
             ?: DEFAULT_ITEMS_QUERY_COUNT_VALUE
+        adminAccess = AdminAccess.valueOf(settings?.get(ADMIN_ACCESS_KEY) ?: DEFAULT_ADMIN_ACCESS_METHOD)
+        filterBy = FilterBy.valueOf(settings?.get(FILTER_BY_KEY) ?: DEFAULT_FILTER_BY_METHOD)
 
         defaultSettings = mapOf(
             OPERATION_TIMEOUT_MS_KEY to operationTimeoutMs.toString(DECIMAL_RADIX),
@@ -207,7 +261,9 @@ internal object PluginSettings {
             MIN_POLLING_DURATION_S_KEY to minPollingDurationSeconds.toString(DECIMAL_RADIX),
             MAX_POLLING_DURATION_S_KEY to maxPollingDurationSeconds.toString(DECIMAL_RADIX),
             MAX_LOCK_RETRIES_KEY to maxLockRetries.toString(DECIMAL_RADIX),
-            DEFAULT_ITEMS_QUERY_COUNT_KEY to defaultItemsQueryCount.toString(DECIMAL_RADIX)
+            DEFAULT_ITEMS_QUERY_COUNT_KEY to defaultItemsQueryCount.toString(DECIMAL_RADIX),
+            ADMIN_ACCESS_KEY to adminAccess.name,
+            FILTER_BY_KEY to filterBy.name
         )
     }
 
@@ -253,6 +309,18 @@ internal object PluginSettings {
         NodeScope, Dynamic
     )
 
+    private val ADMIN_ACCESS: Setting<String> = Setting.simpleString(
+        ADMIN_ACCESS_KEY,
+        defaultSettings[ADMIN_ACCESS_KEY]!!,
+        NodeScope, Dynamic
+    )
+
+    private val FILTER_BY: Setting<String> = Setting.simpleString(
+        FILTER_BY_KEY,
+        defaultSettings[FILTER_BY_KEY]!!,
+        NodeScope, Dynamic
+    )
+
     /**
      * Returns list of additional settings available specific to this plugin.
      *
@@ -264,7 +332,9 @@ internal object PluginSettings {
             MIN_POLLING_DURATION_S,
             MAX_POLLING_DURATION_S,
             MAX_LOCK_RETRIES,
-            DEFAULT_ITEMS_QUERY_COUNT
+            DEFAULT_ITEMS_QUERY_COUNT,
+            ADMIN_ACCESS,
+            FILTER_BY
         )
     }
 
@@ -279,6 +349,8 @@ internal object PluginSettings {
         maxPollingDurationSeconds = MAX_POLLING_DURATION_S.get(clusterService.settings)
         maxLockRetries = MAX_LOCK_RETRIES.get(clusterService.settings)
         defaultItemsQueryCount = DEFAULT_ITEMS_QUERY_COUNT.get(clusterService.settings)
+        adminAccess = AdminAccess.valueOf(ADMIN_ACCESS.get(clusterService.settings))
+        filterBy = FilterBy.valueOf(FILTER_BY.get(clusterService.settings))
     }
 
     /**
@@ -316,6 +388,16 @@ internal object PluginSettings {
             log.debug("$LOG_PREFIX:$DEFAULT_ITEMS_QUERY_COUNT_KEY -autoUpdatedTo-> $clusterDefaultItemsQueryCount")
             defaultItemsQueryCount = clusterDefaultItemsQueryCount
         }
+        val clusterAdminAccess = clusterService.clusterSettings.get(ADMIN_ACCESS)
+        if (clusterAdminAccess != null) {
+            log.debug("$LOG_PREFIX:$ADMIN_ACCESS_KEY -autoUpdatedTo-> $clusterAdminAccess")
+            adminAccess = AdminAccess.valueOf(clusterAdminAccess)
+        }
+        val clusterFilterBy = clusterService.clusterSettings.get(FILTER_BY)
+        if (clusterFilterBy != null) {
+            log.debug("$LOG_PREFIX:$FILTER_BY_KEY -autoUpdatedTo-> $clusterFilterBy")
+            filterBy = FilterBy.valueOf(clusterFilterBy)
+        }
     }
 
     /**
@@ -351,6 +433,14 @@ internal object PluginSettings {
         clusterService.clusterSettings.addSettingsUpdateConsumer(DEFAULT_ITEMS_QUERY_COUNT) {
             defaultItemsQueryCount = it
             log.info("$LOG_PREFIX:$DEFAULT_ITEMS_QUERY_COUNT_KEY -updatedTo-> $it")
+        }
+        clusterService.clusterSettings.addSettingsUpdateConsumer(ADMIN_ACCESS) {
+            adminAccess = AdminAccess.valueOf(it)
+            log.info("$LOG_PREFIX:$ADMIN_ACCESS_KEY -updatedTo-> $it")
+        }
+        clusterService.clusterSettings.addSettingsUpdateConsumer(FILTER_BY) {
+            filterBy = FilterBy.valueOf(it)
+            log.info("$LOG_PREFIX:$FILTER_BY_KEY -updatedTo-> $it")
         }
     }
 }
