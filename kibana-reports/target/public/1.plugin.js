@@ -445,7 +445,12 @@ function ReportDefinitionDetails(props) {
   const [reportDefinitionDetails, setReportDefinitionDetails] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({});
   const [reportDefinitionRawResponse, setReportDefinitionRawResponse] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({});
   const [toasts, setToasts] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]);
+  const [showDeleteModal, setShowDeleteModal] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
   const reportDefinitionId = props.match['params']['reportDefinitionId'];
+
+  const handleShowDeleteModal = e => {
+    setShowDeleteModal(e);
+  };
 
   const addErrorLoadingDetailsToastHandler = () => {
     const errorToast = {
@@ -569,6 +574,22 @@ function ReportDefinitionDetails(props) {
 
   const handleReportDefinitionRawResponse = e => {
     setReportDefinitionRawResponse(e);
+  };
+
+  const DeleteConfirmationModal = () => {
+    const closeModal = () => {
+      setShowDeleteModal(false);
+    };
+
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiOverlayMask"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiConfirmModal"], {
+      title: "Delete report definition",
+      onCancel: closeModal,
+      onConfirm: deleteReportDefinition,
+      cancelButtonText: "Cancel",
+      confirmButtonText: "Delete",
+      buttonColor: "danger",
+      defaultFocusedButton: "confirm"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Are you sure you want to delete \"", reportDefinitionDetails.name, "\"?"))));
   };
 
   const humanReadableScheduleDetails = trigger => {
@@ -787,6 +808,7 @@ function ReportDefinitionDetails(props) {
     reportDetailsComponentTitle: 'Status',
     reportDetailsComponentContent: reportDefinitionDetails.status
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_report_details_report_details__WEBPACK_IMPORTED_MODULE_2__["ReportDetailsComponent"], null));
+  const showDeleteConfirmationModal = showDeleteModal ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(DeleteConfirmationModal, null) : null;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiPage"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiPageBody"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiTitle"], {
     size: "l"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Report definition details")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], {
@@ -801,7 +823,7 @@ function ReportDefinitionDetails(props) {
     grow: false
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiButton"], {
     color: 'danger',
-    onClick: deleteReportDefinition,
+    onClick: handleShowDeleteModal,
     id: 'deleteReportDefinitionButton'
   }, "Delete")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexItem"], {
     grow: false
@@ -853,7 +875,7 @@ function ReportDefinitionDetails(props) {
     toasts: toasts,
     dismissToast: removeToast,
     toastLifeTimeMs: 6000
-  })));
+  }), showDeleteConfirmationModal));
 }
 
 /***/ }),

@@ -29,6 +29,8 @@ import {
   EuiIcon,
   EuiLink,
   EuiGlobalToastList,
+  EuiOverlayMask,
+  EuiConfirmModal,
 } from '@elastic/eui';
 import {
   ReportDetailsComponent,
@@ -49,7 +51,12 @@ export function ReportDefinitionDetails(props) {
     setReportDefinitionRawResponse,
   ] = useState({});
   const [toasts, setToasts] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const reportDefinitionId = props.match['params']['reportDefinitionId'];
+
+  const handleShowDeleteModal = (e) => {
+    setShowDeleteModal(e);
+  };
 
   const addErrorLoadingDetailsToastHandler = () => {
     const errorToast = {
@@ -173,6 +180,32 @@ export function ReportDefinitionDetails(props) {
 
   const handleReportDefinitionRawResponse = (e) => {
     setReportDefinitionRawResponse(e);
+  };
+
+  const DeleteConfirmationModal = () => {
+    const closeModal = () => {
+      setShowDeleteModal(false);
+    };
+
+    return (
+      <div>
+        <EuiOverlayMask>
+          <EuiConfirmModal
+            title="Delete report definition"
+            onCancel={closeModal}
+            onConfirm={deleteReportDefinition}
+            cancelButtonText="Cancel"
+            confirmButtonText="Delete"
+            buttonColor="danger"
+            defaultFocusedButton="confirm"
+          >
+            <p>
+              Are you sure you want to delete "{reportDefinitionDetails.name}"?
+            </p>
+          </EuiConfirmModal>
+        </EuiOverlayMask>
+      </div>
+    );
   };
 
   const humanReadableScheduleDetails = (trigger) => {
@@ -466,6 +499,10 @@ export function ReportDefinitionDetails(props) {
       </EuiFlexGroup>
     );
 
+  const showDeleteConfirmationModal = showDeleteModal ? (
+    <DeleteConfirmationModal />
+  ) : null;
+
   return (
     <EuiPage>
       <EuiPageBody>
@@ -492,7 +529,7 @@ export function ReportDefinitionDetails(props) {
               <EuiFlexItem grow={false}>
                 <EuiButton
                   color={'danger'}
-                  onClick={deleteReportDefinition}
+                  onClick={handleShowDeleteModal}
                   id={'deleteReportDefinitionButton'}
                 >
                   Delete
@@ -614,6 +651,7 @@ export function ReportDefinitionDetails(props) {
           dismissToast={removeToast}
           toastLifeTimeMs={6000}
         />
+        {showDeleteConfirmationModal}
       </EuiPageBody>
     </EuiPage>
   );
