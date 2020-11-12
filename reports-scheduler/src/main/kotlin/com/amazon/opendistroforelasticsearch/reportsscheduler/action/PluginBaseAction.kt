@@ -67,7 +67,7 @@ abstract class PluginBaseAction<Request : ActionRequest, Response : ActionRespon
             try {
                 listener.onResponse(executeRequest(request, user))
             } catch (exception: ElasticsearchStatusException) {
-                log.warn("$LOG_PREFIX:ElasticsearchStatusException:", exception)
+                log.warn("$LOG_PREFIX:ElasticsearchStatusException: message:${exception.message}")
                 listener.onFailure(exception)
             } catch (exception: ElasticsearchSecurityException) {
                 log.warn("$LOG_PREFIX:ElasticsearchSecurityException:", exception)
