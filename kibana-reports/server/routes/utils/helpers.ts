@@ -20,11 +20,20 @@ import {
   ILegacyScopedClusterClient,
 } from '../../../../../src/core/server';
 
+// error response body:
+//  {
+//   error: {
+//     root_cause: [{ type: 'status_exception', reason: 'test exception' }],
+//     type: 'status_exception',
+//     reason: 'test exception',
+//   },
+//   status: 404,
+// };
 export function parseEsErrorResponse(error: any) {
   if (error.response) {
     try {
       const esErrorResponse = JSON.parse(error.response);
-      return esErrorResponse.reason || error.response;
+      return esErrorResponse.error.reason || error.response;
     } catch (parsingError) {
       return error.response;
     }

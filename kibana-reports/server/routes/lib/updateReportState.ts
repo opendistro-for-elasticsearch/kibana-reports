@@ -38,7 +38,7 @@ export const updateReportState = async (
     esReportsClient,
     'es_reports.updateReportInstanceStatus',
     {
-      reportId: reportId,
+      reportInstanceId: reportId,
       body: reqBody,
     },
     isScheduledTask
