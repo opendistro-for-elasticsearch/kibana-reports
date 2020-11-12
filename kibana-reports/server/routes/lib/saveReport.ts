@@ -13,6 +13,7 @@
  * permissions and limitations under the License.
  */
 
+import { v1 as uuidv1 } from 'uuid';
 import { ReportSchemaType } from '../../model';
 import { BACKEND_REPORT_STATE } from '../../model/backendModel';
 import {
