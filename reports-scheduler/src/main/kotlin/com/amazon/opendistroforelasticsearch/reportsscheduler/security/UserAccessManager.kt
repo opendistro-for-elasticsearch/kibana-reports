@@ -63,8 +63,10 @@ internal object UserAccessManager {
      * validate if user has access to polling actions
      */
     fun validatePollingUser(user: User?) {
-        if (user?.name != KIBANA_SERVER_USER) {
-            throw ElasticsearchStatusException("Permission denied", RestStatus.FORBIDDEN)
+        if (user != null) { // Check only if security is enabled
+            if (user.name != KIBANA_SERVER_USER) {
+                throw ElasticsearchStatusException("Permission denied", RestStatus.FORBIDDEN)
+            }
         }
     }
 
