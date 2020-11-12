@@ -48,7 +48,7 @@ export function Main(props) {
 
   const addReportsTableContentErrorToastHandler = () => {
     const errorToast = {
-      title: 'Error generating reports table content.',
+      title: 'Error generating reports table.',
       color: 'danger',
       iconType: 'alert',
       id: 'reportsTableErrorToast',
@@ -62,7 +62,7 @@ export function Main(props) {
 
   const addReportDefinitionsTableErrorToastHandler = () => {
     const errorToast = {
-      title: 'Error generating report definitions table content.',
+      title: 'Error generating report definitions table.',
       color: 'danger',
       iconType: 'alert',
       id: 'reportDefinitionsTableErrorToast',
@@ -76,7 +76,7 @@ export function Main(props) {
 
   const addErrorOnDemandDownloadToastHandler = () => {
     const errorToast = {
-      title: 'Error downloading report',
+      title: 'Error downloading report.',
       color: 'danger',
       iconType: 'alert',
       id: 'onDemandDownloadErrorToast',
@@ -90,9 +90,9 @@ export function Main(props) {
 
   const addSuccessOnDemandDownloadToastHandler = () => {
     const successToast = {
-      title: 'Success',
+      title: 'Successfully downloaded report.',
       color: 'success',
-      text: <p>Report successfully downloaded!</p>,
+      iconType: 'check',
       id: 'onDemandDownloadSuccessToast',
     };
     setToasts(toasts.concat(successToast));
@@ -104,9 +104,9 @@ export function Main(props) {
 
   const addCreateReportDefinitionSuccessToastHandler = () => {
     const successToast = {
-      title: 'Success',
+      title: 'Successfully created report definition.',
       color: 'success',
-      text: <p>Report definition successfully created!</p>,
+      iconType: 'check',
       id: 'createReportDefinitionSuccessToast',
     };
     setToasts(toasts.concat(successToast));
@@ -118,9 +118,9 @@ export function Main(props) {
 
   const addEditReportDefinitionSuccessToastHandler = () => {
     const successToast = {
-      title: 'Success',
+      title: 'Successfully updated report definition.',
       color: 'success',
-      text: <p>Report definition successfully updated!</p>,
+      iconType: 'check',
       id: 'editReportDefinitionSuccessToast',
     };
     setToasts(toasts.concat(successToast));

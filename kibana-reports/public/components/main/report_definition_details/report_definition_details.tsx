@@ -67,9 +67,9 @@ export function ReportDefinitionDetails(props) {
 
   const addSuccessGeneratingReportToastHandler = () => {
     const successToast = {
-      title: 'Success',
+      title: 'Successfully generated report.',
       color: 'success',
-      text: <p>Report successfully downloaded!</p>,
+      iconType: 'check',
       id: 'generateReportSuccessToast',
     };
     setToasts(toasts.concat(successToast));
@@ -95,9 +95,9 @@ export function ReportDefinitionDetails(props) {
 
   const addSuccessEnablingScheduleToastHandler = () => {
     const successToast = {
-      title: 'Success',
+      title: 'Successfully enabled schedule.',
       color: 'success',
-      text: <p>Schedule successfully enabled!</p>,
+      iconType: 'check',
       id: 'successEnableToast',
     };
     setToasts(toasts.concat(successToast));
@@ -123,9 +123,9 @@ export function ReportDefinitionDetails(props) {
 
   const addSuccessDisablingScheduleToastHandler = () => {
     const successToast = {
-      title: 'Success',
+      title: 'Successfully disabled schedule.',
       color: 'success',
-      text: <p>Schedule successfully disabled!</p>,
+      iconType: 'check',
       id: 'successDisableToast',
     };
     setToasts(toasts.concat(successToast));

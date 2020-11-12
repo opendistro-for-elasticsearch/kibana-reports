@@ -190,7 +190,7 @@ export const reportGenerationSuccess = () => {
       role="img" aria-hidden="true">
         <path fill-rule="evenodd" d="M6.5 12a.502.502 0 01-.354-.146l-4-4a.502.502 0 01.708-.708L6.5 10.793l6.646-6.647a.502.502 0 01.708.708l-7 7A.502.502 0 016.5 12"></path>
       </svg>
-      <span class="euiToastHeader__title">Report generation successful</span>
+      <span class="euiToastHeader__title">Successfully generated report.</span>
     </div>
     <button type="button" class="euiToast__closeButton" aria-label="Dismiss toast" id="closeReportSuccessToast"
     data-test-subj="toastCloseButton">
@@ -200,7 +200,7 @@ export const reportGenerationSuccess = () => {
       </svg>
     </button>
     <div class="euiText euiText--small euiToastBody">
-      <p>Your report is available in 
+      <p>View 
         <a class="euiLink euiLink--primary"
         href="opendistro_kibana_reports#/" rel="noreferrer">Reports</a>.</p>
     </div>
@@ -229,7 +229,7 @@ export const reportGenerationFailure = () => {
       </svg>
     </button>
     <div class="euiText euiText--small euiToastBody">
-      <p>There was an error generating this report</p>
+      <p>There was an error generating this report.</p>
     </div>
   </div>
   `

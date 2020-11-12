@@ -211,7 +211,7 @@ function Main(props) {
 
   const addReportsTableContentErrorToastHandler = () => {
     const errorToast = {
-      title: 'Error generating reports table content.',
+      title: 'Error generating reports table.',
       color: 'danger',
       iconType: 'alert',
       id: 'reportsTableErrorToast'
@@ -225,7 +225,7 @@ function Main(props) {
 
   const addReportDefinitionsTableErrorToastHandler = () => {
     const errorToast = {
-      title: 'Error generating report definitions table content.',
+      title: 'Error generating report definitions table.',
       color: 'danger',
       iconType: 'alert',
       id: 'reportDefinitionsTableErrorToast'
@@ -239,7 +239,7 @@ function Main(props) {
 
   const addErrorOnDemandDownloadToastHandler = () => {
     const errorToast = {
-      title: 'Error downloading report',
+      title: 'Error downloading report.',
       color: 'danger',
       iconType: 'alert',
       id: 'onDemandDownloadErrorToast'
@@ -253,9 +253,9 @@ function Main(props) {
 
   const addSuccessOnDemandDownloadToastHandler = () => {
     const successToast = {
-      title: 'Success',
+      title: 'Successfully downloaded report.',
       color: 'success',
-      text: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Report successfully downloaded!"),
+      iconType: 'check',
       id: 'onDemandDownloadSuccessToast'
     };
     setToasts(toasts.concat(successToast));
@@ -267,9 +267,9 @@ function Main(props) {
 
   const addCreateReportDefinitionSuccessToastHandler = () => {
     const successToast = {
-      title: 'Success',
+      title: 'Successfully created report definition.',
       color: 'success',
-      text: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Report definition successfully created!"),
+      iconType: 'check',
       id: 'createReportDefinitionSuccessToast'
     };
     setToasts(toasts.concat(successToast));
@@ -281,9 +281,9 @@ function Main(props) {
 
   const addEditReportDefinitionSuccessToastHandler = () => {
     const successToast = {
-      title: 'Success',
+      title: 'Successfully updated report definition.',
       color: 'success',
-      text: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Report definition successfully updated!"),
+      iconType: 'check',
       id: 'editReportDefinitionSuccessToast'
     };
     setToasts(toasts.concat(successToast));
@@ -463,9 +463,9 @@ function ReportDefinitionDetails(props) {
 
   const addSuccessGeneratingReportToastHandler = () => {
     const successToast = {
-      title: 'Success',
+      title: 'Successfully generated report.',
       color: 'success',
-      text: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Report successfully downloaded!"),
+      iconType: 'check',
       id: 'generateReportSuccessToast'
     };
     setToasts(toasts.concat(successToast));
@@ -491,9 +491,9 @@ function ReportDefinitionDetails(props) {
 
   const addSuccessEnablingScheduleToastHandler = () => {
     const successToast = {
-      title: 'Success',
+      title: 'Successfully enabled schedule.',
       color: 'success',
-      text: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Schedule successfully enabled!"),
+      iconType: 'check',
       id: 'successEnableToast'
     };
     setToasts(toasts.concat(successToast));
@@ -519,9 +519,9 @@ function ReportDefinitionDetails(props) {
 
   const addSuccessDisablingScheduleToastHandler = () => {
     const successToast = {
-      title: 'Success',
+      title: 'Successfully disabled schedule.',
       color: 'success',
-      text: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Schedule successfully disabled!"),
+      iconType: 'check',
       id: 'successDisableToast'
     };
     setToasts(toasts.concat(successToast));
