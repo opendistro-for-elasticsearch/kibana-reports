@@ -168,7 +168,10 @@ internal object ReportDefinitionsIndex {
             .source(sourceBuilder)
         val actionFuture = client.search(searchRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
-        return ReportDefinitionDetailsSearchResults(from.toLong(), response)
+        val result = ReportDefinitionDetailsSearchResults(from.toLong(), response)
+        log.info("$LOG_PREFIX:getAllReportDefinitions from:$from, maxItems:$maxItems," +
+            " retCount:${result.objectList.size}, totalCount:${result.totalHits}")
+        return result
     }
 
     /**

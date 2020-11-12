@@ -172,7 +172,10 @@ internal object ReportInstancesIndex {
             .source(sourceBuilder)
         val actionFuture = client.search(searchRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
-        return ReportInstanceSearchResults(from.toLong(), response)
+        val result = ReportInstanceSearchResults(from.toLong(), response)
+        log.info("$LOG_PREFIX:getAllReportInstances from:$from, maxItems:$maxItems," +
+            " retCount:${result.objectList.size}, totalCount:${result.totalHits}")
+        return result
     }
 
     /**
@@ -254,11 +257,12 @@ internal object ReportInstancesIndex {
             .source(sourceBuilder)
         val actionFuture = client.search(searchRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
-        log.warn("$LOG_PREFIX:getPendingReportInstances; response:$response")
+        val hits = response.hits
+        log.info("$LOG_PREFIX:getPendingReportInstances; totalHits:${hits.totalHits}, retHits:${hits.hits.size}")
         val mutableList: MutableList<ReportInstanceDoc> = mutableListOf()
         val currentTime = Instant.now()
         val refTime = currentTime.minusSeconds(PluginSettings.jobLockDurationSeconds.toLong())
-        response.hits.forEach {
+        hits.forEach {
             val parser = XContentType.JSON.xContent().createParser(NamedXContentRegistry.EMPTY,
                 LoggingDeprecationHandler.INSTANCE,
                 it.sourceAsString)
