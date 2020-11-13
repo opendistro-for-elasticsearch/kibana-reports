@@ -44,7 +44,7 @@ async function pollAndExecuteJob(
         `scheduled job sent from scheduler with report id: ${reportId}`
       );
 
-      const reportData = await createScheduledReport(
+      await createScheduledReport(
         reportId,
         reportMetadata,
         esClient,
@@ -52,13 +52,14 @@ async function pollAndExecuteJob(
         notificationClient,
         logger
       );
-      logger.info('done executing job');
     } else {
       // 204 no content is returned, 204 doesn't have response body
-      logger.info(`no available job in queue ${JSON.stringify(esResp)}`);
+      logger.info(`No scheduled job to execute ${JSON.stringify(esResp)}`);
     }
   } catch (error) {
-    logger.error(`${error.statusCode} ${parseEsErrorResponse(error)}`);
+    logger.error(
+      `Failed to poll job ${error.statusCode} ${parseEsErrorResponse(error)}`
+    );
   }
 }
 
