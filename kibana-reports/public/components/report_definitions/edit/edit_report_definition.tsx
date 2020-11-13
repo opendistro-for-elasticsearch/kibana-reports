@@ -123,6 +123,7 @@ export function EditReportDefinition(props) {
   };
 
   const editReportDefinition = async (metadata) => {
+    console.log('metadata is', metadata);
     const { httpClient } = props;
     if ('header' in metadata.report_params.core_params) {
       metadata.report_params.core_params.header = converter.makeHtml(

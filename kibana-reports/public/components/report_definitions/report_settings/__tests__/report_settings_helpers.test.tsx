@@ -51,18 +51,26 @@ describe('report_settings_helpers tests', () => {
   });
 
   test('getVisualizationBaseUrlCreate', () => {
-    const baseUrl = getVisualizationBaseUrlCreate(true, true);
+    const baseUrl = getVisualizationBaseUrlCreate(true, '12345', true);
     expect(baseUrl).toBe('/app/visualize#/edit/');
 
-    const baseUrlNotFromEdit = getVisualizationBaseUrlCreate(false, true);
+    const baseUrlNotFromEdit = getVisualizationBaseUrlCreate(
+      false,
+      '12345',
+      true
+    );
     expect(baseUrlNotFromEdit).toBe('/app/visualize#/edit/');
   });
 
   test('getSavedSearchBaseUrlCreate', () => {
-    const baseUrl = getSavedSearchBaseUrlCreate(true, true);
+    const baseUrl = getSavedSearchBaseUrlCreate(true, '12345', true);
     expect(baseUrl).toBe('/app/discover#/view/');
 
-    const baseUrlNotFromEdit = getSavedSearchBaseUrlCreate(false, true);
+    const baseUrlNotFromEdit = getSavedSearchBaseUrlCreate(
+      false,
+      '12345',
+      true
+    );
     expect(baseUrlNotFromEdit).toBe('/app/discover#/view/');
   });
 
