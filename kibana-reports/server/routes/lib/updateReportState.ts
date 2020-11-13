@@ -19,11 +19,9 @@ import {
 } from '../../../../../src/core/server';
 import { REPORT_STATE } from '../utils/constants';
 import { getBackendReportState } from '../utils/converters/uiToBackend';
-import { callCluster } from '../utils/helpers';
 
 // The only thing can be updated of a report instance is its "state"
 export const updateReportState = async (
-  isScheduledTask: boolean,
   reportId: string,
   esReportsClient: ILegacyClusterClient | ILegacyScopedClusterClient,
   state: REPORT_STATE
@@ -34,14 +32,13 @@ export const updateReportState = async (
     status: getBackendReportState(state),
   };
 
-  const esResp = await callCluster(
-    esReportsClient,
+  const esResp = await esReportsClient.callAsInternalUser(
+    // @ts-ignore
     'es_reports.updateReportInstanceStatus',
     {
       reportInstanceId: reportId,
       body: reqBody,
-    },
-    isScheduledTask
+    }
   );
 
   return esResp;
