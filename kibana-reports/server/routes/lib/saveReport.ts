@@ -24,9 +24,8 @@ import { uiToBackendReportDefinition } from '../utils/converters/uiToBackend';
 import { callCluster } from '../utils/helpers';
 
 export const saveReport = async (
-  isScheduledTask: boolean,
   report: ReportSchemaType,
-  esReportsClient: ILegacyClusterClient | ILegacyScopedClusterClient
+  esReportsClient: ILegacyScopedClusterClient
 ) => {
   const timePending = Date.now();
   const {
@@ -54,13 +53,11 @@ export const saveReport = async (
     inContextDownloadUrlPath: queryUrl,
   };
 
-  const esResp = await callCluster(
-    esReportsClient,
+  const esResp = await esReportsClient.callAsCurrentUser(
     'es_reports.createReport',
     {
       body: reqBody,
-    },
-    isScheduledTask
+    }
   );
 
   return esResp;

@@ -35,7 +35,6 @@ export const createScheduledReport = async (
   notificationClient: ILegacyClusterClient,
   logger: Logger
 ) => {
-  const isScheduledTask = true;
   let createReportResult: CreateReportResultType;
 
   const {
@@ -65,12 +64,7 @@ export const createScheduledReport = async (
     //   );
     // }
 
-    await updateReportState(
-      isScheduledTask,
-      reportId,
-      esReportsClient,
-      REPORT_STATE.created
-    );
+    await updateReportState(reportId, esReportsClient, REPORT_STATE.created);
 
     // deliver report
     if (deliveryType == DELIVERY_TYPE.channel) {
@@ -79,7 +73,6 @@ export const createScheduledReport = async (
         notificationClient,
         esReportsClient,
         reportId,
-        isScheduledTask,
         logger
       );
     }
@@ -87,11 +80,6 @@ export const createScheduledReport = async (
     // update report instance with "error" state
     //TODO: save error detail and display on UI
     logger.error(`Failed to create scheduled report ${error}`);
-    await updateReportState(
-      isScheduledTask,
-      reportId,
-      esReportsClient,
-      REPORT_STATE.error
-    );
+    await updateReportState(reportId, esReportsClient, REPORT_STATE.error);
   }
 };

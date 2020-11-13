@@ -29,7 +29,6 @@ export const deliverReport = async (
   notificationClient: ILegacyScopedClusterClient | ILegacyClusterClient,
   esReportsClient: ILegacyClusterClient | ILegacyScopedClusterClient,
   reportId: string,
-  isScheduledTask: boolean,
   logger: Logger
 ) => {
   const {
@@ -75,13 +74,12 @@ export const deliverReport = async (
     };
 
     // send email
-    const notificationResp = await callCluster(
-      notificationClient,
+    const notificationResp = await notificationClient.callAsInternalUser(
+      // @ts-ignore
       'notification.send',
       {
         body: deliveryBody,
-      },
-      isScheduledTask
+      }
     );
 
     /**
@@ -118,10 +116,5 @@ export const deliverReport = async (
   }
 
   // update report state
-  await updateReportState(
-    isScheduledTask,
-    reportId,
-    esReportsClient,
-    REPORT_STATE.shared
-  );
+  await updateReportState(reportId, esReportsClient, REPORT_STATE.shared);
 };

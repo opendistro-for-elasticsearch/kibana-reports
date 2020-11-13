@@ -62,7 +62,7 @@ export const createReport = async (
   if (savedReportId) {
     reportId = savedReportId;
   } else {
-    const esResp = await saveReport(isScheduledTask, report, esReportsClient);
+    const esResp = await saveReport(report, esReportsClient);
     reportId = esResp.reportInstance.id;
   }
 
@@ -111,12 +111,7 @@ export const createReport = async (
     }
     // update report state to "created"
     if (!savedReportId) {
-      await updateReportState(
-        isScheduledTask,
-        reportId,
-        esReportsClient,
-        REPORT_STATE.created
-      );
+      await updateReportState(reportId, esReportsClient, REPORT_STATE.created);
     }
 
     // deliver report
@@ -126,7 +121,6 @@ export const createReport = async (
         notificationClient,
         esReportsClient,
         reportId,
-        isScheduledTask,
         logger
       );
     }
@@ -134,12 +128,7 @@ export const createReport = async (
     // update report instance with "error" state
     //TODO: save error detail and display on UI
     if (!savedReportId) {
-      await updateReportState(
-        isScheduledTask,
-        reportId,
-        esReportsClient,
-        REPORT_STATE.error
-      );
+      await updateReportState(reportId, esReportsClient, REPORT_STATE.error);
     }
     throw error;
   }
