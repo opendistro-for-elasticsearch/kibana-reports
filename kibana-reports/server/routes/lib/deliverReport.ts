@@ -22,12 +22,10 @@ import {
 import { DELIVERY_TYPE, REPORT_STATE } from '../utils/constants';
 import { composeEmbeddedHtml } from '../utils/notification/deliveryContentHelper';
 import { callCluster } from '../utils/helpers';
-import { CreateReportResultType } from '../utils/types';
 import { updateReportState } from './updateReportState';
 
 export const deliverReport = async (
   report: ReportSchemaType,
-  reportData: CreateReportResultType,
   notificationClient: ILegacyScopedClusterClient | ILegacyClusterClient,
   esReportsClient: ILegacyClusterClient | ILegacyScopedClusterClient,
   reportId: string,
@@ -117,21 +115,13 @@ export const deliverReport = async (
         );
       }
     });
-  } else {
-    // empty kibana recipients array
-    //TODO: tmp solution
-    // @ts-ignore
-    if (!deliveryParams.kibana_recipients.length) {
-      return reportData;
-    }
   }
-  // update report document
+
+  // update report state
   await updateReportState(
     isScheduledTask,
     reportId,
     esReportsClient,
     REPORT_STATE.shared
   );
-
-  return reportData;
 };
