@@ -52,6 +52,7 @@ export const getDashboardBaseUrlCreate = (
 
 export const getVisualizationBaseUrlCreate = (
   edit: boolean,
+  editDefinitionId: string,
   fromInContext: boolean
 ) => {
   let baseUrl;
@@ -62,7 +63,7 @@ export const getVisualizationBaseUrlCreate = (
   }
   if (edit) {
     return baseUrl.replace(
-      'opendistro_kibana_reports#/edit',
+      `opendistro_kibana_reports#/edit/${editDefinitionId}`,
       'visualize#/edit/'
     );
   } else if (fromInContext) {
@@ -76,6 +77,7 @@ export const getVisualizationBaseUrlCreate = (
 
 export const getSavedSearchBaseUrlCreate = (
   edit: boolean,
+  editDefinitionId: string,
   fromInContext: boolean
 ) => {
   let baseUrl;
@@ -86,7 +88,7 @@ export const getSavedSearchBaseUrlCreate = (
   }
   if (edit) {
     return baseUrl.replace(
-      'opendistro_kibana_reports#/edit',
+      `opendistro_kibana_reports#/edit/${editDefinitionId}`,
       'discover#/view/'
     );
   } else if (fromInContext) {
