@@ -63,6 +63,11 @@ export enum DELIVERY_TYPE {
   channel = 'Channel',
 }
 
+export enum SELECTOR {
+  dashboard = '#dashboardViewport',
+  visualization = '.visEditor__visualization',
+}
+
 // https://www.elastic.co/guide/en/elasticsearch/reference/6.8/search-request-from-size.html
 export const DEFAULT_MAX_SIZE = 10000;
 

@@ -21,7 +21,6 @@ import {
 } from '../../../../../src/core/server';
 import { DELIVERY_TYPE, REPORT_STATE } from '../utils/constants';
 import { composeEmbeddedHtml } from '../utils/notification/deliveryContentHelper';
-import { callCluster } from '../utils/helpers';
 import { updateReportState } from './updateReportState';
 
 export const deliverReport = async (
@@ -45,11 +44,13 @@ export const deliverReport = async (
     const {
       query_url: queryUrl,
       report_definition: {
-        report_params: { report_name: reportName },
+        report_params: {
+          report_name: reportName,
+          core_params: { origin },
+        },
       },
     } = report;
     const { htmlDescription } = deliveryParams as ChannelSchemaType;
-    const origin = report.report_definition.report_params.core_params.origin;
     const originalQueryUrl = origin + queryUrl;
     /**
      * have to manually compose the url because the Kibana url for AES is.../_plugin/kibana/app/opendistro_kibana_reports#/report_details/${reportId}
@@ -60,16 +61,16 @@ export const deliverReport = async (
       ''
     )}/app/opendistro_kibana_reports#/report_details/${reportId}`;
 
-    const template = composeEmbeddedHtml(
+    const embeddedHtml = composeEmbeddedHtml(
       htmlDescription,
       originalQueryUrl,
       reportDetailUrl,
       reportName
     );
 
-    const deliveryBody = {
+    const reqBody = {
       ...deliveryParams,
-      htmlDescription: template,
+      htmlDescription: embeddedHtml,
       refTag: reportId,
     };
 
@@ -78,7 +79,7 @@ export const deliverReport = async (
       // @ts-ignore
       'notification.send',
       {
-        body: deliveryBody,
+        body: reqBody,
       }
     );
 
