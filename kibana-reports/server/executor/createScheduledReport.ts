@@ -17,6 +17,7 @@ import {
   REPORT_TYPE,
   REPORT_STATE,
   LOCAL_HOST,
+  DELIVERY_TYPE,
 } from '../routes/utils/constants';
 import { ILegacyClusterClient, Logger } from '../../../../src/core/server';
 import { createSavedSearchReport } from '../routes/utils/savedSearchReportHelper';
@@ -33,33 +34,36 @@ export const createScheduledReport = async (
   esReportsClient: ILegacyClusterClient,
   notificationClient: ILegacyClusterClient,
   logger: Logger
-): Promise<CreateReportResultType> => {
+) => {
   const isScheduledTask = true;
   let createReportResult: CreateReportResultType;
 
   const {
-    report_definition: { report_params: reportParams },
+    report_definition: {
+      report_params: reportParams,
+      delivery: { delivery_type: deliveryType },
+    },
   } = report;
   const { report_source: reportSource } = reportParams;
 
-  // compose url with localhost
-  const completeQueryUrl = `${LOCAL_HOST}${report.query_url}`;
   try {
-    // generate report
-    if (reportSource === REPORT_TYPE.savedSearch) {
-      createReportResult = await createSavedSearchReport(
-        report,
-        esClient,
-        isScheduledTask
-      );
-    } else {
-      // report source can only be one of [saved search, visualization, dashboard]
-      createReportResult = await createVisualReport(
-        reportParams,
-        completeQueryUrl,
-        logger
-      );
-    }
+    // TODO: generate report logic will be added back once we have the user impersonation
+    // if (reportSource === REPORT_TYPE.savedSearch) {
+    //   createReportResult = await createSavedSearchReport(
+    //     report,
+    //     esClient,
+    //     isScheduledTask
+    //   );
+    // } else {
+    //   // report source can only be one of [saved search, visualization, dashboard]
+    //   // compose url with localhost
+    //   const completeQueryUrl = `${LOCAL_HOST}${report.query_url}`;
+    //   createReportResult = await createVisualReport(
+    //     reportParams,
+    //     completeQueryUrl,
+    //     logger
+    //   );
+    // }
 
     await updateReportState(
       isScheduledTask,
@@ -69,26 +73,25 @@ export const createScheduledReport = async (
     );
 
     // deliver report
-    createReportResult = await deliverReport(
-      report,
-      createReportResult,
-      notificationClient,
-      esReportsClient,
-      reportId,
-      isScheduledTask,
-      logger
-    );
+    if (deliveryType == DELIVERY_TYPE.channel) {
+      await deliverReport(
+        report,
+        notificationClient,
+        esReportsClient,
+        reportId,
+        isScheduledTask,
+        logger
+      );
+    }
   } catch (error) {
     // update report instance with "error" state
     //TODO: save error detail and display on UI
+    logger.error(`Failed to create scheduled report ${error}`);
     await updateReportState(
       isScheduledTask,
       reportId,
       esReportsClient,
       REPORT_STATE.error
     );
-    throw error;
   }
-
-  return createReportResult;
 };

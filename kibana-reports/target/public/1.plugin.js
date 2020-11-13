@@ -2231,7 +2231,6 @@ function EditReportDefinition(props) {
   };
 
   const editReportDefinition = async metadata => {
-    console.log('metadata is', metadata);
     const {
       httpClient
     } = props;

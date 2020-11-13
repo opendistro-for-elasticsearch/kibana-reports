@@ -18,6 +18,7 @@ import {
   REPORT_STATE,
   LOCAL_HOST,
   SECURITY_AUTH_COOKIE_NAME,
+  DELIVERY_TYPE,
 } from '../utils/constants';
 
 import {
@@ -66,12 +67,13 @@ export const createReport = async (
   }
 
   const {
-    report_definition: { report_params: reportParams },
+    report_definition: {
+      report_params: reportParams,
+      delivery: { delivery_type: deliveryType },
+    },
   } = report;
   const { report_source: reportSource } = reportParams;
 
-  // compose url
-  const queryUrl = `${LOCAL_HOST}${report.query_url}`;
   try {
     // generate report
     if (reportSource === REPORT_TYPE.savedSearch) {
@@ -82,6 +84,8 @@ export const createReport = async (
       );
     } else {
       // report source can only be one of [saved search, visualization, dashboard]
+      // compose url
+      const completeQueryUrl = `${LOCAL_HOST}${report.query_url}`;
       // Check if security is enabled. TODO: is there a better way to check?
       let cookieObject: SetCookie | undefined;
       if (request.headers.cookie) {
@@ -92,7 +96,7 @@ export const createReport = async (
             cookieObject = {
               name: cookie[0],
               value: cookie[1],
-              url: queryUrl,
+              url: completeQueryUrl,
             };
           }
         });
@@ -100,7 +104,7 @@ export const createReport = async (
 
       createReportResult = await createVisualReport(
         reportParams,
-        queryUrl,
+        completeQueryUrl,
         logger,
         cookieObject
       );
@@ -116,10 +120,9 @@ export const createReport = async (
     }
 
     // deliver report
-    if (!savedReportId) {
-      createReportResult = await deliverReport(
+    if (!savedReportId && deliveryType == DELIVERY_TYPE.channel) {
+      await deliverReport(
         report,
-        createReportResult,
         notificationClient,
         esReportsClient,
         reportId,
