@@ -121,7 +121,7 @@ export function ReportDetails(props) {
   const parseTimePeriod = (queryUrl: string) => {
     let timeString = queryUrl.substring(
       queryUrl.lastIndexOf('time:'),
-      queryUrl.lastIndexOf('))')
+      queryUrl.indexOf('))')
     );
 
     let fromDateString = timeString.substring(

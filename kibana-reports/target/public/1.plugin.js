@@ -1129,7 +1129,7 @@ function ReportDetails(props) {
   };
 
   const parseTimePeriod = queryUrl => {
-    let timeString = queryUrl.substring(queryUrl.lastIndexOf('time:'), queryUrl.lastIndexOf('))'));
+    let timeString = queryUrl.substring(queryUrl.lastIndexOf('time:'), queryUrl.indexOf('))'));
     let fromDateString = timeString.substring(timeString.lastIndexOf('from:') + 5, timeString.lastIndexOf(','));
     let toDateString = timeString.substring(timeString.lastIndexOf('to:') + 3, timeString.length);
     fromDateString = fromDateString.replace(/[']+/g, '');
@@ -2231,7 +2231,6 @@ function EditReportDefinition(props) {
   };
 
   const editReportDefinition = async metadata => {
-    console.log('metadata is', metadata);
     const {
       httpClient
     } = props;
