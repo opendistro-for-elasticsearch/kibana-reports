@@ -2231,6 +2231,7 @@ function EditReportDefinition(props) {
   };
 
   const editReportDefinition = async metadata => {
+    console.log('metadata is', metadata);
     const {
       httpClient
     } = props;
@@ -2473,13 +2474,13 @@ function ReportSettings(props) {
       setFileFormat('pdf');
     } else if (e === 'visualizationReportSource') {
       reportDefinitionRequest.report_params.report_source = 'Visualization';
-      reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getVisualizationBaseUrlCreate"])(edit, fromInContext) + visualizations[0].value; // set params to visual report params after switch from saved search
+      reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getVisualizationBaseUrlCreate"])(edit, editDefinitionId, fromInContext) + visualizations[0].value; // set params to visual report params after switch from saved search
 
       Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["handleDataToVisualReportSourceChange"])(reportDefinitionRequest);
       setFileFormat('pdf');
     } else if (e === 'savedSearchReportSource') {
       reportDefinitionRequest.report_params.report_source = 'Saved search';
-      reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getSavedSearchBaseUrlCreate"])(edit, fromInContext) + savedSearches[0].value;
+      reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getSavedSearchBaseUrlCreate"])(edit, editDefinitionId, fromInContext) + savedSearches[0].value;
       reportDefinitionRequest.report_params.core_params.saved_search_id = savedSearches[0].value;
       reportDefinitionRequest.report_params.core_params.report_format = 'csv';
       reportDefinitionRequest.report_params.core_params.limit = 10000;
@@ -2506,12 +2507,19 @@ function ReportSettings(props) {
       fromInContext = true;
     }
 
-    reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getVisualizationBaseUrlCreate"])(edit, fromInContext) + e.target.value;
+    reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getVisualizationBaseUrlCreate"])(edit, editDefinitionId, fromInContext) + e.target.value;
   };
 
   const handleSavedSearchSelect = e => {
     setSavedSearchSourceSelect(e.target.value);
     reportDefinitionRequest.report_params.core_params.saved_search_id = e.target.value;
+    let fromInContext = false;
+
+    if (window.location.href.includes('?')) {
+      fromInContext = true;
+    }
+
+    reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getSavedSearchBaseUrlCreate"])(edit, editDefinitionId, fromInContext) + e.target.value;
   };
 
   const handleFileFormat = e => {
@@ -2725,14 +2733,14 @@ function ReportSettings(props) {
       setReportSourceId('visualizationReportSource');
       reportDefinitionRequest.report_params.report_source = _report_settings_constants__WEBPACK_IMPORTED_MODULE_2__["REPORT_SOURCE_RADIOS"][1].label;
       setVisualizationSourceSelect(id);
-      reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getVisualizationBaseUrlCreate"])(edit, true) + id;
+      reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getVisualizationBaseUrlCreate"])(edit, editDefinitionId, true) + id;
     } else if (url.includes('discover')) {
       setReportSourceId('savedSearchReportSource');
       reportDefinitionRequest.report_params.core_params.report_format = 'csv';
       reportDefinitionRequest.report_params.core_params.saved_search_id = id;
       reportDefinitionRequest.report_params.report_source = _report_settings_constants__WEBPACK_IMPORTED_MODULE_2__["REPORT_SOURCE_RADIOS"][2].label;
       setSavedSearchSourceSelect(id);
-      reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getSavedSearchBaseUrlCreate"])(edit, true) + id;
+      reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getSavedSearchBaseUrlCreate"])(edit, editDefinitionId, true) + id;
     }
   };
 
@@ -2998,7 +3006,7 @@ const getDashboardBaseUrlCreate = (edit, editDefinitionId, fromInContext) => {
 
   return baseUrl.replace('opendistro_kibana_reports#/create', 'dashboards#/view/');
 };
-const getVisualizationBaseUrlCreate = (edit, fromInContext) => {
+const getVisualizationBaseUrlCreate = (edit, editDefinitionId, fromInContext) => {
   let baseUrl;
 
   if (!fromInContext) {
@@ -3008,14 +3016,14 @@ const getVisualizationBaseUrlCreate = (edit, fromInContext) => {
   }
 
   if (edit) {
-    return baseUrl.replace('opendistro_kibana_reports#/edit', 'visualize#/edit/');
+    return baseUrl.replace(`opendistro_kibana_reports#/edit/${editDefinitionId}`, 'visualize#/edit/');
   } else if (fromInContext) {
     return baseUrl;
   }
 
   return baseUrl.replace('opendistro_kibana_reports#/create', 'visualize#/edit/');
 };
-const getSavedSearchBaseUrlCreate = (edit, fromInContext) => {
+const getSavedSearchBaseUrlCreate = (edit, editDefinitionId, fromInContext) => {
   let baseUrl;
 
   if (!fromInContext) {
@@ -3025,7 +3033,7 @@ const getSavedSearchBaseUrlCreate = (edit, fromInContext) => {
   }
 
   if (edit) {
-    return baseUrl.replace('opendistro_kibana_reports#/edit', 'discover#/view/');
+    return baseUrl.replace(`opendistro_kibana_reports#/edit/${editDefinitionId}`, 'discover#/view/');
   } else if (fromInContext) {
     return baseUrl;
   }

@@ -24,6 +24,8 @@ import {
   parseInContextUrl,
 } from '../report_settings_helpers';
 
+const TEST_DEFINITION_ID = '12345';
+
 describe('report_settings_helpers tests', () => {
   test('parseInContextUrl', () => {
     const urlString =
@@ -43,26 +45,42 @@ describe('report_settings_helpers tests', () => {
   });
 
   test('getDashboardBaseUrlCreate', () => {
-    const baseUrl = getDashboardBaseUrlCreate(true, '12345', true);
+    const baseUrl = getDashboardBaseUrlCreate(true, TEST_DEFINITION_ID, true);
     expect(baseUrl).toBe('/app/dashboards#/view/');
 
-    const baseUrlNotFromEdit = getDashboardBaseUrlCreate(false, '12345', true);
+    const baseUrlNotFromEdit = getDashboardBaseUrlCreate(
+      false,
+      TEST_DEFINITION_ID,
+      true
+    );
     expect(baseUrlNotFromEdit).toBe('/app/dashboards#/view/');
   });
 
   test('getVisualizationBaseUrlCreate', () => {
-    const baseUrl = getVisualizationBaseUrlCreate(true, true);
+    const baseUrl = getVisualizationBaseUrlCreate(
+      true,
+      TEST_DEFINITION_ID,
+      true
+    );
     expect(baseUrl).toBe('/app/visualize#/edit/');
 
-    const baseUrlNotFromEdit = getVisualizationBaseUrlCreate(false, true);
+    const baseUrlNotFromEdit = getVisualizationBaseUrlCreate(
+      false,
+      TEST_DEFINITION_ID,
+      true
+    );
     expect(baseUrlNotFromEdit).toBe('/app/visualize#/edit/');
   });
 
   test('getSavedSearchBaseUrlCreate', () => {
-    const baseUrl = getSavedSearchBaseUrlCreate(true, true);
+    const baseUrl = getSavedSearchBaseUrlCreate(true, TEST_DEFINITION_ID, true);
     expect(baseUrl).toBe('/app/discover#/view/');
 
-    const baseUrlNotFromEdit = getSavedSearchBaseUrlCreate(false, true);
+    const baseUrlNotFromEdit = getSavedSearchBaseUrlCreate(
+      false,
+      TEST_DEFINITION_ID,
+      true
+    );
     expect(baseUrlNotFromEdit).toBe('/app/discover#/view/');
   });
 

@@ -140,7 +140,7 @@ export function ReportSettings(props: ReportSettingProps) {
     } else if (e === 'visualizationReportSource') {
       reportDefinitionRequest.report_params.report_source = 'Visualization';
       reportDefinitionRequest.report_params.core_params.base_url =
-        getVisualizationBaseUrlCreate(edit, fromInContext) +
+        getVisualizationBaseUrlCreate(edit, editDefinitionId, fromInContext) +
         visualizations[0].value;
 
       // set params to visual report params after switch from saved search
@@ -150,7 +150,7 @@ export function ReportSettings(props: ReportSettingProps) {
     } else if (e === 'savedSearchReportSource') {
       reportDefinitionRequest.report_params.report_source = 'Saved search';
       reportDefinitionRequest.report_params.core_params.base_url =
-        getSavedSearchBaseUrlCreate(edit, fromInContext) +
+        getSavedSearchBaseUrlCreate(edit, editDefinitionId, fromInContext) +
         savedSearches[0].value;
       reportDefinitionRequest.report_params.core_params.saved_search_id =
         savedSearches[0].value;
@@ -182,7 +182,8 @@ export function ReportSettings(props: ReportSettingProps) {
       fromInContext = true;
     }
     reportDefinitionRequest.report_params.core_params.base_url =
-      getVisualizationBaseUrlCreate(edit, fromInContext) + e.target.value;
+      getVisualizationBaseUrlCreate(edit, editDefinitionId, fromInContext) +
+      e.target.value;
   };
 
   const handleSavedSearchSelect = (e: {
@@ -190,6 +191,14 @@ export function ReportSettings(props: ReportSettingProps) {
   }) => {
     setSavedSearchSourceSelect(e.target.value);
     reportDefinitionRequest.report_params.core_params.saved_search_id =
+      e.target.value;
+
+    let fromInContext = false;
+    if (window.location.href.includes('?')) {
+      fromInContext = true;
+    }
+    reportDefinitionRequest.report_params.core_params.base_url =
+      getSavedSearchBaseUrlCreate(edit, editDefinitionId, fromInContext) +
       e.target.value;
   };
 
@@ -457,7 +466,7 @@ export function ReportSettings(props: ReportSettingProps) {
         REPORT_SOURCE_RADIOS[1].label;
       setVisualizationSourceSelect(id);
       reportDefinitionRequest.report_params.core_params.base_url =
-        getVisualizationBaseUrlCreate(edit, true) + id;
+        getVisualizationBaseUrlCreate(edit, editDefinitionId, true) + id;
     } else if (url.includes('discover')) {
       setReportSourceId('savedSearchReportSource');
       reportDefinitionRequest.report_params.core_params.report_format = 'csv';
@@ -466,7 +475,7 @@ export function ReportSettings(props: ReportSettingProps) {
         REPORT_SOURCE_RADIOS[2].label;
       setSavedSearchSourceSelect(id);
       reportDefinitionRequest.report_params.core_params.base_url =
-        getSavedSearchBaseUrlCreate(edit, true) + id;
+        getSavedSearchBaseUrlCreate(edit, editDefinitionId, true) + id;
     }
   };
 
