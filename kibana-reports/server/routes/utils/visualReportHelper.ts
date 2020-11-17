@@ -22,6 +22,7 @@ import {
   DEFAULT_REPORT_FOOTER,
   REPORT_TYPE,
   FORMAT,
+  SELECTOR,
 } from './constants';
 import { getFileName } from './helpers';
 import { CreateReportResultType } from './types';
@@ -87,11 +88,11 @@ export const createVisualReport = async (
   let element: any;
   // crop content
   if (reportSource === REPORT_TYPE.dashboard) {
-    await page.waitForSelector('#dashboardViewport');
-    element = await page.$('#dashboardViewport');
+    await page.waitForSelector(SELECTOR.dashboard);
+    element = await page.$(SELECTOR.dashboard);
   } else if (reportSource === REPORT_TYPE.visualization) {
-    await page.waitForSelector('.visEditor__visualization');
-    element = await page.$('.visEditor__visualization');
+    await page.waitForSelector(SELECTOR.visualization);
+    element = await page.$(SELECTOR.visualization);
   }
 
   const screenshot = await element.screenshot({ fullPage: false });
@@ -100,8 +101,6 @@ export const createVisualReport = async (
    * Sets the content of the page to have the header be above the trimmed screenshot
    * and the footer be below it
    */
-  // TODO: need to convert header from markdown to html, either do it on server side, or on client side.
-  // Email body conversion is done from client side
   await page.setContent(`
     <!DOCTYPE html>
     <html>

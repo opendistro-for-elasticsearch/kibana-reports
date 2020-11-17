@@ -53,18 +53,10 @@ export const createReport = async (
   const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
     request
   );
-
   const esClient = context.core.elasticsearch.legacy.client;
 
   let createReportResult: CreateReportResultType;
   let reportId;
-  // create new report instance and set report state to "pending"
-  if (savedReportId) {
-    reportId = savedReportId;
-  } else {
-    const esResp = await saveReport(isScheduledTask, report, esReportsClient);
-    reportId = esResp.reportInstance.id;
-  }
 
   const {
     report_definition: {
@@ -75,6 +67,13 @@ export const createReport = async (
   const { report_source: reportSource } = reportParams;
 
   try {
+    // create new report instance and set report state to "pending"
+    if (savedReportId) {
+      reportId = savedReportId;
+    } else {
+      const esResp = await saveReport(report, esReportsClient);
+      reportId = esResp.reportInstance.id;
+    }
     // generate report
     if (reportSource === REPORT_TYPE.savedSearch) {
       createReportResult = await createSavedSearchReport(
@@ -111,12 +110,7 @@ export const createReport = async (
     }
     // update report state to "created"
     if (!savedReportId) {
-      await updateReportState(
-        isScheduledTask,
-        reportId,
-        esReportsClient,
-        REPORT_STATE.created
-      );
+      await updateReportState(reportId, esReportsClient, REPORT_STATE.created);
     }
 
     // deliver report
@@ -126,7 +120,6 @@ export const createReport = async (
         notificationClient,
         esReportsClient,
         reportId,
-        isScheduledTask,
         logger
       );
     }
@@ -134,12 +127,7 @@ export const createReport = async (
     // update report instance with "error" state
     //TODO: save error detail and display on UI
     if (!savedReportId) {
-      await updateReportState(
-        isScheduledTask,
-        reportId,
-        esReportsClient,
-        REPORT_STATE.error
-      );
+      await updateReportState(reportId, esReportsClient, REPORT_STATE.error);
     }
     throw error;
   }

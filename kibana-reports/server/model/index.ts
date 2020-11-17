@@ -94,7 +94,7 @@ export const intervalSchema = schema.object({
       schema.literal('MINUTES'),
       schema.literal('HOURS'),
       schema.literal('DAYS'),
-      // TODO: Backend always saves as following format, maintain one set of format later
+      // Job scheduler in reporting ES plugin always saves as following format
       schema.literal('Minutes'),
       schema.literal('Hours'),
       schema.literal('Days'),

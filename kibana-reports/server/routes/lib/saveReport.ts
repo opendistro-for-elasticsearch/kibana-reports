@@ -16,17 +16,12 @@
 import { v1 as uuidv1 } from 'uuid';
 import { ReportSchemaType } from '../../model';
 import { BACKEND_REPORT_STATE } from '../../model/backendModel';
-import {
-  ILegacyClusterClient,
-  ILegacyScopedClusterClient,
-} from '../../../../../src/core/server';
+import { ILegacyScopedClusterClient } from '../../../../../src/core/server';
 import { uiToBackendReportDefinition } from '../utils/converters/uiToBackend';
-import { callCluster } from '../utils/helpers';
 
 export const saveReport = async (
-  isScheduledTask: boolean,
   report: ReportSchemaType,
-  esReportsClient: ILegacyClusterClient | ILegacyScopedClusterClient
+  esReportsClient: ILegacyScopedClusterClient
 ) => {
   const timePending = Date.now();
   const {
@@ -54,13 +49,11 @@ export const saveReport = async (
     inContextDownloadUrlPath: queryUrl,
   };
 
-  const esResp = await callCluster(
-    esReportsClient,
+  const esResp = await esReportsClient.callAsCurrentUser(
     'es_reports.createReport',
     {
       body: reqBody,
-    },
-    isScheduledTask
+    }
   );
 
   return esResp;
