@@ -18,8 +18,6 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_LIST_FIELD
 import org.elasticsearch.action.search.SearchResponse
-import org.elasticsearch.common.xcontent.ToXContent
-import org.elasticsearch.common.xcontent.XContentBuilder
 import org.elasticsearch.common.xcontent.XContentParser
 
 /**
@@ -35,13 +33,5 @@ internal class ReportDefinitionDetailsSearchResults : SearchResults<ReportDefini
      */
     override fun parseItem(parser: XContentParser, useId: String?): ReportDefinitionDetails {
         return ReportDefinitionDetails.parse(parser, useId)
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    override fun itemToXContent(item: ReportDefinitionDetails, builder: XContentBuilder, params: ToXContent.Params): XContentBuilder {
-        item.toXContent(builder, ToXContent.EMPTY_PARAMS, true)
-        return builder
     }
 }

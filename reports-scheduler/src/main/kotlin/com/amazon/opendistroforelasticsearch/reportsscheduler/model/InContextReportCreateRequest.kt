@@ -22,6 +22,7 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.BEGI
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.END_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.IN_CONTEXT_DOWNLOAD_URL_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_DETAILS_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REST_OUTPUT_PARAMS
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATUS_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATUS_TEXT_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.createJsonParser
@@ -137,10 +138,11 @@ internal class InContextReportCreateRequest : ActionRequest, ToXContentObject {
 
     /**
      * create XContentBuilder from this object using [XContentFactory.jsonBuilder()]
+     * @param params XContent parameters
      * @return created XContentBuilder object
      */
-    fun toXContent(): XContentBuilder? {
-        return toXContent(XContentFactory.jsonBuilder(), ToXContent.EMPTY_PARAMS)
+    fun toXContent(params: ToXContent.Params = ToXContent.EMPTY_PARAMS): XContentBuilder? {
+        return toXContent(XContentFactory.jsonBuilder(), params)
     }
 
     /**
@@ -152,7 +154,7 @@ internal class InContextReportCreateRequest : ActionRequest, ToXContentObject {
             .field(END_TIME_FIELD, endTime.toEpochMilli())
         if (reportDefinitionDetails != null) {
             builder.field(REPORT_DEFINITION_DETAILS_FIELD)
-            reportDefinitionDetails.toXContent(builder, ToXContent.EMPTY_PARAMS, true)
+            reportDefinitionDetails.toXContent(builder, REST_OUTPUT_PARAMS)
         }
         return builder.field(STATUS_FIELD, status.name)
             .fieldIfNotNull(STATUS_TEXT_FIELD, statusText)

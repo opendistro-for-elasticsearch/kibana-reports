@@ -111,7 +111,7 @@ internal object ReportDefinitionsIndex {
     fun createReportDefinition(reportDefinitionDetails: ReportDefinitionDetails): String? {
         createIndex()
         val indexRequest = IndexRequest(REPORT_DEFINITIONS_INDEX_NAME)
-            .source(reportDefinitionDetails.toXContent(false))
+            .source(reportDefinitionDetails.toXContent())
             .create(true)
         val actionFuture = client.index(indexRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
@@ -134,7 +134,7 @@ internal object ReportDefinitionsIndex {
         val actionFuture = client.get(getRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
         return if (response.sourceAsString == null) {
-            log.warn("$LOG_PREFIX:getReportDefinition - item not found; response:$response")
+            log.warn("$LOG_PREFIX:getReportDefinition - $id not found; response:$response")
             null
         } else {
             val parser = XContentType.JSON.xContent().createParser(NamedXContentRegistry.EMPTY,
@@ -185,12 +185,12 @@ internal object ReportDefinitionsIndex {
         val updateRequest = UpdateRequest()
             .index(REPORT_DEFINITIONS_INDEX_NAME)
             .id(id)
-            .doc(reportDefinitionDetails.toXContent(false))
+            .doc(reportDefinitionDetails.toXContent())
             .fetchSource(true)
         val actionFuture = client.update(updateRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
         if (response.result != DocWriteResponse.Result.UPDATED) {
-            log.warn("$LOG_PREFIX:updateReportDefinition failed; response:$response")
+            log.warn("$LOG_PREFIX:updateReportDefinition failed for $id; response:$response")
         }
         return response.result == DocWriteResponse.Result.UPDATED
     }
@@ -208,7 +208,7 @@ internal object ReportDefinitionsIndex {
         val actionFuture = client.delete(deleteRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
         if (response.result != DocWriteResponse.Result.DELETED) {
-            log.warn("$LOG_PREFIX:deleteReportDefinition failed; response:$response")
+            log.warn("$LOG_PREFIX:deleteReportDefinition failed for $id; response:$response")
         }
         return response.result == DocWriteResponse.Result.DELETED
     }

@@ -41,9 +41,11 @@ import java.io.IOException
  */
 internal class GetAllReportInstancesResponse : BaseResponse {
     val reportInstanceList: ReportInstanceSearchResults
+    private val filterSensitiveInfo: Boolean
 
-    constructor(reportInstanceList: ReportInstanceSearchResults) : super() {
+    constructor(reportInstanceList: ReportInstanceSearchResults, filterSensitiveInfo: Boolean) : super() {
         this.reportInstanceList = reportInstanceList
+        this.filterSensitiveInfo = filterSensitiveInfo
     }
 
     @Throws(IOException::class)
@@ -55,6 +57,7 @@ internal class GetAllReportInstancesResponse : BaseResponse {
      */
     constructor(parser: XContentParser) : super() {
         this.reportInstanceList = ReportInstanceSearchResults(parser)
+        this.filterSensitiveInfo = false // Sensitive info Must have filtered when created json object
     }
 
     /**
@@ -69,6 +72,11 @@ internal class GetAllReportInstancesResponse : BaseResponse {
      * {@inheritDoc}
      */
     override fun toXContent(builder: XContentBuilder?, params: ToXContent.Params?): XContentBuilder {
-        return reportInstanceList.toXContent(builder, params)
+        val xContentParams = if (filterSensitiveInfo) {
+            RestTag.FILTERED_REST_OUTPUT_PARAMS
+        } else {
+            RestTag.REST_OUTPUT_PARAMS
+        }
+        return reportInstanceList.toXContent(builder, xContentParams)
     }
 }

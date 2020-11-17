@@ -17,7 +17,6 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_DETAILS_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.createJsonParser
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import org.elasticsearch.common.io.stream.StreamInput
@@ -43,13 +42,15 @@ import java.io.IOException
  */
 internal class GetReportDefinitionResponse : BaseResponse {
     val reportDefinitionDetails: ReportDefinitionDetails
+    private val filterSensitiveInfo: Boolean
 
     companion object {
         private val log by logger(GetReportDefinitionResponse::class.java)
     }
 
-    constructor(reportDefinition: ReportDefinitionDetails) : super() {
+    constructor(reportDefinition: ReportDefinitionDetails, filterSensitiveInfo: Boolean) : super() {
         this.reportDefinitionDetails = reportDefinition
+        this.filterSensitiveInfo = filterSensitiveInfo
     }
 
     @Throws(IOException::class)
@@ -66,7 +67,7 @@ internal class GetReportDefinitionResponse : BaseResponse {
             val fieldName = parser.currentName()
             parser.nextToken()
             when (fieldName) {
-                REPORT_DEFINITION_DETAILS_FIELD -> reportDefinition = ReportDefinitionDetails.parse(parser)
+                RestTag.REPORT_DEFINITION_DETAILS_FIELD -> reportDefinition = ReportDefinitionDetails.parse(parser)
                 else -> {
                     parser.skipChildren()
                     log.info("$LOG_PREFIX:Skipping Unknown field $fieldName")
@@ -75,6 +76,7 @@ internal class GetReportDefinitionResponse : BaseResponse {
         }
         reportDefinition ?: throw IllegalArgumentException("${RestTag.REPORT_DEFINITION_FIELD} field absent")
         this.reportDefinitionDetails = reportDefinition
+        this.filterSensitiveInfo = false // Sensitive info Must have filtered when created json object
     }
 
     /**
@@ -89,9 +91,14 @@ internal class GetReportDefinitionResponse : BaseResponse {
      * {@inheritDoc}
      */
     override fun toXContent(builder: XContentBuilder?, params: ToXContent.Params?): XContentBuilder {
+        val xContentParams = if (filterSensitiveInfo) {
+            RestTag.FILTERED_REST_OUTPUT_PARAMS
+        } else {
+            RestTag.REST_OUTPUT_PARAMS
+        }
         builder!!.startObject()
-            .field(REPORT_DEFINITION_DETAILS_FIELD)
-        reportDefinitionDetails.toXContent(builder, ToXContent.EMPTY_PARAMS, true)
+            .field(RestTag.REPORT_DEFINITION_DETAILS_FIELD)
+        reportDefinitionDetails.toXContent(builder, xContentParams)
         return builder.endObject()
     }
 }

@@ -69,7 +69,7 @@ internal object ReportInstanceActions {
         val docId = ReportInstancesIndex.createReportInstance(reportInstance)
         docId ?: throw ElasticsearchStatusException("Report Instance Creation failed", RestStatus.INTERNAL_SERVER_ERROR)
         val reportInstanceCopy = reportInstance.copy(id = docId)
-        return InContextReportCreateResponse(reportInstanceCopy)
+        return InContextReportCreateResponse(reportInstanceCopy, UserAccessManager.hasAllInfoAccess(user))
     }
 
     /**
@@ -101,7 +101,7 @@ internal object ReportInstanceActions {
         val docId = ReportInstancesIndex.createReportInstance(reportInstance)
         docId ?: throw ElasticsearchStatusException("Report Instance Creation failed", RestStatus.INTERNAL_SERVER_ERROR)
         val reportInstanceCopy = reportInstance.copy(id = docId)
-        return OnDemandReportCreateResponse(reportInstanceCopy)
+        return OnDemandReportCreateResponse(reportInstanceCopy, UserAccessManager.hasAllInfoAccess(user))
     }
 
     /**
@@ -145,7 +145,7 @@ internal object ReportInstanceActions {
         if (!UserAccessManager.doesUserHasAccess(user, reportInstance.access)) {
             throw ElasticsearchStatusException("Permission denied for Report Definition ${request.reportInstanceId}", RestStatus.FORBIDDEN)
         }
-        return GetReportInstanceResponse(reportInstance)
+        return GetReportInstanceResponse(reportInstance, UserAccessManager.hasAllInfoAccess(user))
     }
 
     /**
@@ -159,7 +159,7 @@ internal object ReportInstanceActions {
         val reportInstanceList = ReportInstancesIndex.getAllReportInstances(UserAccessManager.getSearchAccessInfo(user),
             request.fromIndex,
             request.maxItems)
-        return GetAllReportInstancesResponse(reportInstanceList)
+        return GetAllReportInstancesResponse(reportInstanceList, UserAccessManager.hasAllInfoAccess(user))
     }
 
     fun poll(user: User?): PollReportInstanceResponse {
@@ -168,7 +168,7 @@ internal object ReportInstanceActions {
         val currentTime = Instant.now()
         val reportInstances = ReportInstancesIndex.getPendingReportInstances()
         return if (reportInstances.isEmpty()) {
-            PollReportInstanceResponse(getRetryAfterTime(), null)
+            PollReportInstanceResponse(getRetryAfterTime())
         } else {
             // Shuffle list so that when multiple requests are made, chances of lock conflict is less
             reportInstances.shuffle()
@@ -186,9 +186,9 @@ internal object ReportInstanceActions {
                 ReportInstancesIndex.updateReportInstanceDoc(updatedInstance)
             }
             if (lockedJob == null) {
-                PollReportInstanceResponse(PluginSettings.minPollingDurationSeconds, null)
+                PollReportInstanceResponse(PluginSettings.minPollingDurationSeconds)
             } else {
-                PollReportInstanceResponse(0, lockedJob.reportInstance)
+                PollReportInstanceResponse(0, lockedJob.reportInstance, UserAccessManager.hasAllInfoAccess(user))
             }
         }
     }
