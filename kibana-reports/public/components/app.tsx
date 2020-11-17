@@ -55,8 +55,20 @@ interface OpendistroKibanaReportsAppDeps {
 
 const styles: CSS.Properties = {
   float: 'left',
-  width: "100%",
+  width: '100%',
   maxWidth: '1600px',
+};
+
+export const permissionsMissingToast = (action: string) => {
+  return {
+    title: 'Error ' + action,
+    color: 'danger',
+    iconType: 'alert',
+    id: 'permissionsMissingErrorToast' + action.replace(' ', ''),
+    text: (
+      <p>Insufficient permissions. Reach out to your Kibana administrator.</p>
+    ),
+  };
 };
 
 export const OpendistroKibanaReportsApp = ({

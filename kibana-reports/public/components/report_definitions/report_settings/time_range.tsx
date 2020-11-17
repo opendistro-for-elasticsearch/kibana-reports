@@ -198,6 +198,7 @@ export function TimeRangeSelect(props) {
           label="Time range"
           helpText="Time range is relative to the report creation date on the report trigger."
           isInvalid={showTimeRangeError}
+          error={'Invalid time range selected.'}
         >
           <EuiSuperDatePicker
             isDisabled={false}

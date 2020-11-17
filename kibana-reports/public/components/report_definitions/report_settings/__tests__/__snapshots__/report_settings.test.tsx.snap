@@ -1445,6 +1445,13 @@ exports[`<ReportSettings /> panel display errors on create 1`] = `
               </div>
             </div>
             <div
+              aria-live="polite"
+              class="euiFormErrorText euiFormRow__text"
+              id="random_html_id-error-0"
+            >
+              Invalid time range selected.
+            </div>
+            <div
               class="euiFormHelpText euiFormRow__text"
               id="random_html_id-help"
             >

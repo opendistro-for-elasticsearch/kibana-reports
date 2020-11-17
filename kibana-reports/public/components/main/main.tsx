@@ -32,6 +32,7 @@ import {
   addReportDefinitionsTableContent,
 } from './main_utils';
 import CSS from 'csstype';
+import { permissionsMissingToast } from '../app';
 
 const reportCountStyles: CSS.Properties = {
   color: 'gray',
@@ -45,6 +46,33 @@ export function Main(props) {
     setReportDefinitionsTableContent,
   ] = useState([]);
   const [toasts, setToasts] = useState([]);
+
+  const addPermissionsMissingDownloadToastHandler = () => {
+    const toast = permissionsMissingToast('generating report.');
+    setToasts(toasts.concat(toast));
+  };
+
+  const handlePermissionsMissingDownloadToast = () => {
+    addPermissionsMissingDownloadToastHandler();
+  };
+
+  const addPermissionsMissingReportsTableToastHandler = () => {
+    const toast = permissionsMissingToast('loading reports table.');
+    setToasts(toasts.concat(toast));
+  };
+
+  const handlePermissionsMissingReportsTableToast = () => {
+    addPermissionsMissingReportsTableToastHandler();
+  };
+
+  const addPermissionsMissingDefinitionsTableToastHandler = () => {
+    const toast = permissionsMissingToast('loading report definitions table.');
+    setToasts(toasts.concat(toast));
+  };
+
+  const handlePermissionsMissingDefinitionsTableToast = () => {
+    addPermissionsMissingDefinitionsTableToastHandler();
+  };
 
   const addReportsTableContentErrorToastHandler = () => {
     const errorToast = {
@@ -176,7 +204,12 @@ export function Main(props) {
       })
       .catch((error) => {
         console.log('error when fetching all reports: ', error);
-        handleReportsTableContentErrorToast();
+        // permission denied error
+        if (error.body.statusCode === 403) {
+          handlePermissionsMissingReportsTableToast();
+        } else {
+          handleReportsTableContentErrorToast();
+        }
       });
   };
 
@@ -191,7 +224,11 @@ export function Main(props) {
       })
       .catch((error) => {
         console.log('error when fetching all report definitions: ', error);
-        handleReportDefinitionsTableErrorToast();
+        if (error.body.statusCode === 403) {
+          handlePermissionsMissingDefinitionsTableToast();
+        } else {
+          handleReportDefinitionsTableErrorToast();
+        }
       });
   };
 
@@ -220,6 +257,7 @@ export function Main(props) {
           httpClient={props['httpClient']}
           handleSuccessToast={handleOnDemandDownloadSuccessToast}
           handleErrorToast={handleOnDemandDownloadErrorToast}
+          handlePermissionsMissingToast={handlePermissionsMissingDownloadToast}
         />
       </EuiPanel>
       <EuiSpacer />

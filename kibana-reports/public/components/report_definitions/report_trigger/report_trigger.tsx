@@ -328,7 +328,11 @@ export function ReportTrigger(props: ReportTriggerProps) {
 
     return (
       <div>
-        <EuiFormRow label="Every" isInvalid={showTriggerIntervalNaNError}>
+        <EuiFormRow
+          label="Every"
+          isInvalid={showTriggerIntervalNaNError}
+          error={'Interval must be a number.'}
+        >
           <EuiFlexGroup>
             <EuiFlexItem grow={false}>
               <EuiFieldText
@@ -472,6 +476,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
         <EuiFormRow
           label="Custom cron expression"
           isInvalid={showCronError}
+          error={'Invalid cron expression.'}
           labelAppend={
             <EuiText size="xs">
               <EuiLink href="https://opendistro.github.io/for-elasticsearch-docs/docs/alerting/cron/">

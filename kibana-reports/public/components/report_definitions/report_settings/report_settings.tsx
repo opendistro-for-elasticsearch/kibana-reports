@@ -65,6 +65,7 @@ type ReportSettingProps = {
   httpClientProps: any;
   timeRange: timeRangeParams;
   showSettingsReportNameError: boolean;
+  settingsReportNameErrorMessage: string;
   showTimeRangeError: boolean;
 };
 
@@ -76,6 +77,7 @@ export function ReportSettings(props: ReportSettingProps) {
     httpClientProps,
     timeRange,
     showSettingsReportNameError,
+    settingsReportNameErrorMessage,
     showTimeRangeError,
   } = props;
 
@@ -639,6 +641,7 @@ export function ReportSettings(props: ReportSettingProps) {
               label="Name"
               helpText="Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space)."
               isInvalid={showSettingsReportNameError}
+              error={settingsReportNameErrorMessage}
               id={'reportSettingsName'}
             >
               <EuiFieldText

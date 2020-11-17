@@ -19,6 +19,7 @@ import {
   reportGenerationInProgressModal,
   reportGenerationSuccess,
   reportGenerationFailure,
+  permissionsMissingOnGeneration
 } from './context_menu_ui';
 
 const getReportSourceURL = (baseURI) => {
@@ -116,6 +117,11 @@ export const addSuccessOrFailureToast = (status) => {
         generateInProgressToast.innerHTML = reportGenerationFailure();
         setTimeout(function () {
           document.getElementById('reportFailureToast').style.display = 'none';
+        }, 6000);
+      } else if (status === 'permissionsFailure') {
+        generateInProgressToast.innerHTML = permissionsMissingOnGeneration();
+        setTimeout(function () {
+          document.getElementById('permissionsMissingErrorToast').style.display = 'none';
         }, 6000);
       }
       generateToast[0].appendChild(generateInProgressToast.children[0]);

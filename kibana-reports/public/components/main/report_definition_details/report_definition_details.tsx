@@ -41,6 +41,7 @@ import { fileFormatsUpper, generateReport } from '../main_utils';
 import { ReportDefinitionSchemaType } from '../../../../server/model';
 import moment from 'moment';
 import { converter } from '../../report_definitions/utils';
+import { permissionsMissingToast } from '../../app';
 
 const ON_DEMAND = 'On demand';
 
@@ -56,6 +57,33 @@ export function ReportDefinitionDetails(props) {
 
   const handleShowDeleteModal = (e) => {
     setShowDeleteModal(e);
+  };
+
+  const addPermissionsMissingStatusChangeToastHandler = () => {
+    const toast = permissionsMissingToast('changing schedule status.');
+    setToasts(toasts.concat(toast));
+  };
+
+  const handlePermissionsMissingStatusChangeToast = () => {
+    addPermissionsMissingStatusChangeToastHandler();
+  };
+
+  const addPermissionsMissingDeleteToastHandler = () => {
+    const toast = permissionsMissingToast('deleting report definition.');
+    setToasts(toasts.concat(toast));
+  };
+
+  const handlePermissionsMissingDeleteToast = () => {
+    addPermissionsMissingDeleteToastHandler();
+  };
+
+  const addPermissionsMissingGenerateReportToastHandler = () => {
+    const toast = permissionsMissingToast('generating report.');
+    setToasts(toasts.concat(toast));
+  };
+
+  const handlePermissionsMissingGenerateReportToast = () => {
+    addPermissionsMissingGenerateReportToastHandler();
   };
 
   const addErrorLoadingDetailsToastHandler = () => {
@@ -401,10 +429,14 @@ export function ReportDefinitionDetails(props) {
       })
       .catch((error) => {
         console.error('error in updating report definition status:', error);
-        if (statusChange === 'Enable') {
-          handleErrorEnablingScheduleToast();
-        } else if (statusChange === 'Disable') {
-          handleErrorDisablingScheduleToast();
+        if (error.body.statusCode === 403) {
+          handlePermissionsMissingStatusChangeToast();
+        } else {
+          if (statusChange === 'Enable') {
+            handleErrorEnablingScheduleToast();
+          } else if (statusChange === 'Disable') {
+            handleErrorDisablingScheduleToast();
+          }
         }
       });
   };
@@ -441,10 +473,14 @@ export function ReportDefinitionDetails(props) {
       onDemandDownloadMetadata,
       httpClient
     );
-    if (generateReportSuccess) {
+    if (generateReportSuccess.status) {
       handleSuccessGeneratingReportToast();
     } else {
-      handleErrorGeneratingReportToast();
+      if (generateReportSuccess.permissionsError) {
+        handlePermissionsMissingGenerateReportToast();
+      } else {
+        handleErrorGeneratingReportToast();
+      }
     }
   };
 
@@ -457,7 +493,11 @@ export function ReportDefinitionDetails(props) {
       })
       .catch((error) => {
         console.log('error when deleting report definition:', error);
-        handleErrorDeletingReportDefinitionToast();
+        if (error.body.statusCode === 403) {
+          handlePermissionsMissingDeleteToast();
+        } else {
+          handleErrorDeletingReportDefinitionToast();
+        }
       });
   };
 

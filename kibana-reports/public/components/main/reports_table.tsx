@@ -75,6 +75,7 @@ export function ReportsTable(props) {
     httpClient,
     handleSuccessToast,
     handleErrorToast,
+    handlePermissionsMissingToast,
   } = props;
 
   const [sortField, setSortField] = useState('timeCreated');
@@ -142,7 +143,8 @@ export function ReportsTable(props) {
       id,
       httpClient,
       handleSuccessToast,
-      handleErrorToast
+      handleErrorToast,
+      handlePermissionsMissingToast
     );
     handleLoading(false);
   };
