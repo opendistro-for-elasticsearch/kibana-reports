@@ -17,6 +17,7 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REST_OUTPUT_PARAMS
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import org.apache.lucene.search.TotalHits
 import org.apache.lucene.search.TotalHits.Relation
@@ -25,7 +26,6 @@ import org.apache.lucene.search.TotalHits.Relation.GREATER_THAN_OR_EQUAL_TO
 import org.elasticsearch.action.search.SearchResponse
 import org.elasticsearch.common.xcontent.LoggingDeprecationHandler
 import org.elasticsearch.common.xcontent.NamedXContentRegistry
-import org.elasticsearch.common.xcontent.ToXContent
 import org.elasticsearch.common.xcontent.ToXContent.Params
 import org.elasticsearch.common.xcontent.ToXContentObject
 import org.elasticsearch.common.xcontent.XContentBuilder
@@ -161,21 +161,14 @@ internal abstract class SearchResults<ItemClass : ToXContentObject> : ToXContent
     /**
      * {@inheritDoc}
      */
-    open fun itemToXContent(item: ItemClass, builder: XContentBuilder, params: Params): XContentBuilder {
-        item.toXContent(builder, ToXContent.EMPTY_PARAMS)
-        return builder
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    override fun toXContent(builder: XContentBuilder?, params: ToXContent.Params?): XContentBuilder {
+    override fun toXContent(builder: XContentBuilder?, params: Params?): XContentBuilder {
+        val xContentParams = params ?: REST_OUTPUT_PARAMS
         builder!!.startObject()
             .field(START_INDEX_TAG, startIndex)
             .field(TOTAL_HITS_TAG, totalHits)
             .field(TOTAL_HIT_RELATION_TAG, convertRelation(totalHitRelation))
             .startArray(objectListFieldName)
-        objectList.forEach { itemToXContent(it, builder, ToXContent.EMPTY_PARAMS) }
+        objectList.forEach { it.toXContent(builder, xContentParams) }
         return builder.endArray().endObject()
     }
 }

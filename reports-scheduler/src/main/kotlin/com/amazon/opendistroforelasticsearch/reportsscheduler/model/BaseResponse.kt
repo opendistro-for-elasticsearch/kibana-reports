@@ -31,8 +31,8 @@ internal abstract class BaseResponse : ActionResponse(), ToXContentObject {
     /**
      * {@inheritDoc}
      */
-    fun toXContent(): XContentBuilder {
-        return toXContent(XContentFactory.jsonBuilder(), ToXContent.EMPTY_PARAMS)
+    fun toXContent(params: ToXContent.Params = ToXContent.EMPTY_PARAMS): XContentBuilder {
+        return toXContent(XContentFactory.jsonBuilder(), params)
     }
 
     /**
