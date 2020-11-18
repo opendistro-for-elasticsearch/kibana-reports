@@ -35,6 +35,7 @@ export type ReportDeliveryProps = {
   reportDefinitionRequest: reportDefinitionParams;
   httpClientProps: any;
   showEmailRecipientsError: boolean;
+  emailRecipientsErrorMessage: string;
 };
 
 export function ReportDelivery(props: ReportDeliveryProps) {

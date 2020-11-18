@@ -31,6 +31,10 @@ import { generateReport } from '../../main/main_utils';
 import { isValidCron } from 'cron-validator';
 import { converter } from '../utils';
 import moment from 'moment';
+import {
+  permissionsMissingToast,
+  permissionsMissingActions,
+} from '../../utils/utils';
 
 interface reportParamsType {
   report_name: string;
@@ -125,6 +129,10 @@ export function CreateReport(props) {
     setShowSettingsReportNameError,
   ] = useState(false);
   const [
+    settingsReportNameErrorMessage,
+    setSettingsReportNameErrorMessage,
+  ] = useState('');
+  const [
     showTriggerIntervalNaNError,
     setShowTriggerIntervalNaNError,
   ] = useState(false);
@@ -132,6 +140,10 @@ export function CreateReport(props) {
   const [showEmailRecipientsError, setShowEmailRecipientsError] = useState(
     false
   );
+  const [
+    emailRecipientsErrorMessage,
+    setEmailRecipientsErrorMessage,
+  ] = useState('');
   const [showTimeRangeError, setShowTimeRangeError] = useState(false);
 
   // preserve the state of the request after an invalid create report definition request
@@ -139,9 +151,9 @@ export function CreateReport(props) {
     createReportDefinitionRequest = preErrorData;
   }
 
-  const addErrorToastHandler = () => {
+  const addInputValidationErrorToastHandler = () => {
     const errorToast = {
-      title: 'Error creating report definition.',
+      title: 'One or more fields have an error. Please check and try again.',
       color: 'danger',
       iconType: 'alert',
       id: 'errorToast',
@@ -149,8 +161,29 @@ export function CreateReport(props) {
     setToasts(toasts.concat(errorToast));
   };
 
-  const handleErrorToast = () => {
-    addErrorToastHandler();
+  const handleInputValidationErrorToast = () => {
+    addInputValidationErrorToastHandler();
+  };
+
+  const addErrorOnCreateToastHandler = (errorType: string) => {
+    let toast = {};
+    if (errorType === 'permissions') {
+      toast = permissionsMissingToast(
+        permissionsMissingActions.CREATING_REPORT_DEFINITION
+      );
+    } else if (errorType === 'API') {
+      toast = {
+        title: 'Error creating report definition.',
+        color: 'danger',
+        iconType: 'alert',
+        id: 'errorToast',
+      };
+    }
+    setToasts(toasts.concat(toast));
+  };
+
+  const handleErrorOnCreateToast = (errorType: string) => {
+    addErrorOnCreateToastHandler(errorType);
   };
 
   const addInvalidTimeRangeToastHandler = () => {
@@ -182,6 +215,11 @@ export function CreateReport(props) {
     let regexp = /^[\w\-\s\(\)\[\]\,\_\-+]+$/;
     if (metadata.report_params.report_name.search(regexp) === -1) {
       setShowSettingsReportNameError(true);
+      if (metadata.report_params.report_name === '') {
+        setSettingsReportNameErrorMessage('Name must not be empty.');
+      } else {
+        setSettingsReportNameErrorMessage('Invalid characters in report name.');
+      }
       error = true;
     }
 
@@ -223,6 +261,9 @@ export function CreateReport(props) {
       // no recipients are listed
       if (metadata.delivery.delivery_params.recipients.length === 0) {
         setShowEmailRecipientsError(true);
+        setEmailRecipientsErrorMessage(
+          'Email recipients list cannot be empty.'
+        );
         error = true;
       }
       // recipients have invalid email addresses: regexp checks format xxxxx@yyyy.zzz
@@ -232,6 +273,9 @@ export function CreateReport(props) {
       for (index = 0; index < recipients.length; ++index) {
         if (recipients[0].search(emailRegExp) === -1) {
           setShowEmailRecipientsError(true);
+          setEmailRecipientsErrorMessage(
+            'Invalid email addresses in recipients list.'
+          );
           error = true;
         }
       }
@@ -258,7 +302,7 @@ export function CreateReport(props) {
       error = response;
     });
     if (error) {
-      handleErrorToast();
+      handleInputValidationErrorToast();
       setPreErrorData(metadata);
       setComingFromError(true);
     } else {
@@ -297,7 +341,11 @@ export function CreateReport(props) {
         })
         .catch((error) => {
           console.log('error in creating report definition: ' + error);
-          handleErrorToast();
+          if (error.body.statusCode === 403) {
+            handleErrorOnCreateToast('permissions');
+          } else {
+            handleErrorOnCreateToast('API');
+          }
         });
     }
   };
@@ -329,6 +377,7 @@ export function CreateReport(props) {
           httpClientProps={props['httpClient']}
           timeRange={timeRange}
           showSettingsReportNameError={showSettingsReportNameError}
+          settingsReportNameErrorMessage={settingsReportNameErrorMessage}
           showTimeRangeError={showTimeRangeError}
         />
         <EuiSpacer />
@@ -343,6 +392,7 @@ export function CreateReport(props) {
           edit={false}
           reportDefinitionRequest={createReportDefinitionRequest}
           showEmailRecipientsError={showEmailRecipientsError}
+          emailRecipientsErrorMessage={emailRecipientsErrorMessage}
         />
         <EuiSpacer />
         <EuiFlexGroup justifyContent="flexEnd">

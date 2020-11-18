@@ -30,15 +30,40 @@ import { ReportDelivery } from '../delivery';
 import { ReportTrigger } from '../report_trigger';
 import { ReportDefinitionSchemaType } from 'server/model';
 import { converter } from '../utils';
+import {
+  permissionsMissingToast,
+  permissionsMissingActions,
+} from '../../utils/utils';
 
 export function EditReportDefinition(props) {
   const [toasts, setToasts] = useState([]);
   const [comingFromError, setComingFromError] = useState(false);
   const [preErrorData, setPreErrorData] = useState({});
 
-  const addErrorUpdatingReportDefinitionToast = () => {
+  const addPermissionsMissingViewEditPageToastHandler = (errorType: string) => {
+    let toast = {};
+    if (errorType === 'permissions') {
+      toast = permissionsMissingToast(
+        permissionsMissingActions.VIEWING_EDIT_PAGE
+      );
+    } else if (errorType === 'API') {
+      toast = {
+        title: 'Error loading report definition values.',
+        color: 'danger',
+        iconType: 'alert',
+        id: 'errorToast',
+      };
+    }
+    setToasts(toasts.concat(toast));
+  };
+
+  const handleViewEditPageErrorToast = (errorType: string) => {
+    addPermissionsMissingViewEditPageToastHandler(errorType);
+  };
+
+  const addInputValidationErrorToastHandler = () => {
     const errorToast = {
-      title: 'Error updating report definition.',
+      title: 'One or more fields have an error. Please check and try again.',
       color: 'danger',
       iconType: 'alert',
       id: 'errorToast',
@@ -46,8 +71,29 @@ export function EditReportDefinition(props) {
     setToasts(toasts.concat(errorToast));
   };
 
-  const handleErrorUpdatingReportDefinitionToast = () => {
-    addErrorUpdatingReportDefinitionToast();
+  const handleInputValidationErrorToast = () => {
+    addInputValidationErrorToastHandler();
+  };
+
+  const addErrorUpdatingReportDefinitionToastHandler = (errorType: string) => {
+    let toast = {};
+    if (errorType === 'permissions') {
+      toast = permissionsMissingToast(
+        permissionsMissingActions.UPDATING_DEFINITION
+      );
+    } else if (errorType === 'API') {
+      toast = {
+        title: 'Error updating report definition.',
+        color: 'danger',
+        iconType: 'alert',
+        id: 'errorToast',
+      };
+    }
+    setToasts(toasts.concat(toast));
+  };
+
+  const handleErrorUpdatingReportDefinitionToast = (errorType: string) => {
+    addErrorUpdatingReportDefinitionToastHandler(errorType);
   };
 
   const addErrorDeletingReportDefinitionToastHandler = () => {
@@ -115,8 +161,14 @@ export function EditReportDefinition(props) {
         window.location.assign(`opendistro_kibana_reports#/edit=success`);
       })
       .catch((error) => {
-        console.error('error in updating report definition:', error);
-        handleErrorUpdatingReportDefinitionToast();
+        console.log('error in updating report definition:', error);
+        if (error.body.statusCode === 400) {
+          handleInputValidationErrorToast();
+        } else if (error.body.statusCode === 403) {
+          handleErrorUpdatingReportDefinitionToast('permissions');
+        } else {
+          handleErrorUpdatingReportDefinitionToast('API');
+        }
         setPreErrorData(metadata);
         setComingFromError(true);
       });
@@ -200,6 +252,11 @@ export function EditReportDefinition(props) {
           'error when loading edit report definition page: ',
           error
         );
+        if (error.body.statusCode === 403) {
+          handleViewEditPageErrorToast('permissions');
+        } else {
+          handleViewEditPageErrorToast('API');
+        }
       });
   }, []);
 

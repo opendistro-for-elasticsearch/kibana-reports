@@ -115,7 +115,7 @@ internal object ReportInstancesIndex {
     fun createReportInstance(reportInstance: ReportInstance): String? {
         createIndex()
         val indexRequest = IndexRequest(REPORT_INSTANCES_INDEX_NAME)
-            .source(reportInstance.toXContent(false))
+            .source(reportInstance.toXContent())
             .create(true)
         val actionFuture = client.index(indexRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
@@ -138,7 +138,7 @@ internal object ReportInstancesIndex {
         val actionFuture = client.get(getRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
         return if (response.sourceAsString == null) {
-            log.warn("$LOG_PREFIX:getReportInstance - item not found; response:$response")
+            log.warn("$LOG_PREFIX:getReportInstance - $id not found; response:$response")
             null
         } else {
             val parser = XContentType.JSON.xContent().createParser(NamedXContentRegistry.EMPTY,
@@ -188,12 +188,12 @@ internal object ReportInstancesIndex {
         val updateRequest = UpdateRequest()
             .index(REPORT_INSTANCES_INDEX_NAME)
             .id(reportInstance.id)
-            .doc(reportInstance.toXContent(false))
+            .doc(reportInstance.toXContent())
             .fetchSource(true)
         val actionFuture = client.update(updateRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
         if (response.result != DocWriteResponse.Result.UPDATED) {
-            log.warn("$LOG_PREFIX:updateReportInstance failed; response:$response")
+            log.warn("$LOG_PREFIX:updateReportInstance failed for ${reportInstance.id}; response:$response")
         }
         return response.result == DocWriteResponse.Result.UPDATED
     }
@@ -210,12 +210,12 @@ internal object ReportInstancesIndex {
             .id(reportInstanceDoc.reportInstance.id)
             .setIfSeqNo(reportInstanceDoc.seqNo)
             .setIfPrimaryTerm(reportInstanceDoc.primaryTerm)
-            .doc(reportInstanceDoc.reportInstance.toXContent(false))
+            .doc(reportInstanceDoc.reportInstance.toXContent())
             .fetchSource(true)
         val actionFuture = client.update(updateRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
         if (response.result != DocWriteResponse.Result.UPDATED) {
-            log.warn("$LOG_PREFIX:updateReportInstanceDoc failed; response:$response")
+            log.warn("$LOG_PREFIX:updateReportInstanceDoc failed for ${reportInstanceDoc.reportInstance.id}; response:$response")
         }
         return response.result == DocWriteResponse.Result.UPDATED
     }
@@ -233,7 +233,7 @@ internal object ReportInstancesIndex {
         val actionFuture = client.delete(deleteRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
         if (response.result != DocWriteResponse.Result.DELETED) {
-            log.warn("$LOG_PREFIX:deleteReportInstance failed; response:$response")
+            log.warn("$LOG_PREFIX:deleteReportInstance failed for $id; response:$response")
         }
         return response.result == DocWriteResponse.Result.DELETED
     }
