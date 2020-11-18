@@ -88,7 +88,7 @@ export function ReportDelivery(props: ReportDeliveryProps) {
   }, []);
 
   return (
-    <EuiPageContent panelPaddingSize={'l'}>
+    <EuiPageContent panelPaddingSize={'l'} hidden>
       <EuiPageHeader>
         <EuiTitle>
           <h2>Notification settings</h2>

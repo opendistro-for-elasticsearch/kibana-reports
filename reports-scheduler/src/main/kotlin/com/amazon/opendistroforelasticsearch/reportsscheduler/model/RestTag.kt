@@ -15,6 +15,9 @@
  */
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
+import org.elasticsearch.common.xcontent.ToXContent
+import org.elasticsearch.common.xcontent.ToXContent.Params
+
 /**
  * Plugin Rest common Tags.
  */
@@ -38,4 +41,8 @@ internal object RestTag {
     const val FROM_INDEX_FIELD = "fromIndex"
     const val MAX_ITEMS_FIELD = "maxItems"
     const val RETRY_AFTER_FIELD = "retryAfter"
+    private val INCLUDE_ID = Pair(ID_FIELD, "true")
+    private val EXCLUDE_ACCESS = Pair(ACCESS_LIST_FIELD, "false")
+    val REST_OUTPUT_PARAMS: Params = ToXContent.MapParams(mapOf(INCLUDE_ID))
+    val FILTERED_REST_OUTPUT_PARAMS: Params = ToXContent.MapParams(mapOf(INCLUDE_ID, EXCLUDE_ACCESS))
 }
