@@ -1,4 +1,23 @@
 /*
+ * Licensed to Elasticsearch B.V. under one or more contributor
+ * license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Elasticsearch B.V. licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+/*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
@@ -46,14 +65,14 @@ const replaceQueryURL = () => {
   );
 
   fromDateString = fromDateString.replace(/[']+/g, '');
-  let fromDateFormat = dateMath.parse(fromDateString);
+  const fromDateFormat = dateMath.parse(fromDateString);
 
   let toDateString = timeString.substring(
     timeString.lastIndexOf('to:') + 3,
     timeString.length
   );
   toDateString = toDateString.replace(/[']+/g, '');
-  let toDateFormat = dateMath.parse(toDateString);
+  const toDateFormat = dateMath.parse(toDateString);
 
   // replace to and from dates with absolute date
 
@@ -87,7 +106,7 @@ const generateInContextReport = (
   }
 
   // create query body
-  let contextMenuOnDemandReport = {
+  const contextMenuOnDemandReport = {
     query_url: queryUrl,
     time_from: timeRanges.time_from.valueOf(),
     time_to: timeRanges.time_to.valueOf(),
@@ -146,6 +165,13 @@ const generateInContextReport = (
     });
 };
 
+// try to match uuid followed by '?' in URL, which would be the saved search id for discover URL
+const getUuidFromUrl = () =>
+  window.location.href.match(
+    /(\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b)\?/
+  );
+const isDiscover = () => window.location.href.includes('discover');
+
 // open Download drop-down
 $(function () {
   $(document).on('click', '#downloadReport', function () {
@@ -153,6 +179,7 @@ $(function () {
     if (popoverScreen) {
       try {
         const reportPopover = document.createElement('div');
+        // eslint-disable-next-line no-unsanitized/property
         reportPopover.innerHTML = isDiscover()
           ? popoverMenuDiscover(getUuidFromUrl())
           : popoverMenu();
@@ -257,13 +284,6 @@ function locationHashChanged() {
     subtree: true, //Set to true if changes must also be observed in descendants.
   });
 }
-
-// try to match uuid followed by '?' in URL, which would be the saved search id for discover URL
-const getUuidFromUrl = () =>
-  window.location.href.match(
-    /(\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b)\?/
-  );
-const isDiscover = () => window.location.href.includes('discover');
 
 window.onhashchange = function () {
   locationHashChanged();

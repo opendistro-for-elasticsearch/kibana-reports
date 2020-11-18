@@ -17,7 +17,7 @@ process.env.TZ = 'America/Los_Angeles';
 
 module.exports = {
   rootDir: '../',
-  setUpFiles: ['<rootDir>/test/setupTests.ts'],
+  setupFiles: ['<rootDir>/test/setupTests.ts'],
   setupFilesAfterEnv: ['<rootDir>/test/setup.jest.ts'],
   roots: ['<rootDir>'],
   testMatch: ['**/*.test.js', '**/*.test.jsx', '**/*.test.ts', '**/*.test.tsx'],

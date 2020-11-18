@@ -1,13 +1,11 @@
 {
-  "styleSheetToCompile": "public/app.scss",
-  "buildSourcePatterns": [
+  "serverSourcePatterns": [
     "package.json",
     "tsconfig.json",
-    "kibana.json",
     "yarn.lock",
-    ".yarnrc",
-    "index.js",
-    "{lib,public,server,webpackShims,translations,utils,models,test,common,target}/**/*",
-    "!__tests__"
+    "kibana.json",
+    "common/**/*",
+    "public/**/*",
+    "server/**/*"
   ]
 }

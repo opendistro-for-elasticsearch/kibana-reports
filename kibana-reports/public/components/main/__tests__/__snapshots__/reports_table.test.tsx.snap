@@ -16,7 +16,7 @@ exports[`<ReportsTable /> panel render component 1`] = `
         >
           <input
             aria-label="This is a search bar. As you type, the results lower in the page will automatically filter."
-            class="euiFieldSearch euiFieldSearch--fullWidth"
+            class="euiFieldSearch euiFieldSearch--fullWidth euiFieldSearch-isClearable"
             placeholder="Search..."
             type="search"
             value=""
@@ -56,15 +56,15 @@ exports[`<ReportsTable /> panel render component 1`] = `
             class="euiPopover__anchor"
           >
             <button
-              class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--iconRight euiFilterButton euiFilterButton--hasIcon"
+              class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
               type="button"
             >
               <span
-                class="euiButtonEmpty__content"
+                class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
               >
                 <svg
                   aria-hidden="true"
-                  class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonEmpty__icon"
+                  class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonContent__icon"
                   focusable="false"
                   height="16"
                   role="img"
@@ -95,15 +95,15 @@ exports[`<ReportsTable /> panel render component 1`] = `
             class="euiPopover__anchor"
           >
             <button
-              class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--iconRight euiFilterButton euiFilterButton--hasIcon"
+              class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
               type="button"
             >
               <span
-                class="euiButtonEmpty__content"
+                class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
               >
                 <svg
                   aria-hidden="true"
-                  class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonEmpty__icon"
+                  class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonContent__icon"
                   focusable="false"
                   height="16"
                   role="img"
@@ -158,15 +158,15 @@ exports[`<ReportsTable /> panel render component 1`] = `
                   class="euiPopover__anchor"
                 >
                   <button
-                    class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--iconRight euiButtonEmpty--flushRight"
+                    class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--flushRight"
                     type="button"
                   >
                     <span
-                      class="euiButtonEmpty__content"
+                      class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                     >
                       <svg
                         aria-hidden="true"
-                        class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonEmpty__icon"
+                        class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonContent__icon"
                         focusable="false"
                         height="16"
                         role="img"
@@ -476,16 +476,16 @@ exports[`<ReportsTable /> panel render component 1`] = `
               class="euiPopover__anchor"
             >
               <button
-                class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--xSmall euiButtonEmpty--iconRight"
+                class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--xSmall"
                 data-test-subj="tablePaginationPopoverButton"
                 type="button"
               >
                 <span
-                  class="euiButtonEmpty__content"
+                  class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                 >
                   <svg
                     aria-hidden="true"
-                    class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonEmpty__icon"
+                    class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonContent__icon"
                     focusable="false"
                     height="16"
                     role="img"
@@ -539,13 +539,13 @@ exports[`<ReportsTable /> panel render component 1`] = `
                   aria-controls="random_html_id"
                   aria-current="true"
                   aria-label="Page 1 of 1"
-                  class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--xSmall euiPaginationButton euiPaginationButton-isActive euiPaginationButton--hideOnMobile"
+                  class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--xSmall euiButtonEmpty-isDisabled euiPaginationButton euiPaginationButton-isActive euiPaginationButton--hideOnMobile"
                   data-test-subj="pagination-button-0"
                   disabled=""
                   type="button"
                 >
                   <span
-                    class="euiButtonEmpty__content"
+                    class="euiButtonContent euiButtonEmpty__content"
                   >
                     <span
                       class="euiButtonEmpty__text"
@@ -598,7 +598,7 @@ exports[`<ReportsTable /> panel render empty component 1`] = `
         >
           <input
             aria-label="This is a search bar. As you type, the results lower in the page will automatically filter."
-            class="euiFieldSearch euiFieldSearch--fullWidth"
+            class="euiFieldSearch euiFieldSearch--fullWidth euiFieldSearch-isClearable"
             placeholder="Search..."
             type="search"
             value=""
@@ -642,15 +642,15 @@ exports[`<ReportsTable /> panel render empty component 1`] = `
             class="euiPopover__anchor"
           >
             <button
-              class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--iconRight euiFilterButton euiFilterButton--hasIcon"
+              class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
               type="button"
             >
               <span
-                class="euiButtonEmpty__content"
+                class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
               >
                 <svg
                   aria-hidden="true"
-                  class="euiIcon euiIcon--medium euiButtonEmpty__icon"
+                  class="euiIcon euiIcon--medium euiButtonContent__icon"
                   focusable="false"
                   height="16"
                   role="img"
@@ -686,15 +686,15 @@ exports[`<ReportsTable /> panel render empty component 1`] = `
             class="euiPopover__anchor"
           >
             <button
-              class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--iconRight euiFilterButton euiFilterButton--hasIcon"
+              class="euiButtonEmpty euiButtonEmpty--text euiFilterButton euiFilterButton--hasIcon"
               type="button"
             >
               <span
-                class="euiButtonEmpty__content"
+                class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
               >
                 <svg
                   aria-hidden="true"
-                  class="euiIcon euiIcon--medium euiButtonEmpty__icon"
+                  class="euiIcon euiIcon--medium euiButtonContent__icon"
                   focusable="false"
                   height="16"
                   role="img"
@@ -754,15 +754,15 @@ exports[`<ReportsTable /> panel render empty component 1`] = `
                   class="euiPopover__anchor"
                 >
                   <button
-                    class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--iconRight euiButtonEmpty--flushRight"
+                    class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--flushRight"
                     type="button"
                   >
                     <span
-                      class="euiButtonEmpty__content"
+                      class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                     >
                       <svg
                         aria-hidden="true"
-                        class="euiIcon euiIcon--medium euiButtonEmpty__icon"
+                        class="euiIcon euiIcon--medium euiButtonContent__icon"
                         focusable="false"
                         height="16"
                         role="img"

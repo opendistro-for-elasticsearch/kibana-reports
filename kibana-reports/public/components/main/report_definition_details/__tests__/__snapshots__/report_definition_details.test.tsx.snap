@@ -48,7 +48,7 @@ exports[`<ReportDefinitionDetails /> panel render 5 hours recurring definition d
               type="button"
             >
               <span
-                class="euiButton__content"
+                class="euiButtonContent euiButton__content"
               >
                 <span
                   class="euiButton__text"
@@ -67,7 +67,7 @@ exports[`<ReportDefinitionDetails /> panel render 5 hours recurring definition d
               type="button"
             >
               <span
-                class="euiButton__content"
+                class="euiButtonContent euiButton__content"
               >
                 <span
                   class="euiButton__text"
@@ -86,7 +86,7 @@ exports[`<ReportDefinitionDetails /> panel render 5 hours recurring definition d
               type="button"
             >
               <span
-                class="euiButton__content"
+                class="euiButtonContent euiButton__content"
               >
                 <span
                   class="euiButton__text"
@@ -448,7 +448,7 @@ exports[`<ReportDefinitionDetails /> panel render disabled daily definition, cli
               type="button"
             >
               <span
-                class="euiButton__content"
+                class="euiButtonContent euiButton__content"
               >
                 <span
                   class="euiButton__text"
@@ -467,7 +467,7 @@ exports[`<ReportDefinitionDetails /> panel render disabled daily definition, cli
               type="button"
             >
               <span
-                class="euiButton__content"
+                class="euiButtonContent euiButton__content"
               >
                 <span
                   class="euiButton__text"
@@ -486,7 +486,7 @@ exports[`<ReportDefinitionDetails /> panel render disabled daily definition, cli
               type="button"
             >
               <span
-                class="euiButton__content"
+                class="euiButtonContent euiButton__content"
               >
                 <span
                   class="euiButton__text"
@@ -848,7 +848,7 @@ exports[`<ReportDefinitionDetails /> panel render on demand definition details 1
               type="button"
             >
               <span
-                class="euiButton__content"
+                class="euiButtonContent euiButton__content"
               >
                 <span
                   class="euiButton__text"
@@ -867,7 +867,7 @@ exports[`<ReportDefinitionDetails /> panel render on demand definition details 1
               type="button"
             >
               <span
-                class="euiButton__content"
+                class="euiButtonContent euiButton__content"
               >
                 <span
                   class="euiButton__text"
@@ -886,7 +886,7 @@ exports[`<ReportDefinitionDetails /> panel render on demand definition details 1
               type="button"
             >
               <span
-                class="euiButton__content"
+                class="euiButtonContent euiButton__content"
               >
                 <span
                   class="euiButton__text"

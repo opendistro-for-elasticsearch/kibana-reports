@@ -1,15 +1,14 @@
 {
   "name": "opendistro_kibana_reports",
-  "version": "1.10.1.0",
+  "version": "1.12.0.0",
   "description": "Kibana Reporting Plugin",
   "license": "Apache-2.0",
-  "main": "index.js",
+  "main": "index.ts",
   "kibana": {
-    "version": "7.9.1",
+    "version": "7.10.0",
     "templateVersion": "1.0.0"
   },
   "scripts": {
-    "preinstall": "node ../../preinstall_check",
     "kbn": "node ../../scripts/kbn",
     "es": "node ../../scripts/es",
     "lint": "eslint .",
@@ -17,13 +16,12 @@
     "test:server": "node ../../scripts/plugin_helpers test:server",
     "test:browser": "node ../../scripts/plugin_helpers test:browser",
     "build": "node ../../scripts/plugin_helpers build",
-    "test:jest": "../../node_modules/.bin/jest --config ./test/jest.config.js",
-    "test": "jest --config ./test/jest.config.js",
+    "test": "../../node_modules/.bin/jest --config ./test/jest.config.js",
     "cypress:run": "./node_modules/.bin/cypress run",
     "cypress:open": "./node_modules/.bin/cypress open"
   },
   "dependencies": {
-    "@nteract/markdown": "^4.5.1",
+    "enzyme-adapter-react-16": "^1.15.2",
     "@types/dompurify": "^2.0.4",
     "@types/jsdom": "^16.2.3",
     "@types/react-addons-test-utils": "^0.14.25",
@@ -33,7 +31,6 @@
     "cypress": "^5.0.0",
     "dompurify": "^2.1.1",
     "elastic-builder": "^2.7.1",
-    "jest": "^26.6.3",
     "jest-fetch-mock": "^3.0.3",
     "jquery": "^3.5.0",
     "jsdom": "13.1.0",
@@ -71,6 +68,7 @@
     "json-2-csv": "^3.7.6",
     "react-test-renderer": "^16.12.0",
     "ts-jest": "^26.1.0",
-    "tsc": "^1.20150623.0"
+    "tsc": "^1.20150623.0",
+    "babel-jest": "^26.3.0"
   }
 }
