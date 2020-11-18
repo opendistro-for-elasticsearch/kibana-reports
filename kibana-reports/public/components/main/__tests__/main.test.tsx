@@ -183,7 +183,7 @@ describe('<Main /> panel', () => {
     await act(() => promise);
   });
 
-  // skipping test for now after multiple error toasts created, need to refine mock values and test
+  // TODO: mock catch() error response to contain status code 
   test.skip('test error toasts posted', async () => {
     jest.spyOn(console, 'log').mockImplementation(() => {}); // silence console log error from main
     const promise = Promise.resolve();
