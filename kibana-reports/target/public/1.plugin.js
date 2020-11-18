@@ -58,12 +58,11 @@ const renderApp = ({
 /*!***********************************!*\
   !*** ./public/components/app.tsx ***!
   \***********************************/
-/*! exports provided: permissionsMissingToast, OpendistroKibanaReportsApp */
+/*! exports provided: OpendistroKibanaReportsApp */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "permissionsMissingToast", function() { return permissionsMissingToast; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OpendistroKibanaReportsApp", function() { return OpendistroKibanaReportsApp; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
@@ -105,17 +104,8 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
 const styles = {
   float: 'left',
-  width: "100%",
+  width: '100%',
   maxWidth: '1600px'
-};
-const permissionsMissingToast = action => {
-  return {
-    title: 'Error ' + action,
-    color: 'danger',
-    iconType: 'alert',
-    id: 'permissionsMissingErrorToast' + action.replace(" ", ''),
-    text: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Insufficient permissions. Reach out to your Kibana administrator.")
-  };
 };
 const OpendistroKibanaReportsApp = ({
   basename,
@@ -191,7 +181,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _reports_table__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./reports_table */ "./public/components/main/reports_table.tsx");
 /* harmony import */ var _report_definitions_table__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./report_definitions_table */ "./public/components/main/report_definitions_table.tsx");
 /* harmony import */ var _main_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./main_utils */ "./public/components/main/main_utils.tsx");
-/* harmony import */ var _app__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../app */ "./public/components/app.tsx");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/utils */ "./public/components/utils/utils.tsx");
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -222,7 +212,7 @@ function Main(props) {
   const [toasts, setToasts] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]);
 
   const addPermissionsMissingDownloadToastHandler = () => {
-    const toast = Object(_app__WEBPACK_IMPORTED_MODULE_5__["permissionsMissingToast"])('generating report.');
+    const toast = Object(_utils_utils__WEBPACK_IMPORTED_MODULE_5__["permissionsMissingToast"])(_utils_utils__WEBPACK_IMPORTED_MODULE_5__["permissionsMissingActions"].GENERATING_REPORT);
     setToasts(toasts.concat(toast));
   };
 
@@ -230,50 +220,46 @@ function Main(props) {
     addPermissionsMissingDownloadToastHandler();
   };
 
-  const addPermissionsMissingReportsTableToastHandler = () => {
-    const toast = Object(_app__WEBPACK_IMPORTED_MODULE_5__["permissionsMissingToast"])('loading reports table.');
+  const addReportsTableContentErrorToastHandler = errorType => {
+    let toast = {};
+
+    if (errorType === 'permissions') {
+      toast = Object(_utils_utils__WEBPACK_IMPORTED_MODULE_5__["permissionsMissingToast"])(_utils_utils__WEBPACK_IMPORTED_MODULE_5__["permissionsMissingActions"].LOADING_REPORTS_TABLE);
+    } else if (errorType === 'API') {
+      toast = {
+        title: 'Error generating reports table.',
+        color: 'danger',
+        iconType: 'alert',
+        id: 'reportsTableErrorToast'
+      };
+    }
+
     setToasts(toasts.concat(toast));
   };
 
-  const handlePermissionsMissingReportsTableToast = () => {
-    addPermissionsMissingReportsTableToastHandler();
+  const handleReportsTableErrorToast = errorType => {
+    addReportsTableContentErrorToastHandler(errorType);
   };
 
-  const addPermissionsMissingDefinitionsTableToastHandler = () => {
-    const toast = Object(_app__WEBPACK_IMPORTED_MODULE_5__["permissionsMissingToast"])('loading report definitions table.');
+  const addReportDefinitionsTableErrorToastHandler = errorType => {
+    let toast = {};
+
+    if (errorType === 'permissions') {
+      toast = Object(_utils_utils__WEBPACK_IMPORTED_MODULE_5__["permissionsMissingToast"])(_utils_utils__WEBPACK_IMPORTED_MODULE_5__["permissionsMissingActions"].LOADING_DEFINITIONS_TABLE);
+    } else if (errorType === 'API') {
+      toast = {
+        title: 'Error generating report definitions table.',
+        color: 'danger',
+        iconType: 'alert',
+        id: 'reportDefinitionsTableErrorToast'
+      };
+    }
+
     setToasts(toasts.concat(toast));
   };
 
-  const handlePermissionsMissingDefinitionsTableToast = () => {
-    addPermissionsMissingDefinitionsTableToastHandler();
-  };
-
-  const addReportsTableContentErrorToastHandler = () => {
-    const errorToast = {
-      title: 'Error generating reports table.',
-      color: 'danger',
-      iconType: 'alert',
-      id: 'reportsTableErrorToast'
-    };
-    setToasts(toasts.concat(errorToast));
-  };
-
-  const handleReportsTableContentErrorToast = () => {
-    addReportsTableContentErrorToastHandler();
-  };
-
-  const addReportDefinitionsTableErrorToastHandler = () => {
-    const errorToast = {
-      title: 'Error generating report definitions table.',
-      color: 'danger',
-      iconType: 'alert',
-      id: 'reportDefinitionsTableErrorToast'
-    };
-    setToasts(toasts.concat(errorToast));
-  };
-
-  const handleReportDefinitionsTableErrorToast = () => {
-    addReportDefinitionsTableErrorToastHandler();
+  const handleReportDefinitionsTableErrorToast = errorType => {
+    addReportDefinitionsTableErrorToastHandler(errorType);
   };
 
   const addErrorOnDemandDownloadToastHandler = () => {
@@ -377,9 +363,9 @@ function Main(props) {
       console.log('error when fetching all reports: ', error); // permission denied error
 
       if (error.body.statusCode === 403) {
-        handlePermissionsMissingReportsTableToast();
+        handleReportsTableErrorToast('permissions');
       } else {
-        handleReportsTableContentErrorToast();
+        handleReportsTableErrorToast('API');
       }
     });
   };
@@ -394,9 +380,9 @@ function Main(props) {
       console.log('error when fetching all report definitions: ', error);
 
       if (error.body.statusCode === 403) {
-        handlePermissionsMissingDefinitionsTableToast();
+        handleReportDefinitionsTableErrorToast('permissions');
       } else {
-        handleReportDefinitionsTableErrorToast();
+        handleReportDefinitionsTableErrorToast('API');
       }
     });
   };
@@ -470,7 +456,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! moment */ "moment");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _report_definitions_utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../report_definitions/utils */ "./public/components/report_definitions/utils/index.ts");
-/* harmony import */ var _app__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../app */ "./public/components/app.tsx");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils/utils */ "./public/components/utils/utils.tsx");
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -505,16 +491,12 @@ function ReportDefinitionDetails(props) {
   };
 
   const addPermissionsMissingStatusChangeToastHandler = () => {
-    const toast = Object(_app__WEBPACK_IMPORTED_MODULE_6__["permissionsMissingToast"])('changing schedule status.');
+    const toast = Object(_utils_utils__WEBPACK_IMPORTED_MODULE_6__["permissionsMissingToast"])(_utils_utils__WEBPACK_IMPORTED_MODULE_6__["permissionsMissingActions"].CHANGE_SCHEDULE_STATUS);
     setToasts(toasts.concat(toast));
   };
 
-  const handlePermissionsMissingStatusChangeToast = () => {
-    addPermissionsMissingStatusChangeToastHandler();
-  };
-
   const addPermissionsMissingDeleteToastHandler = () => {
-    const toast = Object(_app__WEBPACK_IMPORTED_MODULE_6__["permissionsMissingToast"])('deleting report definition.');
+    const toast = Object(_utils_utils__WEBPACK_IMPORTED_MODULE_6__["permissionsMissingToast"])(_utils_utils__WEBPACK_IMPORTED_MODULE_6__["permissionsMissingActions"].DELETE_REPORT_DEFINITION);
     setToasts(toasts.concat(toast));
   };
 
@@ -523,12 +505,8 @@ function ReportDefinitionDetails(props) {
   };
 
   const addPermissionsMissingGenerateReportToastHandler = () => {
-    const toast = Object(_app__WEBPACK_IMPORTED_MODULE_6__["permissionsMissingToast"])('generating report.');
+    const toast = Object(_utils_utils__WEBPACK_IMPORTED_MODULE_6__["permissionsMissingToast"])(_utils_utils__WEBPACK_IMPORTED_MODULE_6__["permissionsMissingActions"].GENERATING_REPORT);
     setToasts(toasts.concat(toast));
-  };
-
-  const handlePermissionsMissingGenerateReportToast = () => {
-    addPermissionsMissingGenerateReportToastHandler();
   };
 
   const addErrorLoadingDetailsToastHandler = () => {
@@ -569,8 +547,12 @@ function ReportDefinitionDetails(props) {
     setToasts(toasts.concat(errorToast));
   };
 
-  const handleErrorGeneratingReportToast = () => {
-    addErrorGeneratingReportToastHandler();
+  const handleErrorGeneratingReportToast = errorType => {
+    if (errorType === 'permissions') {
+      addPermissionsMissingGenerateReportToastHandler();
+    } else if (errorType === 'API') {
+      addErrorGeneratingReportToastHandler();
+    }
   };
 
   const addSuccessEnablingScheduleToastHandler = () => {
@@ -583,10 +565,6 @@ function ReportDefinitionDetails(props) {
     setToasts(toasts.concat(successToast));
   };
 
-  const handleSuccessEnablingScheduleToast = () => {
-    addSuccessEnablingScheduleToastHandler();
-  };
-
   const addErrorEnablingScheduleToastHandler = () => {
     const errorToast = {
       title: 'Error enabling schedule.',
@@ -595,10 +573,6 @@ function ReportDefinitionDetails(props) {
       id: 'errorToast'
     };
     setToasts(toasts.concat(errorToast));
-  };
-
-  const handleErrorEnablingScheduleToast = () => {
-    addErrorEnablingScheduleToastHandler();
   };
 
   const addSuccessDisablingScheduleToastHandler = () => {
@@ -611,8 +585,12 @@ function ReportDefinitionDetails(props) {
     setToasts(toasts.concat(successToast));
   };
 
-  const handleSuccessDisablingScheduleToast = () => {
-    addSuccessDisablingScheduleToastHandler();
+  const handleSuccessChangingScheduleStatusToast = statusChange => {
+    if (statusChange === 'enable') {
+      addSuccessEnablingScheduleToastHandler();
+    } else if (statusChange === 'disable') {
+      addSuccessDisablingScheduleToastHandler();
+    }
   };
 
   const addErrorDisablingScheduleToastHandler = () => {
@@ -625,8 +603,14 @@ function ReportDefinitionDetails(props) {
     setToasts(toasts.concat(errorToast));
   };
 
-  const handleErrorDisablingScheduleToast = () => {
-    addErrorDisablingScheduleToastHandler();
+  const handleErrorChangingScheduleStatusToast = statusChange => {
+    if (statusChange === 'enable') {
+      addErrorEnablingScheduleToastHandler();
+    } else if (statusChange === 'disable') {
+      addErrorDisablingScheduleToastHandler();
+    } else if (statusChange === 'permissions') {
+      addPermissionsMissingStatusChangeToastHandler();
+    }
   };
 
   const addErrorDeletingReportDefinitionToastHandler = () => {
@@ -747,6 +731,7 @@ function ReportDefinitionDetails(props) {
   };
 
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(() => {
+    handleErrorChangingScheduleStatusToast('permissions');
     const {
       httpClient
     } = props;
@@ -814,20 +799,20 @@ function ReportDefinitionDetails(props) {
       setReportDefinitionDetails(getReportDefinitionDetailsMetadata(updatedRawResponse));
 
       if (statusChange === 'Enable') {
-        handleSuccessEnablingScheduleToast();
+        handleSuccessChangingScheduleStatusToast('enable');
       } else if (statusChange === 'Disable') {
-        handleSuccessDisablingScheduleToast();
+        handleSuccessChangingScheduleStatusToast('disable');
       }
     }).catch(error => {
       console.error('error in updating report definition status:', error);
 
       if (error.body.statusCode === 403) {
-        handlePermissionsMissingStatusChangeToast();
+        handleErrorChangingScheduleStatusToast('permissions');
       } else {
         if (statusChange === 'Enable') {
-          handleErrorEnablingScheduleToast();
+          handleErrorChangingScheduleStatusToast('enable');
         } else if (statusChange === 'Disable') {
-          handleErrorDisablingScheduleToast();
+          handleErrorChangingScheduleStatusToast('disable');
         }
       }
     });
@@ -859,9 +844,9 @@ function ReportDefinitionDetails(props) {
       handleSuccessGeneratingReportToast();
     } else {
       if (generateReportSuccess.permissionsError) {
-        handlePermissionsMissingGenerateReportToast();
+        handleErrorGeneratingReportToast('permissions');
       } else {
-        handleErrorGeneratingReportToast();
+        handleErrorGeneratingReportToast('API');
       }
     }
   };
@@ -1612,7 +1597,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utils */ "./public/components/report_definitions/utils/index.ts");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! moment */ "moment");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _app__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../app */ "./public/components/app.tsx");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../utils/utils */ "./public/components/utils/utils.tsx");
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -1672,15 +1657,6 @@ function CreateReport(props) {
     createReportDefinitionRequest = preErrorData;
   }
 
-  const addPermissionsMissingCreateToastHandler = () => {
-    const toast = Object(_app__WEBPACK_IMPORTED_MODULE_9__["permissionsMissingToast"])('creating new report definition.');
-    setToasts(toasts.concat(toast));
-  };
-
-  const handlePermissionsMissingCreateToast = () => {
-    addPermissionsMissingCreateToastHandler();
-  };
-
   const addInputValidationErrorToastHandler = () => {
     const errorToast = {
       title: 'One or more fields have an error. Please check and try again.',
@@ -1695,18 +1671,25 @@ function CreateReport(props) {
     addInputValidationErrorToastHandler();
   };
 
-  const addApiErrorToastHandler = () => {
-    const errorToast = {
-      title: 'Error creating report definition.',
-      color: 'danger',
-      iconType: 'alert',
-      id: 'errorToast'
-    };
-    setToasts(toasts.concat(errorToast));
+  const addErrorOnCreateToastHandler = errorType => {
+    let toast = {};
+
+    if (errorType === 'permissions') {
+      toast = Object(_utils_utils__WEBPACK_IMPORTED_MODULE_9__["permissionsMissingToast"])(_utils_utils__WEBPACK_IMPORTED_MODULE_9__["permissionsMissingActions"].CREATING_REPORT_DEFINITION);
+    } else if (errorType === 'API') {
+      toast = {
+        title: 'Error creating report definition.',
+        color: 'danger',
+        iconType: 'alert',
+        id: 'errorToast'
+      };
+    }
+
+    setToasts(toasts.concat(toast));
   };
 
-  const handleApiErrorToast = () => {
-    addApiErrorToastHandler();
+  const handleErrorOnCreateToast = errorType => {
+    addErrorOnCreateToastHandler(errorType);
   };
 
   const addInvalidTimeRangeToastHandler = () => {
@@ -1740,7 +1723,7 @@ function CreateReport(props) {
     if (metadata.report_params.report_name.search(regexp) === -1) {
       setShowSettingsReportNameError(true);
 
-      if (metadata.report_params.report_name === "") {
+      if (metadata.report_params.report_name === '') {
         setSettingsReportNameErrorMessage('Name must not be empty.');
       } else {
         setSettingsReportNameErrorMessage('Invalid characters in report name.');
@@ -1851,9 +1834,9 @@ function CreateReport(props) {
         console.log('error in creating report definition: ' + error);
 
         if (error.body.statusCode === 403) {
-          handlePermissionsMissingCreateToast();
+          handleErrorOnCreateToast('permissions');
         } else {
-          handleApiErrorToast();
+          handleErrorOnCreateToast('API');
         }
       });
     }
@@ -2259,7 +2242,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _delivery__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../delivery */ "./public/components/report_definitions/delivery/index.ts");
 /* harmony import */ var _report_trigger__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../report_trigger */ "./public/components/report_definitions/report_trigger/index.ts");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils */ "./public/components/report_definitions/utils/index.ts");
-/* harmony import */ var _app__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../app */ "./public/components/app.tsx");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils/utils */ "./public/components/utils/utils.tsx");
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -2286,22 +2269,25 @@ function EditReportDefinition(props) {
   const [comingFromError, setComingFromError] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
   const [preErrorData, setPreErrorData] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({});
 
-  const addPermissionsMissingUpdateDefinitionToastHandler = () => {
-    const toast = Object(_app__WEBPACK_IMPORTED_MODULE_6__["permissionsMissingToast"])('updating report definition.');
+  const addPermissionsMissingViewEditPageToastHandler = errorType => {
+    let toast = {};
+
+    if (errorType === 'permissions') {
+      toast = Object(_utils_utils__WEBPACK_IMPORTED_MODULE_6__["permissionsMissingToast"])(_utils_utils__WEBPACK_IMPORTED_MODULE_6__["permissionsMissingActions"].VIEWING_EDIT_PAGE);
+    } else if (errorType === 'API') {
+      toast = {
+        title: 'Error loading report definition values.',
+        color: 'danger',
+        iconType: 'alert',
+        id: 'errorToast'
+      };
+    }
+
     setToasts(toasts.concat(toast));
   };
 
-  const handlePermissionsMissingUpdateDefinitionToast = () => {
-    addPermissionsMissingUpdateDefinitionToastHandler();
-  };
-
-  const addPermissionsMissingViewEditPageToastHandler = () => {
-    const toast = Object(_app__WEBPACK_IMPORTED_MODULE_6__["permissionsMissingToast"])('viewing edit page.');
-    setToasts(toasts.concat(toast));
-  };
-
-  const handlePermissionsMissingViewEditPageToast = () => {
-    addPermissionsMissingViewEditPageToastHandler();
+  const handleViewEditPageErrorToast = errorType => {
+    addPermissionsMissingViewEditPageToastHandler(errorType);
   };
 
   const addInputValidationErrorToastHandler = () => {
@@ -2318,18 +2304,25 @@ function EditReportDefinition(props) {
     addInputValidationErrorToastHandler();
   };
 
-  const addErrorUpdatingReportDefinitionToastHandler = () => {
-    const errorToast = {
-      title: 'Error updating report definition.',
-      color: 'danger',
-      iconType: 'alert',
-      id: 'errorToast'
-    };
-    setToasts(toasts.concat(errorToast));
+  const addErrorUpdatingReportDefinitionToastHandler = errorType => {
+    let toast = {};
+
+    if (errorType === 'permissions') {
+      toast = Object(_utils_utils__WEBPACK_IMPORTED_MODULE_6__["permissionsMissingToast"])(_utils_utils__WEBPACK_IMPORTED_MODULE_6__["permissionsMissingActions"].UPDATING_DEFINITION);
+    } else if (errorType === 'API') {
+      toast = {
+        title: 'Error updating report definition.',
+        color: 'danger',
+        iconType: 'alert',
+        id: 'errorToast'
+      };
+    }
+
+    setToasts(toasts.concat(toast));
   };
 
-  const handleApiErrorUpdatingReportDefinitionToast = () => {
-    addErrorUpdatingReportDefinitionToastHandler();
+  const handleErrorUpdatingReportDefinitionToast = errorType => {
+    addErrorUpdatingReportDefinitionToastHandler(errorType);
   };
 
   const addErrorDeletingReportDefinitionToastHandler = () => {
@@ -2400,9 +2393,9 @@ function EditReportDefinition(props) {
       if (error.body.statusCode === 400) {
         handleInputValidationErrorToast();
       } else if (error.body.statusCode === 403) {
-        handlePermissionsMissingUpdateDefinitionToast();
+        handleErrorUpdatingReportDefinitionToast('permissions');
       } else {
-        handleApiErrorUpdatingReportDefinitionToast();
+        handleErrorUpdatingReportDefinitionToast('API');
       }
 
       setPreErrorData(metadata);
@@ -2479,7 +2472,9 @@ function EditReportDefinition(props) {
       console.error('error when loading edit report definition page: ', error);
 
       if (error.body.statusCode === 403) {
-        handlePermissionsMissingViewEditPageToast();
+        handleViewEditPageErrorToast('permissions');
+      } else {
+        handleViewEditPageErrorToast('API');
       }
     });
   }, []);
@@ -4211,6 +4206,56 @@ const converter = new showdown__WEBPACK_IMPORTED_MODULE_0___default.a.Converter(
   tasklists: true,
   noHeaderId: true
 });
+
+/***/ }),
+
+/***/ "./public/components/utils/utils.tsx":
+/*!*******************************************!*\
+  !*** ./public/components/utils/utils.tsx ***!
+  \*******************************************/
+/*! exports provided: permissionsMissingToast, permissionsMissingActions */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "permissionsMissingToast", function() { return permissionsMissingToast; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "permissionsMissingActions", function() { return permissionsMissingActions; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/*
+ * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+
+const permissionsMissingToast = action => {
+  return {
+    title: 'Error ' + action,
+    color: 'danger',
+    iconType: 'alert',
+    id: 'permissionsMissingErrorToast' + action.replace(' ', ''),
+    text: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Insufficient permissions. Reach out to your Kibana administrator.")
+  };
+};
+const permissionsMissingActions = {
+  CHANGE_SCHEDULE_STATUS: 'changing schedule status.',
+  DELETE_REPORT_DEFINITION: 'deleting report definition.',
+  GENERATING_REPORT: 'generating report.',
+  LOADING_REPORTS_TABLE: 'loading reports table.',
+  LOADING_DEFINITIONS_TABLE: 'loading report definitions table.',
+  VIEWING_EDIT_PAGE: 'viewing edit page.',
+  UPDATING_DEFINITION: 'updating report definition',
+  CREATING_REPORT_DEFINITION: 'creating new report definition.'
+};
 
 /***/ })
 

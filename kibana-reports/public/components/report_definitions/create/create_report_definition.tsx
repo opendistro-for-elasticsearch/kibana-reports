@@ -31,7 +31,10 @@ import { generateReport } from '../../main/main_utils';
 import { isValidCron } from 'cron-validator';
 import { converter } from '../utils';
 import moment from 'moment';
-import { permissionsMissingToast } from '../../app';
+import {
+  permissionsMissingToast,
+  permissionsMissingActions,
+} from '../../utils/utils';
 
 interface reportParamsType {
   report_name: string;
@@ -148,15 +151,6 @@ export function CreateReport(props) {
     createReportDefinitionRequest = preErrorData;
   }
 
-  const addPermissionsMissingCreateToastHandler = () => {
-    const toast = permissionsMissingToast('creating new report definition.');
-    setToasts(toasts.concat(toast));
-  };
-
-  const handlePermissionsMissingCreateToast = () => {
-    addPermissionsMissingCreateToastHandler();
-  };
-
   const addInputValidationErrorToastHandler = () => {
     const errorToast = {
       title: 'One or more fields have an error. Please check and try again.',
@@ -171,18 +165,25 @@ export function CreateReport(props) {
     addInputValidationErrorToastHandler();
   };
 
-  const addApiErrorToastHandler = () => {
-    const errorToast = {
-      title: 'Error creating report definition.',
-      color: 'danger',
-      iconType: 'alert',
-      id: 'errorToast',
-    };
-    setToasts(toasts.concat(errorToast));
+  const addErrorOnCreateToastHandler = (errorType: string) => {
+    let toast = {};
+    if (errorType === 'permissions') {
+      toast = permissionsMissingToast(
+        permissionsMissingActions.CREATING_REPORT_DEFINITION
+      );
+    } else if (errorType === 'API') {
+      toast = {
+        title: 'Error creating report definition.',
+        color: 'danger',
+        iconType: 'alert',
+        id: 'errorToast',
+      };
+    }
+    setToasts(toasts.concat(toast));
   };
 
-  const handleApiErrorToast = () => {
-    addApiErrorToastHandler();
+  const handleErrorOnCreateToast = (errorType: string) => {
+    addErrorOnCreateToastHandler(errorType);
   };
 
   const addInvalidTimeRangeToastHandler = () => {
@@ -341,9 +342,9 @@ export function CreateReport(props) {
         .catch((error) => {
           console.log('error in creating report definition: ' + error);
           if (error.body.statusCode === 403) {
-            handlePermissionsMissingCreateToast();
+            handleErrorOnCreateToast('permissions');
           } else {
-            handleApiErrorToast();
+            handleErrorOnCreateToast('API');
           }
         });
     }

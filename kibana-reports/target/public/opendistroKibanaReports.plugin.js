@@ -12900,8 +12900,8 @@ const generateReport = async (metadata, httpClient) => {
     status = false;
   });
   return {
-    'status': status,
-    'permissionsError': permissionsError
+    status: status,
+    permissionsError: permissionsError
   };
 };
 const generateReportById = async (reportId, httpClient, handleSuccessToast, handleErrorToast, handlePermissionsMissingToast) => {

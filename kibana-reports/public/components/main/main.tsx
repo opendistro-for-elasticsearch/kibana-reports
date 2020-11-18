@@ -32,7 +32,10 @@ import {
   addReportDefinitionsTableContent,
 } from './main_utils';
 import CSS from 'csstype';
-import { permissionsMissingToast } from '../app';
+import {
+  permissionsMissingToast,
+  permissionsMissingActions,
+} from '../utils/utils';
 
 const reportCountStyles: CSS.Properties = {
   color: 'gray',
@@ -48,7 +51,9 @@ export function Main(props) {
   const [toasts, setToasts] = useState([]);
 
   const addPermissionsMissingDownloadToastHandler = () => {
-    const toast = permissionsMissingToast('generating report.');
+    const toast = permissionsMissingToast(
+      permissionsMissingActions.GENERATING_REPORT
+    );
     setToasts(toasts.concat(toast));
   };
 
@@ -56,50 +61,46 @@ export function Main(props) {
     addPermissionsMissingDownloadToastHandler();
   };
 
-  const addPermissionsMissingReportsTableToastHandler = () => {
-    const toast = permissionsMissingToast('loading reports table.');
+  const addReportsTableContentErrorToastHandler = (errorType: string) => {
+    let toast = {};
+    if (errorType === 'permissions') {
+      toast = permissionsMissingToast(
+        permissionsMissingActions.LOADING_REPORTS_TABLE
+      );
+    } else if (errorType === 'API') {
+      toast = {
+        title: 'Error generating reports table.',
+        color: 'danger',
+        iconType: 'alert',
+        id: 'reportsTableErrorToast',
+      };
+    }
     setToasts(toasts.concat(toast));
   };
 
-  const handlePermissionsMissingReportsTableToast = () => {
-    addPermissionsMissingReportsTableToastHandler();
+  const handleReportsTableErrorToast = (errorType: string) => {
+    addReportsTableContentErrorToastHandler(errorType);
   };
 
-  const addPermissionsMissingDefinitionsTableToastHandler = () => {
-    const toast = permissionsMissingToast('loading report definitions table.');
+  const addReportDefinitionsTableErrorToastHandler = (errorType: string) => {
+    let toast = {};
+    if (errorType === 'permissions') {
+      toast = permissionsMissingToast(
+        permissionsMissingActions.LOADING_DEFINITIONS_TABLE
+      );
+    } else if (errorType === 'API') {
+      toast = {
+        title: 'Error generating report definitions table.',
+        color: 'danger',
+        iconType: 'alert',
+        id: 'reportDefinitionsTableErrorToast',
+      };
+    }
     setToasts(toasts.concat(toast));
   };
 
-  const handlePermissionsMissingDefinitionsTableToast = () => {
-    addPermissionsMissingDefinitionsTableToastHandler();
-  };
-
-  const addReportsTableContentErrorToastHandler = () => {
-    const errorToast = {
-      title: 'Error generating reports table.',
-      color: 'danger',
-      iconType: 'alert',
-      id: 'reportsTableErrorToast',
-    };
-    setToasts(toasts.concat(errorToast));
-  };
-
-  const handleReportsTableContentErrorToast = () => {
-    addReportsTableContentErrorToastHandler();
-  };
-
-  const addReportDefinitionsTableErrorToastHandler = () => {
-    const errorToast = {
-      title: 'Error generating report definitions table.',
-      color: 'danger',
-      iconType: 'alert',
-      id: 'reportDefinitionsTableErrorToast',
-    };
-    setToasts(toasts.concat(errorToast));
-  };
-
-  const handleReportDefinitionsTableErrorToast = () => {
-    addReportDefinitionsTableErrorToastHandler();
+  const handleReportDefinitionsTableErrorToast = (errorType: string) => {
+    addReportDefinitionsTableErrorToastHandler(errorType);
   };
 
   const addErrorOnDemandDownloadToastHandler = () => {
@@ -206,9 +207,9 @@ export function Main(props) {
         console.log('error when fetching all reports: ', error);
         // permission denied error
         if (error.body.statusCode === 403) {
-          handlePermissionsMissingReportsTableToast();
+          handleReportsTableErrorToast('permissions');
         } else {
-          handleReportsTableContentErrorToast();
+          handleReportsTableErrorToast('API');
         }
       });
   };
@@ -225,9 +226,9 @@ export function Main(props) {
       .catch((error) => {
         console.log('error when fetching all report definitions: ', error);
         if (error.body.statusCode === 403) {
-          handlePermissionsMissingDefinitionsTableToast();
+          handleReportDefinitionsTableErrorToast('permissions');
         } else {
-          handleReportDefinitionsTableErrorToast();
+          handleReportDefinitionsTableErrorToast('API');
         }
       });
   };

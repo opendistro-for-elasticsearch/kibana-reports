@@ -30,29 +30,35 @@ import { ReportDelivery } from '../delivery';
 import { ReportTrigger } from '../report_trigger';
 import { ReportDefinitionSchemaType } from 'server/model';
 import { converter } from '../utils';
-import { permissionsMissingToast } from '../../app';
+import {
+  permissionsMissingToast,
+  permissionsMissingActions,
+} from '../../utils/utils';
 
 export function EditReportDefinition(props) {
   const [toasts, setToasts] = useState([]);
   const [comingFromError, setComingFromError] = useState(false);
   const [preErrorData, setPreErrorData] = useState({});
 
-  const addPermissionsMissingUpdateDefinitionToastHandler = () => {
-    const toast = permissionsMissingToast('updating report definition.');
+  const addPermissionsMissingViewEditPageToastHandler = (errorType: string) => {
+    let toast = {};
+    if (errorType === 'permissions') {
+      toast = permissionsMissingToast(
+        permissionsMissingActions.VIEWING_EDIT_PAGE
+      );
+    } else if (errorType === 'API') {
+      toast = {
+        title: 'Error loading report definition values.',
+        color: 'danger',
+        iconType: 'alert',
+        id: 'errorToast',
+      };
+    }
     setToasts(toasts.concat(toast));
   };
 
-  const handlePermissionsMissingUpdateDefinitionToast = () => {
-    addPermissionsMissingUpdateDefinitionToastHandler();
-  };
-
-  const addPermissionsMissingViewEditPageToastHandler = () => {
-    const toast = permissionsMissingToast('viewing edit page.');
-    setToasts(toasts.concat(toast));
-  };
-
-  const handlePermissionsMissingViewEditPageToast = () => {
-    addPermissionsMissingViewEditPageToastHandler();
+  const handleViewEditPageErrorToast = (errorType: string) => {
+    addPermissionsMissingViewEditPageToastHandler(errorType);
   };
 
   const addInputValidationErrorToastHandler = () => {
@@ -69,18 +75,25 @@ export function EditReportDefinition(props) {
     addInputValidationErrorToastHandler();
   };
 
-  const addErrorUpdatingReportDefinitionToastHandler = () => {
-    const errorToast = {
-      title: 'Error updating report definition.',
-      color: 'danger',
-      iconType: 'alert',
-      id: 'errorToast',
-    };
-    setToasts(toasts.concat(errorToast));
+  const addErrorUpdatingReportDefinitionToastHandler = (errorType: string) => {
+    let toast = {};
+    if (errorType === 'permissions') {
+      toast = permissionsMissingToast(
+        permissionsMissingActions.UPDATING_DEFINITION
+      );
+    } else if (errorType === 'API') {
+      toast = {
+        title: 'Error updating report definition.',
+        color: 'danger',
+        iconType: 'alert',
+        id: 'errorToast',
+      };
+    }
+    setToasts(toasts.concat(toast));
   };
 
-  const handleApiErrorUpdatingReportDefinitionToast = () => {
-    addErrorUpdatingReportDefinitionToastHandler();
+  const handleErrorUpdatingReportDefinitionToast = (errorType: string) => {
+    addErrorUpdatingReportDefinitionToastHandler(errorType);
   };
 
   const addErrorDeletingReportDefinitionToastHandler = () => {
@@ -152,9 +165,9 @@ export function EditReportDefinition(props) {
         if (error.body.statusCode === 400) {
           handleInputValidationErrorToast();
         } else if (error.body.statusCode === 403) {
-          handlePermissionsMissingUpdateDefinitionToast();
+          handleErrorUpdatingReportDefinitionToast('permissions');
         } else {
-          handleApiErrorUpdatingReportDefinitionToast();
+          handleErrorUpdatingReportDefinitionToast('API');
         }
         setPreErrorData(metadata);
         setComingFromError(true);
@@ -240,7 +253,9 @@ export function EditReportDefinition(props) {
           error
         );
         if (error.body.statusCode === 403) {
-          handlePermissionsMissingViewEditPageToast();
+          handleViewEditPageErrorToast('permissions');
+        } else {
+          handleViewEditPageErrorToast('API');
         }
       });
   }, []);
