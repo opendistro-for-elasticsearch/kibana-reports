@@ -118,7 +118,7 @@ const generateInContextReport = (
   fetch('/api/reporting/generateReport', {
     headers: {
       'Content-Type': 'application/json',
-      'kbn-version': '7.9.1',
+      'kbn-version': '7.10.0',
       accept: '*/*',
       'accept-language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7,zh-TW;q=0.6',
       pragma: 'no-cache',
@@ -232,16 +232,16 @@ $(function () {
 function locationHashChanged() {
   const observer = new MutationObserver(function (mutations) {
     const navMenu = document.querySelectorAll(
-      'span.kbnTopNavMenu__wrapper > div.euiFlexGroup'
+      'span.kbnTopNavMenu__wrapper > nav.euiHeaderLinks > div.euiHeaderLinks__list'
     );
-    if (navMenu && navMenu.length && navMenu[0].children.length > 1) {
+    if (navMenu && navMenu.length && navMenu[0].childElementCount > 1) {
       try {
         if ($('#downloadReport').length) {
           return;
         }
         const menuItem = document.createElement('div');
         menuItem.innerHTML = getMenuItem('Reporting');
-        navMenu[0].appendChild(menuItem.children[0]);
+        navMenu[0].insertBefore(menuItem.children[0], navMenu[0].lastChild);
       } catch (e) {
         console.log(e);
       } finally {

@@ -1,4 +1,23 @@
 /*
+ * Licensed to Elasticsearch B.V. under one or more contributor
+ * license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Elasticsearch B.V. licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+/*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
@@ -22,35 +41,16 @@ import {
 } from './context_menu_ui';
 
 const getReportSourceURL = (baseURI) => {
-  let url = baseURI.substr(0, baseURI.indexOf('?'));
+  const url = baseURI.substr(0, baseURI.indexOf('?'));
   const reportSourceId = url.substr(url.lastIndexOf('/') + 1, url.length);
   return reportSourceId;
-};
-
-export const contextMenuCreateReportDefinition = (baseURI) => {
-  const reportSourceId = getReportSourceURL(baseURI);
-  let reportSource = '';
-  let timeRanges = getTimeFieldsFromUrl();
-
-  // check report source
-  if (baseURI.includes('dashboard')) {
-    reportSource = 'dashboard:';
-  } else if (baseURI.includes('visualize')) {
-    reportSource = 'visualize:';
-  } else if (baseURI.includes('discover')) {
-    reportSource = 'discover:';
-  }
-  reportSource += reportSourceId.toString();
-  window.location.assign(
-    `opendistro_kibana_reports#/create?previous=${reportSource}?timeFrom=${timeRanges.time_from.toISOString()}?timeTo=${timeRanges.time_to.toISOString()}`
-  );
 };
 
 export const contextMenuViewReports = () =>
   window.location.assign('opendistro_kibana_reports#/');
 
 export const getTimeFieldsFromUrl = () => {
-  let url = window.location.href;
+  const url = window.location.href;
   let timeString = url.substring(
     url.lastIndexOf('time:'),
     url.lastIndexOf('))')
@@ -68,7 +68,7 @@ export const getTimeFieldsFromUrl = () => {
   fromDateString = fromDateString.replace(/[']+/g, '');
 
   // convert time range to from date format in case time range is relative
-  let fromDateFormat = dateMath.parse(fromDateString);
+  const fromDateFormat = dateMath.parse(fromDateString);
 
   let toDateString = timeString.substring(
     timeString.lastIndexOf('to:') + 3,
@@ -76,7 +76,7 @@ export const getTimeFieldsFromUrl = () => {
   );
 
   toDateString = toDateString.replace(/[']+/g, '');
-  let toDateFormat = dateMath.parse(toDateString);
+  const toDateFormat = dateMath.parse(toDateString);
 
   const timeDuration = moment.duration(
     dateMath.parse(toDateString).diff(dateMath.parse(fromDateString))
@@ -87,6 +87,25 @@ export const getTimeFieldsFromUrl = () => {
     time_to: toDateFormat,
     time_duration: timeDuration.toISOString(),
   };
+};
+
+export const contextMenuCreateReportDefinition = (baseURI) => {
+  const reportSourceId = getReportSourceURL(baseURI);
+  let reportSource = '';
+  const timeRanges = getTimeFieldsFromUrl();
+
+  // check report source
+  if (baseURI.includes('dashboard')) {
+    reportSource = 'dashboard:';
+  } else if (baseURI.includes('visualize')) {
+    reportSource = 'visualize:';
+  } else if (baseURI.includes('discover')) {
+    reportSource = 'discover:';
+  }
+  reportSource += reportSourceId.toString();
+  window.location.assign(
+    `opendistro_kibana_reports#/create?previous=${reportSource}?timeFrom=${timeRanges.time_from.toISOString()}?timeTo=${timeRanges.time_to.toISOString()}`
+  );
 };
 
 export const displayLoadingModal = () => {

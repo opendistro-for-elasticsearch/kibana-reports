@@ -15,17 +15,14 @@
 
 export const getMenuItem = (name) => {
   return `
-  <div class="euiFlexItem euiFlexItem--flexGrowZero">
-    <button class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall" type="button" id="downloadReport">
-      <span class="euiButtonEmpty__content"><span class="euiButtonEmpty__text">${name}</span>
-      </span>
+    <button class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiHeaderLink" type="button" id="downloadReport">
+      <span class="euiButtonContent euiButtonEmpty__content"><span class="euiButtonEmpty__text">${name}</span></span>
     </button>
-  </div>
-  `
-}
+    `;
+};
 
 export const popoverMenu = () => {
-    return `
+  return `
     <div>
       <div data-focus-guard="true" tabindex="-1" style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;">
     </div>
@@ -95,16 +92,18 @@ export const popoverMenu = () => {
        </div>
     </div>
     <div data-focus-guard="true" tabindex="-1" style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"></div>
-    `
-   }
+    `;
+};
 
 export const popoverMenuDiscover = (savedSearchAvailable) => {
-  const buttonClass = savedSearchAvailable ? 'euiContextMenuItem' : 'euiContextMenuItem euiContextMenuItem-isDisabled';
+  const buttonClass = savedSearchAvailable
+    ? 'euiContextMenuItem'
+    : 'euiContextMenuItem euiContextMenuItem-isDisabled';
   const button = savedSearchAvailable ? 'button' : 'button disabled';
   const popoverHeight = savedSearchAvailable ? '354px' : '322px';
-  const message = savedSearchAvailable ?
-    `Files can take a minute or two to generate depending on the size of your source data.` :
-    `Save this search to enable CSV reports.`;
+  const message = savedSearchAvailable
+    ? `Files can take a minute or two to generate depending on the size of your source data.`
+    : `Save this search to enable CSV reports.`;
 
   return `
     <div>
@@ -176,7 +175,7 @@ export const popoverMenuDiscover = (savedSearchAvailable) => {
        </div>
     </div>
     <div data-focus-guard="true" tabindex="-1" style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"></div>
-    `
+    `;
 };
 
 export const reportGenerationSuccess = () => {
@@ -205,8 +204,8 @@ export const reportGenerationSuccess = () => {
         href="opendistro_kibana_reports#/" rel="noreferrer">Reports</a>.</p>
     </div>
   </div>
-  `
-}
+  `;
+};
 
 export const reportGenerationFailure = () => {
   return `
@@ -232,8 +231,8 @@ export const reportGenerationFailure = () => {
       <p>There was an error generating this report.</p>
     </div>
   </div>
-  `
-}
+  `;
+};
 
 export const reportGenerationInProgressModal = () => {
   return `
@@ -274,5 +273,5 @@ export const reportGenerationInProgressModal = () => {
   </div>
   <div data-focus-guard="true" tabindex="0" style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"></div>
 </div>
-  `
-}
+  `;
+};
