@@ -3,6 +3,7 @@
 exports[`<ReportDelivery /> panel render create component 1`] = `
 <div
   class="euiPanel euiPanel--paddingLarge euiPageContent"
+  hidden=""
 >
   <div
     class="euiPageHeader euiPageHeader--responsive"
@@ -47,6 +48,7 @@ exports[`<ReportDelivery /> panel render create component 1`] = `
 exports[`<ReportDelivery /> panel render edit component 1`] = `
 <div
   class="euiPanel euiPanel--paddingLarge euiPageContent"
+  hidden=""
 >
   <div
     class="euiPageHeader euiPageHeader--responsive"
