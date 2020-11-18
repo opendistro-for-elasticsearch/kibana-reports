@@ -22,9 +22,7 @@ jobs:
           node-version: "10.22.1"
 
       - name: Move Kibana Reports to Plugins Dir
-        run: |
-          mkdir kibana/plugins
-          mv kibana-reports kibana/plugins
+        run: mv kibana-reports kibana/plugins
 
       - name: Kibana Plugin Bootstrap
         uses: nick-invision/retry@v1
