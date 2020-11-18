@@ -111,7 +111,7 @@ internal abstract class SearchResults<ItemClass : ToXContentObject> : ToXContent
         var totalHits: Long = 0
         var totalHitRelation: Relation = EQUAL_TO
         var objectList: List<ItemClass>? = null
-        XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
+        XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser)
         while (XContentParser.Token.END_OBJECT != parser.nextToken()) {
             val fieldName = parser.currentName()
             parser.nextToken()
@@ -144,7 +144,7 @@ internal abstract class SearchResults<ItemClass : ToXContentObject> : ToXContent
      */
     private fun parseItemList(parser: XContentParser): List<ItemClass> {
         val retList: MutableList<ItemClass> = mutableListOf()
-        XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_ARRAY, parser.currentToken(), parser::getTokenLocation)
+        XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_ARRAY, parser.currentToken(), parser)
         while (parser.nextToken() != XContentParser.Token.END_ARRAY) {
             retList.add(parseItem(parser))
         }

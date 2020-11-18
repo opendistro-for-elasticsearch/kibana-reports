@@ -42,7 +42,7 @@ internal fun RestRequest.contentParserNextToken(): XContentParser {
 
 internal fun XContentParser.stringList(): List<String> {
     val retList: MutableList<String> = mutableListOf()
-    XContentParserUtils.ensureExpectedToken(Token.START_ARRAY, currentToken(), this::getTokenLocation)
+    XContentParserUtils.ensureExpectedToken(Token.START_ARRAY, currentToken(), this)
     while (nextToken() != Token.END_ARRAY) {
         retList.add(text())
     }

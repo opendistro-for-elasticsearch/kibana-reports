@@ -72,7 +72,7 @@ internal class UpdateReportInstanceStatusRequest(
             var reportInstanceId: String? = useReportInstanceId
             var status: Status? = null
             var statusText: String? = null
-            XContentParserUtils.ensureExpectedToken(Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
+            XContentParserUtils.ensureExpectedToken(Token.START_OBJECT, parser.currentToken(), parser)
             while (Token.END_OBJECT != parser.nextToken()) {
                 val fieldName = parser.currentName()
                 parser.nextToken()
