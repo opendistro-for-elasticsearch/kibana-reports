@@ -29,6 +29,7 @@ export const EmailDelivery = (props: ReportDeliveryProps) => {
     reportDefinitionRequest,
     httpClientProps,
     showEmailRecipientsError,
+    emailRecipientsErrorMessage,
   } = props;
 
   const [emailRecipients, setEmailRecipients] = useState([]);
@@ -136,6 +137,7 @@ export const EmailDelivery = (props: ReportDeliveryProps) => {
         label="Email recipients"
         helpText="Select or add users"
         isInvalid={showEmailRecipientsError}
+        error={emailRecipientsErrorMessage}
       >
         <EuiComboBox
           placeholder={'Add users here'}

@@ -137,7 +137,12 @@ const generateInContextReport = (
         $('#reportGenerationProgressModal').remove();
         addSuccessOrFailureToast('success');
       } else {
-        addSuccessOrFailureToast('failure');
+        if (response.status === 403) {
+          addSuccessOrFailureToast('permissionsFailure');
+        }
+        else {
+          addSuccessOrFailureToast('failure');
+        }
       }
       return response.json();
     })
@@ -223,6 +228,11 @@ $(function () {
     // close the toast that apepars upon failure of report generation
     $(document).on('click', '#closeReportFailureToast', function () {
       $('#reportFailureToast').remove();
+    });
+
+    // close permissions failure toast
+    $(document).on('click', '#permissionsMissingErrorToast', function () {
+      $('#permissionsMissingErrorToast').remove();
     });
   });
 
