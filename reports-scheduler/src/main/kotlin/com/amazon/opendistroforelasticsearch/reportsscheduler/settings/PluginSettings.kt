@@ -222,9 +222,10 @@ internal object PluginSettings {
      * Enum for types of filterBy options
      * NoFilter -> everyone see each other's reports
      * User -> reports are visible to only themselves
+     * Roles -> reports are visible to users having any one of the role of creator
      * BackendRoles -> reports are visible to users having any one of the backend role of creator
      */
-    internal enum class FilterBy { NoFilter, User, BackendRoles }
+    internal enum class FilterBy { NoFilter, User, Roles, BackendRoles }
 
     private const val DECIMAL_RADIX: Int = 10
 

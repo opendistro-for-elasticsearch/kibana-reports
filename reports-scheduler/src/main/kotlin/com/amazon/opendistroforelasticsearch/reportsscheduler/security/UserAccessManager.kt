@@ -38,6 +38,8 @@ internal object UserAccessManager {
      *  -> No validation
      * If filterBy == User
      *  -> User name should be present
+     * If filterBy == Roles
+     *  -> roles should be present
      * If filterBy == BackendRoles
      *  -> backend roles should be present
      */
@@ -49,6 +51,12 @@ internal object UserAccessManager {
                 user?.name
                     ?: throw ElasticsearchStatusException("Filter-by enabled with security disabled",
                         RestStatus.FORBIDDEN)
+            }
+            FilterBy.Roles -> { // backend roles must be present
+                if (user?.roles.isNullOrEmpty()) {
+                    throw ElasticsearchStatusException("User doesn't have roles configured. Contact administrator.",
+                        RestStatus.FORBIDDEN)
+                }
             }
             FilterBy.BackendRoles -> { // backend roles must be present
                 if (user?.backendRoles.isNullOrEmpty()) {
@@ -99,6 +107,7 @@ internal object UserAccessManager {
         return when (PluginSettings.filterBy) {
             FilterBy.NoFilter -> listOf()
             FilterBy.User -> listOf("$USER_TAG${user.name}")
+            FilterBy.Roles -> user.roles.map { "$ROLE_TAG$it" }
             FilterBy.BackendRoles -> user.backendRoles.map { "$BACKEND_ROLE_TAG$it" }
         }
     }
@@ -116,6 +125,7 @@ internal object UserAccessManager {
         return when (PluginSettings.filterBy) {
             FilterBy.NoFilter -> true
             FilterBy.User -> access.contains("$USER_TAG${user.name}")
+            FilterBy.Roles -> user.roles.map { "$ROLE_TAG$it" }.any { it in access }
             FilterBy.BackendRoles -> user.backendRoles.map { "$BACKEND_ROLE_TAG$it" }.any { it in access }
         }
     }
