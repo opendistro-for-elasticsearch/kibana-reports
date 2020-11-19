@@ -110,7 +110,7 @@ internal data class ReportDefinition(
             var format: Format? = null
             var trigger: Trigger? = null
             var delivery: Delivery? = null
-            XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
+            XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser)
             while (XContentParser.Token.END_OBJECT != parser.nextToken()) {
                 val fieldName = parser.currentName()
                 parser.nextToken()
@@ -196,7 +196,7 @@ internal data class ReportDefinition(
                 var type: SourceType? = null
                 var origin: String? = null
                 var id: String? = null
-                XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
+                XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser)
                 while (XContentParser.Token.END_OBJECT != parser.nextToken()) {
                     val fieldName = parser.currentName()
                     parser.nextToken()
@@ -266,7 +266,7 @@ internal data class ReportDefinition(
                 var limit: Int? = null
                 var header: String? = null
                 var footer: String? = null
-                XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
+                XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser)
                 while (XContentParser.Token.END_OBJECT != parser.nextToken()) {
                     val fieldName = parser.currentName()
                     parser.nextToken()
@@ -328,7 +328,7 @@ internal data class ReportDefinition(
             fun parse(parser: XContentParser): Trigger {
                 var triggerType: TriggerType? = null
                 var schedule: Schedule? = null
-                XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
+                XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser)
                 while (XContentParser.Token.END_OBJECT != parser.nextToken()) {
                     val fieldName = parser.currentName()
                     parser.nextToken()
@@ -397,7 +397,7 @@ internal data class ReportDefinition(
                 var textDescription: String? = null
                 var htmlDescription: String? = null
                 var channelIds: List<String> = listOf()
-                XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
+                XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser)
                 while (XContentParser.Token.END_OBJECT != parser.nextToken()) {
                     val fieldName = parser.currentName()
                     parser.nextToken()
