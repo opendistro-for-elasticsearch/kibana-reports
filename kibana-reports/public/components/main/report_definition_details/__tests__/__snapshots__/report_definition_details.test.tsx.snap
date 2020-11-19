@@ -395,72 +395,7 @@ exports[`<ReportDefinitionDetails /> panel render 5 hours recurring definition d
       aria-live="polite"
       class="euiGlobalToastList euiGlobalToastList--right"
       role="region"
-    >
-      <div
-        class="euiToast euiToast--danger euiGlobalToastListItem"
-        id="permissionsMissingErrorToastchangingschedule status."
-      >
-        <p
-          class="euiScreenReaderOnly"
-        >
-          A new notification appears
-        </p>
-        <div
-          aria-label="Notification"
-          class="euiToastHeader euiToastHeader--withBody"
-          data-test-subj="euiToastHeader"
-        >
-          <svg
-            aria-hidden="true"
-            class="euiIcon euiIcon--medium euiToastHeader__icon"
-            focusable="false"
-            height="16"
-            role="img"
-            viewBox="0 0 16 16"
-            width="16"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M7.59 10.059L7.35 5.18h1.3L8.4 10.06h-.81zm.394 1.901a.61.61 0 01-.448-.186.606.606 0 01-.186-.444c0-.174.062-.323.186-.446a.614.614 0 01.448-.184c.169 0 .315.06.44.182.124.122.186.27.186.448a.6.6 0 01-.189.446.607.607 0 01-.437.184zM2 14a1 1 0 01-.878-1.479l6-11a1 1 0 011.756 0l6 11A1 1 0 0114 14H2zm0-1h12L8 2 2 13z"
-              fill-rule="evenodd"
-            />
-          </svg>
-          <span
-            class="euiToastHeader__title"
-          >
-            Error changing schedule status.
-          </span>
-        </div>
-        <button
-          aria-label="Dismiss toast"
-          class="euiToast__closeButton"
-          data-test-subj="toastCloseButton"
-          type="button"
-        >
-          <svg
-            aria-hidden="true"
-            class="euiIcon euiIcon--medium"
-            focusable="false"
-            height="16"
-            role="img"
-            viewBox="0 0 16 16"
-            width="16"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M7.293 8L3.146 3.854a.5.5 0 11.708-.708L8 7.293l4.146-4.147a.5.5 0 01.708.708L8.707 8l4.147 4.146a.5.5 0 01-.708.708L8 8.707l-4.146 4.147a.5.5 0 01-.708-.708L7.293 8z"
-            />
-          </svg>
-        </button>
-        <div
-          class="euiText euiText--small euiToastBody"
-        >
-          <p>
-            Insufficient permissions. Reach out to your Kibana administrator.
-          </p>
-        </div>
-      </div>
-    </div>
+    />
   </main>
 </div>
 `;
@@ -860,72 +795,7 @@ exports[`<ReportDefinitionDetails /> panel render disabled daily definition, cli
       aria-live="polite"
       class="euiGlobalToastList euiGlobalToastList--right"
       role="region"
-    >
-      <div
-        class="euiToast euiToast--danger euiGlobalToastListItem"
-        id="permissionsMissingErrorToastchangingschedule status."
-      >
-        <p
-          class="euiScreenReaderOnly"
-        >
-          A new notification appears
-        </p>
-        <div
-          aria-label="Notification"
-          class="euiToastHeader euiToastHeader--withBody"
-          data-test-subj="euiToastHeader"
-        >
-          <svg
-            aria-hidden="true"
-            class="euiIcon euiIcon--medium euiToastHeader__icon"
-            focusable="false"
-            height="16"
-            role="img"
-            viewBox="0 0 16 16"
-            width="16"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M7.59 10.059L7.35 5.18h1.3L8.4 10.06h-.81zm.394 1.901a.61.61 0 01-.448-.186.606.606 0 01-.186-.444c0-.174.062-.323.186-.446a.614.614 0 01.448-.184c.169 0 .315.06.44.182.124.122.186.27.186.448a.6.6 0 01-.189.446.607.607 0 01-.437.184zM2 14a1 1 0 01-.878-1.479l6-11a1 1 0 011.756 0l6 11A1 1 0 0114 14H2zm0-1h12L8 2 2 13z"
-              fill-rule="evenodd"
-            />
-          </svg>
-          <span
-            class="euiToastHeader__title"
-          >
-            Error changing schedule status.
-          </span>
-        </div>
-        <button
-          aria-label="Dismiss toast"
-          class="euiToast__closeButton"
-          data-test-subj="toastCloseButton"
-          type="button"
-        >
-          <svg
-            aria-hidden="true"
-            class="euiIcon euiIcon--medium"
-            focusable="false"
-            height="16"
-            role="img"
-            viewBox="0 0 16 16"
-            width="16"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M7.293 8L3.146 3.854a.5.5 0 11.708-.708L8 7.293l4.146-4.147a.5.5 0 01.708.708L8.707 8l4.147 4.146a.5.5 0 01-.708.708L8 8.707l-4.146 4.147a.5.5 0 01-.708-.708L7.293 8z"
-            />
-          </svg>
-        </button>
-        <div
-          class="euiText euiText--small euiToastBody"
-        >
-          <p>
-            Insufficient permissions. Reach out to your Kibana administrator.
-          </p>
-        </div>
-      </div>
-    </div>
+    />
   </main>
 </div>
 `;
@@ -1321,63 +1191,7 @@ exports[`<ReportDefinitionDetails /> panel render on demand definition details 1
       aria-live="polite"
       class="euiGlobalToastList euiGlobalToastList--right"
       role="region"
-    >
-      <div
-        class="euiToast euiToast--danger euiGlobalToastListItem"
-        id="permissionsMissingErrorToastchangingschedule status."
-      >
-        <p
-          class="euiScreenReaderOnly"
-        >
-          A new notification appears
-        </p>
-        <div
-          aria-label="Notification"
-          class="euiToastHeader euiToastHeader--withBody"
-          data-test-subj="euiToastHeader"
-        >
-          <svg
-            aria-hidden="true"
-            class="euiIcon euiIcon--medium euiIcon-isLoading euiToastHeader__icon"
-            focusable="false"
-            height="16"
-            role="img"
-            viewBox="0 0 16 16"
-            width="16"
-            xmlns="http://www.w3.org/2000/svg"
-          />
-          <span
-            class="euiToastHeader__title"
-          >
-            Error changing schedule status.
-          </span>
-        </div>
-        <button
-          aria-label="Dismiss toast"
-          class="euiToast__closeButton"
-          data-test-subj="toastCloseButton"
-          type="button"
-        >
-          <svg
-            aria-hidden="true"
-            class="euiIcon euiIcon--medium euiIcon-isLoading"
-            focusable="false"
-            height="16"
-            role="img"
-            viewBox="0 0 16 16"
-            width="16"
-            xmlns="http://www.w3.org/2000/svg"
-          />
-        </button>
-        <div
-          class="euiText euiText--small euiToastBody"
-        >
-          <p>
-            Insufficient permissions. Reach out to your Kibana administrator.
-          </p>
-        </div>
-      </div>
-    </div>
+    />
   </main>
 </div>
 `;
