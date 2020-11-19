@@ -287,16 +287,16 @@ exports[`<ReportSettings /> panel dashboard create from in-context 1`] = `
                     >
                       <button
                         aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--iconRight euiFormControlLayout__prepend"
+                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
                         data-test-subj="superDatePickerToggleQuickMenuButton"
                         type="button"
                       >
                         <span
-                          class="euiButtonEmpty__content"
+                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                         >
                           <svg
                             aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiButtonEmpty__icon"
+                            class="euiIcon euiIcon--medium euiButtonContent__icon"
                             focusable="false"
                             height="16"
                             role="img"
@@ -1349,16 +1349,16 @@ exports[`<ReportSettings /> panel display errors on create 1`] = `
                     >
                       <button
                         aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--iconRight euiFormControlLayout__prepend"
+                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
                         data-test-subj="superDatePickerToggleQuickMenuButton"
                         type="button"
                       >
                         <span
-                          class="euiButtonEmpty__content"
+                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                         >
                           <svg
                             aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiButtonEmpty__icon"
+                            class="euiIcon euiIcon--medium euiButtonContent__icon"
                             focusable="false"
                             height="16"
                             role="img"
@@ -2413,16 +2413,16 @@ exports[`<ReportSettings /> panel render component 1`] = `
                     >
                       <button
                         aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--iconRight euiFormControlLayout__prepend"
+                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
                         data-test-subj="superDatePickerToggleQuickMenuButton"
                         type="button"
                       >
                         <span
-                          class="euiButtonEmpty__content"
+                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                         >
                           <svg
                             aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonEmpty__icon"
+                            class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonContent__icon"
                             focusable="false"
                             height="16"
                             role="img"
@@ -2903,16 +2903,16 @@ exports[`<ReportSettings /> panel render edit, dashboard source 1`] = `
                     >
                       <button
                         aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--iconRight euiFormControlLayout__prepend"
+                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
                         data-test-subj="superDatePickerToggleQuickMenuButton"
                         type="button"
                       >
                         <span
-                          class="euiButtonEmpty__content"
+                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                         >
                           <svg
                             aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiButtonEmpty__icon"
+                            class="euiIcon euiIcon--medium euiButtonContent__icon"
                             focusable="false"
                             height="16"
                             role="img"
@@ -3403,16 +3403,16 @@ exports[`<ReportSettings /> panel render edit, saved search source 1`] = `
                     >
                       <button
                         aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--iconRight euiFormControlLayout__prepend"
+                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
                         data-test-subj="superDatePickerToggleQuickMenuButton"
                         type="button"
                       >
                         <span
-                          class="euiButtonEmpty__content"
+                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                         >
                           <svg
                             aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiButtonEmpty__icon"
+                            class="euiIcon euiIcon--medium euiButtonContent__icon"
                             focusable="false"
                             height="16"
                             role="img"
@@ -3903,16 +3903,16 @@ exports[`<ReportSettings /> panel render edit, visualization source 1`] = `
                     >
                       <button
                         aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--iconRight euiFormControlLayout__prepend"
+                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
                         data-test-subj="superDatePickerToggleQuickMenuButton"
                         type="button"
                       >
                         <span
-                          class="euiButtonEmpty__content"
+                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                         >
                           <svg
                             aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiButtonEmpty__icon"
+                            class="euiIcon euiIcon--medium euiButtonContent__icon"
                             focusable="false"
                             height="16"
                             role="img"
@@ -4403,16 +4403,16 @@ exports[`<ReportSettings /> panel saved search create from in-context 1`] = `
                     >
                       <button
                         aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--iconRight euiFormControlLayout__prepend"
+                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
                         data-test-subj="superDatePickerToggleQuickMenuButton"
                         type="button"
                       >
                         <span
-                          class="euiButtonEmpty__content"
+                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                         >
                           <svg
                             aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiButtonEmpty__icon"
+                            class="euiIcon euiIcon--medium euiButtonContent__icon"
                             focusable="false"
                             height="16"
                             role="img"
@@ -5465,16 +5465,16 @@ exports[`<ReportSettings /> panel visualization create from in-context 1`] = `
                     >
                       <button
                         aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--iconRight euiFormControlLayout__prepend"
+                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
                         data-test-subj="superDatePickerToggleQuickMenuButton"
                         type="button"
                       >
                         <span
-                          class="euiButtonEmpty__content"
+                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                         >
                           <svg
                             aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiButtonEmpty__icon"
+                            class="euiIcon euiIcon--medium euiButtonContent__icon"
                             focusable="false"
                             height="16"
                             role="img"
