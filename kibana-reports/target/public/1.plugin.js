@@ -1197,9 +1197,7 @@ function ReportDetails(props) {
   };
 
   const parseTimePeriod = queryUrl => {
-    let timeString = queryUrl.substring(queryUrl.lastIndexOf('time:'), queryUrl.lastIndexOf('))'));
-    let fromDateString = timeString.substring(timeString.lastIndexOf('from:') + 5, timeString.lastIndexOf(','));
-    let toDateString = timeString.substring(timeString.lastIndexOf('to:') + 3, timeString.length);
+    let [timeStringRegEx, fromDateString, toDateString] = queryUrl.match(/time:\(from:(.+),to:(.+?)\)/);
     fromDateString = fromDateString.replace(/[']+/g, '');
     toDateString = toDateString.replace(/[']+/g, '');
     let fromDateParsed = _elastic_datemath__WEBPACK_IMPORTED_MODULE_4___default.a.parse(fromDateString);
