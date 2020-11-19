@@ -110,15 +110,24 @@ export const createVisualReport = async (
    * Sets the content of the page to have the header be above the trimmed screenshot
    * and the footer be below it
    */
-  // TODO: Add style to match the font used in Kibana EUI
+  // TODO: make all html template into files, such as reporting context menu button
   await page.setContent(`
     <!DOCTYPE html>
     <html>
-      <div>
-      ${reportHeader}
-        <img src="data:image/png;base64,${screenshot.toString('base64')}">
-      ${reportFooter}
-      </div>
+      <head>
+        <style>
+          body {
+            font-family: "Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+          }
+        </style>
+      </head>
+      <body>
+        <div>
+        ${reportHeader}
+          <img src="data:image/png;base64,${screenshot.toString('base64')}">
+        ${reportFooter}
+        </div>
+      </body>
     </html>
     `);
 
