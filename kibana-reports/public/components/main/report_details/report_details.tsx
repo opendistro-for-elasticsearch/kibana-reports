@@ -119,20 +119,10 @@ export function ReportDetails(props) {
   };
 
   const parseTimePeriod = (queryUrl: string) => {
-    let timeString = queryUrl.substring(
-      queryUrl.lastIndexOf('time:'),
-      queryUrl.lastIndexOf('))')
+    let [timeStringRegEx, fromDateString, toDateString] = queryUrl.match(
+      /time:\(from:(.+),to:(.+?)\)/
     );
 
-    let fromDateString = timeString.substring(
-      timeString.lastIndexOf('from:') + 5,
-      timeString.lastIndexOf(',')
-    );
-
-    let toDateString = timeString.substring(
-      timeString.lastIndexOf('to:') + 3,
-      timeString.length
-    );
     fromDateString = fromDateString.replace(/[']+/g, '');
     toDateString = toDateString.replace(/[']+/g, '');
 
