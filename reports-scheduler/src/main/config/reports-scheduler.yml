@@ -36,3 +36,4 @@ opendistro.reports:
     ## User -> reports are visible to only themselves
     ## Roles -> reports are visible to users having any one of the role of creator
     ## BackendRoles -> reports are visible to users having any one of the backend role of creator
+    ignoreRoles: ["own_index", "kibana_user", "reports_full_access", "reports_read_access", "reports_instances_read_access"]

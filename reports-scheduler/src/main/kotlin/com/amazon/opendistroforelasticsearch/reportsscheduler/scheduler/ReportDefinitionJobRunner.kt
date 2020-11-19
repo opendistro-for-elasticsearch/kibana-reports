@@ -50,7 +50,7 @@ internal object ReportDefinitionJobRunner : ScheduledJobRunner {
                 endTime,
                 job.access,
                 reportDefinitionDetails,
-                ReportInstance.Status.Scheduled)
+                ReportInstance.Status.Success) // TODO: Revert to Scheduled when background job execution supported
             val id = ReportInstancesIndex.createReportInstance(reportInstance)
             if (id == null) {
                 log.warn("$LOG_PREFIX:runJob-job creation failed for $reportInstance")

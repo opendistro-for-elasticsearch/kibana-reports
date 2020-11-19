@@ -22,6 +22,7 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.BEGI
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.CREATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.END_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ID_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.INSTANCE_INDEX_PARAMS
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.IN_CONTEXT_DOWNLOAD_URL_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_DETAILS_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATUS_FIELD
@@ -157,7 +158,12 @@ internal data class ReportInstance(
         }
         if (reportDefinitionDetails != null) {
             builder.field(REPORT_DEFINITION_DETAILS_FIELD)
-            reportDefinitionDetails.toXContent(builder, params)
+            val passingParams = if (params?.param(ID_FIELD) == null) { // If called from index operation
+                INSTANCE_INDEX_PARAMS
+            } else {
+                params
+            }
+            reportDefinitionDetails.toXContent(builder, passingParams)
         }
         builder.field(STATUS_FIELD, status.name)
         if (statusText != null) {
