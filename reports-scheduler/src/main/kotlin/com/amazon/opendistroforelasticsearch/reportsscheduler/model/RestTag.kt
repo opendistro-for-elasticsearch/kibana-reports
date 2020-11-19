@@ -43,6 +43,7 @@ internal object RestTag {
     const val RETRY_AFTER_FIELD = "retryAfter"
     private val INCLUDE_ID = Pair(ID_FIELD, "true")
     private val EXCLUDE_ACCESS = Pair(ACCESS_LIST_FIELD, "false")
+    val INSTANCE_INDEX_PARAMS: Params = ToXContent.MapParams(mapOf(INCLUDE_ID))
     val REST_OUTPUT_PARAMS: Params = ToXContent.MapParams(mapOf(INCLUDE_ID))
     val FILTERED_REST_OUTPUT_PARAMS: Params = ToXContent.MapParams(mapOf(INCLUDE_ID, EXCLUDE_ACCESS))
 }
