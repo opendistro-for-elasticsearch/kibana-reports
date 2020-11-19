@@ -212,8 +212,8 @@ export const permissionsMissingOnGeneration = () => {
     <p>Insufficient permissions. Reach out to your Kibana administrator.</p>
   </div>
   </div>
-  `
-}
+  `;
+};
 
 export const reportGenerationSuccess = () => {
   return `
