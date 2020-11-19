@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import puppeteer, { SetCookie } from 'puppeteer';
+import puppeteer, { ElementHandle, SetCookie } from 'puppeteer';
 import createDOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 import { Logger } from '../../../../../src/core/server';
@@ -85,14 +85,23 @@ export const createVisualReport = async (
   });
 
   let buffer: any;
-  let element: any;
+  let element: ElementHandle<Element>;
+  // remove top nav bar
+  await page.evaluate((selector) => {
+    document.querySelector(selector)?.remove();
+  }, SELECTOR.topNavBar);
   // crop content
-  if (reportSource === REPORT_TYPE.dashboard) {
-    await page.waitForSelector(SELECTOR.dashboard);
-    element = await page.$(SELECTOR.dashboard);
-  } else if (reportSource === REPORT_TYPE.visualization) {
-    await page.waitForSelector(SELECTOR.visualization);
-    element = await page.$(SELECTOR.visualization);
+  switch (reportSource) {
+    case REPORT_TYPE.dashboard:
+      element = await page.waitForSelector(SELECTOR.dashboard);
+      break;
+    case REPORT_TYPE.visualization:
+      element = await page.waitForSelector(SELECTOR.visualization);
+      break;
+    default:
+      throw Error(
+        `report source can only be one of [Dashboard, Visualization]`
+      );
   }
 
   const screenshot = await element.screenshot({ fullPage: false });
@@ -101,6 +110,7 @@ export const createVisualReport = async (
    * Sets the content of the page to have the header be above the trimmed screenshot
    * and the footer be below it
    */
+  // TODO: Add style to match the font used in Kibana EUI
   await page.setContent(`
     <!DOCTYPE html>
     <html>

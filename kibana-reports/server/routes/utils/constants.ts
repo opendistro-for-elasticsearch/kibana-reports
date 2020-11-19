@@ -66,6 +66,7 @@ export enum DELIVERY_TYPE {
 export enum SELECTOR {
   dashboard = '#dashboardViewport',
   visualization = '.visEditor__visualization',
+  topNavBar = '#globalHeaderBars',
 }
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/6.8/search-request-from-size.html
