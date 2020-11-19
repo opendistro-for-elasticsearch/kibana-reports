@@ -13,8 +13,6 @@
     "es": "node ../../scripts/es",
     "lint": "eslint .",
     "start": "yarn plugin_helpers start",
-    "test:server": "yarn plugin_helpers test:server",
-    "test:browser": "yarn plugin_helpers test:browser",
     "build": "yarn plugin_helpers build",
     "test": "../../node_modules/.bin/jest --config ./test/jest.config.js",
     "cypress:run": "../../node_modules/.bin/cypress run",
