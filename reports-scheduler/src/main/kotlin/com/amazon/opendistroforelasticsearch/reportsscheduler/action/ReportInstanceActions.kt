@@ -63,7 +63,7 @@ internal object ReportInstanceActions {
             request.endTime,
             UserAccessManager.getAllAccessInfo(user),
             request.reportDefinitionDetails,
-            request.status,
+            Status.Success, // TODO: Revert to request.status when background job execution supported
             request.statusText,
             request.inContextDownloadUrlPath)
         val docId = ReportInstancesIndex.createReportInstance(reportInstance)
@@ -89,7 +89,7 @@ internal object ReportInstanceActions {
         }
         val beginTime: Instant = currentTime.minus(reportDefinitionDetails.reportDefinition.format.duration)
         val endTime: Instant = currentTime
-        val currentStatus: Status = Status.Executing
+        val currentStatus: Status = Status.Success // TODO: Revert to Executing when background job execution supported
         val reportInstance = ReportInstance("ignore",
             currentTime,
             currentTime,

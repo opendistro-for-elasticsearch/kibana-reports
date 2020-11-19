@@ -15,28 +15,29 @@
 
 export const getMenuItem = (name) => {
   return `
-  <div class="euiFlexItem euiFlexItem--flexGrowZero">
-    <button class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall" type="button" id="downloadReport">
-      <span class="euiButtonEmpty__content"><span class="euiButtonEmpty__text">${name}</span>
-      </span>
+    <button class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiHeaderLink" type="button" id="downloadReport">
+      <span class="euiButtonContent euiButtonEmpty__content"><span class="euiButtonEmpty__text">${name}</span></span>
     </button>
-  </div>
-  `
-}
+    `;
+};
 
 export const popoverMenu = () => {
-    return `
+  const arrowRight = '100px';
+  const popoverRight = '77px';
+  const popoverHeight = '395px';
+
+  return `
     <div>
       <div data-focus-guard="true" tabindex="-1" style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;">
     </div>
       <div data-focus-guard="true" tabindex="-1" style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;">
     </div>
     <div data-focus-lock-disabled="disabled">
-       <div class="euiPanel euiPopover__panel euiPopover__panel--bottom euiPopover__panel-isOpen euiPopover__panel-withTitle" aria-live="assertive" role="dialog" aria-modal="true" aria-describedby="i199c7fc0-f92e-11ea-a40d-395bfe9dc89a" style="top: 97px; left: 255.583px; z-index: 2000;" id="reportPopover">
-          <div class="euiPopover__panelArrow euiPopover__panelArrow--bottom" style="left: 15.9417px; top: 0px;">
+       <div class="euiPanel euiPopover__panel euiPopover__panel--bottom euiPopover__panel-isOpen euiPopover__panel-withTitle" aria-live="assertive" role="dialog" aria-modal="true" style="top: 100.972px; right: ${popoverRight}; z-index: 3000;" id="reportPopover">
+          <div class="euiPopover__panelArrow euiPopover__panelArrow--bottom" style="right: ${arrowRight}; top: 0px;">
         </div>
           <div>
-             <div class="euiContextMenu" data-test-subj="shareContextMenu" style="height: 305px; width: 235px;">
+             <div class="euiContextMenu" data-test-subj="shareContextMenu" style="height: ${popoverHeight}; width: 235px;">
                 <div class="euiContextMenuPanel euiContextMenu__panel" tabindex="0">
                    <div class="euiPopoverTitle">
                       <span class="euiContextMenu__itemLayout">
@@ -54,22 +55,13 @@ export const popoverMenu = () => {
                       <div>
                          <button class="euiContextMenuItem" type="button" data-test-subj="downloadPanel-GeneratePDF" id="generatePDF">
                             <span class="euiContextMenu__itemLayout">
-                              <svg id="reports-icon" width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon">
-                                  <g transform="translate(1.000000, 0.000000)" fill="currentColor">
-                                    <path d="M9.8,0 L1,0 C0.448,0 0,0.448 0,1 L0,15 C0,15.552 0.448,16 1,16 L13,16 C13.552,16 14,15.552 14,15 L14,4.429 C14,4.173 13.902,3.926 13.726,3.74 L10.526,0.312 C10.337,0.113 10.074,0 9.8,0 M9,1 L9,4.5 C9,4.776 9.224,5 9.5,5 L9.5,5 L13,5 L13,15 L1,15 L1,1 L9,1 Z M11.5,13 L2.5,13 L2.5,14 L11.5,14 L11.5,13 Z M10.8553858,6.66036578 L7.924,9.827 L5.42565136,8.13939866 L2.63423628,11.1343544 L3.36576372,11.8161664 L5.574,9.446 L8.07559521,11.1358573 L11.5892757,7.33963422 L10.8553858,6.66036578 Z M7.5,4 L2.5,4 L2.5,5 L7.5,5 L7.5,4 Z M7.5,2 L2.5,2 L2.5,3 L7.5,3 L7.5,2 Z"></path>
-                                  </g>
-                              </svg>
+                            <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon" focusable="false" role="img" aria-hidden="true"><path d="M9 9.114l1.85-1.943a.52.52 0 01.77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 01-2.31 0L5.41 8a.617.617 0 010-.829.52.52 0 01.77 0L8 9.082V.556C8 .249 8.224 0 8.5 0s.5.249.5.556v8.558z"></path><path d="M16 13.006V10h-1v3.006a.995.995 0 01-.994.994H3.01a.995.995 0 01-.994-.994V10h-1v3.006c0 1.1.892 1.994 1.994 1.994h10.996c1.1 0 1.994-.893 1.994-1.994z"></path></svg>
                                <span class="euiContextMenuItem__text">Download PDF</span>
-                               </svg>
                             </span>
                          </button>
                          <button class="euiContextMenuItem" type="button" data-test-subj="downloadPanel-GeneratePNG" id="generatePNG">
                             <span class="euiContextMenu__itemLayout">
-                              <svg id="reports-icon" width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon">
-                                <g transform="translate(1.000000, 0.000000)" fill="currentColor">
-                                  <path d="M9.8,0 L1,0 C0.448,0 0,0.448 0,1 L0,15 C0,15.552 0.448,16 1,16 L13,16 C13.552,16 14,15.552 14,15 L14,4.429 C14,4.173 13.902,3.926 13.726,3.74 L10.526,0.312 C10.337,0.113 10.074,0 9.8,0 M9,1 L9,4.5 C9,4.776 9.224,5 9.5,5 L9.5,5 L13,5 L13,15 L1,15 L1,1 L9,1 Z M11.5,13 L2.5,13 L2.5,14 L11.5,14 L11.5,13 Z M10.8553858,6.66036578 L7.924,9.827 L5.42565136,8.13939866 L2.63423628,11.1343544 L3.36576372,11.8161664 L5.574,9.446 L8.07559521,11.1358573 L11.5892757,7.33963422 L10.8553858,6.66036578 Z M7.5,4 L2.5,4 L2.5,5 L7.5,5 L7.5,4 Z M7.5,2 L2.5,2 L2.5,3 L7.5,3 L7.5,2 Z"></path>
-                                </g>
-                              </svg>
+                            <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon" focusable="false" role="img" aria-hidden="true"><path d="M9 9.114l1.85-1.943a.52.52 0 01.77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 01-2.31 0L5.41 8a.617.617 0 010-.829.52.52 0 01.77 0L8 9.082V.556C8 .249 8.224 0 8.5 0s.5.249.5.556v8.558z"></path><path d="M16 13.006V10h-1v3.006a.995.995 0 01-.994.994H3.01a.995.995 0 01-.994-.994V10h-1v3.006c0 1.1.892 1.994 1.994 1.994h10.996c1.1 0 1.994-.893 1.994-1.994z"></path></svg>
                                <span class="euiContextMenuItem__text">Download PNG</span>
                             </span>
                          </button>
@@ -77,7 +69,7 @@ export const popoverMenu = () => {
                    </div>
                    <div class="euiPopoverTitle">
                     <span class="euiContextMenu__itemLayout">
-                      Report definition
+                      Schedule and share
                     </span>
                   </div>
                   <div>
@@ -89,22 +81,44 @@ export const popoverMenu = () => {
                       </span>
                     </button>
                   </div>
+                  <div class="euiPopoverTitle">
+                    <span class="euiContextMenu__itemLayout">
+                      View
+                    </span>
+                  </div>
+                  <div>
+                    <button class="euiContextMenuItem" type="button" data-test-subj="downloadPanel-GeneratePDF" id="viewReports">
+                      <span class="euiContextMenu__itemLayout">
+                        <svg id="reports-icon" width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon">
+                            <g transform="translate(1.000000, 0.000000)" fill="currentColor">
+                              <path d="M9.8,0 L1,0 C0.448,0 0,0.448 0,1 L0,15 C0,15.552 0.448,16 1,16 L13,16 C13.552,16 14,15.552 14,15 L14,4.429 C14,4.173 13.902,3.926 13.726,3.74 L10.526,0.312 C10.337,0.113 10.074,0 9.8,0 M9,1 L9,4.5 C9,4.776 9.224,5 9.5,5 L9.5,5 L13,5 L13,15 L1,15 L1,1 L9,1 Z M11.5,13 L2.5,13 L2.5,14 L11.5,14 L11.5,13 Z M10.8553858,6.66036578 L7.924,9.827 L5.42565136,8.13939866 L2.63423628,11.1343544 L3.36576372,11.8161664 L5.574,9.446 L8.07559521,11.1358573 L11.5892757,7.33963422 L10.8553858,6.66036578 Z M7.5,4 L2.5,4 L2.5,5 L7.5,5 L7.5,4 Z M7.5,2 L2.5,2 L2.5,3 L7.5,3 L7.5,2 Z"></path>
+                            </g>
+                        </svg>
+                          <span class="euiContextMenuItem__text">View reports</span>
+                          </svg>
+                      </span>
+                    </button>
+                    </div>
                 </div>
              </div>
           </div>
        </div>
     </div>
     <div data-focus-guard="true" tabindex="-1" style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"></div>
-    `
-   }
+    `;
+};
 
 export const popoverMenuDiscover = (savedSearchAvailable) => {
-  const buttonClass = savedSearchAvailable ? 'euiContextMenuItem' : 'euiContextMenuItem euiContextMenuItem-isDisabled';
+  const buttonClass = savedSearchAvailable
+    ? 'euiContextMenuItem'
+    : 'euiContextMenuItem euiContextMenuItem-isDisabled';
   const button = savedSearchAvailable ? 'button' : 'button disabled';
   const popoverHeight = savedSearchAvailable ? '354px' : '322px';
-  const message = savedSearchAvailable ?
-    `Files can take a minute or two to generate depending on the size of your source data.` :
-    `Save this search to enable CSV reports.`;
+  const message = savedSearchAvailable
+    ? `Files can take a minute or two to generate depending on the size of your source data.`
+    : `Save this search to enable CSV reports.`;
+  const arrowRight = '60px';
+  const popoverRight = '77px';
 
   return `
     <div>
@@ -113,8 +127,8 @@ export const popoverMenuDiscover = (savedSearchAvailable) => {
       <div data-focus-guard="true" tabindex="-1" style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;">
     </div>
     <div data-focus-lock-disabled="disabled">
-       <div class="euiPanel euiPopover__panel euiPopover__panel--bottom euiPopover__panel-isOpen euiPopover__panel-withTitle" aria-live="assertive" role="dialog" aria-modal="true" aria-describedby="i199c7fc0-f92e-11ea-a40d-395bfe9dc89a" style="top: 97px; left: 255.583px; z-index: 2000;" id="reportPopover">
-          <div class="euiPopover__panelArrow euiPopover__panelArrow--bottom" style="left: 15.9417px; top: 0px;">
+       <div class="euiPanel euiPopover__panel euiPopover__panel--bottom euiPopover__panel-isOpen euiPopover__panel-withTitle" aria-live="assertive" role="dialog" aria-modal="true" aria-describedby="i199c7fc0-f92e-11ea-a40d-395bfe9dc89a" style="top: 100.972px; right: ${popoverRight}; z-index: 3000;" id="reportPopover">
+          <div class="euiPopover__panelArrow euiPopover__panelArrow--bottom" style="right: ${arrowRight}; top: 0px;">
         </div>
           <div>
              <div class="euiContextMenu" data-test-subj="shareContextMenu" style="height: ${popoverHeight}; width: 235px;">
@@ -152,7 +166,7 @@ export const popoverMenuDiscover = (savedSearchAvailable) => {
                       </span>
                     </button>
                   </div>
-                   <div class="euiPopoverTitle">
+                  <div class="euiPopoverTitle">
                     <span class="euiContextMenu__itemLayout">
                       View
                     </span>
@@ -165,7 +179,7 @@ export const popoverMenuDiscover = (savedSearchAvailable) => {
                               <path d="M9.8,0 L1,0 C0.448,0 0,0.448 0,1 L0,15 C0,15.552 0.448,16 1,16 L13,16 C13.552,16 14,15.552 14,15 L14,4.429 C14,4.173 13.902,3.926 13.726,3.74 L10.526,0.312 C10.337,0.113 10.074,0 9.8,0 M9,1 L9,4.5 C9,4.776 9.224,5 9.5,5 L9.5,5 L13,5 L13,15 L1,15 L1,1 L9,1 Z M11.5,13 L2.5,13 L2.5,14 L11.5,14 L11.5,13 Z M10.8553858,6.66036578 L7.924,9.827 L5.42565136,8.13939866 L2.63423628,11.1343544 L3.36576372,11.8161664 L5.574,9.446 L8.07559521,11.1358573 L11.5892757,7.33963422 L10.8553858,6.66036578 Z M7.5,4 L2.5,4 L2.5,5 L7.5,5 L7.5,4 Z M7.5,2 L2.5,2 L2.5,3 L7.5,3 L7.5,2 Z"></path>
                             </g>
                         </svg>
-                          <span class="euiContextMenuItem__text">Reporting home</span>
+                          <span class="euiContextMenuItem__text">View reports</span>
                           </svg>
                       </span>
                     </button>
@@ -176,7 +190,7 @@ export const popoverMenuDiscover = (savedSearchAvailable) => {
        </div>
     </div>
     <div data-focus-guard="true" tabindex="-1" style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"></div>
-    `
+    `;
 };
 
 export const permissionsMissingOnGeneration = () => {
@@ -198,8 +212,8 @@ export const permissionsMissingOnGeneration = () => {
     <p>Insufficient permissions. Reach out to your Kibana administrator.</p>
   </div>
   </div>
-  `
-}
+  `;
+};
 
 export const reportGenerationSuccess = () => {
   return `
@@ -227,8 +241,8 @@ export const reportGenerationSuccess = () => {
         href="opendistro_kibana_reports#/" rel="noreferrer">Reports</a>.</p>
     </div>
   </div>
-  `
-}
+  `;
+};
 
 export const reportGenerationFailure = () => {
   return `
@@ -254,8 +268,8 @@ export const reportGenerationFailure = () => {
       <p>There was an error generating this report.</p>
     </div>
   </div>
-  `
-}
+  `;
+};
 
 export const reportGenerationInProgressModal = () => {
   return `
@@ -296,5 +310,5 @@ export const reportGenerationInProgressModal = () => {
   </div>
   <div data-focus-guard="true" tabindex="0" style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"></div>
 </div>
-  `
-}
+  `;
+};

@@ -356,8 +356,6 @@ export function ReportDefinitionDetails(props) {
   };
 
   useEffect(() => {
-    handleErrorChangingScheduleStatusToast('permissions');
-
     const { httpClient } = props;
     httpClient
       .get(`../api/reporting/reportDefinitions/${reportDefinitionId}`)

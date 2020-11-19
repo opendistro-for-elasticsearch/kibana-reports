@@ -64,7 +64,7 @@ internal class CreateReportDefinitionRequest : ActionRequest, ToXContentObject {
      */
     constructor(parser: XContentParser) : super() {
         var reportDefinition: ReportDefinition? = null
-        XContentParserUtils.ensureExpectedToken(Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
+        XContentParserUtils.ensureExpectedToken(Token.START_OBJECT, parser.currentToken(), parser)
         while (Token.END_OBJECT != parser.nextToken()) {
             val fieldName = parser.currentName()
             parser.nextToken()

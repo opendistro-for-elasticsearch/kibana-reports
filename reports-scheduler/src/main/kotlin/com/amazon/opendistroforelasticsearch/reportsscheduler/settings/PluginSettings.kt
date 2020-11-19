@@ -94,6 +94,11 @@ internal object PluginSettings {
     private const val FILTER_BY_KEY = "$ACCESS_KEY_PREFIX.filterBy"
 
     /**
+     * Setting to choose ignored roles for filtering.
+     */
+    private const val IGNORE_ROLE_KEY = "$ACCESS_KEY_PREFIX.ignoreRoles"
+
+    /**
      * Default operation timeout for network operations.
      */
     private const val DEFAULT_OPERATION_TIMEOUT_MS = 60000L
@@ -164,6 +169,15 @@ internal object PluginSettings {
     private const val DEFAULT_FILTER_BY_METHOD = "NoFilter"
 
     /**
+     * Default filter-by method.
+     */
+    private val DEFAULT_IGNORED_ROLES = listOf("own_index",
+        "kibana_user",
+        "reports_full_access",
+        "reports_read_access",
+        "reports_instances_read_access")
+
+    /**
      * Operation timeout setting in ms for I/O operations
      */
     @Volatile
@@ -212,6 +226,12 @@ internal object PluginSettings {
     var filterBy: FilterBy
 
     /**
+     * list of ignored roles.
+     */
+    @Volatile
+    var ignoredRoles: List<String>
+
+    /**
      * Enum for types of admin access
      * "Standard" -> Admin user access follows standard user
      * "AllReports" -> Admin user with "all_access" role can see all reports of all users.
@@ -255,6 +275,7 @@ internal object PluginSettings {
             ?: DEFAULT_ITEMS_QUERY_COUNT_VALUE
         adminAccess = AdminAccess.valueOf(settings?.get(ADMIN_ACCESS_KEY) ?: DEFAULT_ADMIN_ACCESS_METHOD)
         filterBy = FilterBy.valueOf(settings?.get(FILTER_BY_KEY) ?: DEFAULT_FILTER_BY_METHOD)
+        ignoredRoles = settings?.getAsList(IGNORE_ROLE_KEY) ?: DEFAULT_IGNORED_ROLES
 
         defaultSettings = mapOf(
             OPERATION_TIMEOUT_MS_KEY to operationTimeoutMs.toString(DECIMAL_RADIX),
@@ -322,6 +343,13 @@ internal object PluginSettings {
         NodeScope, Dynamic
     )
 
+    private val IGNORED_ROLES: Setting<List<String>> = Setting.listSetting(
+        IGNORE_ROLE_KEY,
+        DEFAULT_IGNORED_ROLES,
+        { it },
+        NodeScope, Dynamic
+    )
+
     /**
      * Returns list of additional settings available specific to this plugin.
      *
@@ -335,7 +363,8 @@ internal object PluginSettings {
             MAX_LOCK_RETRIES,
             DEFAULT_ITEMS_QUERY_COUNT,
             ADMIN_ACCESS,
-            FILTER_BY
+            FILTER_BY,
+            IGNORED_ROLES
         )
     }
 
@@ -352,6 +381,7 @@ internal object PluginSettings {
         defaultItemsQueryCount = DEFAULT_ITEMS_QUERY_COUNT.get(clusterService.settings)
         adminAccess = AdminAccess.valueOf(ADMIN_ACCESS.get(clusterService.settings))
         filterBy = FilterBy.valueOf(FILTER_BY.get(clusterService.settings))
+        ignoredRoles = IGNORED_ROLES.get(clusterService.settings)
     }
 
     /**
@@ -399,6 +429,11 @@ internal object PluginSettings {
             log.debug("$LOG_PREFIX:$FILTER_BY_KEY -autoUpdatedTo-> $clusterFilterBy")
             filterBy = FilterBy.valueOf(clusterFilterBy)
         }
+        val clusterIgnoredRoles = clusterService.clusterSettings.get(IGNORED_ROLES)
+        if (clusterIgnoredRoles != null) {
+            log.debug("$LOG_PREFIX:$IGNORE_ROLE_KEY -autoUpdatedTo-> $clusterIgnoredRoles")
+            ignoredRoles = clusterIgnoredRoles
+        }
     }
 
     /**
@@ -442,6 +477,10 @@ internal object PluginSettings {
         clusterService.clusterSettings.addSettingsUpdateConsumer(FILTER_BY) {
             filterBy = FilterBy.valueOf(it)
             log.info("$LOG_PREFIX:$FILTER_BY_KEY -updatedTo-> $it")
+        }
+        clusterService.clusterSettings.addSettingsUpdateConsumer(IGNORED_ROLES) {
+            ignoredRoles = it
+            log.info("$LOG_PREFIX:$IGNORE_ROLE_KEY -updatedTo-> $it")
         }
     }
 }
