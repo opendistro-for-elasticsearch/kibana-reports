@@ -29,6 +29,7 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSet
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.stringList
 import org.elasticsearch.common.xcontent.ToXContent
+import org.elasticsearch.common.xcontent.ToXContent.EMPTY_PARAMS
 import org.elasticsearch.common.xcontent.XContentBuilder
 import org.elasticsearch.common.xcontent.XContentFactory
 import org.elasticsearch.common.xcontent.XContentParser
@@ -102,37 +103,31 @@ internal data class ReportDefinitionDetails(
 
     /**
      * create XContentBuilder from this object using [XContentFactory.jsonBuilder()]
+     * @param params XContent parameters
      * @return created XContentBuilder object
      */
-    fun toXContent(includeId: Boolean): XContentBuilder? {
-        return toXContent(XContentFactory.jsonBuilder(), ToXContent.EMPTY_PARAMS, includeId)
+    fun toXContent(params: ToXContent.Params = EMPTY_PARAMS): XContentBuilder? {
+        return toXContent(XContentFactory.jsonBuilder(), params)
     }
 
     /**
      * {ref toXContent}
      */
-    fun toXContent(builder: XContentBuilder?, params: ToXContent.Params?, includeId: Boolean): XContentBuilder {
+    override fun toXContent(builder: XContentBuilder?, params: ToXContent.Params?): XContentBuilder {
         builder!!
         builder.startObject()
-        if (includeId) {
+        if (params?.paramAsBoolean(ID_FIELD, false) == true) {
             builder.field(ID_FIELD, id)
         }
         builder.field(UPDATED_TIME_FIELD, updatedTime.toEpochMilli())
             .field(CREATED_TIME_FIELD, createdTime.toEpochMilli())
-        if (access.isNotEmpty()) {
+        if (params?.paramAsBoolean(ACCESS_LIST_FIELD, true) == true && access.isNotEmpty()) {
             builder.field(ACCESS_LIST_FIELD, access)
         }
         builder.field(REPORT_DEFINITION_FIELD)
-        reportDefinition.toXContent(builder, ToXContent.EMPTY_PARAMS)
+        reportDefinition.toXContent(builder, params)
         builder.endObject()
         return builder
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    override fun toXContent(builder: XContentBuilder?, params: ToXContent.Params?): XContentBuilder {
-        return toXContent(builder, params, false)
     }
 
     /**

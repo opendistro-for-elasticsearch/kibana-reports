@@ -141,6 +141,7 @@ export const readStreamToFile = async (
 
 export const generateReport = async (metadata, httpClient) => {
   let status = false;
+  let permissionsError = false;
   await httpClient
     .post('../api/reporting/generateReport', {
       body: JSON.stringify(metadata),
@@ -159,16 +160,23 @@ export const generateReport = async (metadata, httpClient) => {
     })
     .catch((error) => {
       console.log('error on generating report:', error);
+      if (error.body.statusCode === 403) {
+        permissionsError = true;
+      }
       status = false;
     });
-  return status;
+  return {
+    status: status,
+    permissionsError: permissionsError,
+  };
 };
 
 export const generateReportById = async (
   reportId,
   httpClient,
   handleSuccessToast,
-  handleErrorToast
+  handleErrorToast,
+  handlePermissionsMissingToast
 ) => {
   await httpClient
     .post(`../api/reporting/generateReport/${reportId}`)
@@ -182,6 +190,10 @@ export const generateReportById = async (
     })
     .catch((error) => {
       console.log('error on generating report by id:', error);
-      handleErrorToast();
+      if (error.body.statusCode === 403) {
+        handlePermissionsMissingToast();
+      } else {
+        handleErrorToast();
+      }
     });
 };

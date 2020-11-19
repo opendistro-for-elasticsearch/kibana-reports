@@ -35,6 +35,7 @@ export type ReportDeliveryProps = {
   reportDefinitionRequest: reportDefinitionParams;
   httpClientProps: any;
   showEmailRecipientsError: boolean;
+  emailRecipientsErrorMessage: string;
 };
 
 export function ReportDelivery(props: ReportDeliveryProps) {
@@ -87,7 +88,7 @@ export function ReportDelivery(props: ReportDeliveryProps) {
   }, []);
 
   return (
-    <EuiPageContent panelPaddingSize={'l'}>
+    <EuiPageContent panelPaddingSize={'l'} hidden>
       <EuiPageHeader>
         <EuiTitle>
           <h2>Notification settings</h2>

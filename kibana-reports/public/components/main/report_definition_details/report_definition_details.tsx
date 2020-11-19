@@ -41,6 +41,10 @@ import { fileFormatsUpper, generateReport } from '../main_utils';
 import { ReportDefinitionSchemaType } from '../../../../server/model';
 import moment from 'moment';
 import { converter } from '../../report_definitions/utils';
+import {
+  permissionsMissingToast,
+  permissionsMissingActions,
+} from '../../utils/utils';
 
 const ON_DEMAND = 'On demand';
 
@@ -56,6 +60,31 @@ export function ReportDefinitionDetails(props) {
 
   const handleShowDeleteModal = (e) => {
     setShowDeleteModal(e);
+  };
+
+  const addPermissionsMissingStatusChangeToastHandler = () => {
+    const toast = permissionsMissingToast(
+      permissionsMissingActions.CHANGE_SCHEDULE_STATUS
+    );
+    setToasts(toasts.concat(toast));
+  };
+
+  const addPermissionsMissingDeleteToastHandler = () => {
+    const toast = permissionsMissingToast(
+      permissionsMissingActions.DELETE_REPORT_DEFINITION
+    );
+    setToasts(toasts.concat(toast));
+  };
+
+  const handlePermissionsMissingDeleteToast = () => {
+    addPermissionsMissingDeleteToastHandler();
+  };
+
+  const addPermissionsMissingGenerateReportToastHandler = () => {
+    const toast = permissionsMissingToast(
+      permissionsMissingActions.GENERATING_REPORT
+    );
+    setToasts(toasts.concat(toast));
   };
 
   const addErrorLoadingDetailsToastHandler = () => {
@@ -96,8 +125,12 @@ export function ReportDefinitionDetails(props) {
     setToasts(toasts.concat(errorToast));
   };
 
-  const handleErrorGeneratingReportToast = () => {
-    addErrorGeneratingReportToastHandler();
+  const handleErrorGeneratingReportToast = (errorType: string) => {
+    if (errorType === 'permissions') {
+      addPermissionsMissingGenerateReportToastHandler();
+    } else if (errorType === 'API') {
+      addErrorGeneratingReportToastHandler();
+    }
   };
 
   const addSuccessEnablingScheduleToastHandler = () => {
@@ -110,10 +143,6 @@ export function ReportDefinitionDetails(props) {
     setToasts(toasts.concat(successToast));
   };
 
-  const handleSuccessEnablingScheduleToast = () => {
-    addSuccessEnablingScheduleToastHandler();
-  };
-
   const addErrorEnablingScheduleToastHandler = () => {
     const errorToast = {
       title: 'Error enabling schedule.',
@@ -122,10 +151,6 @@ export function ReportDefinitionDetails(props) {
       id: 'errorToast',
     };
     setToasts(toasts.concat(errorToast));
-  };
-
-  const handleErrorEnablingScheduleToast = () => {
-    addErrorEnablingScheduleToastHandler();
   };
 
   const addSuccessDisablingScheduleToastHandler = () => {
@@ -138,8 +163,12 @@ export function ReportDefinitionDetails(props) {
     setToasts(toasts.concat(successToast));
   };
 
-  const handleSuccessDisablingScheduleToast = () => {
-    addSuccessDisablingScheduleToastHandler();
+  const handleSuccessChangingScheduleStatusToast = (statusChange: string) => {
+    if (statusChange === 'enable') {
+      addSuccessEnablingScheduleToastHandler();
+    } else if (statusChange === 'disable') {
+      addSuccessDisablingScheduleToastHandler();
+    }
   };
 
   const addErrorDisablingScheduleToastHandler = () => {
@@ -152,8 +181,14 @@ export function ReportDefinitionDetails(props) {
     setToasts(toasts.concat(errorToast));
   };
 
-  const handleErrorDisablingScheduleToast = () => {
-    addErrorDisablingScheduleToastHandler();
+  const handleErrorChangingScheduleStatusToast = (statusChange: string) => {
+    if (statusChange === 'enable') {
+      addErrorEnablingScheduleToastHandler();
+    } else if (statusChange === 'disable') {
+      addErrorDisablingScheduleToastHandler();
+    } else if (statusChange === 'permissions') {
+      addPermissionsMissingStatusChangeToastHandler();
+    }
   };
 
   const addErrorDeletingReportDefinitionToastHandler = () => {
@@ -321,6 +356,8 @@ export function ReportDefinitionDetails(props) {
   };
 
   useEffect(() => {
+    handleErrorChangingScheduleStatusToast('permissions');
+
     const { httpClient } = props;
     httpClient
       .get(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
@@ -394,17 +431,21 @@ export function ReportDefinitionDetails(props) {
           getReportDefinitionDetailsMetadata(updatedRawResponse)
         );
         if (statusChange === 'Enable') {
-          handleSuccessEnablingScheduleToast();
+          handleSuccessChangingScheduleStatusToast('enable');
         } else if (statusChange === 'Disable') {
-          handleSuccessDisablingScheduleToast();
+          handleSuccessChangingScheduleStatusToast('disable');
         }
       })
       .catch((error) => {
         console.error('error in updating report definition status:', error);
-        if (statusChange === 'Enable') {
-          handleErrorEnablingScheduleToast();
-        } else if (statusChange === 'Disable') {
-          handleErrorDisablingScheduleToast();
+        if (error.body.statusCode === 403) {
+          handleErrorChangingScheduleStatusToast('permissions');
+        } else {
+          if (statusChange === 'Enable') {
+            handleErrorChangingScheduleStatusToast('enable');
+          } else if (statusChange === 'Disable') {
+            handleErrorChangingScheduleStatusToast('disable');
+          }
         }
       });
   };
@@ -441,10 +482,14 @@ export function ReportDefinitionDetails(props) {
       onDemandDownloadMetadata,
       httpClient
     );
-    if (generateReportSuccess) {
+    if (generateReportSuccess.status) {
       handleSuccessGeneratingReportToast();
     } else {
-      handleErrorGeneratingReportToast();
+      if (generateReportSuccess.permissionsError) {
+        handleErrorGeneratingReportToast('permissions');
+      } else {
+        handleErrorGeneratingReportToast('API');
+      }
     }
   };
 
@@ -457,7 +502,11 @@ export function ReportDefinitionDetails(props) {
       })
       .catch((error) => {
         console.log('error when deleting report definition:', error);
-        handleErrorDeletingReportDefinitionToast();
+        if (error.body.statusCode === 403) {
+          handlePermissionsMissingDeleteToast();
+        } else {
+          handleErrorDeletingReportDefinitionToast();
+        }
       });
   };
 
@@ -620,7 +669,7 @@ export function ReportDefinitionDetails(props) {
           <EuiSpacer />
           {triggerSection}
           <EuiSpacer />
-          <EuiTitle>
+          {/* <EuiTitle>
             <h3>Notification settings</h3>
           </EuiTitle>
           <EuiSpacer />
@@ -644,7 +693,7 @@ export function ReportDefinitionDetails(props) {
               )}
             />
             <ReportDetailsComponent />
-          </EuiFlexGroup>
+          </EuiFlexGroup> */}
         </EuiPageContent>
         <EuiGlobalToastList
           toasts={toasts}

@@ -104,7 +104,7 @@ internal object ReportDefinitionActions {
         if (!UserAccessManager.doesUserHasAccess(user, reportDefinitionDetails.access)) {
             throw ElasticsearchStatusException("Permission denied for Report Definition ${request.reportDefinitionId}", RestStatus.FORBIDDEN)
         }
-        return GetReportDefinitionResponse(reportDefinitionDetails)
+        return GetReportDefinitionResponse(reportDefinitionDetails, UserAccessManager.hasAllInfoAccess(user))
     }
 
     /**
@@ -138,6 +138,6 @@ internal object ReportDefinitionActions {
         val reportDefinitionsList = ReportDefinitionsIndex.getAllReportDefinitions(UserAccessManager.getSearchAccessInfo(user),
             request.fromIndex,
             request.maxItems)
-        return GetAllReportDefinitionsResponse(reportDefinitionsList)
+        return GetAllReportDefinitionsResponse(reportDefinitionsList, UserAccessManager.hasAllInfoAccess(user))
     }
 }

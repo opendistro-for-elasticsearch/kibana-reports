@@ -43,13 +43,15 @@ import java.io.IOException
  */
 internal class InContextReportCreateResponse : BaseResponse {
     val reportInstance: ReportInstance
+    private val filterSensitiveInfo: Boolean
 
     companion object {
         private val log by logger(InContextReportCreateResponse::class.java)
     }
 
-    constructor(reportInstance: ReportInstance) : super() {
+    constructor(reportInstance: ReportInstance, filterSensitiveInfo: Boolean) : super() {
         this.reportInstance = reportInstance
+        this.filterSensitiveInfo = filterSensitiveInfo
     }
 
     @Throws(IOException::class)
@@ -75,6 +77,7 @@ internal class InContextReportCreateResponse : BaseResponse {
         }
         reportInstance ?: throw IllegalArgumentException("$REPORT_INSTANCE_FIELD field absent")
         this.reportInstance = reportInstance
+        this.filterSensitiveInfo = false // Sensitive info Must have filtered when created json object
     }
 
     /**
@@ -89,9 +92,14 @@ internal class InContextReportCreateResponse : BaseResponse {
      * {@inheritDoc}
      */
     override fun toXContent(builder: XContentBuilder?, params: ToXContent.Params?): XContentBuilder {
+        val xContentParams = if (filterSensitiveInfo) {
+            RestTag.FILTERED_REST_OUTPUT_PARAMS
+        } else {
+            RestTag.REST_OUTPUT_PARAMS
+        }
         builder!!.startObject()
             .field(REPORT_INSTANCE_FIELD)
-        reportInstance.toXContent(builder, ToXContent.EMPTY_PARAMS, true)
+        reportInstance.toXContent(builder, xContentParams)
         return builder.endObject()
     }
 }

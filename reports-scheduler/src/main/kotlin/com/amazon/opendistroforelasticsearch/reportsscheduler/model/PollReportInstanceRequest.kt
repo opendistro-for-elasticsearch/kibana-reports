@@ -43,10 +43,11 @@ internal class PollReportInstanceRequest() : ActionRequest(), ToXContentObject {
 
     /**
      * create XContentBuilder from this object using [XContentFactory.jsonBuilder()]
+     * @param params XContent parameters
      * @return created XContentBuilder object
      */
-    fun toXContent(): XContentBuilder? {
-        return toXContent(XContentFactory.jsonBuilder(), ToXContent.EMPTY_PARAMS)
+    fun toXContent(params: ToXContent.Params = ToXContent.EMPTY_PARAMS): XContentBuilder? {
+        return toXContent(XContentFactory.jsonBuilder(), params)
     }
 
     /**
