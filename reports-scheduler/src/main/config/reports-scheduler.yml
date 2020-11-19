@@ -34,4 +34,5 @@ opendistro.reports:
     # filterBy values:
     ## NoFilter -> everyone see each other's reports
     ## User -> reports are visible to only themselves
+    ## Roles -> reports are visible to users having any one of the role of creator
     ## BackendRoles -> reports are visible to users having any one of the backend role of creator
