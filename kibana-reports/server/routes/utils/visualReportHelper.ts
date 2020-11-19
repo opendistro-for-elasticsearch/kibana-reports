@@ -110,7 +110,7 @@ export const createVisualReport = async (
    * Sets the content of the page to have the header be above the trimmed screenshot
    * and the footer be below it
    */
-  // TODO: make all html template into files, such as reporting context menu button
+  // TODO: make all html templates into files, such as reporting context menu button, and embedded html of email body
   await page.setContent(`
     <!DOCTYPE html>
     <html>
@@ -118,6 +118,7 @@ export const createVisualReport = async (
         <style>
           body {
             font-family: "Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            font-kerning: normal;
           }
         </style>
       </head>
