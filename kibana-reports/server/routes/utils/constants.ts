@@ -76,6 +76,4 @@ export const LOCAL_HOST = 'http://localhost:5601';
 
 export const DEFAULT_REPORT_HEADER = '<h1>Open Distro Kibana Reports</h1>';
 
-export const DEFAULT_REPORT_FOOTER = '<h1>Open Distro Kibana Reports</h1>';
-
 export const SECURITY_AUTH_COOKIE_NAME = 'security_authentication';

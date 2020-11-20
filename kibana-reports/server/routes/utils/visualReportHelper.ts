@@ -19,7 +19,6 @@ import { JSDOM } from 'jsdom';
 import { Logger } from '../../../../../src/core/server';
 import {
   DEFAULT_REPORT_HEADER,
-  DEFAULT_REPORT_FOOTER,
   REPORT_TYPE,
   FORMAT,
   SELECTOR,
@@ -55,9 +54,7 @@ export const createVisualReport = async (
   const reportHeader = header
     ? DOMPurify.sanitize(header)
     : DEFAULT_REPORT_HEADER;
-  const reportFooter = footer
-    ? DOMPurify.sanitize(footer)
-    : DEFAULT_REPORT_FOOTER;
+  const reportFooter = footer ? DOMPurify.sanitize(footer) : '';
 
   // set up puppeteer
   const browser = await puppeteer.launch({
@@ -84,12 +81,16 @@ export const createVisualReport = async (
     height: windowHeight,
   });
 
-  let buffer: any;
+  let buffer: Buffer;
   let element: ElementHandle<Element>;
   // remove top nav bar
-  await page.evaluate((selector) => {
-    document.querySelector(selector)?.remove();
-  }, SELECTOR.topNavBar);
+  await page.evaluate(
+    /* istanbul ignore next */
+    (selector) => {
+      document.querySelector(selector)?.remove();
+    },
+    SELECTOR.topNavBar
+  );
   // crop content
   switch (reportSource) {
     case REPORT_TYPE.dashboard:
@@ -133,6 +134,14 @@ export const createVisualReport = async (
     `);
 
   // create pdf or png accordingly
+  // switch (reportFormat) {
+  //   case value:
+
+  //     break;
+
+  //   default:
+  //     break;
+  // }
   if (reportFormat === FORMAT.pdf) {
     const scrollHeight = await page.evaluate(
       /* istanbul ignore next */
