@@ -13,13 +13,12 @@
  * permissions and limitations under the License.
  */
 
-import puppeteer, { SetCookie } from 'puppeteer';
+import puppeteer, { ElementHandle, SetCookie } from 'puppeteer';
 import createDOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 import { Logger } from '../../../../../src/core/server';
 import {
   DEFAULT_REPORT_HEADER,
-  DEFAULT_REPORT_FOOTER,
   REPORT_TYPE,
   FORMAT,
   SELECTOR,
@@ -55,9 +54,7 @@ export const createVisualReport = async (
   const reportHeader = header
     ? DOMPurify.sanitize(header)
     : DEFAULT_REPORT_HEADER;
-  const reportFooter = footer
-    ? DOMPurify.sanitize(footer)
-    : DEFAULT_REPORT_FOOTER;
+  const reportFooter = footer ? DOMPurify.sanitize(footer) : '';
 
   // set up puppeteer
   const browser = await puppeteer.launch({
@@ -84,15 +81,28 @@ export const createVisualReport = async (
     height: windowHeight,
   });
 
-  let buffer: any;
-  let element: any;
+  let buffer: Buffer;
+  let element: ElementHandle<Element>;
+  // remove top nav bar
+  await page.evaluate(
+    /* istanbul ignore next */
+    (selector) => {
+      document.querySelector(selector)?.remove();
+    },
+    SELECTOR.topNavBar
+  );
   // crop content
-  if (reportSource === REPORT_TYPE.dashboard) {
-    await page.waitForSelector(SELECTOR.dashboard);
-    element = await page.$(SELECTOR.dashboard);
-  } else if (reportSource === REPORT_TYPE.visualization) {
-    await page.waitForSelector(SELECTOR.visualization);
-    element = await page.$(SELECTOR.visualization);
+  switch (reportSource) {
+    case REPORT_TYPE.dashboard:
+      element = await page.waitForSelector(SELECTOR.dashboard);
+      break;
+    case REPORT_TYPE.visualization:
+      element = await page.waitForSelector(SELECTOR.visualization);
+      break;
+    default:
+      throw Error(
+        `report source can only be one of [Dashboard, Visualization]`
+      );
   }
 
   const screenshot = await element.screenshot({ fullPage: false });
@@ -101,14 +111,25 @@ export const createVisualReport = async (
    * Sets the content of the page to have the header be above the trimmed screenshot
    * and the footer be below it
    */
+  // TODO: make all html templates into files, such as reporting context menu button, and embedded html of email body
   await page.setContent(`
     <!DOCTYPE html>
     <html>
-      <div>
-      ${reportHeader}
-        <img src="data:image/png;base64,${screenshot.toString('base64')}">
-      ${reportFooter}
-      </div>
+      <head>
+        <style>
+          body {
+            font-family: "Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            font-kerning: normal;
+          }
+        </style>
+      </head>
+      <body>
+        <div>
+        ${reportHeader}
+          <img src="data:image/png;base64,${screenshot.toString('base64')}">
+        ${reportFooter}
+        </div>
+      </body>
     </html>
     `);
 
