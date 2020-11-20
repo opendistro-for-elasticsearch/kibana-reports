@@ -134,14 +134,6 @@ export const createVisualReport = async (
     `);
 
   // create pdf or png accordingly
-  // switch (reportFormat) {
-  //   case value:
-
-  //     break;
-
-  //   default:
-  //     break;
-  // }
   if (reportFormat === FORMAT.pdf) {
     const scrollHeight = await page.evaluate(
       /* istanbul ignore next */
