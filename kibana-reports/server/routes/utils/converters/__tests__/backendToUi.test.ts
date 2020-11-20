@@ -93,7 +93,7 @@ const output = {
         footer: '<p>fake footer</p>',
         time_duration: 'PT30M',
         origin: 'http://localhost:5601',
-        window_width: 1200,
+        window_width: 1600,
         window_height: 800,
       },
     },

@@ -69,7 +69,7 @@ export const visualReportSchema = schema.object({
     },
     minLength: 1,
   }),
-  window_width: schema.number({ defaultValue: 1200, min: 0 }),
+  window_width: schema.number({ defaultValue: 1600, min: 0 }),
   window_height: schema.number({ defaultValue: 800, min: 0 }),
   report_format: schema.oneOf([
     schema.literal(FORMAT.pdf),
