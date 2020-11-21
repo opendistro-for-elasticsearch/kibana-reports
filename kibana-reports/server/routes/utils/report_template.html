@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>%REPORT NAME%</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      /*  nice padding + matches Kibana default UI colors you could also set this to inherit if 
+            the wrapper gets inserted inside a kibana section. I might also remove the manual text color here as well, potentially */
+      .reportWrapper {
+        padding: 1em;
+        background-color: #fafbfd;
+      }
+
+      /* Notice that I'm using an ID of #reportingHeader, and #reportingFooter, instead of a classname (.reportingHeader, .reportingFooter). This is
+        in order to force specificity here higher in case any other styles would conflict */
+      #reportingHeader,
+      #reportingFooter {
+        font-family: 'Inter UI', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+          Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+          'Segoe UI Symbol';
+        background-color: #fff;
+        border: 1px solid #d3dae6;
+        box-shadow: 0 2px 2px -1px rgba(152, 162, 179, 0.3),
+          0 1px 5px -2px rgba(152, 162, 179, 0.3);
+        border-radius: 4px;
+        padding: 1em;
+        margin-bottom: 1em;
+      }
+
+      #reportingFooter {
+        margin-top: 1em;
+      }
+
+      #reportingHeader p,
+      #reportingFooter p {
+        max-width: 960px;
+      }
+
+      /* Because we don't know the exact heading level the markdown might give us, we're flattening them */
+      #reportingHeader h1,
+      #reportingFooter h1,
+      #reportingHeader h2,
+      #reportingFooter h2,
+      #reportingHeader h3,
+      #reportingFooter h3,
+      #reportingHeader h4,
+      #reportingFooter h4,
+      #reportingHeader h5,
+      #reportingFooter h5,
+      #reportingHeader h6,
+      #reportingFooter h6 {
+        max-width: 960px;
+        font-size: 1.6em;
+        font-weight: 600;
+        margin-bottom: 0.5em;
+      }
+
+      /* Adjust the margin when the header is the first item */
+      #reportingHeader h1:first-child,
+      #reportingFooter h1:first-child,
+      #reportingHeader h2:first-child,
+      #reportingFooter h2:first-child,
+      #reportingHeader h3:first-child,
+      #reportingFooter h3:first-child,
+      #reportingHeader h4:first-child,
+      #reportingFooter h4:first-child,
+      #reportingHeader h5:first-child,
+      #reportingFooter h5:first-child,
+      #reportingHeader h6:first-child,
+      #reportingFooter h6:first-child {
+        margin-top: 0.25em;
+      }
+
+      /* nicer list styles */
+      #reportingHeader ul,
+      #reportingFooter ul,
+      #reportingHeader ol,
+      #reportingFooter ol {
+        max-width: 70rem;
+        margin-bottom: 1em;
+      }
+
+      #reportingHeader ul li,
+      #reportingFooter ul li,
+      #reportingHeader ol li,
+      #reportingFooter ol li {
+        margin-bottom: 0.25em;
+        margin-left: -0.5em;
+        padding-left: 0.25em;
+      }
+
+      #reportingHeader ul,
+      #reportingFooter ul {
+        list-style-type: disc;
+      }
+
+      /* here we explicitly set nested paragraphs inside lists to inherit their styles from the list, in case markdown does funky things */
+      #reportingHeader ul p,
+      #reportingFooter ul p,
+      #reportingHeader ol p,
+      #reportingFooter ol p {
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+        /* We only inherit vertical spacing, not horizontal */
+        margin-top: inherit;
+        margin-bottom: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reportWrapper">
+      <div id="reportingHeader">
+        <!-- David, I'm adding this `reportingHeader` ID here to increase specificity for the styles -->
+      </div>
+
+      <!-- This is where the pupeteer HTML would be inserted. I inlined the CSS here since it's just for illustration purposes -->
+      <div style="width: 100%; height: auto">
+        <img
+          id="reportingScreenshot"
+          src="test_png_report_navigate_2020-08-12T23_19_13.124Z_3bc5da40-dcf2-11ea-ad2b-c1cef401bc34.png"
+          style="width: 100%; height: auto"
+        />
+      </div>
+      <!-- End of pupeteer HTML -->
+
+      <div id="reportingFooter"></div>
+    </div>
+  </body>
+</html>
