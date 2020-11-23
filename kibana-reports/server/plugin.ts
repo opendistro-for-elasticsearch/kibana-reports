@@ -115,16 +115,16 @@ export class OpendistroKibanaReportsPlugin
     Polling at at a 5 min fixed interval
     
     TODO: need further optimization polling with a mix approach of
-    random delay and dynamic delay based on the amount of jobs
+    random delay and dynamic delay based on the amount of jobs. 
     */
-    setIntervalAsync(
-      pollAndExecuteJob,
-      POLL_INTERVAL,
-      esReportsClient,
-      notificationClient,
-      esClient,
-      this.logger
-    );
+    // setIntervalAsync(
+    //   pollAndExecuteJob,
+    //   POLL_INTERVAL,
+    //   esReportsClient,
+    //   notificationClient,
+    //   esClient,
+    //   this.logger
+    // );
     return {};
   }
 

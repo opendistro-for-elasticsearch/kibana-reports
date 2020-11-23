@@ -179,7 +179,7 @@ export const generateReportById = async (
   handlePermissionsMissingToast
 ) => {
   await httpClient
-    .post(`../api/reporting/generateReport/${reportId}`)
+    .get(`../api/reporting/generateReport/${reportId}`)
     .then(async (response) => {
       //TODO: duplicate code, extract to be a function that can reuse. e.g. handleResponse(response)
       const fileFormat = extractFileFormat(response['filename']);
