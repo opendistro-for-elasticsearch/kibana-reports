@@ -28,7 +28,6 @@ import { CreateReportResultType } from './types';
 import { ReportParamsSchemaType, VisualReportSchemaType } from 'server/model';
 import fs from 'fs';
 import cheerio from 'cheerio';
-import template from '*.html';
 
 export const createVisualReport = async (
   reportParams: ReportParamsSchemaType,
@@ -85,7 +84,6 @@ export const createVisualReport = async (
   });
 
   let buffer: Buffer;
-  let element: ElementHandle<Element>;
   // remove top nav bar
   await page.evaluate(
     /* istanbul ignore next */
@@ -103,10 +101,10 @@ export const createVisualReport = async (
   // crop content
   switch (reportSource) {
     case REPORT_TYPE.dashboard:
-      element = await page.waitForSelector(SELECTOR.dashboard);
+      await page.waitForSelector(SELECTOR.dashboard);
       break;
     case REPORT_TYPE.visualization:
-      element = await page.waitForSelector(SELECTOR.visualization);
+      await page.waitForSelector(SELECTOR.visualization);
       break;
     default:
       throw Error(
@@ -115,40 +113,6 @@ export const createVisualReport = async (
   }
 
   const screenshot = await page.screenshot({ fullPage: true });
-  // const datePickerScreenshot = await page.waitForSelector(".kbnQueryBar__datePickerWrapper")
-  // datePickerScreenshot.screenshot({fullPage: false})
-
-  /**
-   * Sets the content of the page to have the header be above the trimmed screenshot
-   * and the footer be below it
-   */
-  // TODO: make all html templates into files, such as reporting context menu button, and embedded html of email body
-  // await page.setContent(`
-  //   <!DOCTYPE html>
-  //   <html>
-  //     <head>
-  //       <style>
-  //         body {
-  //           font-family: "Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  //           font-kerning: normal;
-  //           background-color: #fff;
-  //           border: 1px solid #D3DAE6;
-  //           box-shadow: 0 2px 2px -1px rgba(152, 162, 179, 0.3), 0 1px 5px -2px rgba(152, 162, 179, 0.3);
-  //           border-radius: 4px;
-  //           padding: 1em;
-  //           margin-bottom: 1em;
-  //         }
-  //       </style>
-  //     </head>
-  //     <body>
-  //       <div>
-  //       ${reportHeader}
-  //         <img src="data:image/png;base64,${screenshot.toString('base64')}">
-  //       ${reportFooter}
-  //       </div>
-  //     </body>
-  //   </html>
-  //   `);
 
   const templateHtml = composeReportHtml(
     reportHeader,
@@ -193,11 +157,18 @@ export const composeReportHtml = (
   const $ = cheerio.load(fs.readFileSync(`${__dirname}/report_template.html`), {
     decodeEntities: false,
   });
-  // set each link and logo
-  $('.reportWrapper img').attr('src', `data:image/png;base64,${screenshot}`);
 
-  $('#reportingHeader').html(header);
-  $('#reportingFooter').html(footer);
+  $('.reportWrapper img').attr('src', `data:image/png;base64,${screenshot}`);
+  $('#reportingHeader > div.mde-preview > div.mde-preview-content').html(
+    header
+  );
+  if (footer === '') {
+    $('#reportingFooter').attr('hidden', 'true');
+  } else {
+    $('#reportingFooter > div.mde-preview > div.mde-preview-content').html(
+      footer
+    );
+  }
 
   return $.root().html() || '';
 };
