@@ -173,6 +173,7 @@ export default function (router: IRouter) {
             },
           }
         );
+        const reportId = esResp.reportInstance.id;
         // convert report to use UI model
         const report = backendToUiReport(esResp.reportInstance);
         // generate report
@@ -180,7 +181,7 @@ export default function (router: IRouter) {
           request,
           context,
           report,
-          reportDefinitionId
+          reportId
         );
 
         return response.ok({
