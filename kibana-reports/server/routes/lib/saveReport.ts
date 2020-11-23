@@ -45,7 +45,7 @@ export const saveReport = async (
         },
       },
     },
-    status: BACKEND_REPORT_STATE.executing, // download from in-context menu should always pass executing state to backend
+    status: BACKEND_REPORT_STATE.success, // download from in-context menu should always pass executing state to backend
     inContextDownloadUrlPath: queryUrl,
   };
 

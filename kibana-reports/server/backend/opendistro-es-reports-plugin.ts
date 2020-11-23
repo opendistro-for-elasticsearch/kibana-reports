@@ -32,6 +32,20 @@ export default function (Client: any, config: any, components: any) {
     needBody: true,
   });
 
+  esReports.createReportFromDefinition = clientAction({
+    url: {
+      fmt: `${ES_REPORTS_API.ON_DEMAND_REPORT}/<%=reportDefinitionId%>`,
+      req: {
+        reportDefinitionId: {
+          type: 'string',
+          required: true,
+        },
+      },
+    },
+    method: 'POST',
+    needBody: true,
+  });
+
   esReports.updateReportInstanceStatus = clientAction({
     url: {
       fmt: `${ES_REPORTS_API.REPORT_INSTANCE}/<%=reportInstanceId%>`,

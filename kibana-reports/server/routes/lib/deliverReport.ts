@@ -117,5 +117,6 @@ export const deliverReport = async (
   }
 
   // update report state
-  await updateReportState(reportId, esReportsClient, REPORT_STATE.shared);
+  // TODO: temporarily disable the following, will add back
+  // await updateReportState(reportId, esReportsClient, REPORT_STATE.shared);
 };
