@@ -32,7 +32,7 @@ import {
 } from './utils/converters/backendToUi';
 
 export default function (router: IRouter) {
-  // generate report
+  // generate report (with provided metadata)
   router.post(
     {
       path: `${API_PREFIX}/generateReport`,
@@ -85,8 +85,8 @@ export default function (router: IRouter) {
     }
   );
 
-  // generate report from id
-  router.post(
+  // generate report from report id
+  router.get(
     {
       path: `${API_PREFIX}/generateReport/{reportId}`,
       validate: {
@@ -134,6 +134,66 @@ export default function (router: IRouter) {
         });
       } catch (error) {
         logger.error(`Failed to generate report by id: ${error}`);
+        logger.error(error);
+        return errorResponse(response, error);
+      }
+    }
+  );
+
+  // create report from existing report definition
+  router.post(
+    {
+      path: `${API_PREFIX}/generateReport/{reportDefinitionId}`,
+      validate: {
+        params: schema.object({
+          reportDefinitionId: schema.string(),
+        }),
+      },
+    },
+    async (
+      context,
+      request,
+      response
+    ): Promise<IKibanaResponse<any | ResponseError>> => {
+      //@ts-ignore
+      const logger: Logger = context.reporting_plugin.logger;
+      const reportDefinitionId = request.params.reportDefinitionId;
+      try {
+        // @ts-ignore
+        const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
+          request
+        );
+        // call ES API to create report from definition
+        const esResp = await esReportsClient.callAsCurrentUser(
+          'es_reports.createReportFromDefinition',
+          {
+            reportDefinitionId: reportDefinitionId,
+            body: {
+              reportDefinitionId: reportDefinitionId,
+            },
+          }
+        );
+        const reportId = esResp.reportInstance.id;
+        // convert report to use UI model
+        const report = backendToUiReport(esResp.reportInstance);
+        // generate report
+        const reportData = await createReport(
+          request,
+          context,
+          report,
+          reportId
+        );
+
+        return response.ok({
+          body: {
+            data: reportData.dataUrl,
+            filename: reportData.fileName,
+          },
+        });
+      } catch (error) {
+        logger.error(
+          `Failed to generate report from reportDefinition id ${reportDefinitionId} : ${error}`
+        );
         logger.error(error);
         return errorResponse(response, error);
       }

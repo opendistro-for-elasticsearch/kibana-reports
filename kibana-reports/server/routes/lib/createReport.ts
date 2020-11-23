@@ -109,9 +109,10 @@ export const createReport = async (
       );
     }
     // update report state to "created"
-    if (!savedReportId) {
-      await updateReportState(reportId, esReportsClient, REPORT_STATE.created);
-    }
+    // TODO: temporarily remove the following
+    // if (!savedReportId) {
+    //   await updateReportState(reportId, esReportsClient, REPORT_STATE.created);
+    // }
 
     // deliver report
     if (!savedReportId && deliveryType == DELIVERY_TYPE.channel) {
@@ -125,10 +126,11 @@ export const createReport = async (
     }
   } catch (error) {
     // update report instance with "error" state
-    //TODO: save error detail and display on UI
-    if (!savedReportId) {
-      await updateReportState(reportId, esReportsClient, REPORT_STATE.error);
-    }
+    // TODO: save error detail and display on UI
+    // TODO: temporarily disable the following, will add back
+    // if (!savedReportId) {
+    //   await updateReportState(reportId, esReportsClient, REPORT_STATE.error);
+    // }
     throw error;
   }
 
