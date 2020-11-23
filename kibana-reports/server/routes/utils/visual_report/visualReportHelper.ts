@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import puppeteer, { ElementHandle, SetCookie } from 'puppeteer';
+import puppeteer, { ElementHandle, SetCookie } from 'puppeteer-core';
 import createDOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 import { Logger } from '../../../../../../src/core/server';
@@ -66,6 +66,7 @@ export const createVisualReport = async (
      * https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#setting-up-chrome-linux-sandbox
      */
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    executablePath: './plugins/kibana-reports/linux_x86/headless_shell',
   });
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(0);
