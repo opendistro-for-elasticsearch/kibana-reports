@@ -14,7 +14,7 @@
  */
 
 import 'regenerator-runtime/runtime';
-import { createVisualReport } from '../visualReportHelper';
+import { createVisualReport } from '../visual_report/visualReportHelper';
 import { Logger } from '../../../../../../src/core/server';
 import { ReportParamsSchemaType, reportSchema } from '../../../model';
 

@@ -16,16 +16,18 @@
 import puppeteer, { ElementHandle, SetCookie } from 'puppeteer';
 import createDOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
-import { Logger } from '../../../../../src/core/server';
+import { Logger } from '../../../../../../src/core/server';
 import {
   DEFAULT_REPORT_HEADER,
   REPORT_TYPE,
   FORMAT,
   SELECTOR,
-} from './constants';
-import { getFileName } from './helpers';
-import { CreateReportResultType } from './types';
+} from '../constants';
+import { getFileName } from '../helpers';
+import { CreateReportResultType } from '../types';
 import { ReportParamsSchemaType, VisualReportSchemaType } from 'server/model';
+import fs from 'fs';
+import cheerio from 'cheerio';
 
 export const createVisualReport = async (
   reportParams: ReportParamsSchemaType,
@@ -82,22 +84,33 @@ export const createVisualReport = async (
   });
 
   let buffer: Buffer;
-  let element: ElementHandle<Element>;
   // remove top nav bar
   await page.evaluate(
     /* istanbul ignore next */
     (selector) => {
       document.querySelector(selector)?.remove();
+      document
+        .querySelectorAll("[class^='euiButton']")
+        .forEach((e) => e.remove());
+      document.querySelector(
+        '.coreSystemRootDomElement.euiBody--headerIsFixed'
+      ).style.paddingTop = '0px';
     },
     SELECTOR.topNavBar
   );
+  // force wait for any resize to load after the above DOM modification
+  await page.waitFor(1000);
   // crop content
   switch (reportSource) {
     case REPORT_TYPE.dashboard:
-      element = await page.waitForSelector(SELECTOR.dashboard);
+      await page.waitForSelector(SELECTOR.dashboard, {
+        visible: true,
+      });
       break;
     case REPORT_TYPE.visualization:
-      element = await page.waitForSelector(SELECTOR.visualization);
+      await page.waitForSelector(SELECTOR.visualization, {
+        visible: true,
+      });
       break;
     default:
       throw Error(
@@ -105,33 +118,14 @@ export const createVisualReport = async (
       );
   }
 
-  const screenshot = await element.screenshot({ fullPage: false });
+  const screenshot = await page.screenshot({ fullPage: true });
 
-  /**
-   * Sets the content of the page to have the header be above the trimmed screenshot
-   * and the footer be below it
-   */
-  // TODO: make all html templates into files, such as reporting context menu button, and embedded html of email body
-  await page.setContent(`
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <style>
-          body {
-            font-family: "Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-            font-kerning: normal;
-          }
-        </style>
-      </head>
-      <body>
-        <div>
-        ${reportHeader}
-          <img src="data:image/png;base64,${screenshot.toString('base64')}">
-        ${reportFooter}
-        </div>
-      </body>
-    </html>
-    `);
+  const templateHtml = composeReportHtml(
+    reportHeader,
+    reportFooter,
+    screenshot.toString('base64')
+  );
+  await page.setContent(templateHtml);
 
   // create pdf or png accordingly
   if (reportFormat === FORMAT.pdf) {
@@ -159,4 +153,28 @@ export const createVisualReport = async (
   await browser.close();
 
   return { timeCreated, dataUrl: buffer.toString('base64'), fileName };
+};
+
+export const composeReportHtml = (
+  header: string,
+  footer: string,
+  screenshot: string
+) => {
+  const $ = cheerio.load(fs.readFileSync(`${__dirname}/report_template.html`), {
+    decodeEntities: false,
+  });
+
+  $('.reportWrapper img').attr('src', `data:image/png;base64,${screenshot}`);
+  $('#reportingHeader > div.mde-preview > div.mde-preview-content').html(
+    header
+  );
+  if (footer === '') {
+    $('#reportingFooter').attr('hidden', 'true');
+  } else {
+    $('#reportingFooter > div.mde-preview > div.mde-preview-content').html(
+      footer
+    );
+  }
+
+  return $.root().html() || '';
 };
