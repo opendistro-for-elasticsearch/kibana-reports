@@ -66,7 +66,7 @@ export const createVisualReport = async (
      * https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#setting-up-chrome-linux-sandbox
      */
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    executablePath: './plugins/kibana-reports/linux_x86/headless_shell',
+    executablePath: './plugins/kibana-reports/.chromium/headless_shell',
   });
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(0);
