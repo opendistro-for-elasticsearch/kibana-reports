@@ -37,7 +37,7 @@ import {
   formatEmails,
   trimAndRenderAsText,
 } from '../report_details/report_details';
-import { fileFormatsUpper, generateReport } from '../main_utils';
+import { fileFormatsUpper, generateReportFromDefinitionId } from '../main_utils';
 import { ReportDefinitionSchemaType } from '../../../../server/model';
 import moment from 'moment';
 import { converter } from '../../report_definitions/utils';
@@ -463,21 +463,9 @@ export function ReportDefinitionDetails(props) {
   };
 
   const generateReportFromDetails = async () => {
-    let duration =
-      reportDefinitionRawResponse.report_definition.report_params.core_params
-        .time_duration;
-    const fromDate = getRelativeStartDate(duration);
-    let onDemandDownloadMetadata = {
-      query_url: `${
-        reportDefinitionDetails.baseUrl
-      }?_g=(time:(from:'${fromDate.toISOString()}',to:'${moment().toISOString()}'))`,
-      time_from: fromDate.valueOf(),
-      time_to: moment().valueOf(),
-      report_definition: reportDefinitionRawResponse.report_definition,
-    };
     const { httpClient } = props;
-    let generateReportSuccess = await generateReport(
-      onDemandDownloadMetadata,
+    let generateReportSuccess = await generateReportFromDefinitionId(
+      reportDefinitionId,
       httpClient
     );
     if (generateReportSuccess.status) {
