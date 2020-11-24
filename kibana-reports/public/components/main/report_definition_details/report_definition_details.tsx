@@ -463,10 +463,6 @@ export function ReportDefinitionDetails(props) {
   };
 
   const generateReportFromDetails = async () => {
-    let duration =
-      reportDefinitionRawResponse.report_definition.report_params.core_params
-        .time_duration;
-    const fromDate = getRelativeStartDate(duration);
     const { httpClient } = props;
     let generateReportSuccess = await generateReportFromDefinitionId(
       reportDefinitionId,
