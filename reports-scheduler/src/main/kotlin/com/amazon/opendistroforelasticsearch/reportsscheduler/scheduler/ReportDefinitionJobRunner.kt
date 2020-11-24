@@ -48,6 +48,7 @@ internal object ReportDefinitionJobRunner : ScheduledJobRunner {
                 currentTime,
                 beginTime,
                 endTime,
+                job.tenant,
                 job.access,
                 reportDefinitionDetails,
                 ReportInstance.Status.Success) // TODO: Revert to Scheduled when background job execution supported

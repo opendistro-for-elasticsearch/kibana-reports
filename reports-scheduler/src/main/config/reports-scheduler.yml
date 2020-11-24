@@ -30,7 +30,7 @@ opendistro.reports:
     # adminAccess values:
     ## Standard -> Admin user access follows standard user
     ## AllReports -> Admin user with "all_access" role can see all reports of all users.
-    filterBy: "NoFilter"
+    filterBy: "NoFilter" # Applied when tenant != __user__
     # filterBy values:
     ## NoFilter -> everyone see each other's reports
     ## User -> reports are visible to only themselves
