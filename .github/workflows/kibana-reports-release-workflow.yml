@@ -57,8 +57,25 @@ jobs:
         run: |
           cd kibana/plugins/kibana-reports
           yarn build
-          mv ./build/*.zip ./build/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip
-          artifact=`ls ./build/*.zip`
+
+          cd build
+          mkdir -p ./{linux,windows}/kibana/opendistroReportsKibana
+          cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-x64.zip
+          mv ./${{ env.PLUGIN_NAME }}-*.zip ./windows/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-windows-x64.zip
+
+          cd linux
+          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-linux.zip
+          unzip chromium-linux.zip -d ./kibana/opendistroReportsKibana
+          zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
+          mv ./${{ env.PLUGIN_NAME }}-*.zip ..
+          cd ..
+
+          cd windows
+          # TODO add chromium windows binary
+          mv ./${{ env.PLUGIN_NAME }}-*.zip ..
+          cd ..
+
+          artifact=`ls ./${{ env.PLUGIN_NAME }}-*.zip`
 
           # TODO: rename S3 bucket path after infra team assigns one
           aws s3 cp $artifact s3://kiabna-reports/kibana-reports-plugin/
