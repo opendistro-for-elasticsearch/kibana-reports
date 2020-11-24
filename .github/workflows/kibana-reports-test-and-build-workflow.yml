@@ -46,10 +46,23 @@ jobs:
         run: |
           cd kibana/plugins/kibana-reports
           yarn build
-          mv ./build/*.zip ./build/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip
+          cd build
+          mkdir -p ./{ubuntu,centos,al2,windows}/kibana/opendistroKibanaReports
+          cp ./${{ env.PLUGIN_NAME }}.zip ./ubuntu/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-ubuntu-x64.zip
+          cp ./${{ env.PLUGIN_NAME }}.zip ./centos/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-centos-x64.zip
+          cp ./${{ env.PLUGIN_NAME }}.zip ./al2/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-al2-x64.zip
+          cp ./${{ env.PLUGIN_NAME }}.zip ./windows/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-windows-x64.zip
+          cd al2
+          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-al2.zip
+          unzip chromium-al2.zip -d ./kibana/opendistroKibanaReports
+          zip -r ./${{ env.PLUGIN_NAME }}.zip ./kibana
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
           name: kibana-reports
-          path: kibana/plugins/kibana-reports/build
+          path: |
+            kibana/plugins/kibana-reports/build/ubuntu
+            kibana/plugins/kibana-reports/build/al2
+            kibana/plugins/kibana-reports/build/centos
+            kibana/plugins/kibana-reports/build/windows
