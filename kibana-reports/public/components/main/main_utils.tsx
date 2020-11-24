@@ -139,17 +139,16 @@ export const readStreamToFile = async (
   document.body.removeChild(link);
 };
 
-export const generateReport = async (metadata, httpClient) => {
+export const generateReportFromDefinitionId = async (reportDefinitionId, httpClient) => {
   let status = false;
   let permissionsError = false;
   await httpClient
-    .post('../api/reporting/generateReport', {
-      body: JSON.stringify(metadata),
+    .post(`../api/reporting/generateReport/${reportDefinitionId}`, {
       headers: {
         'Content-Type': 'application/json',
       },
     })
-    .then(async (response) => {
+    .then(async (response: any) => {
       // for emailing a report, this API response doesn't have response body
       if (response) {
         const fileFormat = extractFileFormat(response['filename']);
