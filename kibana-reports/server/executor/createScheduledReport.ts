@@ -23,7 +23,7 @@ import { ILegacyClusterClient, Logger } from '../../../../src/core/server';
 import { createSavedSearchReport } from '../routes/utils/savedSearchReportHelper';
 import { ReportSchemaType } from '../model';
 import { CreateReportResultType } from '../routes/utils/types';
-import { createVisualReport } from '../routes/utils/visualReportHelper';
+import { createVisualReport } from '../routes/utils/visual_report/visualReportHelper';
 import { deliverReport } from '../routes/lib/deliverReport';
 import { updateReportState } from '../routes/lib/updateReportState';
 

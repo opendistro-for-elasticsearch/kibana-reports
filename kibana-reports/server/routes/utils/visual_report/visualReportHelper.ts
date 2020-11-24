@@ -16,15 +16,15 @@
 import puppeteer, { ElementHandle, SetCookie } from 'puppeteer';
 import createDOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
-import { Logger } from '../../../../../src/core/server';
+import { Logger } from '../../../../../../src/core/server';
 import {
   DEFAULT_REPORT_HEADER,
   REPORT_TYPE,
   FORMAT,
   SELECTOR,
-} from './constants';
-import { getFileName } from './helpers';
-import { CreateReportResultType } from './types';
+} from '../constants';
+import { getFileName } from '../helpers';
+import { CreateReportResultType } from '../types';
 import { ReportParamsSchemaType, VisualReportSchemaType } from 'server/model';
 import fs from 'fs';
 import cheerio from 'cheerio';
@@ -98,13 +98,19 @@ export const createVisualReport = async (
     },
     SELECTOR.topNavBar
   );
+  // force wait for any resize to load after the above DOM modification
+  await page.waitFor(1000);
   // crop content
   switch (reportSource) {
     case REPORT_TYPE.dashboard:
-      await page.waitForSelector(SELECTOR.dashboard);
+      await page.waitForSelector(SELECTOR.dashboard, {
+        visible: true,
+      });
       break;
     case REPORT_TYPE.visualization:
-      await page.waitForSelector(SELECTOR.visualization);
+      await page.waitForSelector(SELECTOR.visualization, {
+        visible: true,
+      });
       break;
     default:
       throw Error(
