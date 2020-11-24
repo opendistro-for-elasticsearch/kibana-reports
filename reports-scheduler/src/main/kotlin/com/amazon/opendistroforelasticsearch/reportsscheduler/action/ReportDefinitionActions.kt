@@ -54,6 +54,7 @@ internal object ReportDefinitionActions {
         val reportDefinitionDetails = ReportDefinitionDetails("ignore",
             currentTime,
             currentTime,
+            UserAccessManager.getUserTenant(user),
             UserAccessManager.getAllAccessInfo(user),
             request.reportDefinition
         )
@@ -74,13 +75,14 @@ internal object ReportDefinitionActions {
         val currentReportDefinitionDetails = ReportDefinitionsIndex.getReportDefinition(request.reportDefinitionId)
         currentReportDefinitionDetails
             ?: throw ElasticsearchStatusException("Report Definition ${request.reportDefinitionId} not found", RestStatus.NOT_FOUND)
-        if (!UserAccessManager.doesUserHasAccess(user, currentReportDefinitionDetails.access)) {
+        if (!UserAccessManager.doesUserHasAccess(user, currentReportDefinitionDetails.tenant, currentReportDefinitionDetails.access)) {
             throw ElasticsearchStatusException("Permission denied for Report Definition ${request.reportDefinitionId}", RestStatus.FORBIDDEN)
         }
         val currentTime = Instant.now()
         val reportDefinitionDetails = ReportDefinitionDetails(request.reportDefinitionId,
             currentTime,
             currentReportDefinitionDetails.createdTime,
+            UserAccessManager.getUserTenant(user),
             currentReportDefinitionDetails.access,
             request.reportDefinition
         )
@@ -101,7 +103,7 @@ internal object ReportDefinitionActions {
         val reportDefinitionDetails = ReportDefinitionsIndex.getReportDefinition(request.reportDefinitionId)
         reportDefinitionDetails
             ?: throw ElasticsearchStatusException("Report Definition ${request.reportDefinitionId} not found", RestStatus.NOT_FOUND)
-        if (!UserAccessManager.doesUserHasAccess(user, reportDefinitionDetails.access)) {
+        if (!UserAccessManager.doesUserHasAccess(user, reportDefinitionDetails.tenant, reportDefinitionDetails.access)) {
             throw ElasticsearchStatusException("Permission denied for Report Definition ${request.reportDefinitionId}", RestStatus.FORBIDDEN)
         }
         return GetReportDefinitionResponse(reportDefinitionDetails, UserAccessManager.hasAllInfoAccess(user))
@@ -118,7 +120,7 @@ internal object ReportDefinitionActions {
         val reportDefinitionDetails = ReportDefinitionsIndex.getReportDefinition(request.reportDefinitionId)
         reportDefinitionDetails
             ?: throw ElasticsearchStatusException("Report Definition ${request.reportDefinitionId} not found", RestStatus.NOT_FOUND)
-        if (!UserAccessManager.doesUserHasAccess(user, reportDefinitionDetails.access)) {
+        if (!UserAccessManager.doesUserHasAccess(user, reportDefinitionDetails.tenant, reportDefinitionDetails.access)) {
             throw ElasticsearchStatusException("Permission denied for Report Definition ${request.reportDefinitionId}", RestStatus.FORBIDDEN)
         }
         if (!ReportDefinitionsIndex.deleteReportDefinition(request.reportDefinitionId)) {
@@ -135,7 +137,8 @@ internal object ReportDefinitionActions {
     fun getAll(request: GetAllReportDefinitionsRequest, user: User?): GetAllReportDefinitionsResponse {
         log.info("$LOG_PREFIX:ReportDefinition-getAll fromIndex:${request.fromIndex} maxItems:${request.maxItems}")
         UserAccessManager.validateUser(user)
-        val reportDefinitionsList = ReportDefinitionsIndex.getAllReportDefinitions(UserAccessManager.getSearchAccessInfo(user),
+        val reportDefinitionsList = ReportDefinitionsIndex.getAllReportDefinitions(UserAccessManager.getUserTenant(user),
+            UserAccessManager.getSearchAccessInfo(user),
             request.fromIndex,
             request.maxItems)
         return GetAllReportDefinitionsResponse(reportDefinitionsList, UserAccessManager.hasAllInfoAccess(user))
