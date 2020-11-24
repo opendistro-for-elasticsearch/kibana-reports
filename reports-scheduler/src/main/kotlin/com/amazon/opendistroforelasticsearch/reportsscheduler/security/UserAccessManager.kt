@@ -27,11 +27,13 @@ import java.util.stream.Collectors
  * Class for checking/filtering user access.
  */
 internal object UserAccessManager {
-    const val USER_TAG = "User:"
-    const val ROLE_TAG = "Role:"
-    const val BACKEND_ROLE_TAG = "BERole:"
-    const val ALL_ACCESS_ROLE = "all_access"
-    const val KIBANA_SERVER_USER = "kibanaserver"
+    private const val USER_TAG = "User:"
+    private const val ROLE_TAG = "Role:"
+    private const val BACKEND_ROLE_TAG = "BERole:"
+    private const val ALL_ACCESS_ROLE = "all_access"
+    private const val KIBANA_SERVER_USER = "kibanaserver"
+    private const val PRIVATE_TENANT = "__user__"
+    const val DEFAULT_TENANT = ""
 
     /**
      * Validate User if eligible to do operation
@@ -45,6 +47,10 @@ internal object UserAccessManager {
      *  -> backend roles should be present
      */
     fun validateUser(user: User?) {
+        if (isUserPrivateTenant(user) && user?.name == null) {
+            throw ElasticsearchStatusException("User name not provided for private tenant access",
+                RestStatus.FORBIDDEN)
+        }
         when (PluginSettings.filterBy) {
             FilterBy.NoFilter -> { // No validation
             }
@@ -83,6 +89,13 @@ internal object UserAccessManager {
     }
 
     /**
+     * Get tenant info from user object.
+     */
+    fun getUserTenant(user: User?): String {
+        return DEFAULT_TENANT // TODO: extract from user object
+    }
+
+    /**
      * Get all user access info from user object.
      */
     fun getAllAccessInfo(user: User?): List<String> {
@@ -105,6 +118,9 @@ internal object UserAccessManager {
         if (user == null) { // Security is disabled
             return listOf()
         }
+        if (isUserPrivateTenant(user)) {
+            return listOf("$USER_TAG${user.name}") // No sharing allowed in private tenant.
+        }
         if (canAdminViewAllItems(user)) {
             return listOf()
         }
@@ -122,9 +138,12 @@ internal object UserAccessManager {
     /**
      * validate if user has access based on given access list
      */
-    fun doesUserHasAccess(user: User?, access: List<String>): Boolean {
+    fun doesUserHasAccess(user: User?, tenant: String, access: List<String>): Boolean {
         if (user == null) { // Security is disabled
             return true
+        }
+        if (getUserTenant(user) != tenant) {
+            return false
         }
         if (canAdminViewAllItems(user)) {
             return true
@@ -140,6 +159,9 @@ internal object UserAccessManager {
         }
     }
 
+    /**
+     * Check if user has all info access.
+     */
     fun hasAllInfoAccess(user: User?): Boolean {
         if (user == null) { // Security is disabled
             return true
@@ -153,5 +175,9 @@ internal object UserAccessManager {
 
     private fun isAdminUser(user: User): Boolean {
         return user.roles.contains(ALL_ACCESS_ROLE)
+    }
+
+    private fun isUserPrivateTenant(user: User?): Boolean {
+        return getUserTenant(user) == PRIVATE_TENANT
     }
 }

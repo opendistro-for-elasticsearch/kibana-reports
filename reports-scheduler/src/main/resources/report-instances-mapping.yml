@@ -27,6 +27,8 @@ properties:
   createdTimeMs:
     type: date
     format: epoch_millis
+  tenant:
+    type: keyword
   access: # Array of access details like user,role,backend_role etc
     type: keyword
   status:
