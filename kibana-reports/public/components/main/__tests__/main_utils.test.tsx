@@ -22,7 +22,7 @@ import {
   addReportDefinitionsTableContent,
   removeDuplicatePdfFileFormat,
   readStreamToFile,
-  generateReport,
+  generateReportFromDefinitionId,
   generateReportById,
 } from '../main_utils';
 import {
@@ -114,8 +114,8 @@ describe('main_utils tests', () => {
   });
 
   test('test generateReport compile', () => {
-    const metadata = {};
-    generateReport(metadata, httpClientMock);
+    const reportDefinitionId = '1';
+    generateReportFromDefinitionId(reportDefinitionId, httpClientMock);
   });
 
   test('test generateReportById compile', () => {

@@ -27,7 +27,7 @@ import {
 import { ReportSettings } from '../report_settings';
 import { ReportDelivery } from '../delivery';
 import { ReportTrigger } from '../report_trigger';
-import { generateReport } from '../../main/main_utils';
+import { generateReportFromDefinitionId } from '../../main/main_utils';
 import { isValidCron } from 'cron-validator';
 import { converter } from '../utils';
 import moment from 'moment';
@@ -327,15 +327,8 @@ export function CreateReport(props) {
         .then(async (resp) => {
           //TODO: consider handle the on demand report generation from server side instead
           if (metadata.trigger.trigger_type === 'On demand') {
-            let onDemandDownloadMetadata = {
-              query_url: `${
-                metadata.report_params.core_params.base_url
-              }?_g=(time:(from:'${timeRange.timeFrom.toISOString()}',to:'${timeRange.timeTo.toISOString()}'))`,
-              time_from: timeRange.timeFrom.valueOf(),
-              time_to: timeRange.timeTo.valueOf(),
-              report_definition: metadata,
-            };
-            generateReport(onDemandDownloadMetadata, httpClient);
+            const reportDefinitionId = resp.scheduler_response.reportDefinitionId;
+            generateReportFromDefinitionId(reportDefinitionId, httpClient);
           }
           window.location.assign(`opendistro_kibana_reports#/create=success`);
         })
