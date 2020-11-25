@@ -246,7 +246,11 @@ export function Main(props) {
             </EuiTitle>
           </EuiFlexItem>
           <EuiFlexItem component="span" grow={false}>
-            <EuiButton size="m" onClick={refreshReportsTable}>
+            <EuiButton 
+              onClick={refreshReportsTable} 
+              iconSide='left' 
+              iconType='refresh'
+            >
               Refresh
             </EuiButton>
           </EuiFlexItem>
@@ -276,7 +280,11 @@ export function Main(props) {
             </EuiTitle>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton onClick={refreshReportsDefinitionsTable}>
+            <EuiButton 
+              onClick={refreshReportsDefinitionsTable} 
+              iconSide='left' 
+              iconType='refresh'
+            >
               Refresh
             </EuiButton>
           </EuiFlexItem>
