@@ -672,6 +672,7 @@ export function ReportSettings(props: ReportSettingProps) {
             options={REPORT_SOURCE_RADIOS}
             idSelected={reportSourceId}
             onChange={handleReportSource}
+            disabled={edit}
           />
         </EuiFormRow>
         <EuiSpacer />
