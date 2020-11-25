@@ -45,6 +45,7 @@ import {
   permissionsMissingToast,
   permissionsMissingActions,
 } from '../../utils/utils';
+import { GenerateReportLoadingModal } from '../loading_modal';
 
 const ON_DEMAND = 'On demand';
 
@@ -56,7 +57,12 @@ export function ReportDefinitionDetails(props) {
   ] = useState({});
   const [toasts, setToasts] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
   const reportDefinitionId = props.match['params']['reportDefinitionId'];
+
+  const handleLoading = (e) => {
+    setShowLoading(e);
+  }
 
   const handleShowDeleteModal = (e) => {
     setShowDeleteModal(e);
@@ -380,11 +386,17 @@ export function ReportDefinitionDetails(props) {
       });
   }, []);
 
+  const downloadIconDownload = async () => {
+    handleLoading(true);
+    await generateReportFromDetails();
+    handleLoading(false);
+  }
+
   const fileFormatDownload = (data) => {
     let formatUpper = data['fileFormat'];
     formatUpper = fileFormatsUpper[formatUpper];
     return (
-      <EuiLink onClick={generateReportFromDetails}>
+      <EuiLink onClick={downloadIconDownload}>
         {formatUpper + ' '}
         <EuiIcon type="importAction" />
       </EuiLink>
@@ -538,6 +550,9 @@ export function ReportDefinitionDetails(props) {
     <DeleteConfirmationModal />
   ) : null;
 
+  const showLoadingModal = showLoading ?
+    <GenerateReportLoadingModal setShowLoading={setShowLoading} /> : null;
+
   return (
     <EuiPage>
       <EuiPageBody>
@@ -687,6 +702,7 @@ export function ReportDefinitionDetails(props) {
           toastLifeTimeMs={6000}
         />
         {showDeleteConfirmationModal}
+        {showLoadingModal}
       </EuiPageBody>
     </EuiPage>
   );
