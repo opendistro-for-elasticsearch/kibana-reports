@@ -17,7 +17,6 @@ import {
   AppMountParameters,
   CoreSetup,
   CoreStart,
-  DEFAULT_APP_CATEGORIES,
   Plugin,
 } from '../../../src/core/public';
 import {
