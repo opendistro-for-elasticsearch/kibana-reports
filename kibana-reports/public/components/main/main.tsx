@@ -36,6 +36,7 @@ import {
   permissionsMissingToast,
   permissionsMissingActions,
 } from '../utils/utils';
+import { HttpSetup } from '../../../../../src/core/public/http/types';
 
 const reportCountStyles: CSS.Properties = {
   color: 'gray',
@@ -165,7 +166,7 @@ export function Main(props) {
 
   const pagination = {
     initialPageSize: 10,
-    pageSizeOptions: [8, 10, 13],
+    pageSizeOptions: [5, 10, 20],
   };
 
   useEffect(() => {
