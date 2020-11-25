@@ -22,21 +22,13 @@ import {
   EuiIcon,
   EuiEmptyPrompt,
   EuiInMemoryTable,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiLoadingSpinner,
-  EuiModal,
-  EuiModalBody,
-  EuiModalHeader,
-  EuiOverlayMask,
-  EuiSpacer,
-  EuiTitle,
 } from '@elastic/eui';
 import {
   fileFormatsUpper,
   humanReadableDate,
   generateReportById,
 } from './main_utils';
+import { GenerateReportLoadingModal } from './loading_modal';
 
 const reportStatusOptions = [
   'Created',
@@ -85,56 +77,6 @@ export function ReportsTable(props) {
 
   const handleLoading = (e) => {
     setShowLoading(e);
-  };
-
-  const GenerateReportLoadingModal = () => {
-    const [isModalVisible, setIsModalVisible] = useState(true);
-
-    const closeModal = () => {
-      setIsModalVisible(false);
-      setShowLoading(false);
-    };
-    const showModal = () => setIsModalVisible(true);
-
-    return (
-      <div>
-        <EuiOverlayMask>
-          <EuiModal
-            onClose={closeModal}
-            style={{ maxWidth: 350, minWidth: 300 }}
-          >
-            <EuiModalHeader>
-              <EuiTitle>
-                <EuiText textAlign="right">
-                  <h2>Generating report</h2>
-                </EuiText>
-              </EuiTitle>
-            </EuiModalHeader>
-            <EuiModalBody>
-              <EuiText>Preparing your file for download.</EuiText>
-              <EuiText>
-                You can close this dialog while we continue in the background.
-              </EuiText>
-              <EuiSpacer />
-              <EuiFlexGroup justifyContent="center" alignItems="center">
-                <EuiFlexItem grow={false}>
-                  <EuiLoadingSpinner
-                    size="xl"
-                    style={{ minWidth: 75, minHeight: 75 }}
-                  />
-                </EuiFlexItem>
-              </EuiFlexGroup>
-              <EuiSpacer size="l" />
-              <EuiFlexGroup alignItems="flexEnd" justifyContent="flexEnd">
-                <EuiFlexItem grow={false}>
-                  <EuiButton onClick={closeModal}>Close</EuiButton>
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiModalBody>
-          </EuiModal>
-        </EuiOverlayMask>
-      </div>
-    );
   };
 
   const onDemandDownload = async (id: any) => {
@@ -258,7 +200,8 @@ export function ReportsTable(props) {
       ? emptyMessageReports
       : '0 reports match the search criteria. Search again';
 
-  const showLoadingModal = showLoading ? <GenerateReportLoadingModal /> : null;
+  const showLoadingModal = showLoading ? 
+    <GenerateReportLoadingModal setShowLoading={setShowLoading} /> : null;
 
   return (
     <Fragment>

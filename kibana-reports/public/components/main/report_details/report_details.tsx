@@ -34,9 +34,14 @@ import {
   EuiGlobalToastList,
 } from '@elastic/eui';
 import { fileFormatsUpper, generateReportById } from '../main_utils';
+import { GenerateReportLoadingModal } from '../loading_modal';
 import { ReportSchemaType } from '../../../../server/model';
 import { converter } from '../../report_definitions/utils';
 import dateMath from '@elastic/datemath';
+import { 
+  permissionsMissingActions, 
+  permissionsMissingToast 
+} from '../../utils/utils';
 
 export const ReportDetailsComponent = (props) => {
   const { reportDetailsComponentTitle, reportDetailsComponentContent } = props;
@@ -70,8 +75,24 @@ export const formatEmails = (emails: string[]) => {
 export function ReportDetails(props) {
   const [reportDetails, setReportDetails] = useState({});
   const [toasts, setToasts] = useState([]);
+  const [showLoading, setShowLoading] = useState(false);
 
   const reportId = props.match['params']['reportId'];
+
+  const handleLoading = (e) => {
+    setShowLoading(e);
+  };
+
+  const addPermissionsMissingDownloadToastHandler = () => {
+    const toast = permissionsMissingToast(
+      permissionsMissingActions.GENERATING_REPORT
+    );
+    setToasts(toasts.concat(toast));
+  }
+
+  const handlePermissionsMissingDownloadToast = () => {
+    addPermissionsMissingDownloadToastHandler();
+  }
 
   const addErrorToastHandler = () => {
     const errorToast = {
@@ -212,19 +233,24 @@ export function ReportDetails(props) {
       });
   }, []);
 
+  const downloadIconDownload = async () => {
+    handleLoading(true);
+    await generateReportById(
+      reportId,
+      props.httpClient,
+      handleSuccessToast,
+      handleErrorToast,
+      handlePermissionsMissingDownloadToast
+    );
+    handleLoading(false);
+  }
+
   const fileFormatDownload = (data) => {
     let formatUpper = data['defaultFileFormat'];
     formatUpper = fileFormatsUpper[formatUpper];
     return (
       <EuiLink
-        onClick={() => {
-          generateReportById(
-            reportId,
-            props.httpClient,
-            handleSuccessToast,
-            handleErrorToast
-          );
-        }}
+        onClick={downloadIconDownload}
       >
         {formatUpper + ' '}
         <EuiIcon type="importAction" />
@@ -239,6 +265,9 @@ export function ReportDetails(props) {
       </EuiLink>
     );
   };
+
+  const showLoadingModal = showLoading ?
+    <GenerateReportLoadingModal setShowLoading={setShowLoading} /> : null; 
 
   return (
     <EuiPage>
@@ -368,6 +397,7 @@ export function ReportDetails(props) {
           dismissToast={removeToast}
           toastLifeTimeMs={6000}
         />
+        {showLoadingModal}
       </EuiPageBody>
     </EuiPage>
   );
