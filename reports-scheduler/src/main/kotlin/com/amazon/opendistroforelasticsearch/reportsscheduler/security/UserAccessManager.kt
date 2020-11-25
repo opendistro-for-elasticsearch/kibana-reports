@@ -31,7 +31,7 @@ internal object UserAccessManager {
     private const val ROLE_TAG = "Role:"
     private const val BACKEND_ROLE_TAG = "BERole:"
     private const val ALL_ACCESS_ROLE = "all_access"
-    private const val KIBANA_SERVER_USER = "kibanaserver"
+    private const val KIBANA_SERVER_USER = "kibanaserver" // TODO: Change it to background user when created.
     private const val PRIVATE_TENANT = "__user__"
     const val DEFAULT_TENANT = ""
 
@@ -92,7 +92,10 @@ internal object UserAccessManager {
      * Get tenant info from user object.
      */
     fun getUserTenant(user: User?): String {
-        return DEFAULT_TENANT // TODO: extract from user object
+        return when (val requestedTenant = user?.requestedTenant) {
+            null -> DEFAULT_TENANT
+            else -> requestedTenant
+        }
     }
 
     /**
