@@ -232,7 +232,7 @@ export function ReportsTable(props) {
         type: 'field_value_selection',
         field: 'type',
         name: 'Type',
-        multiselect: false,
+        multiSelect: 'or',
         options: reportTypeOptions.map((type) => ({
           value: type,
           name: type,
@@ -243,7 +243,7 @@ export function ReportsTable(props) {
         type: 'field_value_selection',
         field: 'state',
         name: 'State',
-        multiselect: false,
+        multiSelect: 'or',
         options: reportStatusOptions.map((state) => ({
           value: state,
           name: state,
