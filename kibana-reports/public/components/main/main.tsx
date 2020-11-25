@@ -36,7 +36,6 @@ import {
   permissionsMissingToast,
   permissionsMissingActions,
 } from '../utils/utils';
-import { HttpSetup } from '../../../../../src/core/public/http/types';
 
 const reportCountStyles: CSS.Properties = {
   color: 'gray',
