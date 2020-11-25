@@ -162,8 +162,6 @@ $(function () {
   $(document).on('click', '#generatePDF', function () {
     const timeRanges = getTimeFieldsFromUrl();
     const queryUrl = replaceQueryURL();
-    console.log(`queryUrl ${queryUrl}`);
-    console.log(`absolute time ranges ${JSON.stringify(timeRanges)}`);
     generateInContextReport(timeRanges, queryUrl, 'pdf');
   });
 
