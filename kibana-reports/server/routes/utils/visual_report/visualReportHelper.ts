@@ -22,6 +22,7 @@ import {
   REPORT_TYPE,
   FORMAT,
   SELECTOR,
+  CHROMIUM_PATH,
 } from '../constants';
 import { getFileName } from '../helpers';
 import { CreateReportResultType } from '../types';
@@ -33,7 +34,8 @@ export const createVisualReport = async (
   reportParams: ReportParamsSchemaType,
   queryUrl: string,
   logger: Logger,
-  cookie?: SetCookie
+  cookie?: SetCookie,
+  chromiumPath = CHROMIUM_PATH
 ): Promise<CreateReportResultType> => {
   const {
     core_params,
@@ -66,7 +68,7 @@ export const createVisualReport = async (
      * https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#setting-up-chrome-linux-sandbox
      */
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    executablePath: './plugins/kibana-reports/.chromium/headless_shell',
+    executablePath: chromiumPath,
   });
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(0);

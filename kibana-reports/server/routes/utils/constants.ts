@@ -77,3 +77,6 @@ export const LOCAL_HOST = 'http://localhost:5601';
 export const DEFAULT_REPORT_HEADER = '<h1>Open Distro Kibana Reports</h1>';
 
 export const SECURITY_AUTH_COOKIE_NAME = 'security_authentication';
+
+export const CHROMIUM_PATH =
+  './plugins/opendistroReportsKibana/.chromium/headless_shell';

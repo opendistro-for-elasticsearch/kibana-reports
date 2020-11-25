@@ -37,25 +37,25 @@ jobs:
           node-version: "10.22.1"
 
       - name: Move Kibana Reports to Plugins Dir
-        run: mv kibana-reports kibana/plugins
+        run: mv kibana-reports kibana/plugins/opendistroReportsKibana
 
       - name: Kibana Plugin Bootstrap
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 30
           max_attempts: 3
-          command: cd kibana/plugins/kibana-reports; yarn kbn bootstrap
+          command: cd kibana/plugins/opendistroReportsKibana; yarn kbn bootstrap
 
       - name: Test
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 30
           max_attempts: 3
-          command: cd kibana/plugins/kibana-reports; yarn test
+          command: cd kibana/plugins/opendistroReportsKibana; yarn test
 
       - name: Build Artifact
         run: |
-          cd kibana/plugins/kibana-reports
+          cd kibana/plugins/opendistroReportsKibana
           yarn build
 
           cd build
@@ -79,6 +79,5 @@ jobs:
 
           artifact=`ls ./${{ env.PLUGIN_NAME }}-*.zip`
 
-          # TODO: rename S3 bucket path after infra team assigns one
-          aws s3 cp $artifact s3://kiabna-reports/kibana-reports-plugin/
+          aws s3 cp $artifact s3://artifacts.opendistroforelasticsearch.amazon.com/downloads/kibana-plugins/opendistro-reports/
           aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths "/downloads/*"
