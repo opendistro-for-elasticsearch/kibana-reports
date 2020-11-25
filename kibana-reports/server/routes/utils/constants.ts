@@ -65,7 +65,7 @@ export enum DELIVERY_TYPE {
 
 export enum SELECTOR {
   dashboard = '#dashboardViewport',
-  visualization = '.visEditor__visualization',
+  visualization = '.visEditor__content',
   topNavBar = '#globalHeaderBars',
 }
 

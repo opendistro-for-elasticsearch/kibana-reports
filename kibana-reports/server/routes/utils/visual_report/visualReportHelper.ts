@@ -155,7 +155,7 @@ export const createVisualReport = async (
   return { timeCreated, dataUrl: buffer.toString('base64'), fileName };
 };
 
-export const composeReportHtml = (
+const composeReportHtml = (
   header: string,
   footer: string,
   screenshot: string
