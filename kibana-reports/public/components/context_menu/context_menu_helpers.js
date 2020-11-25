@@ -33,30 +33,13 @@ export const contextMenuViewReports = () =>
 
 export const getTimeFieldsFromUrl = () => {
   const url = window.location.href;
-  let timeString = url.substring(
-    url.lastIndexOf('time:'),
-    url.lastIndexOf('))')
-  );
-  if (url.includes('visualize') || url.includes('discover')) {
-    timeString = url.substring(url.lastIndexOf('time:'), url.indexOf('))'));
-  }
 
-  let fromDateString = timeString.substring(
-    timeString.lastIndexOf('from:') + 5,
-    timeString.lastIndexOf(',')
+  let [, fromDateString, toDateString] = url.match(
+    /time:\(from:(.+),to:(.+?)\)/
   );
-
-  // remove extra quotes if the 'from' date is absolute time
   fromDateString = fromDateString.replace(/[']+/g, '');
-
   // convert time range to from date format in case time range is relative
   const fromDateFormat = dateMath.parse(fromDateString);
-
-  let toDateString = timeString.substring(
-    timeString.lastIndexOf('to:') + 3,
-    timeString.length
-  );
-
   toDateString = toDateString.replace(/[']+/g, '');
   const toDateFormat = dateMath.parse(toDateString);
 
