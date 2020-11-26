@@ -561,9 +561,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
           if (!edit) {
             reportDefinitionRequest.trigger.trigger_params.enabled = true;
           }
-          console.log(JSON.stringify(reportDefinitionRequest.trigger));
           if (!('enabled' in reportDefinitionRequest.trigger.trigger_params)) {
-            console.log('get in to block');
             reportDefinitionRequest.trigger.trigger_params.enabled = true;
           }
         }
