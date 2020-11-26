@@ -71,7 +71,7 @@ export function TimeRangeSelect(props) {
       if (
         !timeRangeMoment ||
         !timeRangeMoment.isValid() ||
-        timeRangeMoment > moment()
+        timeRangeMoment > moment.now()
       ) {
         handleInvalidTimeRangeToast();
       }

@@ -32,36 +32,18 @@ import {
 
 const replaceQueryURL = () => {
   let url = location.pathname + location.hash;
-  let timeString = url.substring(
-    url.lastIndexOf('time:'),
-    url.lastIndexOf('))')
+  let [, fromDateString, toDateString] = url.match(
+    /time:\(from:(.+),to:(.+?)\)/
   );
-  if (url.includes('visualize') || url.includes('discover')) {
-    timeString = url.substring(url.lastIndexOf('time:'), url.indexOf('))'));
-  }
-
-  let fromDateString = timeString.substring(
-    timeString.lastIndexOf('from:') + 5,
-    timeString.lastIndexOf(',')
-  );
-
   fromDateString = fromDateString.replace(/[']+/g, '');
-  const fromDateFormat = dateMath.parse(fromDateString);
 
-  let toDateString = timeString.substring(
-    timeString.lastIndexOf('to:') + 3,
-    timeString.length
-  );
+  // convert time range to from date format in case time range is relative
+  const fromDateFormat = dateMath.parse(fromDateString);
   toDateString = toDateString.replace(/[']+/g, '');
   const toDateFormat = dateMath.parse(toDateString);
 
   // replace to and from dates with absolute date
-
-  url = url.replace(
-    fromDateString + '))',
-    "'" + fromDateFormat.toISOString() + "'"
-  );
-
+  url = url.replace(fromDateString, "'" + fromDateFormat.toISOString() + "'");
   url = url.replace(
     toDateString + '))',
     "'" + toDateFormat.toISOString() + "'))"
