@@ -57,8 +57,6 @@ import moment from "moment";
 
     // if time range is invalid
     const nowDate = new Date(moment.now());
-    console.log('time to is', timeRange.timeTo);
-    console.log('now date is', nowDate);
     if (timeRange.timeFrom > timeRange.timeTo || timeRange.timeTo > nowDate) {
       setShowTimeRangeError(true);
       error = true;

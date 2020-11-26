@@ -54,9 +54,10 @@ export function EditReportDefinition(props) {
     setShowTriggerIntervalNaNError,
   ] = useState(false);
   const [showCronError, setShowCronError] = useState(false);
-  const [showEmailRecipientsError, setShowEmailRecipientsError] = useState(
-    false
-  );
+  const [
+    showEmailRecipientsError, 
+    setShowEmailRecipientsError
+  ] = useState(false);
   const [
     emailRecipientsErrorMessage,
     setEmailRecipientsErrorMessage,
