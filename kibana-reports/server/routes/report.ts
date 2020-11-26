@@ -25,7 +25,7 @@ import { API_PREFIX } from '../../common';
 import { createReport } from './lib/createReport';
 import { reportSchema } from '../model';
 import { errorResponse } from './utils/helpers';
-import { DELIVERY_TYPE } from './utils/constants';
+import { DEFAULT_MAX_SIZE, DELIVERY_TYPE } from './utils/constants';
 import {
   backendToUiReport,
   backendToUiReportsList,
@@ -206,10 +206,8 @@ export default function (router: IRouter) {
       path: `${API_PREFIX}/reports`,
       validate: {
         query: schema.object({
-          size: schema.maybe(schema.string()),
-          sortField: schema.maybe(schema.string()),
-          sortDirection: schema.maybe(schema.string()),
-          fromIndex: schema.maybe(schema.string()),
+          fromIndex: schema.maybe(schema.number()),
+          maxItems: schema.maybe(schema.number()),
         }),
       },
     },
@@ -218,11 +216,9 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
-      const { fromIndex } = request.query as {
-        size: string;
-        sortField: string;
-        sortDirection: string;
-        fromIndex: string;
+      const { fromIndex, maxItems } = request.query as {
+        fromIndex: number;
+        maxItems: number;
       };
 
       try {
@@ -230,11 +226,11 @@ export default function (router: IRouter) {
         const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
           request
         );
-
         const esResp = await esReportsClient.callAsCurrentUser(
           'es_reports.getReports',
           {
             fromIndex: fromIndex,
+            maxItems: maxItems || DEFAULT_MAX_SIZE,
           }
         );
 

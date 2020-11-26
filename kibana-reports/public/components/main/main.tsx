@@ -165,7 +165,7 @@ export function Main(props) {
 
   const pagination = {
     initialPageSize: 10,
-    pageSizeOptions: [8, 10, 13],
+    pageSizeOptions: [5, 10, 20],
   };
 
   useEffect(() => {

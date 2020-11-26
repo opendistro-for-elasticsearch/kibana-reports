@@ -29,6 +29,7 @@ import {
   backendToUiReportDefinitionsList,
 } from './utils/converters/backendToUi';
 import { updateReportDefinition } from './lib/updateReportDefinition';
+import { DEFAULT_MAX_SIZE } from './utils/constants';
 
 export default function (router: IRouter) {
   // Create report Definition
@@ -137,10 +138,8 @@ export default function (router: IRouter) {
       path: `${API_PREFIX}/reportDefinitions`,
       validate: {
         query: schema.object({
-          size: schema.maybe(schema.string()),
-          sortField: schema.maybe(schema.string()),
-          sortDirection: schema.maybe(schema.string()),
-          fromIndex: schema.maybe(schema.string()),
+          fromIndex: schema.maybe(schema.number()),
+          maxItems: schema.maybe(schema.number()),
         }),
       },
     },
@@ -149,11 +148,9 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
-      const { fromIndex } = request.query as {
-        size: string;
-        sortField: string;
-        sortDirection: string;
-        fromIndex: string;
+      const { fromIndex, maxItems } = request.query as {
+        fromIndex: number;
+        maxItems: number;
       };
 
       try {
@@ -166,6 +163,7 @@ export default function (router: IRouter) {
           'es_reports.getReportDefinitions',
           {
             fromIndex: fromIndex,
+            maxItems: maxItems || DEFAULT_MAX_SIZE,
           }
         );
 

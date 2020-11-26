@@ -562,7 +562,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
             reportDefinitionRequest.trigger.trigger_params.enabled = true;
           }
           if (!('enabled' in reportDefinitionRequest.trigger.trigger_params)) {
-            reportDefinitionRequest.trigger.trigger_params.enabled = false;
+            reportDefinitionRequest.trigger.trigger_params.enabled = true;
           }
         }
       });
