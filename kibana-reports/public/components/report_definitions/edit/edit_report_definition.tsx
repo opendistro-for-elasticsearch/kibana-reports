@@ -34,11 +34,35 @@ import {
   permissionsMissingToast,
   permissionsMissingActions,
 } from '../../utils/utils';
+import { definitionInputValidation } from '../utils/utils';
 
 export function EditReportDefinition(props) {
   const [toasts, setToasts] = useState([]);
   const [comingFromError, setComingFromError] = useState(false);
   const [preErrorData, setPreErrorData] = useState({});
+
+  const [
+    showSettingsReportNameError,
+    setShowSettingsReportNameError,
+  ] = useState(false);
+  const [
+    settingsReportNameErrorMessage,
+    setSettingsReportNameErrorMessage,
+  ] = useState('');
+  const [
+    showTriggerIntervalNaNError,
+    setShowTriggerIntervalNaNError,
+  ] = useState(false);
+  const [showCronError, setShowCronError] = useState(false);
+  const [
+    showEmailRecipientsError, 
+    setShowEmailRecipientsError
+  ] = useState(false);
+  const [
+    emailRecipientsErrorMessage,
+    setEmailRecipientsErrorMessage,
+  ] = useState('');
+  const [showTimeRangeError, setShowTimeRangeError] = useState(false);
 
   const addPermissionsMissingViewEditPageToastHandler = (errorType: string) => {
     let toast = {};
@@ -151,7 +175,6 @@ export function EditReportDefinition(props) {
 
   const callUpdateAPI = async (metadata) => {
     const { httpClient } = props;
-
     httpClient
       .put(`../api/reporting/reportDefinitions/${reportDefinitionId}`, {
         body: JSON.stringify(metadata),
@@ -175,7 +198,6 @@ export function EditReportDefinition(props) {
   };
 
   const editReportDefinition = async (metadata) => {
-    const { httpClient } = props;
     if ('header' in metadata.report_params.core_params) {
       metadata.report_params.core_params.header = converter.makeHtml(
         metadata.report_params.core_params.header
@@ -186,30 +208,27 @@ export function EditReportDefinition(props) {
         metadata.report_params.core_params.footer
       );
     }
-    /*
-      we check if this editing updates the trigger type from Schedule to On demand. 
-      If so, need to first delete the reportDefinition along with the scheduled job first, by calling the delete
-      report definition API
-    */
-    const {
-      trigger: { trigger_type: triggerType },
-    } = reportDefinition;
-    if (
-      triggerType !== 'On demand' &&
-      metadata.trigger.trigger_type === 'On demand'
-    ) {
-      httpClient
-        .delete(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
-        .then(async () => {
-          await callUpdateAPI(metadata);
-        })
-        .catch((error) => {
-          console.log(
-            'error when deleting old scheduled report definition:',
-            error
-          );
-          handleErrorDeletingReportDefinitionToast();
-        });
+    
+    // client-side input validation
+    let error = false;
+    await definitionInputValidation(
+      metadata,
+      error,
+      setShowSettingsReportNameError,
+      setSettingsReportNameErrorMessage,
+      setShowTriggerIntervalNaNError,
+      timeRange,
+      setShowTimeRangeError,
+      setShowCronError,
+      setShowEmailRecipientsError,
+      setEmailRecipientsErrorMessage
+    ).then((response) => {
+      error = response;
+    });
+    if (error) {
+      handleInputValidationErrorToast();
+      setPreErrorData(metadata);
+      setComingFromError(true);
     } else {
       await callUpdateAPI(metadata);
     }
@@ -273,6 +292,9 @@ export function EditReportDefinition(props) {
           reportDefinitionRequest={editReportDefinitionRequest}
           httpClientProps={props['httpClient']}
           timeRange={timeRange}
+          showSettingsReportNameError={showSettingsReportNameError}
+          settingsReportNameErrorMessage={settingsReportNameErrorMessage}
+          showTimeRangeError={showTimeRangeError}
         />
         <EuiSpacer />
         <ReportTrigger
@@ -281,6 +303,8 @@ export function EditReportDefinition(props) {
           reportDefinitionRequest={editReportDefinitionRequest}
           httpClientProps={props['httpClient']}
           timeRange={timeRange}
+          showTriggerIntervalNaNError={showTriggerIntervalNaNError}
+          showCronError={showCronError}
         />
         <EuiSpacer />
         <ReportDelivery
@@ -289,6 +313,8 @@ export function EditReportDefinition(props) {
           reportDefinitionRequest={editReportDefinitionRequest}
           httpClientProps={props['httpClient']}
           timeRange={timeRange}
+          showEmailRecipientsError={showEmailRecipientsError}
+          emailRecipientsErrorMessage={emailRecipientsErrorMessage}
         />
         <EuiSpacer />
         <EuiFlexGroup justifyContent="flexEnd">
