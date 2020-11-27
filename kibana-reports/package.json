@@ -20,12 +20,12 @@
     "plugin_helpers": "node ../../scripts/plugin_helpers"
   },
   "dependencies": {
-    "enzyme-adapter-react-16": "^1.15.2",
     "babel-polyfill": "^6.26.0",
     "cheerio": "0.22.0",
     "cron-validator": "^1.1.1",
     "dompurify": "^2.1.1",
     "elastic-builder": "^2.7.1",
+    "enzyme-adapter-react-16": "^1.15.2",
     "jest-fetch-mock": "^3.0.3",
     "jquery": "^3.5.0",
     "jsdom": "13.1.0",
@@ -46,15 +46,16 @@
   "devDependencies": {
     "@elastic/eslint-import-resolver-kibana": "link:../../packages/kbn-eslint-import-resolver-kibana",
     "@types/dompurify": "^2.0.4",
-    "@types/jsdom": "^16.2.3",
-    "@types/react-addons-test-utils": "^0.14.25",
     "@types/enzyme-adapter-react-16": "^1.0.6",
-    "@types/puppeteer": "^1.20.1",
+    "@types/jsdom": "^16.2.3",
+    "@types/puppeteer-core": "^2.0.0",
     "@types/react": "^16.9.36",
+    "@types/react-addons-test-utils": "^0.14.25",
     "@types/react-dom": "^16.9.8",
     "@types/react-test-renderer": "^16.9.1",
     "@types/set-interval-async": "^1.0.0",
     "@types/showdown": "^1.9.3",
+    "babel-jest": "^26.3.0",
     "elastic-builder": "^2.7.1",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-no-unsanitized": "^3.0.2",
@@ -63,7 +64,6 @@
     "jest-dom": "^4.0.0",
     "react-test-renderer": "^16.12.0",
     "ts-jest": "^26.1.0",
-    "tsc": "^1.20150623.0",
-    "babel-jest": "^26.3.0"
+    "tsc": "^1.20150623.0"
   }
 }
