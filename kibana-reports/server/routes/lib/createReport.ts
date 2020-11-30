@@ -31,7 +31,7 @@ import { createSavedSearchReport } from '../utils/savedSearchReportHelper';
 import { ReportSchemaType } from '../../model';
 import { CreateReportResultType } from '../utils/types';
 import { createVisualReport } from '../utils/visual_report/visualReportHelper';
-import { SetCookie } from 'puppeteer';
+import { SetCookie } from 'puppeteer-core';
 import { deliverReport } from './deliverReport';
 import { updateReportState } from './updateReportState';
 import { saveReport } from './saveReport';

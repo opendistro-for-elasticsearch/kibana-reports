@@ -37,29 +37,47 @@ jobs:
           node-version: "10.22.1"
 
       - name: Move Kibana Reports to Plugins Dir
-        run: mv kibana-reports kibana/plugins
+        run: mv kibana-reports kibana/plugins/opendistroReportsKibana
 
       - name: Kibana Plugin Bootstrap
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 30
           max_attempts: 3
-          command: cd kibana/plugins/kibana-reports; yarn kbn bootstrap
+          command: cd kibana/plugins/opendistroReportsKibana; yarn kbn bootstrap
 
       - name: Test
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 30
           max_attempts: 3
-          command: cd kibana/plugins/kibana-reports; yarn test
+          command: cd kibana/plugins/opendistroReportsKibana; yarn test
 
       - name: Build Artifact
         run: |
-          cd kibana/plugins/kibana-reports
+          cd kibana/plugins/opendistroReportsKibana
           yarn build
-          mv ./build/*.zip ./build/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip
-          artifact=`ls ./build/*.zip`
 
-          # TODO: rename S3 bucket path after infra team assigns one
-          aws s3 cp $artifact s3://kiabna-reports/kibana-reports-plugin/
+          cd build
+          mkdir -p ./{linux,windows}/kibana/opendistroReportsKibana
+          cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-x64.zip
+          mv ./${{ env.PLUGIN_NAME }}-*.zip ./windows/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-windows-x64.zip
+
+          cd linux
+          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-linux.zip
+          unzip chromium-linux.zip -d ./kibana/opendistroReportsKibana
+          zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
+          mv ./${{ env.PLUGIN_NAME }}-*.zip ..
+          cd ..
+
+          cd windows
+          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-windows.zip
+          unzip chromium-windows.zip -d ./kibana/opendistroReportsKibana
+          zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
+          mv ./${{ env.PLUGIN_NAME }}-*.zip ..
+          cd ..
+
+          artifact=`ls ./${{ env.PLUGIN_NAME }}-*.zip`
+
+          aws s3 cp $artifact s3://artifacts.opendistroforelasticsearch.amazon.com/downloads/kibana-plugins/opendistro-reports/
           aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths "/downloads/*"
