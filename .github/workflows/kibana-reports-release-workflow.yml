@@ -59,9 +59,9 @@ jobs:
           yarn build
 
           cd build
-          mkdir -p ./{linux-x64,linux-amd64,windows-x64}/kibana/opendistroReportsKibana
+          mkdir -p ./{linux-x64,linux-arm64,windows-x64}/kibana/opendistroReportsKibana
           cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux-x64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-x64.zip
-          cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux-amd64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-amd64.zip
+          cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux-arm64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-arm64.zip
           mv ./${{ env.PLUGIN_NAME }}-*.zip ./windows-x64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-windows-x64.zip
 
           cd linux-x64
@@ -71,9 +71,9 @@ jobs:
           mv ./${{ env.PLUGIN_NAME }}-*.zip ..
           cd ..
 
-          cd linux-amd64
-          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-linux-amd64.zip
-          unzip chromium-linux-amd64.zip -d ./kibana/opendistroReportsKibana
+          cd linux-arm64
+          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-linux-arm64.zip
+          unzip chromium-linux-arm64.zip -d ./kibana/opendistroReportsKibana
           zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
           mv ./${{ env.PLUGIN_NAME }}-*.zip ..
           cd ..

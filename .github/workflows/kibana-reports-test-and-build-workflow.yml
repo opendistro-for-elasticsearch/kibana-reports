@@ -32,9 +32,9 @@ jobs:
         run: |
           sudo apt install -y libnss3-dev fonts-liberation libfontconfig1
           cd kibana/plugins/opendistroReportsKibana
-          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-linux.zip
-          unzip chromium-linux.zip
-          rm chromium-linux.zip
+          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-linux-x64.zip
+          unzip chromium-linux-x64.zip
+          rm chromium-linux-x64.zip
 
       - name: Kibana Plugin Bootstrap
         uses: nick-invision/retry@v1
@@ -56,9 +56,9 @@ jobs:
           yarn build
 
           cd build
-          mkdir -p ./{linux-x64,linux-amd64,windows-x64}/kibana/opendistroReportsKibana
+          mkdir -p ./{linux-x64,linux-arm64,windows-x64}/kibana/opendistroReportsKibana
           cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux-x64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-x64.zip
-          cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux-amd64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-amd64.zip
+          cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux-arm64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-arm64.zip
           mv ./${{ env.PLUGIN_NAME }}-*.zip ./windows-x64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-windows-x64.zip
 
           cd linux-x64
@@ -68,9 +68,9 @@ jobs:
           mv ./${{ env.PLUGIN_NAME }}-*.zip ..
           cd ..
 
-          cd linux-amd64
-          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-linux-amd64.zip
-          unzip chromium-linux-amd64.zip -d ./kibana/opendistroReportsKibana
+          cd linux-arm64
+          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-linux-arm64.zip
+          unzip chromium-linux-arm64.zip -d ./kibana/opendistroReportsKibana
           zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
           mv ./${{ env.PLUGIN_NAME }}-*.zip ..
           cd ..
@@ -88,11 +88,11 @@ jobs:
           name: kibana-reports-linux-x64
           path: kibana/plugins/opendistroReportsKibana/build/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-x64.zip
 
-      - name: Upload Artifact For Linux amd64
+      - name: Upload Artifact For Linux arm64
         uses: actions/upload-artifact@v1
         with:
-          name: kibana-reports-linux-amd64
-          path: kibana/plugins/opendistroReportsKibana/build/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-amd64.zip
+          name: kibana-reports-linux-arm64
+          path: kibana/plugins/opendistroReportsKibana/build/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-arm64.zip
 
       - name: Upload Artifact For Windows
         uses: actions/upload-artifact@v1
