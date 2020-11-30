@@ -19,34 +19,65 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: "10.22.0"
+          node-version: '10.22.0'
 
       - name: Move Kibana Reports to Plugins Dir
+        run: mv kibana-reports kibana/plugins/opendistroReportsKibana
+
+      - name: Add Chromium Binary to Reporting for Testing
         run: |
-          mkdir kibana/plugins
-          mv kibana-reports kibana/plugins
+          sudo apt install -y libnss3-dev fonts-liberation libfontconfig1
+          cd kibana/plugins/opendistroReportsKibana
+          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-linux.zip
+          unzip chromium-linux.zip
+          rm chromium-linux.zip
 
       - name: Kibana Plugin Bootstrap
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 30
           max_attempts: 3
-          command: cd kibana/plugins/kibana-reports; yarn kbn bootstrap
+          command: cd kibana/plugins/opendistroReportsKibana; yarn kbn bootstrap
 
       - name: Test
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 30
           max_attempts: 3
-          command: cd kibana/plugins/kibana-reports; yarn test
+          command: cd kibana/plugins/opendistroReportsKibana; yarn test
 
       - name: Build Artifact
         run: |
-          cd kibana/plugins/kibana-reports
+          cd kibana/plugins/opendistroReportsKibana
           yarn build
 
-      - name: Upload Artifact
+          cd build
+          mkdir -p ./{linux,windows}/kibana/opendistroReportsKibana
+          cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-x64.zip
+          mv ./${{ env.PLUGIN_NAME }}-*.zip ./windows/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-windows-x64.zip
+
+          cd linux
+          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-linux.zip
+          unzip chromium-linux.zip -d ./kibana/opendistroReportsKibana
+          zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
+          mv ./${{ env.PLUGIN_NAME }}-*.zip ..
+          cd ..
+
+          cd windows
+          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-windows.zip
+          unzip chromium-windows.zip -d ./kibana/opendistroReportsKibana
+          zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
+          mv ./${{ env.PLUGIN_NAME }}-*.zip ..
+          cd ..
+
+      - name: Upload Artifact For Linux
         uses: actions/upload-artifact@v1
         with:
-          name: kibana-reports
-          path: kibana/plugins/kibana-reports/build
+          name: kibana-reports-linux
+          path: kibana/plugins/opendistroReportsKibana/build/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-x64.zip
+
+      - name: Upload Artifact For Windows
+        uses: actions/upload-artifact@v1
+        with:
+          name: kibana-reports-windows
+          path: kibana/plugins/opendistroReportsKibana/build/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-windows-x64.zip

@@ -16,7 +16,7 @@
 import path from 'path';
 
 export const isValidRelativeUrl = (relativeUrl: string) => {
-  const normalizedRelativeUrl = path.normalize(relativeUrl);
+  const normalizedRelativeUrl = path.posix.normalize(relativeUrl);
   // check pattern
   // ODFE pattern: /app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g
   // AES pattern: /_plugin/kibana/app/dashboards#/view/7adfa750-4c81-11e8-b3d7-01146121b73d?_g
