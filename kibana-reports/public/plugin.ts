@@ -41,7 +41,6 @@ export class OpendistroKibanaReportsPlugin
       category: {
         id: 'odfe',
         label: 'Open Distro for Elasticsearch',
-        euiIconType: 'logoKibana',
         order: 2000,
       },
       order: 2000,
