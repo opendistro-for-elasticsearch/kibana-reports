@@ -13,6 +13,8 @@
  * permissions and limitations under the License.
  */
 
+import { PLUGIN_ID } from '../../../common';
+
 export enum FORMAT {
   pdf = 'pdf',
   png = 'png',
@@ -78,5 +80,10 @@ export const DEFAULT_REPORT_HEADER = '<h1>Open Distro Kibana Reports</h1>';
 
 export const SECURITY_AUTH_COOKIE_NAME = 'security_authentication';
 
-export const CHROMIUM_PATH =
-  './plugins/opendistroReportsKibana/.chromium/headless_shell';
+export const CHROMIUM_PATHS = [
+  `./plugins/${PLUGIN_ID}/.chromium/headless_shell`,
+  './plugins/kibana-reports/.chromium/headless_shell',
+  './.chromium/headless_shell',
+  `../plugins/${PLUGIN_ID}/.chromium/headless_shell`,
+  '../plugins/kibana-reports/.chromium/headless_shell',
+];
