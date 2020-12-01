@@ -93,7 +93,11 @@ jobs:
           mv ./${{ env.PLUGIN_NAME }}-*.zip ..
           cd ..
 
-          artifact=`ls ./${{ env.PLUGIN_NAME }}-*.zip`
+          linux_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-x64.zip`
+          arm_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-arm64.zip`
+          windows_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-windows.x64.zip`
 
-          aws s3 cp $artifact s3://artifacts.opendistroforelasticsearch.amazon.com/downloads/kibana-plugins/opendistro-reports/
+          aws s3 cp $linux_artifact s3://artifacts.opendistroforelasticsearch.amazon.com/downloads/kibana-plugins/opendistro-reports/
+          aws s3 cp $arm_artifact s3://artifacts.opendistroforelasticsearch.amazon.com/downloads/kibana-plugins/opendistro-reports/
+          aws s3 cp $windows_artifact s3://artifacts.opendistroforelasticsearch.amazon.com/downloads/kibana-plugins/opendistro-reports/
           aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths "/downloads/*"
