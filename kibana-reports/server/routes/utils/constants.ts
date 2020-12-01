@@ -82,4 +82,6 @@ export const CHROMIUM_PATHS = [
   './plugins/opendistroReportsKibana/.chromium/headless_shell',
   './plugins/kibana-reports/.chromium/headless_shell',
   './.chromium/headless_shell',
+  '../plugins/opendistroReportsKibana/.chromium/headless_shell',
+  '../plugins/kibana-reports/.chromium/headless_shell',
 ];
