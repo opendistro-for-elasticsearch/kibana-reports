@@ -74,9 +74,7 @@ describe('test create visual report', () => {
     const { dataUrl, fileName } = await createVisualReport(
       reportParams as ReportParamsSchemaType,
       queryUrl,
-      mockLogger,
-      undefined,
-      './.chromium/headless_shell'
+      mockLogger
     );
     expect(fileName).toContain(`${reportParams.report_name}`);
     expect(fileName).toContain('.png');
@@ -91,9 +89,7 @@ describe('test create visual report', () => {
     const { dataUrl, fileName } = await createVisualReport(
       reportParams as ReportParamsSchemaType,
       queryUrl,
-      mockLogger,
-      undefined,
-      './.chromium/headless_shell'
+      mockLogger
     );
     expect(fileName).toContain(`${reportParams.report_name}`);
     expect(fileName).toContain('.pdf');
