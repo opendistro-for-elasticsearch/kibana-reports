@@ -37,42 +37,58 @@ jobs:
           node-version: "10.22.1"
 
       - name: Move Kibana Reports to Plugins Dir
-        run: mv kibana-reports kibana/plugins/opendistroReportsKibana
+        run: mv kibana-reports kibana/plugins/${{ env.PLUGIN_NAME }}
+
+      - name: Add Chromium Binary to Reporting for Testing
+        run: |
+          sudo apt install -y libnss3-dev fonts-liberation libfontconfig1
+          cd kibana/plugins/${{ env.PLUGIN_NAME }}
+          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-linux-x64.zip
+          unzip chromium-linux-x64.zip
+          rm chromium-linux-x64.zip
 
       - name: Kibana Plugin Bootstrap
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 30
           max_attempts: 3
-          command: cd kibana/plugins/opendistroReportsKibana; yarn kbn bootstrap
+          command: cd kibana/plugins/${{ env.PLUGIN_NAME }}; yarn kbn bootstrap
 
       - name: Test
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 30
           max_attempts: 3
-          command: cd kibana/plugins/opendistroReportsKibana; yarn test
+          command: cd kibana/plugins/${{ env.PLUGIN_NAME }}; yarn test
 
       - name: Build Artifact
         run: |
-          cd kibana/plugins/opendistroReportsKibana
+          cd kibana/plugins/${{ env.PLUGIN_NAME }}
           yarn build
 
           cd build
-          mkdir -p ./{linux,windows}/kibana/opendistroReportsKibana
-          cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-x64.zip
-          mv ./${{ env.PLUGIN_NAME }}-*.zip ./windows/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-windows-x64.zip
+          mkdir -p ./{linux-x64,linux-arm64,windows-x64}/kibana/${{ env.PLUGIN_NAME }}
+          cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux-x64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-x64.zip
+          cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux-arm64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-arm64.zip
+          mv ./${{ env.PLUGIN_NAME }}-*.zip ./windows-x64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-windows-x64.zip
 
-          cd linux
-          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-linux.zip
-          unzip chromium-linux.zip -d ./kibana/opendistroReportsKibana
+          cd linux-x64
+          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-linux-x64.zip
+          unzip chromium-linux-x64.zip -d ./kibana/${{ env.PLUGIN_NAME }}
           zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
           mv ./${{ env.PLUGIN_NAME }}-*.zip ..
           cd ..
 
-          cd windows
-          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-windows.zip
-          unzip chromium-windows.zip -d ./kibana/opendistroReportsKibana
+          cd linux-arm64
+          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-linux-arm64.zip
+          unzip chromium-linux-arm64.zip -d ./kibana/${{ env.PLUGIN_NAME }}
+          zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
+          mv ./${{ env.PLUGIN_NAME }}-*.zip ..
+          cd ..
+
+          cd windows-x64
+          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-windows-x64.zip
+          unzip chromium-windows-x64.zip -d ./kibana/${{ env.PLUGIN_NAME }}
           zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
           mv ./${{ env.PLUGIN_NAME }}-*.zip ..
           cd ..
