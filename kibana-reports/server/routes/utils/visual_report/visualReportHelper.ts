@@ -22,7 +22,7 @@ import {
   REPORT_TYPE,
   FORMAT,
   SELECTOR,
-  CHROMIUM_PATH,
+  CHROMIUM_PATHS,
 } from '../constants';
 import { getFileName } from '../helpers';
 import { CreateReportResultType } from '../types';
@@ -34,8 +34,7 @@ export const createVisualReport = async (
   reportParams: ReportParamsSchemaType,
   queryUrl: string,
   logger: Logger,
-  cookie?: SetCookie,
-  chromiumPath = CHROMIUM_PATH
+  cookie?: SetCookie
 ): Promise<CreateReportResultType> => {
   const {
     core_params,
@@ -50,6 +49,16 @@ export const createVisualReport = async (
     window_width: windowWidth,
     report_format: reportFormat,
   } = coreParams;
+
+  const getChromiumPath = () => {
+    const path = CHROMIUM_PATHS.find((path) => {
+      try {
+        return fs.existsSync(path);
+      } catch (error) {}
+    });
+    if (path) return path;
+    logger.error('cannot find headless chromium for puppeteer');
+  };
 
   // TODO: polish default header, maybe add a logo, depends on UX design
   const window = new JSDOM('').window;
@@ -68,7 +77,7 @@ export const createVisualReport = async (
      * https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#setting-up-chrome-linux-sandbox
      */
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    executablePath: chromiumPath,
+    executablePath: getChromiumPath(),
   });
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(0);
