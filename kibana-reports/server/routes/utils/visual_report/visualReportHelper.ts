@@ -51,11 +51,13 @@ export const createVisualReport = async (
   } = coreParams;
 
   const getChromiumPath = () => {
-    return CHROMIUM_PATHS.find((path) => {
+    const path = CHROMIUM_PATHS.find((path) => {
       try {
         return fs.existsSync(path);
       } catch (error) {}
     });
+    if (path) return path;
+    logger.error('cannot find headless chromium for puppeteer');
   };
 
   // TODO: polish default header, maybe add a logo, depends on UX design
