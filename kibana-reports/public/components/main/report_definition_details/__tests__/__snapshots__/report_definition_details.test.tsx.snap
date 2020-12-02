@@ -1,0 +1,1197 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ReportDefinitionDetails /> panel render 5 hours recurring definition details 1`] = `
+<div
+  class="euiPage"
+>
+  <main
+    class="euiPageBody"
+  >
+    <h1
+      class="euiTitle euiTitle--large"
+    >
+      Report definition details
+    </h1>
+    <div
+      class="euiSpacer euiSpacer--m"
+    />
+    <div
+      class="euiPanel euiPanel--paddingLarge euiPageContent"
+    >
+      <div
+        class="euiPageHeader euiPageHeader--responsive"
+      >
+        <div
+          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+        >
+          <div
+            class="euiFlexItem"
+          >
+            <div
+              class="euiPageHeaderSection"
+            >
+              <h2
+                class="euiTitle euiTitle--medium"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsFlexEnd euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+        >
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <button
+              class="euiButton euiButton--danger"
+              id="deleteReportDefinitionButton"
+              type="button"
+            >
+              <span
+                class="euiButtonContent euiButton__content"
+              >
+                <span
+                  class="euiButton__text"
+                >
+                  Delete
+                </span>
+              </span>
+            </button>
+          </div>
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <button
+              class="euiButton euiButton--primary"
+              id="changeStatusFromDetailsButton"
+              type="button"
+            >
+              <span
+                class="euiButtonContent euiButton__content"
+              >
+                <span
+                  class="euiButton__text"
+                >
+                  Enable
+                </span>
+              </span>
+            </button>
+          </div>
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <button
+              class="euiButton euiButton--primary euiButton--fill"
+              id="editReportDefinitionButton"
+              type="button"
+            >
+              <span
+                class="euiButtonContent euiButton__content"
+              >
+                <span
+                  class="euiButton__text"
+                >
+                  Edit
+                </span>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <hr
+        class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
+      />
+      <h3
+        class="euiTitle euiTitle--medium"
+      >
+        Report settings
+      </h3>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Name
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Description
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Created
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Last updated
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Source
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              <a
+                class="euiLink euiLink--primary"
+                href="undefined"
+                rel="noopener noreferrer"
+                target="_blank"
+              />
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Time period
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              Last undefined
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              File format
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              <button
+                class="euiLink euiLink--primary"
+                type="button"
+              >
+                undefined 
+                <svg
+                  aria-hidden="true"
+                  class="euiIcon euiIcon--medium"
+                  focusable="false"
+                  height="16"
+                  role="img"
+                  viewBox="0 0 16 16"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M9 10.114l1.85-1.943a.52.52 0 01.77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 01-2.31 0L5.41 9a.617.617 0 010-.829.52.52 0 01.77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 00-.972.804l-1.189 6A.995.995 0 002.991 14h11.018a1 1 0 00.972-1.196l-1.19-6a.993.993 0 00-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0114.016 15H2.984a1.992 1.992 0 01-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z"
+                  />
+                </svg>
+              </button>
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        />
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Report header
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Report footer
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        />
+        <div
+          class="euiFlexItem"
+        />
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <h3
+        class="euiTitle euiTitle--medium"
+      >
+        Report trigger
+      </h3>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Trigger type
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Schedule details
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Status
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            />
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+    </div>
+    <div
+      aria-live="polite"
+      class="euiGlobalToastList euiGlobalToastList--right"
+      role="region"
+    />
+  </main>
+</div>
+`;
+
+exports[`<ReportDefinitionDetails /> panel render disabled daily definition, click 1`] = `
+<div
+  class="euiPage"
+>
+  <main
+    class="euiPageBody"
+  >
+    <h1
+      class="euiTitle euiTitle--large"
+    >
+      Report definition details
+    </h1>
+    <div
+      class="euiSpacer euiSpacer--m"
+    />
+    <div
+      class="euiPanel euiPanel--paddingLarge euiPageContent"
+    >
+      <div
+        class="euiPageHeader euiPageHeader--responsive"
+      >
+        <div
+          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+        >
+          <div
+            class="euiFlexItem"
+          >
+            <div
+              class="euiPageHeaderSection"
+            >
+              <h2
+                class="euiTitle euiTitle--medium"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsFlexEnd euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+        >
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <button
+              class="euiButton euiButton--danger"
+              id="deleteReportDefinitionButton"
+              type="button"
+            >
+              <span
+                class="euiButtonContent euiButton__content"
+              >
+                <span
+                  class="euiButton__text"
+                >
+                  Delete
+                </span>
+              </span>
+            </button>
+          </div>
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <button
+              class="euiButton euiButton--primary"
+              id="changeStatusFromDetailsButton"
+              type="button"
+            >
+              <span
+                class="euiButtonContent euiButton__content"
+              >
+                <span
+                  class="euiButton__text"
+                >
+                  Enable
+                </span>
+              </span>
+            </button>
+          </div>
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <button
+              class="euiButton euiButton--primary euiButton--fill"
+              id="editReportDefinitionButton"
+              type="button"
+            >
+              <span
+                class="euiButtonContent euiButton__content"
+              >
+                <span
+                  class="euiButton__text"
+                >
+                  Edit
+                </span>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <hr
+        class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
+      />
+      <h3
+        class="euiTitle euiTitle--medium"
+      >
+        Report settings
+      </h3>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Name
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Description
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Created
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Last updated
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Source
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              <a
+                class="euiLink euiLink--primary"
+                href="undefined"
+                rel="noopener noreferrer"
+                target="_blank"
+              />
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Time period
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              Last undefined
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              File format
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              <button
+                class="euiLink euiLink--primary"
+                type="button"
+              >
+                undefined 
+                <svg
+                  aria-hidden="true"
+                  class="euiIcon euiIcon--medium"
+                  focusable="false"
+                  height="16"
+                  role="img"
+                  viewBox="0 0 16 16"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M9 10.114l1.85-1.943a.52.52 0 01.77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 01-2.31 0L5.41 9a.617.617 0 010-.829.52.52 0 01.77 0L8 10.082V1.556C8 1.249 8.224 1 8.5 1s.5.249.5.556v8.558zM4.18 6a.993.993 0 00-.972.804l-1.189 6A.995.995 0 002.991 14h11.018a1 1 0 00.972-1.196l-1.19-6a.993.993 0 00-.97-.804H4.18zM6 5v1h5V5h1.825c.946 0 1.76.673 1.946 1.608l1.19 6A2 2 0 0114.016 15H2.984a1.992 1.992 0 01-1.945-2.392l1.19-6C2.414 5.673 3.229 5 4.174 5H6z"
+                  />
+                </svg>
+              </button>
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        />
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Report header
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Report footer
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        />
+        <div
+          class="euiFlexItem"
+        />
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <h3
+        class="euiTitle euiTitle--medium"
+      >
+        Report trigger
+      </h3>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Trigger type
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Schedule details
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Status
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            />
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+    </div>
+    <div
+      aria-live="polite"
+      class="euiGlobalToastList euiGlobalToastList--right"
+      role="region"
+    />
+  </main>
+</div>
+`;
+
+exports[`<ReportDefinitionDetails /> panel render on demand definition details 1`] = `
+<div
+  class="euiPage"
+>
+  <main
+    class="euiPageBody"
+  >
+    <h1
+      class="euiTitle euiTitle--large"
+    >
+      Report definition details
+    </h1>
+    <div
+      class="euiSpacer euiSpacer--m"
+    />
+    <div
+      class="euiPanel euiPanel--paddingLarge euiPageContent"
+    >
+      <div
+        class="euiPageHeader euiPageHeader--responsive"
+      >
+        <div
+          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+        >
+          <div
+            class="euiFlexItem"
+          >
+            <div
+              class="euiPageHeaderSection"
+            >
+              <h2
+                class="euiTitle euiTitle--medium"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--alignItemsFlexEnd euiFlexGroup--justifyContentFlexEnd euiFlexGroup--directionRow euiFlexGroup--responsive"
+        >
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <button
+              class="euiButton euiButton--danger"
+              id="deleteReportDefinitionButton"
+              type="button"
+            >
+              <span
+                class="euiButtonContent euiButton__content"
+              >
+                <span
+                  class="euiButton__text"
+                >
+                  Delete
+                </span>
+              </span>
+            </button>
+          </div>
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <button
+              class="euiButton euiButton--primary"
+              id="changeStatusFromDetailsButton"
+              type="button"
+            >
+              <span
+                class="euiButtonContent euiButton__content"
+              >
+                <span
+                  class="euiButton__text"
+                >
+                  Enable
+                </span>
+              </span>
+            </button>
+          </div>
+          <div
+            class="euiFlexItem euiFlexItem--flexGrowZero"
+          >
+            <button
+              class="euiButton euiButton--primary euiButton--fill"
+              id="editReportDefinitionButton"
+              type="button"
+            >
+              <span
+                class="euiButtonContent euiButton__content"
+              >
+                <span
+                  class="euiButton__text"
+                >
+                  Edit
+                </span>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <hr
+        class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
+      />
+      <h3
+        class="euiTitle euiTitle--medium"
+      >
+        Report settings
+      </h3>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Name
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Description
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Created
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Last updated
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Source
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              <a
+                class="euiLink euiLink--primary"
+                href="undefined"
+                rel="noopener noreferrer"
+                target="_blank"
+              />
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Time period
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              Last undefined
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              File format
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            >
+              <button
+                class="euiLink euiLink--primary"
+                type="button"
+              >
+                undefined 
+                <svg
+                  aria-hidden="true"
+                  class="euiIcon euiIcon--medium euiIcon-isLoading"
+                  focusable="false"
+                  height="16"
+                  role="img"
+                  viewBox="0 0 16 16"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                />
+              </button>
+            </dd>
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        />
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Report header
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Report footer
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        />
+        <div
+          class="euiFlexItem"
+        />
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <h3
+        class="euiTitle euiTitle--medium"
+      >
+        Report trigger
+      </h3>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+      <div
+        class="euiFlexGroup euiFlexGroup--gutterLarge euiFlexGroup--directionRow euiFlexGroup--responsive"
+      >
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Trigger type
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Schedule details
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            >
+              Status
+            </dt>
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+        <div
+          class="euiFlexItem"
+        >
+          <dl
+            class="euiDescriptionList euiDescriptionList--row"
+          >
+            <dt
+              class="euiDescriptionList__title"
+            />
+            <dd
+              class="euiDescriptionList__description"
+            />
+          </dl>
+        </div>
+      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
+    </div>
+    <div
+      aria-live="polite"
+      class="euiGlobalToastList euiGlobalToastList--right"
+      role="region"
+    />
+  </main>
+</div>
+`;

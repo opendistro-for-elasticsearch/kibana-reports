@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ReportDelivery /> panel render create component 1`] = `
+<div
+  class="euiPanel euiPanel--paddingLarge euiPageContent"
+  hidden=""
+>
+  <div
+    class="euiPageHeader euiPageHeader--responsive"
+  >
+    <h2
+      class="euiTitle euiTitle--medium"
+    >
+      Notification settings
+    </h2>
+  </div>
+  <hr
+    class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
+  />
+  <div
+    class="euiPageContentBody"
+  >
+    <div
+      class="euiCheckbox"
+    >
+      <input
+        class="euiCheckbox__input"
+        id="emailCheckboxDelivery"
+        type="checkbox"
+      />
+      <div
+        class="euiCheckbox__square"
+      />
+      <label
+        class="euiCheckbox__label"
+        for="emailCheckboxDelivery"
+      >
+        Add email recipients
+      </label>
+    </div>
+    <div
+      class="euiSpacer euiSpacer--l"
+    />
+  </div>
+</div>
+`;
+
+exports[`<ReportDelivery /> panel render edit component 1`] = `
+<div
+  class="euiPanel euiPanel--paddingLarge euiPageContent"
+  hidden=""
+>
+  <div
+    class="euiPageHeader euiPageHeader--responsive"
+  >
+    <h2
+      class="euiTitle euiTitle--medium"
+    >
+      Notification settings
+    </h2>
+  </div>
+  <hr
+    class="euiHorizontalRule euiHorizontalRule--full euiHorizontalRule--marginLarge"
+  />
+  <div
+    class="euiPageContentBody"
+  >
+    <div
+      class="euiCheckbox"
+    >
+      <input
+        class="euiCheckbox__input"
+        id="emailCheckboxDelivery"
+        type="checkbox"
+      />
+      <div
+        class="euiCheckbox__square"
+      />
+      <label
+        class="euiCheckbox__label"
+        for="emailCheckboxDelivery"
+      >
+        Add email recipients
+      </label>
+    </div>
+    <div
+      class="euiSpacer euiSpacer--l"
+    />
+  </div>
+</div>
+`;
