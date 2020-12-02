@@ -27,8 +27,9 @@ jobs:
       - name: Checkout Kibana
         uses: actions/checkout@v1
         with:
-          repository: elastic/kibana
-          ref: v7.10.0
+          repository: opendistro-for-elasticsearch/kibana-oss
+          ref: 7.10.0
+          token: ${{secrets.OD_ACCESS}}
           path: kibana-reports/kibana
 
       - name: Setup Node
