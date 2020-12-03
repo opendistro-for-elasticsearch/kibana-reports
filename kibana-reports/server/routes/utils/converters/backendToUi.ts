@@ -50,8 +50,7 @@ import {
 import moment from 'moment';
 
 export const backendToUiReport = (
-  backendReportInstance: BackendReportInstanceType,
-  timezone?: string
+  backendReportInstance: BackendReportInstanceType
 ): ReportSchemaType => {
   const {
     inContextDownloadUrlPath,
@@ -76,7 +75,7 @@ export const backendToUiReport = (
     // inContextDownloadUrlPath may not exist for report instance created from scheduled job
     query_url: inContextDownloadUrlPath
       ? inContextDownloadUrlPath
-      : getUiQueryUrl(baseUrl, beginTimeMs, endTimeMs, timezone),
+      : getUiQueryUrl(baseUrl, beginTimeMs, endTimeMs),
     time_from: beginTimeMs,
     time_to: endTimeMs,
     last_updated: reportLastUpdatedTimeMs,
@@ -200,15 +199,10 @@ const getVisualReportCoreParams = (
 const getUiQueryUrl = (
   baseUrl: string,
   beginTimeMs: number,
-  endTimeMs: number,
-  timezone?: string
+  endTimeMs: number
 ) => {
-  const timeFrom = timezone
-    ? moment(beginTimeMs).tz(timezone).toISOString(true)
-    : moment(beginTimeMs).toISOString(true);
-  const timeTo = timezone
-    ? moment(endTimeMs).tz(timezone).toISOString(true)
-    : moment(endTimeMs).toISOString(true);
+  const timeFrom = moment(beginTimeMs).toISOString();
+  const timeTo = moment(endTimeMs).toISOString();
 
   const queryUrl = `${baseUrl}?_g=(time:(from:'${timeFrom}',to:'${timeTo}'))`;
   return queryUrl;

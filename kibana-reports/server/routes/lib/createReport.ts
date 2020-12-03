@@ -54,6 +54,8 @@ export const createReport = async (
     request
   );
   const esClient = context.core.elasticsearch.legacy.client;
+  // @ts-ignore
+  const timezone = request.query.timezone;
 
   let createReportResult: CreateReportResultType;
   let reportId;
@@ -100,12 +102,12 @@ export const createReport = async (
           }
         });
       }
-
       createReportResult = await createVisualReport(
         reportParams,
         completeQueryUrl,
         logger,
-        cookieObject
+        cookieObject,
+        timezone
       );
     }
     // update report state to "created"

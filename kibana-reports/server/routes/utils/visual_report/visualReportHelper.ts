@@ -34,7 +34,8 @@ export const createVisualReport = async (
   reportParams: ReportParamsSchemaType,
   queryUrl: string,
   logger: Logger,
-  cookie?: SetCookie
+  cookie?: SetCookie,
+  timezone?: string
 ): Promise<CreateReportResultType> => {
   const {
     core_params,
@@ -68,6 +69,9 @@ export const createVisualReport = async (
      */
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'],
     executablePath: CHROMIUM_PATH,
+    env: {
+      TZ: timezone || 'UTC',
+    },
   });
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(0);
