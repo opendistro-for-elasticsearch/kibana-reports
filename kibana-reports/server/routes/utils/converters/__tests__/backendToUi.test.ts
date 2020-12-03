@@ -75,7 +75,7 @@ const input: BackendReportInstanceType = {
 
 const output = {
   query_url:
-    "/app/dashboards#/view/722b74f0-b882-11e8-a6d9-e546fe2bba5f?_g=(time:(from:'2020-11-11T00:32:00.000Z',to:'2020-11-11T01:02:00.000Z'))",
+    "/app/dashboards#/view/722b74f0-b882-11e8-a6d9-e546fe2bba5f?_g=(time:(from:'2020-11-10T16:32:00.000-08:00',to:'2020-11-10T17:02:00.000-08:00'))",
   time_from: 1605054720000,
   time_to: 1605056520000,
   last_updated: 1605056644321,

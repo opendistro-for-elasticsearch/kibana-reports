@@ -93,6 +93,9 @@ export default function (router: IRouter) {
         params: schema.object({
           reportId: schema.string(),
         }),
+        query: schema.object({
+          timezone: schema.string(),
+        }),
       },
     },
     async (
@@ -102,9 +105,9 @@ export default function (router: IRouter) {
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       //@ts-ignore
       const logger: Logger = context.reporting_plugin.logger;
-
       try {
         const savedReportId = request.params.reportId;
+        const timezone = request.query.timezone;
         // @ts-ignore
         const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
           request
@@ -117,7 +120,7 @@ export default function (router: IRouter) {
           }
         );
         // convert report to use UI model
-        const report = backendToUiReport(esResp.reportInstance);
+        const report = backendToUiReport(esResp.reportInstance, timezone);
         // generate report
         const reportData = await createReport(
           request,
@@ -148,6 +151,9 @@ export default function (router: IRouter) {
         params: schema.object({
           reportDefinitionId: schema.string(),
         }),
+        query: schema.object({
+          timezone: schema.string(),
+        }),
       },
     },
     async (
@@ -158,6 +164,7 @@ export default function (router: IRouter) {
       //@ts-ignore
       const logger: Logger = context.reporting_plugin.logger;
       const reportDefinitionId = request.params.reportDefinitionId;
+      const timezone = request.query.timezone;
       try {
         // @ts-ignore
         const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
@@ -175,7 +182,7 @@ export default function (router: IRouter) {
         );
         const reportId = esResp.reportInstance.id;
         // convert report to use UI model
-        const report = backendToUiReport(esResp.reportInstance);
+        const report = backendToUiReport(esResp.reportInstance, timezone);
         // generate report
         const reportData = await createReport(
           request,

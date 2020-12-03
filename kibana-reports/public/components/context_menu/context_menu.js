@@ -43,10 +43,13 @@ const replaceQueryURL = () => {
   const toDateFormat = dateMath.parse(toDateString);
 
   // replace to and from dates with absolute date
-  url = url.replace(fromDateString, "'" + fromDateFormat.toISOString() + "'");
+  url = url.replace(
+    fromDateString,
+    "'" + fromDateFormat.toISOString(true) + "'"
+  );
   url = url.replace(
     toDateString + '))',
-    "'" + toDateFormat.toISOString() + "'))"
+    "'" + toDateFormat.toISOString(true) + "'))"
   );
   return url;
 };
