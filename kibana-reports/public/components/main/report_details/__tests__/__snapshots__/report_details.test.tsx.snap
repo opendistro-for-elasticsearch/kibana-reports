@@ -248,7 +248,11 @@ exports[`<ReportDetails /> panel render 5 hours recurring component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              <p>
+                —
+              </p>
+            </dd>
           </dl>
         </div>
         <div
@@ -264,7 +268,11 @@ exports[`<ReportDetails /> panel render 5 hours recurring component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              <p>
+                —
+              </p>
+            </dd>
           </dl>
         </div>
         <div
@@ -636,7 +644,11 @@ exports[`<ReportDetails /> panel render on-demand component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              <p>
+                —
+              </p>
+            </dd>
           </dl>
         </div>
         <div
@@ -652,7 +664,11 @@ exports[`<ReportDetails /> panel render on-demand component 1`] = `
             </dt>
             <dd
               class="euiDescriptionList__description"
-            />
+            >
+              <p>
+                —
+              </p>
+            </dd>
           </dl>
         </div>
         <div

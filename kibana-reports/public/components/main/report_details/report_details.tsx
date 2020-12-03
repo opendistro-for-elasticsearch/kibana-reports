@@ -187,10 +187,10 @@ export function ReportDetails(props) {
       time_period: parseTimePeriod(queryUrl),
       defaultFileFormat: coreParams.report_format,
       state: state,
-      reportHeader: reportParams.core_params.hasOwnProperty('header')
+      reportHeader: reportParams.core_params.hasOwnProperty('header') && reportParams.core_params.header != ""
         ? converter.makeMarkdown(reportParams.core_params.header)
         : `\u2014`,
-      reportFooter: reportParams.core_params.hasOwnProperty('footer')
+      reportFooter: reportParams.core_params.hasOwnProperty('footer') && reportParams.core_params.footer != ""
         ? converter.makeMarkdown(reportParams.core_params.footer)
         : `\u2014`,
       triggerType: triggerType,
