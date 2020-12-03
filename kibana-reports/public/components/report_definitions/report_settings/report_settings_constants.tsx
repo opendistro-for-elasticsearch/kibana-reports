@@ -65,3 +65,26 @@ export const REPORT_SOURCE_TYPES = {
   visualization: 'Visualization',
   savedSearch: 'Saved search',
 };
+
+export const commonTimeRanges = [
+  {
+    start: 'now/d',
+    end: 'now',
+    label: 'Today so far'
+  },
+  {
+    start: 'now/w',
+    end: 'now',
+    label: 'Week to date'
+  },
+  {
+    start: 'now/M',
+    end: 'now',
+    label: 'Month to date'
+  },
+  {
+    start: 'now/y',
+    end: 'now',
+    label: 'Year to date'
+  }
+]
