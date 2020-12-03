@@ -203,7 +203,6 @@ const getUiQueryUrl = (
 ) => {
   const timeFrom = moment(beginTimeMs).toISOString();
   const timeTo = moment(endTimeMs).toISOString();
-
   const queryUrl = `${baseUrl}?_g=(time:(from:'${timeFrom}',to:'${timeTo}'))`;
   return queryUrl;
 };
