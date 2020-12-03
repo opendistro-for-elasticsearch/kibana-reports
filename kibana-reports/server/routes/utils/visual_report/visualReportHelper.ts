@@ -66,7 +66,7 @@ export const createVisualReport = async (
      * TODO: temp fix to disable sandbox when launching chromium on Linux instance
      * https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#setting-up-chrome-linux-sandbox
      */
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'],
     executablePath: CHROMIUM_PATH,
   });
   const page = await browser.newPage();
