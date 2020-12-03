@@ -479,7 +479,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
           error={'Invalid cron expression.'}
           labelAppend={
             <EuiText size="xs">
-              <EuiLink href="https://opendistro.github.io/for-elasticsearch-docs/docs/alerting/cron/">
+              <EuiLink href="https://opendistro.github.io/for-elasticsearch-docs/docs/alerting/cron/" target="_blank">
                 Cron help
               </EuiLink>
             </EuiText>
