@@ -38,6 +38,9 @@ export default function (router: IRouter) {
       path: `${API_PREFIX}/generateReport`,
       validate: {
         body: schema.any(),
+        query: schema.object({
+          timezone: schema.maybe(schema.string()),
+        }),
       },
     },
     async (
@@ -93,6 +96,9 @@ export default function (router: IRouter) {
         params: schema.object({
           reportId: schema.string(),
         }),
+        query: schema.object({
+          timezone: schema.string(),
+        }),
       },
     },
     async (
@@ -102,7 +108,6 @@ export default function (router: IRouter) {
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       //@ts-ignore
       const logger: Logger = context.reporting_plugin.logger;
-
       try {
         const savedReportId = request.params.reportId;
         // @ts-ignore
@@ -147,6 +152,9 @@ export default function (router: IRouter) {
       validate: {
         params: schema.object({
           reportDefinitionId: schema.string(),
+        }),
+        query: schema.object({
+          timezone: schema.string(),
         }),
       },
     },
