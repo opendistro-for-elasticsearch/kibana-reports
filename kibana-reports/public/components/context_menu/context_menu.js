@@ -97,23 +97,28 @@ const generateInContextReport = (
     },
   };
 
-  fetch('/api/reporting/generateReport', {
-    headers: {
-      'Content-Type': 'application/json',
-      'kbn-version': '7.10.0',
-      accept: '*/*',
-      'accept-language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7,zh-TW;q=0.6',
-      pragma: 'no-cache',
-      'sec-fetch-dest': 'empty',
-      'sec-fetch-mode': 'cors',
-      'sec-fetch-site': 'same-origin',
-    },
-    method: 'POST',
-    body: JSON.stringify(contextMenuOnDemandReport),
-    referrerPolicy: 'strict-origin-when-cross-origin',
-    mode: 'cors',
-    credentials: 'include',
-  })
+  fetch(
+    `/api/reporting/generateReport?timezone=${
+      Intl.DateTimeFormat().resolvedOptions().timeZone
+    }`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'kbn-version': '7.10.0',
+        accept: '*/*',
+        'accept-language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7,zh-TW;q=0.6',
+        pragma: 'no-cache',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-origin',
+      },
+      method: 'POST',
+      body: JSON.stringify(contextMenuOnDemandReport),
+      referrerPolicy: 'strict-origin-when-cross-origin',
+      mode: 'cors',
+      credentials: 'include',
+    }
+  )
     .then((response) => {
       if (response.status === 200) {
         $('#reportGenerationProgressModal').remove();

@@ -14,6 +14,7 @@
  */
 
 import 'babel-polyfill';
+import { HttpFetchOptions, HttpSetup } from '../../../../../src/core/public';
 
 export const fileFormatsUpper = {
   csv: 'CSV',
@@ -139,7 +140,10 @@ export const readStreamToFile = async (
   document.body.removeChild(link);
 };
 
-export const generateReportFromDefinitionId = async (reportDefinitionId, httpClient) => {
+export const generateReportFromDefinitionId = async (
+  reportDefinitionId,
+  httpClient: HttpSetup
+) => {
   let status = false;
   let permissionsError = false;
   await httpClient
@@ -147,6 +151,7 @@ export const generateReportFromDefinitionId = async (reportDefinitionId, httpCli
       headers: {
         'Content-Type': 'application/json',
       },
+      query: { timezone: Intl.DateTimeFormat().resolvedOptions().timeZone },
     })
     .then(async (response: any) => {
       // for emailing a report, this API response doesn't have response body
@@ -172,13 +177,15 @@ export const generateReportFromDefinitionId = async (reportDefinitionId, httpCli
 
 export const generateReportById = async (
   reportId,
-  httpClient,
+  httpClient: HttpSetup,
   handleSuccessToast,
   handleErrorToast,
   handlePermissionsMissingToast
 ) => {
   await httpClient
-    .get(`../api/reporting/generateReport/${reportId}`)
+    .get(`../api/reporting/generateReport/${reportId}`, {
+      query: { timezone: Intl.DateTimeFormat().resolvedOptions().timeZone },
+    })
     .then(async (response) => {
       //TODO: duplicate code, extract to be a function that can reuse. e.g. handleResponse(response)
       const fileFormat = extractFileFormat(response['filename']);
