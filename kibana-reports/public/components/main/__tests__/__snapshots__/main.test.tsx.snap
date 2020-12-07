@@ -37,7 +37,7 @@ exports[`<Main /> panel render component 1`] = `
           >
             <svg
               aria-hidden="true"
-              class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonContent__icon"
+              class="euiIcon euiIcon--medium euiIcon-isLoading euiButton__icon"
               focusable="false"
               height="16"
               role="img"
@@ -494,7 +494,7 @@ exports[`<Main /> panel render component 1`] = `
           >
             <svg
               aria-hidden="true"
-              class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonContent__icon"
+              class="euiIcon euiIcon--medium euiIcon-isLoading euiButton__icon"
               focusable="false"
               height="16"
               role="img"
@@ -922,7 +922,7 @@ exports[`<Main /> panel render component after create success 1`] = `
           >
             <svg
               aria-hidden="true"
-              class="euiIcon euiIcon--medium euiButtonContent__icon"
+              class="euiIcon euiIcon--medium euiButton__icon"
               focusable="false"
               height="16"
               role="img"
@@ -1406,7 +1406,7 @@ exports[`<Main /> panel render component after create success 1`] = `
           >
             <svg
               aria-hidden="true"
-              class="euiIcon euiIcon--medium euiButtonContent__icon"
+              class="euiIcon euiIcon--medium euiButton__icon"
               focusable="false"
               height="16"
               role="img"
@@ -1900,7 +1900,7 @@ exports[`<Main /> panel render component after edit success 1`] = `
           >
             <svg
               aria-hidden="true"
-              class="euiIcon euiIcon--medium euiButtonContent__icon"
+              class="euiIcon euiIcon--medium euiButton__icon"
               focusable="false"
               height="16"
               role="img"
@@ -2384,7 +2384,7 @@ exports[`<Main /> panel render component after edit success 1`] = `
           >
             <svg
               aria-hidden="true"
-              class="euiIcon euiIcon--medium euiButtonContent__icon"
+              class="euiIcon euiIcon--medium euiButton__icon"
               focusable="false"
               height="16"
               role="img"
