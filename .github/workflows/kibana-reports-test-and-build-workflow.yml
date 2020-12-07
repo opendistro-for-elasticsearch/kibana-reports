@@ -26,7 +26,10 @@ jobs:
           node-version: '10.22.0'
 
       - name: Move Kibana Reports to Plugins Dir
-        run: mv kibana-reports kibana/plugins/${{ env.PLUGIN_NAME }}
+        run: |
+          pwd
+          ls
+          mv kibana-reports kibana/plugins/${{ env.PLUGIN_NAME }}
 
       - name: Add Chromium Binary to Reporting for Testing
         run: |
