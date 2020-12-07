@@ -98,7 +98,7 @@ const generateInContextReport = (
   };
 
   fetch(
-    `/api/reporting/generateReport?timezone=${
+    `../api/reporting/generateReport?timezone=${
       Intl.DateTimeFormat().resolvedOptions().timeZone
     }`,
     {
