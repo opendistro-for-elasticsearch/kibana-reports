@@ -1,4 +1,4 @@
-(window["opendistroKibanaReports_bundle_jsonpfunction"] = window["opendistroKibanaReports_bundle_jsonpfunction"] || []).push([[1],{
+(window["opendistro_kibana_reports_bundle_jsonpfunction"] = window["opendistro_kibana_reports_bundle_jsonpfunction"] || []).push([[1],{
 
 /***/ "./public/application.tsx":
 /*!********************************!*\
@@ -164,6 +164,113 @@ const OpendistroKibanaReportsApp = ({
 
 /***/ }),
 
+/***/ "./public/components/main/loading_modal/index.ts":
+/*!*******************************************************!*\
+  !*** ./public/components/main/loading_modal/index.ts ***!
+  \*******************************************************/
+/*! exports provided: GenerateReportLoadingModal */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _loading_modal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./loading_modal */ "./public/components/main/loading_modal/loading_modal.tsx");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "GenerateReportLoadingModal", function() { return _loading_modal__WEBPACK_IMPORTED_MODULE_0__["GenerateReportLoadingModal"]; });
+
+/*
+ * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+
+
+/***/ }),
+
+/***/ "./public/components/main/loading_modal/loading_modal.tsx":
+/*!****************************************************************!*\
+  !*** ./public/components/main/loading_modal/loading_modal.tsx ***!
+  \****************************************************************/
+/*! exports provided: GenerateReportLoadingModal */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GenerateReportLoadingModal", function() { return GenerateReportLoadingModal; });
+/* harmony import */ var _elastic_eui__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @elastic/eui */ "@elastic/eui");
+/* harmony import */ var _elastic_eui__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/*
+ * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+
+
+function GenerateReportLoadingModal(props) {
+  const {
+    setShowLoading
+  } = props;
+  const [isModalVisible, setIsModalVisible] = Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(true);
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+    setShowLoading(false);
+  };
+
+  const showModal = () => setIsModalVisible(true);
+
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiOverlayMask"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiModal"], {
+    onClose: closeModal,
+    style: {
+      maxWidth: 350,
+      minWidth: 300
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiModalHeader"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiTitle"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiText"], {
+    textAlign: "right"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h2", null, "Generating report")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiModalBody"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiText"], null, "Preparing your file for download."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiText"], null, "You can close this dialog while we continue in the background."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiSpacer"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiFlexGroup"], {
+    justifyContent: "center",
+    alignItems: "center"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiFlexItem"], {
+    grow: false
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiLoadingSpinner"], {
+    size: "xl",
+    style: {
+      minWidth: 75,
+      minHeight: 75
+    }
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiSpacer"], {
+    size: "l"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiFlexGroup"], {
+    alignItems: "flexEnd",
+    justifyContent: "flexEnd"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiFlexItem"], {
+    grow: false
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiButton"], {
+    onClick: closeModal
+  }, "Close")))))));
+}
+;
+
+/***/ }),
+
 /***/ "./public/components/main/main.tsx":
 /*!*****************************************!*\
   !*** ./public/components/main/main.tsx ***!
@@ -324,7 +431,7 @@ function Main(props) {
 
   const pagination = {
     initialPageSize: 10,
-    pageSizeOptions: [8, 10, 13]
+    pageSizeOptions: [5, 10, 20]
   };
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(() => {
     props.setBreadcrumbs([{
@@ -397,8 +504,9 @@ function Main(props) {
     component: "span",
     grow: false
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiButton"], {
-    size: "m",
-    onClick: refreshReportsTable
+    onClick: refreshReportsTable,
+    iconSide: "left",
+    iconType: "refresh"
   }, "Refresh"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiHorizontalRule"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_reports_table__WEBPACK_IMPORTED_MODULE_2__["ReportsTable"], {
     pagination: pagination,
     reportsTableItems: reportsTableContent,
@@ -415,7 +523,9 @@ function Main(props) {
   }, ' ', "(", reportDefinitionsTableContent.length, ")")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexItem"], {
     grow: false
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiButton"], {
-    onClick: refreshReportsDefinitionsTable
+    onClick: refreshReportsDefinitionsTable,
+    iconSide: "left",
+    iconType: "refresh"
   }, "Refresh")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexItem"], {
     component: "span",
     grow: false
@@ -457,6 +567,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _report_definitions_utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../report_definitions/utils */ "./public/components/report_definitions/utils/index.ts");
 /* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils/utils */ "./public/components/utils/utils.tsx");
+/* harmony import */ var _loading_modal__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../loading_modal */ "./public/components/main/loading_modal/index.ts");
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -478,13 +589,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 const ON_DEMAND = 'On demand';
 function ReportDefinitionDetails(props) {
   const [reportDefinitionDetails, setReportDefinitionDetails] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({});
   const [reportDefinitionRawResponse, setReportDefinitionRawResponse] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({});
   const [toasts, setToasts] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]);
   const [showDeleteModal, setShowDeleteModal] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
+  const [showLoading, setShowLoading] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
   const reportDefinitionId = props.match['params']['reportDefinitionId'];
+
+  const handleLoading = e => {
+    setShowLoading(e);
+  };
 
   const handleShowDeleteModal = e => {
     setShowDeleteModal(e);
@@ -716,8 +833,8 @@ function ReportDefinitionDetails(props) {
       // TODO: need better display
       timePeriod: moment__WEBPACK_IMPORTED_MODULE_4___default.a.duration(timeDuration).humanize(),
       fileFormat: reportFormat,
-      reportHeader: reportParams.core_params.hasOwnProperty('header') ? _report_definitions_utils__WEBPACK_IMPORTED_MODULE_5__["converter"].makeMarkdown(reportParams.core_params.header) : `\u2014`,
-      reportFooter: reportParams.core_params.hasOwnProperty('footer') ? _report_definitions_utils__WEBPACK_IMPORTED_MODULE_5__["converter"].makeMarkdown(reportParams.core_params.footer) : `\u2014`,
+      reportHeader: reportParams.core_params.hasOwnProperty('header') && reportParams.core_params.header != "" ? _report_definitions_utils__WEBPACK_IMPORTED_MODULE_5__["converter"].makeMarkdown(reportParams.core_params.header) : `\u2014`,
+      reportFooter: reportParams.core_params.hasOwnProperty('footer') && reportParams.core_params.footer != "" ? _report_definitions_utils__WEBPACK_IMPORTED_MODULE_5__["converter"].makeMarkdown(reportParams.core_params.footer) : `\u2014`,
       triggerType: triggerType,
       scheduleDetails: triggerParams ? humanReadableScheduleDetails(data.report_definition.trigger) : `\u2014`,
       channel: deliveryType,
@@ -731,7 +848,6 @@ function ReportDefinitionDetails(props) {
   };
 
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(() => {
-    handleErrorChangingScheduleStatusToast('permissions');
     const {
       httpClient
     } = props;
@@ -750,11 +866,17 @@ function ReportDefinitionDetails(props) {
     });
   }, []);
 
+  const downloadIconDownload = async () => {
+    handleLoading(true);
+    await generateReportFromDetails();
+    handleLoading(false);
+  };
+
   const fileFormatDownload = data => {
     let formatUpper = data['fileFormat'];
     formatUpper = _main_utils__WEBPACK_IMPORTED_MODULE_3__["fileFormatsUpper"][formatUpper];
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiLink"], {
-      onClick: generateReportFromDetails
+      onClick: downloadIconDownload
     }, formatUpper + ' ', /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiIcon"], {
       type: "importAction"
     }));
@@ -827,18 +949,10 @@ function ReportDefinitionDetails(props) {
   };
 
   const generateReportFromDetails = async () => {
-    let duration = reportDefinitionRawResponse.report_definition.report_params.core_params.time_duration;
-    const fromDate = getRelativeStartDate(duration);
-    let onDemandDownloadMetadata = {
-      query_url: `${reportDefinitionDetails.baseUrl}?_g=(time:(from:'${fromDate.toISOString()}',to:'${moment__WEBPACK_IMPORTED_MODULE_4___default()().toISOString()}'))`,
-      time_from: fromDate.valueOf(),
-      time_to: moment__WEBPACK_IMPORTED_MODULE_4___default()().valueOf(),
-      report_definition: reportDefinitionRawResponse.report_definition
-    };
     const {
       httpClient
     } = props;
-    let generateReportSuccess = await Object(_main_utils__WEBPACK_IMPORTED_MODULE_3__["generateReport"])(onDemandDownloadMetadata, httpClient);
+    let generateReportSuccess = await Object(_main_utils__WEBPACK_IMPORTED_MODULE_3__["generateReportFromDefinitionId"])(reportDefinitionId, httpClient);
 
     if (generateReportSuccess.status) {
       handleSuccessGeneratingReportToast();
@@ -886,6 +1000,9 @@ function ReportDefinitionDetails(props) {
     reportDetailsComponentContent: reportDefinitionDetails.status
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_report_details_report_details__WEBPACK_IMPORTED_MODULE_2__["ReportDetailsComponent"], null));
   const showDeleteConfirmationModal = showDeleteModal ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(DeleteConfirmationModal, null) : null;
+  const showLoadingModal = showLoading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_loading_modal__WEBPACK_IMPORTED_MODULE_7__["GenerateReportLoadingModal"], {
+    setShowLoading: setShowLoading
+  }) : null;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiPage"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiPageBody"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiTitle"], {
     size: "l"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Report definition details")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], {
@@ -943,7 +1060,7 @@ function ReportDefinitionDetails(props) {
     toasts: toasts,
     dismissToast: removeToast,
     toastLifeTimeMs: 6000
-  }), showDeleteConfirmationModal));
+  }), showDeleteConfirmationModal, showLoadingModal));
 }
 
 /***/ }),
@@ -1101,9 +1218,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _elastic_eui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @elastic/eui */ "@elastic/eui");
 /* harmony import */ var _elastic_eui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _main_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../main_utils */ "./public/components/main/main_utils.tsx");
-/* harmony import */ var _report_definitions_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../report_definitions/utils */ "./public/components/report_definitions/utils/index.ts");
-/* harmony import */ var _elastic_datemath__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @elastic/datemath */ "../../packages/elastic-datemath/target/index.js");
-/* harmony import */ var _elastic_datemath__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_elastic_datemath__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _loading_modal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../loading_modal */ "./public/components/main/loading_modal/index.ts");
+/* harmony import */ var _report_definitions_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../report_definitions/utils */ "./public/components/report_definitions/utils/index.ts");
+/* harmony import */ var _elastic_datemath__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @elastic/datemath */ "../../packages/elastic-datemath/target/index.js");
+/* harmony import */ var _elastic_datemath__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_elastic_datemath__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils/utils */ "./public/components/utils/utils.tsx");
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -1118,6 +1237,8 @@ __webpack_require__.r(__webpack_exports__);
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+
+
 
 
 
@@ -1147,7 +1268,21 @@ const formatEmails = emails => {
 function ReportDetails(props) {
   const [reportDetails, setReportDetails] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({});
   const [toasts, setToasts] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]);
+  const [showLoading, setShowLoading] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
   const reportId = props.match['params']['reportId'];
+
+  const handleLoading = e => {
+    setShowLoading(e);
+  };
+
+  const addPermissionsMissingDownloadToastHandler = () => {
+    const toast = Object(_utils_utils__WEBPACK_IMPORTED_MODULE_6__["permissionsMissingToast"])(_utils_utils__WEBPACK_IMPORTED_MODULE_6__["permissionsMissingActions"].GENERATING_REPORT);
+    setToasts(toasts.concat(toast));
+  };
+
+  const handlePermissionsMissingDownloadToast = () => {
+    addPermissionsMissingDownloadToastHandler();
+  };
 
   const addErrorToastHandler = () => {
     const errorToast = {
@@ -1200,8 +1335,8 @@ function ReportDetails(props) {
     let [timeStringRegEx, fromDateString, toDateString] = queryUrl.match(/time:\(from:(.+),to:(.+?)\)/);
     fromDateString = fromDateString.replace(/[']+/g, '');
     toDateString = toDateString.replace(/[']+/g, '');
-    let fromDateParsed = _elastic_datemath__WEBPACK_IMPORTED_MODULE_4___default.a.parse(fromDateString);
-    let toDateParsed = _elastic_datemath__WEBPACK_IMPORTED_MODULE_4___default.a.parse(toDateString);
+    let fromDateParsed = _elastic_datemath__WEBPACK_IMPORTED_MODULE_5___default.a.parse(fromDateString);
+    let toDateParsed = _elastic_datemath__WEBPACK_IMPORTED_MODULE_5___default.a.parse(toDateString);
     const fromTimePeriod = fromDateParsed === null || fromDateParsed === void 0 ? void 0 : fromDateParsed.toDate();
     const toTimePeriod = toDateParsed === null || toDateParsed === void 0 ? void 0 : toDateParsed.toDate();
     return (fromTimePeriod === null || fromTimePeriod === void 0 ? void 0 : fromTimePeriod.toLocaleString()) + ' -> ' + (toTimePeriod === null || toTimePeriod === void 0 ? void 0 : toTimePeriod.toLocaleString());
@@ -1240,8 +1375,8 @@ function ReportDetails(props) {
       time_period: parseTimePeriod(queryUrl),
       defaultFileFormat: coreParams.report_format,
       state: state,
-      reportHeader: reportParams.core_params.hasOwnProperty('header') ? _report_definitions_utils__WEBPACK_IMPORTED_MODULE_3__["converter"].makeMarkdown(reportParams.core_params.header) : `\u2014`,
-      reportFooter: reportParams.core_params.hasOwnProperty('footer') ? _report_definitions_utils__WEBPACK_IMPORTED_MODULE_3__["converter"].makeMarkdown(reportParams.core_params.footer) : `\u2014`,
+      reportHeader: reportParams.core_params.hasOwnProperty('header') && reportParams.core_params.header != "" ? _report_definitions_utils__WEBPACK_IMPORTED_MODULE_4__["converter"].makeMarkdown(reportParams.core_params.header) : `\u2014`,
+      reportFooter: reportParams.core_params.hasOwnProperty('footer') && reportParams.core_params.footer != "" ? _report_definitions_utils__WEBPACK_IMPORTED_MODULE_4__["converter"].makeMarkdown(reportParams.core_params.footer) : `\u2014`,
       triggerType: triggerType,
       scheduleType: triggerParams ? triggerParams.schedule_type : `\u2014`,
       scheduleDetails: `\u2014`,
@@ -1273,13 +1408,17 @@ function ReportDetails(props) {
     });
   }, []);
 
+  const downloadIconDownload = async () => {
+    handleLoading(true);
+    await Object(_main_utils__WEBPACK_IMPORTED_MODULE_2__["generateReportById"])(reportId, props.httpClient, handleSuccessToast, handleErrorToast, handlePermissionsMissingDownloadToast);
+    handleLoading(false);
+  };
+
   const fileFormatDownload = data => {
     let formatUpper = data['defaultFileFormat'];
     formatUpper = _main_utils__WEBPACK_IMPORTED_MODULE_2__["fileFormatsUpper"][formatUpper];
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiLink"], {
-      onClick: () => {
-        Object(_main_utils__WEBPACK_IMPORTED_MODULE_2__["generateReportById"])(reportId, props.httpClient, handleSuccessToast, handleErrorToast);
-      }
+      onClick: downloadIconDownload
     }, formatUpper + ' ', /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiIcon"], {
       type: "importAction"
     }));
@@ -1292,6 +1431,9 @@ function ReportDetails(props) {
     }, data['source']);
   };
 
+  const showLoadingModal = showLoading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_loading_modal__WEBPACK_IMPORTED_MODULE_3__["GenerateReportLoadingModal"], {
+    setShowLoading: setShowLoading
+  }) : null;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiPage"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiPageBody"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiTitle"], {
     size: "l"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Report details")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], {
@@ -1341,7 +1483,7 @@ function ReportDetails(props) {
     toasts: toasts,
     dismissToast: removeToast,
     toastLifeTimeMs: 6000
-  })));
+  }), showLoadingModal));
 }
 
 /***/ }),
@@ -1361,6 +1503,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _elastic_eui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @elastic/eui */ "@elastic/eui");
 /* harmony import */ var _elastic_eui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _main_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./main_utils */ "./public/components/main/main_utils.tsx");
+/* harmony import */ var _loading_modal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./loading_modal */ "./public/components/main/loading_modal/index.ts");
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -1375,6 +1518,7 @@ __webpack_require__.r(__webpack_exports__);
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+
 
 
 
@@ -1403,47 +1547,6 @@ function ReportsTable(props) {
 
   const handleLoading = e => {
     setShowLoading(e);
-  };
-
-  const GenerateReportLoadingModal = () => {
-    const [isModalVisible, setIsModalVisible] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(true);
-
-    const closeModal = () => {
-      setIsModalVisible(false);
-      setShowLoading(false);
-    };
-
-    const showModal = () => setIsModalVisible(true);
-
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiOverlayMask"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiModal"], {
-      onClose: closeModal,
-      style: {
-        maxWidth: 350,
-        minWidth: 300
-      }
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiModalHeader"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiTitle"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiText"], {
-      textAlign: "right"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Generating report")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiModalBody"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiText"], null, "Preparing your file for download."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiText"], null, "You can close this dialog while we continue in the background."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexGroup"], {
-      justifyContent: "center",
-      alignItems: "center"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexItem"], {
-      grow: false
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiLoadingSpinner"], {
-      size: "xl",
-      style: {
-        minWidth: 75,
-        minHeight: 75
-      }
-    }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], {
-      size: "l"
-    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexGroup"], {
-      alignItems: "flexEnd",
-      justifyContent: "flexEnd"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexItem"], {
-      grow: false
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiButton"], {
-      onClick: closeModal
-    }, "Close")))))));
   };
 
   const onDemandDownload = async id => {
@@ -1518,7 +1621,7 @@ function ReportsTable(props) {
       type: 'field_value_selection',
       field: 'type',
       name: 'Type',
-      multiselect: false,
+      multiSelect: 'or',
       options: reportTypeOptions.map(type => ({
         value: type,
         name: type,
@@ -1528,7 +1631,7 @@ function ReportsTable(props) {
       type: 'field_value_selection',
       field: 'state',
       name: 'State',
-      multiselect: false,
+      multiSelect: 'or',
       options: reportStatusOptions.map(state => ({
         value: state,
         name: state,
@@ -1537,7 +1640,9 @@ function ReportsTable(props) {
     }]
   };
   const displayMessage = reportsTableItems.length === 0 ? emptyMessageReports : '0 reports match the search criteria. Search again';
-  const showLoadingModal = showLoading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(GenerateReportLoadingModal, null) : null;
+  const showLoadingModal = showLoading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_loading_modal__WEBPACK_IMPORTED_MODULE_3__["GenerateReportLoadingModal"], {
+    setShowLoading: setShowLoading
+  }) : null;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiInMemoryTable"], {
     items: reportsTableItems,
     itemId: "id",
@@ -1572,12 +1677,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _delivery__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../delivery */ "./public/components/report_definitions/delivery/index.ts");
 /* harmony import */ var _report_trigger__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../report_trigger */ "./public/components/report_definitions/report_trigger/index.ts");
 /* harmony import */ var _main_main_utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../main/main_utils */ "./public/components/main/main_utils.tsx");
-/* harmony import */ var cron_validator__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! cron-validator */ "./node_modules/cron-validator/lib/index.js");
-/* harmony import */ var cron_validator__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(cron_validator__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utils */ "./public/components/report_definitions/utils/index.ts");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! moment */ "moment");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../utils/utils */ "./public/components/utils/utils.tsx");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils */ "./public/components/report_definitions/utils/index.ts");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../utils/utils */ "./public/components/utils/utils.tsx");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utils/utils */ "./public/components/report_definitions/utils/utils.tsx");
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -1592,7 +1694,6 @@ __webpack_require__.r(__webpack_exports__);
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-
 
 
 
@@ -1655,7 +1756,7 @@ function CreateReport(props) {
     let toast = {};
 
     if (errorType === 'permissions') {
-      toast = Object(_utils_utils__WEBPACK_IMPORTED_MODULE_9__["permissionsMissingToast"])(_utils_utils__WEBPACK_IMPORTED_MODULE_9__["permissionsMissingActions"].CREATING_REPORT_DEFINITION);
+      toast = Object(_utils_utils__WEBPACK_IMPORTED_MODULE_7__["permissionsMissingToast"])(_utils_utils__WEBPACK_IMPORTED_MODULE_7__["permissionsMissingActions"].CREATING_REPORT_DEFINITION);
     } else if (errorType === 'API') {
       toast = {
         title: 'Error creating report definition.',
@@ -1695,75 +1796,6 @@ function CreateReport(props) {
     timeTo: new Date()
   };
 
-  const definitionInputValidation = async (metadata, error) => {
-    // check report name
-    // allow a-z, A-Z, 0-9, (), [], ',' - and _ and spaces
-    let regexp = /^[\w\-\s\(\)\[\]\,\_\-+]+$/;
-
-    if (metadata.report_params.report_name.search(regexp) === -1) {
-      setShowSettingsReportNameError(true);
-
-      if (metadata.report_params.report_name === '') {
-        setSettingsReportNameErrorMessage('Name must not be empty.');
-      } else {
-        setSettingsReportNameErrorMessage('Invalid characters in report name.');
-      }
-
-      error = true;
-    } // if recurring by interval and input is not a number
-
-
-    if (metadata.trigger.trigger_type === 'Schedule' && metadata.trigger.trigger_params.schedule_type === 'Recurring') {
-      let interval = parseInt(metadata.trigger.trigger_params.schedule.interval.period);
-
-      if (isNaN(interval)) {
-        setShowTriggerIntervalNaNError(true);
-        error = true;
-      }
-    } // if time range is invalid
-
-
-    const nowDate = new Date(moment__WEBPACK_IMPORTED_MODULE_8___default.a.now());
-
-    if (timeRange.timeFrom > timeRange.timeTo || timeRange.timeTo > nowDate) {
-      setShowTimeRangeError(true);
-      error = true;
-    } // if cron based and cron input is invalid
-
-
-    if (metadata.trigger.trigger_type === 'Schedule' && metadata.trigger.trigger_params.schedule_type === 'Cron based') {
-      if (!Object(cron_validator__WEBPACK_IMPORTED_MODULE_6__["isValidCron"])(metadata.trigger.trigger_params.schedule.cron.expression)) {
-        setShowCronError(true);
-        error = true;
-      }
-    } // if email delivery
-
-
-    if (metadata.delivery.delivery_type === 'Channel') {
-      // no recipients are listed
-      if (metadata.delivery.delivery_params.recipients.length === 0) {
-        setShowEmailRecipientsError(true);
-        setEmailRecipientsErrorMessage('Email recipients list cannot be empty.');
-        error = true;
-      } // recipients have invalid email addresses: regexp checks format xxxxx@yyyy.zzz
-
-
-      let emailRegExp = /\S+@\S+\.\S+/;
-      let index;
-      let recipients = metadata.delivery.delivery_params.recipients;
-
-      for (index = 0; index < recipients.length; ++index) {
-        if (recipients[0].search(emailRegExp) === -1) {
-          setShowEmailRecipientsError(true);
-          setEmailRecipientsErrorMessage('Invalid email addresses in recipients list.');
-          error = true;
-        }
-      }
-    }
-
-    return error;
-  };
-
   const createNewReportDefinition = async (metadata, timeRange) => {
     const {
       httpClient
@@ -1774,7 +1806,7 @@ function CreateReport(props) {
     }
 
     let error = false;
-    await definitionInputValidation(metadata, error).then(response => {
+    await Object(_utils_utils__WEBPACK_IMPORTED_MODULE_8__["definitionInputValidation"])(metadata, error, setShowSettingsReportNameError, setSettingsReportNameErrorMessage, setShowTriggerIntervalNaNError, timeRange, setShowTimeRangeError, setShowCronError, setShowEmailRecipientsError, setEmailRecipientsErrorMessage).then(response => {
       error = response;
     });
 
@@ -1785,11 +1817,11 @@ function CreateReport(props) {
     } else {
       // convert header and footer to html
       if ('header' in metadata.report_params.core_params) {
-        metadata.report_params.core_params.header = _utils__WEBPACK_IMPORTED_MODULE_7__["converter"].makeHtml(metadata.report_params.core_params.header);
+        metadata.report_params.core_params.header = _utils__WEBPACK_IMPORTED_MODULE_6__["converter"].makeHtml(metadata.report_params.core_params.header);
       }
 
       if ('footer' in metadata.report_params.core_params) {
-        metadata.report_params.core_params.footer = _utils__WEBPACK_IMPORTED_MODULE_7__["converter"].makeHtml(metadata.report_params.core_params.footer);
+        metadata.report_params.core_params.footer = _utils__WEBPACK_IMPORTED_MODULE_6__["converter"].makeHtml(metadata.report_params.core_params.footer);
       }
 
       httpClient.post('../api/reporting/reportDefinition', {
@@ -1800,13 +1832,8 @@ function CreateReport(props) {
       }).then(async resp => {
         //TODO: consider handle the on demand report generation from server side instead
         if (metadata.trigger.trigger_type === 'On demand') {
-          let onDemandDownloadMetadata = {
-            query_url: `${metadata.report_params.core_params.base_url}?_g=(time:(from:'${timeRange.timeFrom.toISOString()}',to:'${timeRange.timeTo.toISOString()}'))`,
-            time_from: timeRange.timeFrom.valueOf(),
-            time_to: timeRange.timeTo.valueOf(),
-            report_definition: metadata
-          };
-          Object(_main_main_utils__WEBPACK_IMPORTED_MODULE_5__["generateReport"])(onDemandDownloadMetadata, httpClient);
+          const reportDefinitionId = resp.scheduler_response.reportDefinitionId;
+          Object(_main_main_utils__WEBPACK_IMPORTED_MODULE_5__["generateReportFromDefinitionId"])(reportDefinitionId, httpClient);
         }
 
         window.location.assign(`opendistro_kibana_reports#/create=success`);
@@ -2224,6 +2251,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _report_trigger__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../report_trigger */ "./public/components/report_definitions/report_trigger/index.ts");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils */ "./public/components/report_definitions/utils/index.ts");
 /* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../utils/utils */ "./public/components/utils/utils.tsx");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utils/utils */ "./public/components/report_definitions/utils/utils.tsx");
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -2245,10 +2273,18 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 function EditReportDefinition(props) {
   const [toasts, setToasts] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]);
   const [comingFromError, setComingFromError] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
   const [preErrorData, setPreErrorData] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({});
+  const [showSettingsReportNameError, setShowSettingsReportNameError] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
+  const [settingsReportNameErrorMessage, setSettingsReportNameErrorMessage] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('');
+  const [showTriggerIntervalNaNError, setShowTriggerIntervalNaNError] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
+  const [showCronError, setShowCronError] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
+  const [showEmailRecipientsError, setShowEmailRecipientsError] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
+  const [emailRecipientsErrorMessage, setEmailRecipientsErrorMessage] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('');
+  const [showTimeRangeError, setShowTimeRangeError] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
 
   const addPermissionsMissingViewEditPageToastHandler = errorType => {
     let toast = {};
@@ -2385,37 +2421,24 @@ function EditReportDefinition(props) {
   };
 
   const editReportDefinition = async metadata => {
-    const {
-      httpClient
-    } = props;
-
     if ('header' in metadata.report_params.core_params) {
       metadata.report_params.core_params.header = _utils__WEBPACK_IMPORTED_MODULE_5__["converter"].makeHtml(metadata.report_params.core_params.header);
     }
 
     if ('footer' in metadata.report_params.core_params) {
       metadata.report_params.core_params.footer = _utils__WEBPACK_IMPORTED_MODULE_5__["converter"].makeHtml(metadata.report_params.core_params.footer);
-    }
-    /*
-      we check if this editing updates the trigger type from Schedule to On demand. 
-      If so, need to first delete the reportDefinition along with the scheduled job first, by calling the delete
-      report definition API
-    */
+    } // client-side input validation
 
 
-    const {
-      trigger: {
-        trigger_type: triggerType
-      }
-    } = reportDefinition;
+    let error = false;
+    await Object(_utils_utils__WEBPACK_IMPORTED_MODULE_7__["definitionInputValidation"])(metadata, error, setShowSettingsReportNameError, setSettingsReportNameErrorMessage, setShowTriggerIntervalNaNError, timeRange, setShowTimeRangeError, setShowCronError, setShowEmailRecipientsError, setEmailRecipientsErrorMessage).then(response => {
+      error = response;
+    });
 
-    if (triggerType !== 'On demand' && metadata.trigger.trigger_type === 'On demand') {
-      httpClient.delete(`../api/reporting/reportDefinitions/${reportDefinitionId}`).then(async () => {
-        await callUpdateAPI(metadata);
-      }).catch(error => {
-        console.log('error when deleting old scheduled report definition:', error);
-        handleErrorDeletingReportDefinitionToast();
-      });
+    if (error) {
+      handleInputValidationErrorToast();
+      setPreErrorData(metadata);
+      setComingFromError(true);
     } else {
       await callUpdateAPI(metadata);
     }
@@ -2464,19 +2487,26 @@ function EditReportDefinition(props) {
     editDefinitionId: reportDefinitionId,
     reportDefinitionRequest: editReportDefinitionRequest,
     httpClientProps: props['httpClient'],
-    timeRange: timeRange
+    timeRange: timeRange,
+    showSettingsReportNameError: showSettingsReportNameError,
+    settingsReportNameErrorMessage: settingsReportNameErrorMessage,
+    showTimeRangeError: showTimeRangeError
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_report_trigger__WEBPACK_IMPORTED_MODULE_4__["ReportTrigger"], {
     edit: true,
     editDefinitionId: reportDefinitionId,
     reportDefinitionRequest: editReportDefinitionRequest,
     httpClientProps: props['httpClient'],
-    timeRange: timeRange
+    timeRange: timeRange,
+    showTriggerIntervalNaNError: showTriggerIntervalNaNError,
+    showCronError: showCronError
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_delivery__WEBPACK_IMPORTED_MODULE_3__["ReportDelivery"], {
     edit: true,
     editDefinitionId: reportDefinitionId,
     reportDefinitionRequest: editReportDefinitionRequest,
     httpClientProps: props['httpClient'],
-    timeRange: timeRange
+    timeRange: timeRange,
+    showEmailRecipientsError: showEmailRecipientsError,
+    emailRecipientsErrorMessage: emailRecipientsErrorMessage
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexGroup"], {
     justifyContent: "flexEnd"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexItem"], {
@@ -3026,7 +3056,8 @@ function ReportSettings(props) {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiRadioGroup"], {
     options: _report_settings_constants__WEBPACK_IMPORTED_MODULE_2__["REPORT_SOURCE_RADIOS"],
     idSelected: reportSourceId,
-    onChange: handleReportSource
+    onChange: handleReportSource,
+    disabled: edit
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null), displayDashboardSelect, displayVisualizationSelect, displaySavedSearchSelect, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_time_range__WEBPACK_IMPORTED_MODULE_6__["TimeRangeSelect"], {
     timeRange: timeRange,
     reportDefinitionRequest: reportDefinitionRequest,
@@ -3043,7 +3074,7 @@ function ReportSettings(props) {
 /*!********************************************************************************************!*\
   !*** ./public/components/report_definitions/report_settings/report_settings_constants.tsx ***!
   \********************************************************************************************/
-/*! exports provided: REPORT_SOURCE_RADIOS, PDF_PNG_FILE_FORMAT_OPTIONS, SAVED_SEARCH_FORMAT_OPTIONS, HEADER_FOOTER_CHECKBOX, REPORT_SOURCE_TYPES */
+/*! exports provided: REPORT_SOURCE_RADIOS, PDF_PNG_FILE_FORMAT_OPTIONS, SAVED_SEARCH_FORMAT_OPTIONS, HEADER_FOOTER_CHECKBOX, REPORT_SOURCE_TYPES, commonTimeRanges */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3053,6 +3084,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SAVED_SEARCH_FORMAT_OPTIONS", function() { return SAVED_SEARCH_FORMAT_OPTIONS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HEADER_FOOTER_CHECKBOX", function() { return HEADER_FOOTER_CHECKBOX; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "REPORT_SOURCE_TYPES", function() { return REPORT_SOURCE_TYPES; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "commonTimeRanges", function() { return commonTimeRanges; });
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -3103,6 +3135,23 @@ const REPORT_SOURCE_TYPES = {
   visualization: 'Visualization',
   savedSearch: 'Saved search'
 };
+const commonTimeRanges = [{
+  start: 'now/d',
+  end: 'now',
+  label: 'Today so far'
+}, {
+  start: 'now/w',
+  end: 'now',
+  label: 'Week to date'
+}, {
+  start: 'now/M',
+  end: 'now',
+  label: 'Month to date'
+}, {
+  start: 'now/y',
+  end: 'now',
+  label: 'Year to date'
+}];
 
 /***/ }),
 
@@ -3271,6 +3320,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _elastic_datemath__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_elastic_datemath__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _elastic_eui__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @elastic/eui */ "@elastic/eui");
 /* harmony import */ var _elastic_eui__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_elastic_eui__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _report_settings_constants__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./report_settings_constants */ "./public/components/report_definitions/report_settings/report_settings_constants.tsx");
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -3285,6 +3335,7 @@ __webpack_require__.r(__webpack_exports__);
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+
 
 
 
@@ -3329,7 +3380,7 @@ function TimeRangeSelect(props) {
         handleInvalidTimeRangeToast();
       }
     } else if (limit === 'end') {
-      if (!timeRangeMoment || !timeRangeMoment.isValid() || timeRangeMoment > moment__WEBPACK_IMPORTED_MODULE_0___default()()) {
+      if (!timeRangeMoment || !timeRangeMoment.isValid() || timeRangeMoment > moment__WEBPACK_IMPORTED_MODULE_0___default.a.now()) {
         handleInvalidTimeRangeToast();
       }
     }
@@ -3449,7 +3500,8 @@ function TimeRangeSelect(props) {
     start: start,
     end: end,
     onTimeChange: onTimeChange,
-    showUpdateButton: false
+    showUpdateButton: false,
+    commonlyUsedRanges: _report_settings_constants__WEBPACK_IMPORTED_MODULE_5__["commonTimeRanges"]
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_4__["EuiGlobalToastList"], {
     toasts: toasts,
     dismissToast: removeToast,
@@ -3838,7 +3890,8 @@ function ReportTrigger(props) {
       labelAppend: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiText"], {
         size: "xs"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiLink"], {
-        href: "https://opendistro.github.io/for-elasticsearch-docs/docs/alerting/cron/"
+        href: "https://opendistro.github.io/for-elasticsearch-docs/docs/alerting/cron/",
+        target: "_blank"
       }, "Cron help"))
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFieldText"], {
       placeholder: 'Ex: 0 12 * * * (Fire at 12:00 PM (noon) every day)',
@@ -3884,7 +3937,7 @@ function ReportTrigger(props) {
           }
 
           if (!('enabled' in reportDefinitionRequest.trigger.trigger_params)) {
-            reportDefinitionRequest.trigger.trigger_params.enabled = false;
+            reportDefinitionRequest.trigger.trigger_params.enabled = true;
           }
         }
       });
@@ -4187,6 +4240,107 @@ const converter = new showdown__WEBPACK_IMPORTED_MODULE_0___default.a.Converter(
   tasklists: true,
   noHeaderId: true
 });
+
+/***/ }),
+
+/***/ "./public/components/report_definitions/utils/utils.tsx":
+/*!**************************************************************!*\
+  !*** ./public/components/report_definitions/utils/utils.tsx ***!
+  \**************************************************************/
+/*! exports provided: definitionInputValidation */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "definitionInputValidation", function() { return definitionInputValidation; });
+/* harmony import */ var cron_validator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! cron-validator */ "./node_modules/cron-validator/lib/index.js");
+/* harmony import */ var cron_validator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(cron_validator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "moment");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+/*
+ * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+
+
+const definitionInputValidation = async (metadata, error, setShowSettingsReportNameError, setSettingsReportNameErrorMessage, setShowTriggerIntervalNaNError, timeRange, setShowTimeRangeError, setShowCronError, setShowEmailRecipientsError, setEmailRecipientsErrorMessage) => {
+  // check report name
+  // allow a-z, A-Z, 0-9, (), [], ',' - and _ and spaces
+  let regexp = /^[\w\-\s\(\)\[\]\,\_\-+]+$/;
+
+  if (metadata.report_params.report_name.search(regexp) === -1) {
+    setShowSettingsReportNameError(true);
+
+    if (metadata.report_params.report_name === '') {
+      setSettingsReportNameErrorMessage('Name must not be empty.');
+    } else {
+      setSettingsReportNameErrorMessage('Invalid characters in report name.');
+    }
+
+    error = true;
+  } // if recurring by interval and input is not a number
+
+
+  if (metadata.trigger.trigger_type === 'Schedule' && metadata.trigger.trigger_params.schedule_type === 'Recurring') {
+    let interval = parseInt(metadata.trigger.trigger_params.schedule.interval.period);
+
+    if (isNaN(interval)) {
+      setShowTriggerIntervalNaNError(true);
+      error = true;
+    }
+  } // if time range is invalid
+
+
+  const nowDate = new Date(moment__WEBPACK_IMPORTED_MODULE_1___default.a.now());
+
+  if (timeRange.timeFrom > timeRange.timeTo || timeRange.timeTo > nowDate) {
+    setShowTimeRangeError(true);
+    error = true;
+  } // if cron based and cron input is invalid
+
+
+  if (metadata.trigger.trigger_type === 'Schedule' && metadata.trigger.trigger_params.schedule_type === 'Cron based') {
+    if (!Object(cron_validator__WEBPACK_IMPORTED_MODULE_0__["isValidCron"])(metadata.trigger.trigger_params.schedule.cron.expression)) {
+      setShowCronError(true);
+      error = true;
+    }
+  } // if email delivery
+
+
+  if (metadata.delivery.delivery_type === 'Channel') {
+    // no recipients are listed
+    if (metadata.delivery.delivery_params.recipients.length === 0) {
+      setShowEmailRecipientsError(true);
+      setEmailRecipientsErrorMessage('Email recipients list cannot be empty.');
+      error = true;
+    } // recipients have invalid email addresses: regexp checks format xxxxx@yyyy.zzz
+
+
+    let emailRegExp = /\S+@\S+\.\S+/;
+    let index;
+    let recipients = metadata.delivery.delivery_params.recipients;
+
+    for (index = 0; index < recipients.length; ++index) {
+      if (recipients[0].search(emailRegExp) === -1) {
+        setShowEmailRecipientsError(true);
+        setEmailRecipientsErrorMessage('Invalid email addresses in recipients list.');
+        error = true;
+      }
+    }
+  }
+
+  return error;
+};
 
 /***/ }),
 

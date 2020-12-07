@@ -36,7 +36,7 @@
 /******/ 	// undefined = chunk not loaded, null = chunk preloaded/prefetched
 /******/ 	// Promise = chunk loading, 0 = chunk loaded
 /******/ 	var installedChunks = {
-/******/ 		"opendistroKibanaReports": 0
+/******/ 		"opendistro_kibana_reports": 0
 /******/ 	};
 /******/
 /******/
@@ -187,7 +187,7 @@
 /******/ 	// on error function for async loading
 /******/ 	__webpack_require__.oe = function(err) { console.error(err); throw err; };
 /******/
-/******/ 	var jsonpArray = window["opendistroKibanaReports_bundle_jsonpfunction"] = window["opendistroKibanaReports_bundle_jsonpfunction"] || [];
+/******/ 	var jsonpArray = window["opendistro_kibana_reports_bundle_jsonpfunction"] = window["opendistro_kibana_reports_bundle_jsonpfunction"] || [];
 /******/ 	var oldJsonpFunction = jsonpArray.push.bind(jsonpArray);
 /******/ 	jsonpArray.push = webpackJsonpCallback;
 /******/ 	jsonpArray = jsonpArray.slice();
@@ -202,9 +202,9 @@
 /******/ ({
 
 /***/ "../../node_modules/css-loader/dist/cjs.js?!../../node_modules/postcss-loader/src/index.js?!../../node_modules/resolve-url-loader/index.js?!../../node_modules/sass-loader/dist/cjs.js?!./public/index.scss?v7dark":
-/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/css-loader/dist/cjs.js??ref--6-oneOf-0-1!/Users/davidcui/kibana-master/kibana/node_modules/postcss-loader/src??ref--6-oneOf-0-2!/Users/davidcui/kibana-master/kibana/node_modules/resolve-url-loader??ref--6-oneOf-0-3!/Users/davidcui/kibana-master/kibana/node_modules/sass-loader/dist/cjs.js??ref--6-oneOf-0-4!./public/index.scss?v7dark ***!
-  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/css-loader/dist/cjs.js??ref--6-oneOf-0-1!/Users/szhongna/Desktop/reporting/kibana/node_modules/postcss-loader/src??ref--6-oneOf-0-2!/Users/szhongna/Desktop/reporting/kibana/node_modules/resolve-url-loader??ref--6-oneOf-0-3!/Users/szhongna/Desktop/reporting/kibana/node_modules/sass-loader/dist/cjs.js??ref--6-oneOf-0-4!./public/index.scss?v7dark ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -220,9 +220,9 @@ module.exports = exports;
 /***/ }),
 
 /***/ "../../node_modules/css-loader/dist/cjs.js?!../../node_modules/postcss-loader/src/index.js?!../../node_modules/resolve-url-loader/index.js?!../../node_modules/sass-loader/dist/cjs.js?!./public/index.scss?v7light":
-/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/css-loader/dist/cjs.js??ref--6-oneOf-1-1!/Users/davidcui/kibana-master/kibana/node_modules/postcss-loader/src??ref--6-oneOf-1-2!/Users/davidcui/kibana-master/kibana/node_modules/resolve-url-loader??ref--6-oneOf-1-3!/Users/davidcui/kibana-master/kibana/node_modules/sass-loader/dist/cjs.js??ref--6-oneOf-1-4!./public/index.scss?v7light ***!
-  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/css-loader/dist/cjs.js??ref--6-oneOf-1-1!/Users/szhongna/Desktop/reporting/kibana/node_modules/postcss-loader/src??ref--6-oneOf-1-2!/Users/szhongna/Desktop/reporting/kibana/node_modules/resolve-url-loader??ref--6-oneOf-1-3!/Users/szhongna/Desktop/reporting/kibana/node_modules/sass-loader/dist/cjs.js??ref--6-oneOf-1-4!./public/index.scss?v7light ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -238,9 +238,9 @@ module.exports = exports;
 /***/ }),
 
 /***/ "../../node_modules/css-loader/dist/runtime/api.js":
-/*!****************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/css-loader/dist/runtime/api.js ***!
-  \****************************************************************************************/
+/*!********************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/css-loader/dist/runtime/api.js ***!
+  \********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -343,9 +343,9 @@ function toComment(sourceMap) {
 /***/ }),
 
 /***/ "../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js":
-/*!***************************************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js ***!
-  \***************************************************************************************************************/
+/*!*******************************************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js ***!
+  \*******************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -622,14 +622,14 @@ module.exports = function (list, options) {
 
 /***/ }),
 
-/***/ "../../node_modules/val-loader/dist/cjs.js?key=opendistroKibanaReports!../../packages/kbn-ui-shared-deps/public_path_module_creator.js":
-/*!***********************************************************************************************************************************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/val-loader/dist/cjs.js?key=opendistroKibanaReports!/Users/davidcui/kibana-master/kibana/packages/kbn-ui-shared-deps/public_path_module_creator.js ***!
-  \***********************************************************************************************************************************************************************************************************/
+/***/ "../../node_modules/val-loader/dist/cjs.js?key=opendistro_kibana_reports!../../packages/kbn-ui-shared-deps/public_path_module_creator.js":
+/*!*********************************************************************************************************************************************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/val-loader/dist/cjs.js?key=opendistro_kibana_reports!/Users/szhongna/Desktop/reporting/kibana/packages/kbn-ui-shared-deps/public_path_module_creator.js ***!
+  \*********************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__.p = window.__kbnPublicPath__['opendistroKibanaReports']
+__webpack_require__.p = window.__kbnPublicPath__['opendistro_kibana_reports']
 
 /***/ }),
 
@@ -665,9 +665,9 @@ module.exports = g;
 /***/ }),
 
 /***/ "../../packages/elastic-datemath/target/index.js":
-/*!**************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/packages/elastic-datemath/target/index.js ***!
-  \**************************************************************************************/
+/*!******************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/packages/elastic-datemath/target/index.js ***!
+  \******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -919,17 +919,17 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ "../../packages/kbn-optimizer/target/worker/entry_point_creator.js":
-/*!********************************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/packages/kbn-optimizer/target/worker/entry_point_creator.js ***!
-  \********************************************************************************************************/
+/*!************************************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/packages/kbn-optimizer/target/worker/entry_point_creator.js ***!
+  \************************************************************************************************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_val_loader_dist_cjs_js_key_opendistroKibanaReports_kbn_ui_shared_deps_public_path_module_creator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../node_modules/val-loader/dist/cjs.js?key=opendistroKibanaReports!../../../kbn-ui-shared-deps/public_path_module_creator.js */ "../../node_modules/val-loader/dist/cjs.js?key=opendistroKibanaReports!../../packages/kbn-ui-shared-deps/public_path_module_creator.js");
-/* harmony import */ var _node_modules_val_loader_dist_cjs_js_key_opendistroKibanaReports_kbn_ui_shared_deps_public_path_module_creator_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_val_loader_dist_cjs_js_key_opendistroKibanaReports_kbn_ui_shared_deps_public_path_module_creator_js__WEBPACK_IMPORTED_MODULE_0__);
-__kbnBundles__.define('plugin/opendistroKibanaReports/public', __webpack_require__, /*require.resolve*/(/*! ../../../../plugins/kibana-reports/public */ "./public/index.ts"))
+/* harmony import */ var _node_modules_val_loader_dist_cjs_js_key_opendistro_kibana_reports_kbn_ui_shared_deps_public_path_module_creator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../node_modules/val-loader/dist/cjs.js?key=opendistro_kibana_reports!../../../kbn-ui-shared-deps/public_path_module_creator.js */ "../../node_modules/val-loader/dist/cjs.js?key=opendistro_kibana_reports!../../packages/kbn-ui-shared-deps/public_path_module_creator.js");
+/* harmony import */ var _node_modules_val_loader_dist_cjs_js_key_opendistro_kibana_reports_kbn_ui_shared_deps_public_path_module_creator_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_val_loader_dist_cjs_js_key_opendistro_kibana_reports_kbn_ui_shared_deps_public_path_module_creator_js__WEBPACK_IMPORTED_MODULE_0__);
+__kbnBundles__.define('plugin/opendistro_kibana_reports/public', __webpack_require__, /*require.resolve*/(/*! ../../../../plugins/kibana-reports/public */ "./public/index.ts"))
 
 /***/ }),
 
@@ -947,7 +947,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "API_PREFIX", function() { return API_PREFIX; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NOTIFICATION_API", function() { return NOTIFICATION_API; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ES_REPORTS_API", function() { return ES_REPORTS_API; });
-const PLUGIN_ID = 'opendistroKibanaReports';
+/*
+ * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+const PLUGIN_ID = 'opendistro_kibana_reports';
 const PLUGIN_NAME = 'opendistro_kibana_reports';
 const API_PREFIX = '/api/reporting';
 const NOTIFICATION_API = {
@@ -12053,20 +12067,14 @@ __webpack_require__.r(__webpack_exports__);
 
 const replaceQueryURL = () => {
   let url = location.pathname + location.hash;
-  let timeString = url.substring(url.lastIndexOf('time:'), url.lastIndexOf('))'));
+  let [, fromDateString, toDateString] = url.match(/time:\(from:(.+),to:(.+?)\)/);
+  fromDateString = fromDateString.replace(/[']+/g, ''); // convert time range to from date format in case time range is relative
 
-  if (url.includes('visualize') || url.includes('discover')) {
-    timeString = url.substring(url.lastIndexOf('time:'), url.indexOf('))'));
-  }
-
-  let fromDateString = timeString.substring(timeString.lastIndexOf('from:') + 5, timeString.lastIndexOf(','));
-  fromDateString = fromDateString.replace(/[']+/g, '');
-  let fromDateFormat = _elastic_datemath__WEBPACK_IMPORTED_MODULE_1___default.a.parse(fromDateString);
-  let toDateString = timeString.substring(timeString.lastIndexOf('to:') + 3, timeString.length);
+  const fromDateFormat = _elastic_datemath__WEBPACK_IMPORTED_MODULE_1___default.a.parse(fromDateString);
   toDateString = toDateString.replace(/[']+/g, '');
   let toDateFormat = _elastic_datemath__WEBPACK_IMPORTED_MODULE_1___default.a.parse(toDateString); // replace to and from dates with absolute date
 
-  url = url.replace(fromDateString + '))', "'" + fromDateFormat.toISOString() + "'");
+  url = url.replace(fromDateString, "'" + fromDateFormat.toISOString() + "'");
   url = url.replace(toDateString + '))', "'" + toDateFormat.toISOString() + "'))");
   return url;
 };
@@ -12112,7 +12120,7 @@ const generateInContextReport = (timeRanges, queryUrl, fileFormat, rest = {}) =>
       }
     }
   };
-  fetch('/api/reporting/generateReport', {
+  fetch(`../api/reporting/generateReport?timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}`, {
     headers: {
       'Content-Type': 'application/json',
       'kbn-version': '7.9.1',
@@ -12348,19 +12356,11 @@ const contextMenuCreateReportDefinition = baseURI => {
 };
 const contextMenuViewReports = () => window.location.assign('opendistro_kibana_reports#/');
 const getTimeFieldsFromUrl = () => {
-  let url = window.location.href;
-  let timeString = url.substring(url.lastIndexOf('time:'), url.lastIndexOf('))'));
-
-  if (url.includes('visualize') || url.includes('discover')) {
-    timeString = url.substring(url.lastIndexOf('time:'), url.indexOf('))'));
-  }
-
-  let fromDateString = timeString.substring(timeString.lastIndexOf('from:') + 5, timeString.lastIndexOf(',')); // remove extra quotes if the 'from' date is absolute time
-
+  const url = window.location.href;
+  let [, fromDateString, toDateString] = url.match(/time:\(from:(.+),to:(.+?)\)/);
   fromDateString = fromDateString.replace(/[']+/g, ''); // convert time range to from date format in case time range is relative
 
-  let fromDateFormat = _elastic_datemath__WEBPACK_IMPORTED_MODULE_0___default.a.parse(fromDateString);
-  let toDateString = timeString.substring(timeString.lastIndexOf('to:') + 3, timeString.length);
+  const fromDateFormat = _elastic_datemath__WEBPACK_IMPORTED_MODULE_0___default.a.parse(fromDateString);
   toDateString = toDateString.replace(/[']+/g, '');
   let toDateFormat = _elastic_datemath__WEBPACK_IMPORTED_MODULE_0___default.a.parse(toDateString);
   const timeDuration = moment__WEBPACK_IMPORTED_MODULE_1___default.a.duration(_elastic_datemath__WEBPACK_IMPORTED_MODULE_0___default.a.parse(toDateString).diff(_elastic_datemath__WEBPACK_IMPORTED_MODULE_0___default.a.parse(fromDateString)));
@@ -12479,7 +12479,7 @@ const popoverMenu = () => {
                     <span class="euiContextMenuItem__text" style="padding-left: 10px; padding-right: 10px; margin-top: 10px; box-decoration-break: clone; display: inline-block;">
                       Files can take a minute or two 
                       to generate depending on the 
-                      size of your dashboard
+                      size of your source data
                     </span>
                    </div>
                    <div>
@@ -12729,7 +12729,7 @@ const reportGenerationInProgressModal = () => {
 /*!***********************************************!*\
   !*** ./public/components/main/main_utils.tsx ***!
   \***********************************************/
-/*! exports provided: fileFormatsUpper, humanReadableDate, extractFilename, extractFileFormat, getFileFormatPrefix, addReportsTableContent, addReportDefinitionsTableContent, removeDuplicatePdfFileFormat, readDataReportToFile, readStreamToFile, generateReport, generateReportById */
+/*! exports provided: fileFormatsUpper, humanReadableDate, extractFilename, extractFileFormat, getFileFormatPrefix, addReportsTableContent, addReportDefinitionsTableContent, removeDuplicatePdfFileFormat, readDataReportToFile, readStreamToFile, generateReportFromDefinitionId, generateReportById */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -12744,7 +12744,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeDuplicatePdfFileFormat", function() { return removeDuplicatePdfFileFormat; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "readDataReportToFile", function() { return readDataReportToFile; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "readStreamToFile", function() { return readStreamToFile; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generateReport", function() { return generateReport; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generateReportFromDefinitionId", function() { return generateReportFromDefinitionId; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generateReportById", function() { return generateReportById; });
 /* harmony import */ var babel_polyfill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! babel-polyfill */ "./node_modules/babel-polyfill/lib/index.js");
 /* harmony import */ var babel_polyfill__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(babel_polyfill__WEBPACK_IMPORTED_MODULE_0__);
@@ -12873,13 +12873,15 @@ const readStreamToFile = async (stream, fileFormat, fileName) => {
   link.click();
   document.body.removeChild(link);
 };
-const generateReport = async (metadata, httpClient) => {
+const generateReportFromDefinitionId = async (reportDefinitionId, httpClient) => {
   let status = false;
   let permissionsError = false;
-  await httpClient.post('../api/reporting/generateReport', {
-    body: JSON.stringify(metadata),
+  await httpClient.post(`../api/reporting/generateReport/${reportDefinitionId}`, {
     headers: {
       'Content-Type': 'application/json'
+    },
+    query: {
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
     }
   }).then(async response => {
     // for emailing a report, this API response doesn't have response body
@@ -12905,7 +12907,11 @@ const generateReport = async (metadata, httpClient) => {
   };
 };
 const generateReportById = async (reportId, httpClient, handleSuccessToast, handleErrorToast, handlePermissionsMissingToast) => {
-  await httpClient.post(`../api/reporting/generateReport/${reportId}`).then(async response => {
+  await httpClient.get(`../api/reporting/generateReport/${reportId}`, {
+    query: {
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    }
+  }).then(async response => {
     //TODO: duplicate code, extract to be a function that can reuse. e.g. handleResponse(response)
     const fileFormat = extractFileFormat(response['filename']);
     const fileName = response['filename'];
@@ -12941,11 +12947,11 @@ switch (window.__kbnThemeTag__) {
     return __webpack_require__(/*! ./index.scss?v7light */ "./public/index.scss?v7light");
 
   case 'v8dark':
-    console.error(new Error("SASS files in [opendistroKibanaReports] were not built for theme [v8dark]. Styles were compiled using the [v7dark] theme instead to keep Kibana somewhat usable. Please adjust the advanced settings to make use of [v7dark,v7light] or make sure the KBN_OPTIMIZER_THEMES environment variable includes [v8dark] in a comma separated list of themes you want to compile. You can also set it to \"*\" to build all themes."));
+    console.error(new Error("SASS files in [opendistro_kibana_reports] were not built for theme [v8dark]. Styles were compiled using the [v7dark] theme instead to keep Kibana somewhat usable. Please adjust the advanced settings to make use of [v7dark,v7light] or make sure the KBN_OPTIMIZER_THEMES environment variable includes [v8dark] in a comma separated list of themes you want to compile. You can also set it to \"*\" to build all themes."));
     return __webpack_require__(/*! ./index.scss?v7dark */ "./public/index.scss?v7dark")
 
   case 'v8light':
-    console.error(new Error("SASS files in [opendistroKibanaReports] were not built for theme [v8light]. Styles were compiled using the [v7light] theme instead to keep Kibana somewhat usable. Please adjust the advanced settings to make use of [v7dark,v7light] or make sure the KBN_OPTIMIZER_THEMES environment variable includes [v8light] in a comma separated list of themes you want to compile. You can also set it to \"*\" to build all themes."));
+    console.error(new Error("SASS files in [opendistro_kibana_reports] were not built for theme [v8light]. Styles were compiled using the [v7light] theme instead to keep Kibana somewhat usable. Please adjust the advanced settings to make use of [v7dark,v7light] or make sure the KBN_OPTIMIZER_THEMES environment variable includes [v8light] in a comma separated list of themes you want to compile. You can also set it to \"*\" to build all themes."));
     return __webpack_require__(/*! ./index.scss?v7light */ "./public/index.scss?v7light")
 }
 
@@ -13067,10 +13073,8 @@ function plugin() {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OpendistroKibanaReportsPlugin", function() { return OpendistroKibanaReportsPlugin; });
-/* harmony import */ var _src_core_public__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../src/core/public */ "entry/core/public");
-/* harmony import */ var _src_core_public__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_src_core_public__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _components_context_menu_context_menu__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/context_menu/context_menu */ "./public/components/context_menu/context_menu.js");
-/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../common */ "./common/index.ts");
+/* harmony import */ var _components_context_menu_context_menu__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/context_menu/context_menu */ "./public/components/context_menu/context_menu.js");
+/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common */ "./common/index.ts");
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -13087,15 +13091,18 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-
 class OpendistroKibanaReportsPlugin {
   setup(core) {
     // Register an application into the side navigation menu
     core.application.register({
-      id: _common__WEBPACK_IMPORTED_MODULE_2__["PLUGIN_NAME"],
+      id: _common__WEBPACK_IMPORTED_MODULE_1__["PLUGIN_NAME"],
       title: 'Reporting',
-      category: _src_core_public__WEBPACK_IMPORTED_MODULE_0__["DEFAULT_APP_CATEGORIES"].kibana,
-      order: 8037,
+      category: {
+        id: 'odfe',
+        label: 'Open Distro for Elasticsearch',
+        order: 2000
+      },
+      order: 2000,
 
       async mount(params) {
         // Load application bundle
@@ -13153,21 +13160,6 @@ module.exports = __kbnSharedDeps__.ElasticEui;
 /***/ (function(module, exports) {
 
 module.exports = __kbnSharedDeps__.KbnI18nReact;
-
-/***/ }),
-
-/***/ "entry/core/public":
-/*!******************************************!*\
-  !*** @kbn/bundleRef "entry/core/public" ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-
-      __webpack_require__.r(__webpack_exports__);
-      var ns = __kbnBundles__.get('entry/core/public');
-      Object.defineProperties(__webpack_exports__, Object.getOwnPropertyDescriptors(ns))
-    
 
 /***/ }),
 
@@ -13238,4 +13230,4 @@ module.exports = __kbnSharedDeps__.ReactRouterDom;
 /***/ })
 
 /******/ });
-//# sourceMappingURL=opendistroKibanaReports.plugin.js.map
+//# sourceMappingURL=opendistro_kibana_reports.plugin.js.map
