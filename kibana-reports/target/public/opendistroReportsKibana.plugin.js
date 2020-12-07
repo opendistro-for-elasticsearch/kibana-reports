@@ -12120,7 +12120,7 @@ const generateInContextReport = (timeRanges, queryUrl, fileFormat, rest = {}) =>
       }
     }
   };
-  fetch(`/api/reporting/generateReport?timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}`, {
+  fetch(`../api/reporting/generateReport?timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}`, {
     headers: {
       'Content-Type': 'application/json',
       'kbn-version': '7.9.1',
