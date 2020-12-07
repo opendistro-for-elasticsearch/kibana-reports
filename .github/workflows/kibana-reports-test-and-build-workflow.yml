@@ -27,8 +27,7 @@ jobs:
 
       - name: Move Kibana Reports to Plugins Dir
         run: |
-          pwd
-          ls
+          mkdir kibana/plugins
           mv kibana-reports kibana/plugins/${{ env.PLUGIN_NAME }}
 
       - name: Add Chromium Binary to Reporting for Testing
