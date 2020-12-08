@@ -2,7 +2,6 @@
 Headless Chrome for Linux and Mac are chrome binaries which are significantly smaller than the standard binaries shipped by Google and Puppeteer. 
 Chrome binary can be built from shell script build_headless_chrome.sh for Mac, Linux x64 and Linux arm64, 
 output of script is called headless_shell.
-​
 
 ## Puppeteer's Chrome version
 
@@ -29,8 +28,8 @@ headless-chrome.sh chrome-version-SHA (arch_name (arm64))
 . Linux arm64: ./build_headless_chrome.sh <chrome-version-SHA> arm64
 
 # How to call in Command line:
-. PNG report: ./headless_shell --headless --disable-gpu --screenshot=test.png https://www.google.com
-. PDF report: ./headless_shell --headless --disable-gpu --print-to-pdf=test.pdf https://www.google.com
+. PNG report: ./headless_shell --headless --disable-gpu --screenshot=test.png https://opendistro.github.io/for-elasticsearch
+. PDF report: ./headless_shell --headless --disable-gpu --print-to-pdf=test.pdf https://opendistro.github.io/for-elasticsearch
 
 ## Headless Chromium for MAC
 # Files:
