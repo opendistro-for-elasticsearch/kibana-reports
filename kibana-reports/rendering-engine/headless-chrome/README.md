@@ -16,21 +16,22 @@ Find the puppeteer version used in Kibana node_modules.json and get the associat
        |-out
          |-headless
            |-headless_shell     # output of scripts
-​
+
 ## How to generate the headless_chrome
 This is a shell script to set environment variable, download the source code and build the executable.
-​
+
 ## Commands to create headless_chrome
 Run below command to create headless_shell for each platform
-​
+
 headless-chrome.sh chrome-version-SHA (arch_name (arm64))
 . Mac x64: ./build_headless_chrome.sh <chrome-version-SHA>
 . Linux x64: ./build_headless_chrome.sh <chrome-version-SHA>
 . Linux arm64: ./build_headless_chrome.sh <chrome-version-SHA> arm64
-​
+
 # How to call in Command line:
-    >> please use what you used for testing this << replace me >>
-     
+. PNG report: ./headless_shell --headless --disable-gpu --screenshot=test.png https://www.google.com
+. PDF report: ./headless_shell --headless --disable-gpu --print-to-pdf=test.pdf https://www.google.com
+
 ## Headless Chromium for MAC
 # Files:
     headless_shell
@@ -49,3 +50,4 @@ headless-chrome.sh chrome-version-SHA (arch_name (arm64))
   fonts-liberation
   libfontconfig
   (installation command example : sudo apt update && apt install libnss3-dev fonts-liberation libfontconfig)
+

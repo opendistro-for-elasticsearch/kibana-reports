@@ -130,6 +130,9 @@ fetch chromium
 cd src 
 if [[ arch_name -eq "arm64" ]]; then
   ./build/linux/sysroot_scripts/install-sysroot.py --arch=$arch_name
+fi
+
+if [[ platform_name -eq "linux" ]]; then
   ./build/install-build-deps.sh
 fi
 
