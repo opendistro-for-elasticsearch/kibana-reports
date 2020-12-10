@@ -51,7 +51,6 @@ export const createVisualReport = async (
     report_format: reportFormat,
   } = coreParams;
 
-  // TODO: polish default header, maybe add a logo, depends on UX design
   const window = new JSDOM('').window;
   const DOMPurify = createDOMPurify(window);
 
@@ -93,16 +92,17 @@ export const createVisualReport = async (
   // remove top nav bar
   await page.evaluate(
     /* istanbul ignore next */
-    (selector) => {
-      document.querySelector(selector)?.remove();
+    () => {
+      // remove buttons
       document
         .querySelectorAll("[class^='euiButton']")
         .forEach((e) => e.remove());
-      document.querySelector(
-        '.coreSystemRootDomElement.euiBody--headerIsFixed'
-      ).style.paddingTop = '0px';
-    },
-    SELECTOR.topNavBar
+      // remove top navBar
+      document
+        .querySelectorAll("[class^='euiHeader']")
+        .forEach((e) => e.remove());
+      document.body.style.paddingTop = '0px';
+    }
   );
   // force wait for any resize to load after the above DOM modification
   await page.waitFor(1000);
