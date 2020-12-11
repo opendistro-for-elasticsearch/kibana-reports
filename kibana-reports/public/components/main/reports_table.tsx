@@ -51,7 +51,10 @@ const emptyMessageReports = (
         </EuiText>
         <EuiText>
           To learn more, see{' '}
-          <EuiLink>
+          <EuiLink
+            href="https://opendistro.github.io/for-elasticsearch-docs/docs/kibana/reporting/"
+            target="_blank"
+          >
             Get started with Kibana reporting <EuiIcon type="popout" />
           </EuiLink>
         </EuiText>
