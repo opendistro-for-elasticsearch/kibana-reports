@@ -59,6 +59,11 @@ internal object PluginSettings {
     private const val OPERATION_TIMEOUT_MS_KEY = "$GENERAL_KEY_PREFIX.operationTimeoutMs"
 
     /**
+     * Setting to choose default number of items to query.
+     */
+    private const val DEFAULT_ITEMS_QUERY_COUNT_KEY = "$GENERAL_KEY_PREFIX.defaultItemsQueryCount"
+
+    /**
      * Setting to choose Job lock duration.
      */
     private const val JOB_LOCK_DURATION_S_KEY = "$POLLING_KEY_PREFIX.jobLockDurationSeconds"
@@ -77,11 +82,6 @@ internal object PluginSettings {
      * Setting to choose Maximum number of retries to try locking.
      */
     private const val MAX_LOCK_RETRIES_KEY = "$POLLING_KEY_PREFIX.maxLockRetries"
-
-    /**
-     * Setting to choose default number of items to query.
-     */
-    private const val DEFAULT_ITEMS_QUERY_COUNT_KEY = "$POLLING_KEY_PREFIX.defaultItemsQueryCount"
 
     /**
      * Setting to choose admin access restriction.
@@ -184,6 +184,12 @@ internal object PluginSettings {
     var operationTimeoutMs: Long
 
     /**
+     * Default number of items to query.
+     */
+    @Volatile
+    var defaultItemsQueryCount: Int
+
+    /**
      * Job lock duration
      */
     @Volatile
@@ -206,12 +212,6 @@ internal object PluginSettings {
      */
     @Volatile
     var maxLockRetries: Int
-
-    /**
-     * Default number of items to query.
-     */
-    @Volatile
-    var defaultItemsQueryCount: Int
 
     /**
      * admin access method.
@@ -265,25 +265,25 @@ internal object PluginSettings {
         }
         // Initialize the settings values to default values
         operationTimeoutMs = (settings?.get(OPERATION_TIMEOUT_MS_KEY)?.toLong()) ?: DEFAULT_OPERATION_TIMEOUT_MS
+        defaultItemsQueryCount = (settings?.get(DEFAULT_ITEMS_QUERY_COUNT_KEY)?.toInt())
+            ?: DEFAULT_ITEMS_QUERY_COUNT_VALUE
         jobLockDurationSeconds = (settings?.get(JOB_LOCK_DURATION_S_KEY)?.toInt()) ?: DEFAULT_JOB_LOCK_DURATION_S
         minPollingDurationSeconds = (settings?.get(MIN_POLLING_DURATION_S_KEY)?.toInt())
             ?: DEFAULT_MIN_POLLING_DURATION_S
         maxPollingDurationSeconds = (settings?.get(MAX_POLLING_DURATION_S_KEY)?.toInt())
             ?: DEFAULT_MAX_POLLING_DURATION_S
         maxLockRetries = (settings?.get(MAX_LOCK_RETRIES_KEY)?.toInt()) ?: DEFAULT_MAX_LOCK_RETRIES
-        defaultItemsQueryCount = (settings?.get(DEFAULT_ITEMS_QUERY_COUNT_KEY)?.toInt())
-            ?: DEFAULT_ITEMS_QUERY_COUNT_VALUE
         adminAccess = AdminAccess.valueOf(settings?.get(ADMIN_ACCESS_KEY) ?: DEFAULT_ADMIN_ACCESS_METHOD)
         filterBy = FilterBy.valueOf(settings?.get(FILTER_BY_KEY) ?: DEFAULT_FILTER_BY_METHOD)
         ignoredRoles = settings?.getAsList(IGNORE_ROLE_KEY) ?: DEFAULT_IGNORED_ROLES
 
         defaultSettings = mapOf(
             OPERATION_TIMEOUT_MS_KEY to operationTimeoutMs.toString(DECIMAL_RADIX),
+            DEFAULT_ITEMS_QUERY_COUNT_KEY to defaultItemsQueryCount.toString(DECIMAL_RADIX),
             JOB_LOCK_DURATION_S_KEY to jobLockDurationSeconds.toString(DECIMAL_RADIX),
             MIN_POLLING_DURATION_S_KEY to minPollingDurationSeconds.toString(DECIMAL_RADIX),
             MAX_POLLING_DURATION_S_KEY to maxPollingDurationSeconds.toString(DECIMAL_RADIX),
             MAX_LOCK_RETRIES_KEY to maxLockRetries.toString(DECIMAL_RADIX),
-            DEFAULT_ITEMS_QUERY_COUNT_KEY to defaultItemsQueryCount.toString(DECIMAL_RADIX),
             ADMIN_ACCESS_KEY to adminAccess.name,
             FILTER_BY_KEY to filterBy.name
         )
@@ -293,6 +293,13 @@ internal object PluginSettings {
         OPERATION_TIMEOUT_MS_KEY,
         defaultSettings[OPERATION_TIMEOUT_MS_KEY]!!.toLong(),
         MINIMUM_OPERATION_TIMEOUT_MS,
+        NodeScope, Dynamic
+    )
+
+    private val DEFAULT_ITEMS_QUERY_COUNT: Setting<Int> = Setting.intSetting(
+        DEFAULT_ITEMS_QUERY_COUNT_KEY,
+        defaultSettings[DEFAULT_ITEMS_QUERY_COUNT_KEY]!!.toInt(),
+        MINIMUM_ITEMS_QUERY_COUNT,
         NodeScope, Dynamic
     )
 
@@ -324,13 +331,6 @@ internal object PluginSettings {
         NodeScope, Dynamic
     )
 
-    private val DEFAULT_ITEMS_QUERY_COUNT: Setting<Int> = Setting.intSetting(
-        DEFAULT_ITEMS_QUERY_COUNT_KEY,
-        defaultSettings[DEFAULT_ITEMS_QUERY_COUNT_KEY]!!.toInt(),
-        MINIMUM_ITEMS_QUERY_COUNT,
-        NodeScope, Dynamic
-    )
-
     private val ADMIN_ACCESS: Setting<String> = Setting.simpleString(
         ADMIN_ACCESS_KEY,
         defaultSettings[ADMIN_ACCESS_KEY]!!,
@@ -357,11 +357,11 @@ internal object PluginSettings {
      */
     fun getAllSettings(): List<Setting<*>> {
         return listOf(OPERATION_TIMEOUT_MS,
+            DEFAULT_ITEMS_QUERY_COUNT,
             JOB_LOCK_DURATION_S,
             MIN_POLLING_DURATION_S,
             MAX_POLLING_DURATION_S,
             MAX_LOCK_RETRIES,
-            DEFAULT_ITEMS_QUERY_COUNT,
             ADMIN_ACCESS,
             FILTER_BY,
             IGNORED_ROLES
@@ -374,11 +374,11 @@ internal object PluginSettings {
      */
     private fun updateSettingValuesFromLocal(clusterService: ClusterService) {
         operationTimeoutMs = OPERATION_TIMEOUT_MS.get(clusterService.settings)
+        defaultItemsQueryCount = DEFAULT_ITEMS_QUERY_COUNT.get(clusterService.settings)
         jobLockDurationSeconds = JOB_LOCK_DURATION_S.get(clusterService.settings)
         minPollingDurationSeconds = MIN_POLLING_DURATION_S.get(clusterService.settings)
         maxPollingDurationSeconds = MAX_POLLING_DURATION_S.get(clusterService.settings)
         maxLockRetries = MAX_LOCK_RETRIES.get(clusterService.settings)
-        defaultItemsQueryCount = DEFAULT_ITEMS_QUERY_COUNT.get(clusterService.settings)
         adminAccess = AdminAccess.valueOf(ADMIN_ACCESS.get(clusterService.settings))
         filterBy = FilterBy.valueOf(FILTER_BY.get(clusterService.settings))
         ignoredRoles = IGNORED_ROLES.get(clusterService.settings)
@@ -393,6 +393,11 @@ internal object PluginSettings {
         if (clusterOperationTimeoutMs != null) {
             log.debug("$LOG_PREFIX:$OPERATION_TIMEOUT_MS_KEY -autoUpdatedTo-> $clusterOperationTimeoutMs")
             operationTimeoutMs = clusterOperationTimeoutMs
+        }
+        val clusterDefaultItemsQueryCount = clusterService.clusterSettings.get(DEFAULT_ITEMS_QUERY_COUNT)
+        if (clusterDefaultItemsQueryCount != null) {
+            log.debug("$LOG_PREFIX:$DEFAULT_ITEMS_QUERY_COUNT_KEY -autoUpdatedTo-> $clusterDefaultItemsQueryCount")
+            defaultItemsQueryCount = clusterDefaultItemsQueryCount
         }
         val clusterJobLockDurationSeconds = clusterService.clusterSettings.get(JOB_LOCK_DURATION_S)
         if (clusterJobLockDurationSeconds != null) {
@@ -413,11 +418,6 @@ internal object PluginSettings {
         if (clusterMaxLockRetries != null) {
             log.debug("$LOG_PREFIX:$MAX_LOCK_RETRIES_KEY -autoUpdatedTo-> $clusterMaxLockRetries")
             maxLockRetries = clusterMaxLockRetries
-        }
-        val clusterDefaultItemsQueryCount = clusterService.clusterSettings.get(DEFAULT_ITEMS_QUERY_COUNT)
-        if (clusterDefaultItemsQueryCount != null) {
-            log.debug("$LOG_PREFIX:$DEFAULT_ITEMS_QUERY_COUNT_KEY -autoUpdatedTo-> $clusterDefaultItemsQueryCount")
-            defaultItemsQueryCount = clusterDefaultItemsQueryCount
         }
         val clusterAdminAccess = clusterService.clusterSettings.get(ADMIN_ACCESS)
         if (clusterAdminAccess != null) {
@@ -450,6 +450,10 @@ internal object PluginSettings {
             operationTimeoutMs = it
             log.info("$LOG_PREFIX:$OPERATION_TIMEOUT_MS_KEY -updatedTo-> $it")
         }
+        clusterService.clusterSettings.addSettingsUpdateConsumer(DEFAULT_ITEMS_QUERY_COUNT) {
+            defaultItemsQueryCount = it
+            log.info("$LOG_PREFIX:$DEFAULT_ITEMS_QUERY_COUNT_KEY -updatedTo-> $it")
+        }
         clusterService.clusterSettings.addSettingsUpdateConsumer(JOB_LOCK_DURATION_S) {
             jobLockDurationSeconds = it
             log.info("$LOG_PREFIX:$JOB_LOCK_DURATION_S_KEY -updatedTo-> $it")
@@ -465,10 +469,6 @@ internal object PluginSettings {
         clusterService.clusterSettings.addSettingsUpdateConsumer(MAX_LOCK_RETRIES) {
             maxLockRetries = it
             log.info("$LOG_PREFIX:$MAX_LOCK_RETRIES_KEY -updatedTo-> $it")
-        }
-        clusterService.clusterSettings.addSettingsUpdateConsumer(DEFAULT_ITEMS_QUERY_COUNT) {
-            defaultItemsQueryCount = it
-            log.info("$LOG_PREFIX:$DEFAULT_ITEMS_QUERY_COUNT_KEY -updatedTo-> $it")
         }
         clusterService.clusterSettings.addSettingsUpdateConsumer(ADMIN_ACCESS) {
             adminAccess = AdminAccess.valueOf(it)
