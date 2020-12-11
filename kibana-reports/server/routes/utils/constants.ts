@@ -74,6 +74,8 @@ export enum SELECTOR {
 export const DEFAULT_MAX_SIZE = 10000;
 // AES uses 9200, with server.basePath = '/_plugin/kibana'
 export const LOCAL_HOST = 'http://localhost:9200';
+// AES specific server base path
+export const BASE_PATH = '/_plugin/kibana';
 
 export const DEFAULT_REPORT_HEADER = '<h1>Open Distro Kibana Reports</h1>';
 
