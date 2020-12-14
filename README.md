@@ -1,3 +1,9 @@
+[![Kibana Reports CI](https://github.com/opendistro-for-elasticsearch/kibana-reports/workflows/Test%20and%20Build%20Kibana%20Reports/badge.svg)](https://github.com/opendistro-for-elasticsearch/kibana-reports/actions?query=workflow%3A%22Test+and+Build+Kibana+Reports%22)
+[![Reports Scheduler CI](https://github.com/opendistro-for-elasticsearch/kibana-reports/workflows/Test%20and%20Build%20Reports%20Scheduler/badge.svg)](https://github.com/opendistro-for-elasticsearch/kibana-reports/actions?query=workflow%3A%22Test+and+Build+Reports+Scheduler%22)
+[![codecov](https://codecov.io/gh/opendistro-for-elasticsearch/kibana-reports/branch/master/graph/badge.svg?token=FBVYQSZD3B)](https://codecov.io/gh/opendistro-for-elasticsearch/kibana-reports)
+[![Documentation](https://img.shields.io/badge/documentation-blue.svg)](https://opendistro.github.io/for-elasticsearch-docs/docs/kibana/reporting/)
+![PRs welcome!](https://img.shields.io/badge/PRs-welcome!-success)
+
 # Kibana Reports for Open Distro
 
 Kibana Reports for Open Distro allows ‘Report Owner’ (engineers, including but not limited to developers, DevOps, IT Engineer, and IT admin) export and share reports from Kibana dashboards, saved search, alerts and visualizations. It helps automate the process of scheduling reports on an on-demand or a periodical basis (on cron schedules as well). Further, it also automates the process of exporting and sharing reports triggered for various alerts. The feature is present in the Dashboard, Discover, and Visualization tabs. Scheduled reports can be sent to (shared with) self or various stakeholders within the organization such as, including but not limited to, executives, managers, engineers (developers, DevOps, IT Engineer) in the form of pdf, hyperlinks, csv, excel via various channels such as email, slack, Amazon Chime. However, in order to export, schedule and share reports, report owners should have the necessary permissions as defined under Roles and Privileges.

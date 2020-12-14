@@ -50,7 +50,12 @@ jobs:
         with:
           timeout_minutes: 30
           max_attempts: 3
-          command: cd kibana/plugins/${{ env.PLUGIN_NAME }}; yarn test
+          command: cd kibana/plugins/${{ env.PLUGIN_NAME }}; yarn test --coverage
+
+      - name: Uploads coverage
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Build Artifact
         run: |
