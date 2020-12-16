@@ -439,6 +439,7 @@ exports[`<ReportsTable /> panel render component 1`] = `
               >
                 <button
                   class="euiLink euiLink--primary"
+                  id="landingPageOnDemandDownload"
                   type="button"
                 >
                    
