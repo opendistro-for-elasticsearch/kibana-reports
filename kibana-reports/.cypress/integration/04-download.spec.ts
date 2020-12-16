@@ -62,5 +62,22 @@ describe('Cypress', () => {
     cy.get('#generatePNG').click({ force: true });
 
     cy.get('#reportGenerationProgressModal');
-  })
+  });
+
+  it('Download csv from saved search in-context menu', () => {
+    cy.visit('http://localhost:5601/app/discover#');
+    cy.wait(5000);
+
+    // open saved search list
+    cy.get('button.euiButtonEmpty:nth-child(3) > span:nth-child(1) > span:nth-child(1)').click({ force: true });
+    cy.wait(5000);
+
+    // click first entry
+    cy.get('li.euiListGroupItem:nth-child(1) > button:nth-child(1)').click({ force: true });
+
+    // open reporting menu
+    cy.get('#downloadReport').click({ force: true });
+
+    cy.get('#generateCSV').click({ force: true });
+  });
 });
