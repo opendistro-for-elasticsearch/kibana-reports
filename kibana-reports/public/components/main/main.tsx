@@ -159,6 +159,20 @@ export function Main(props) {
     addEditReportDefinitionSuccessToastHandler();
   };
 
+  const addDeleteReportDefinitionSuccessToastHandler = () => {
+    const successToast = {
+      title: 'Successfully deleted report definition.',
+      color: 'success',
+      iconType: 'check',
+      id: 'deleteReportDefinitionSuccessToast'
+    };
+    setToasts(toasts.concat(successToast));
+  }
+
+  const handleDeleteReportDefinitionSuccessToast = () => {
+    addDeleteReportDefinitionSuccessToastHandler();
+  }
+
   const removeToast = (removedToast) => {
     setToasts(toasts.filter((toast) => toast.id !== removedToast.id));
   };
@@ -188,6 +202,12 @@ export function Main(props) {
       }, 1000);
     } else if (window.location.href.includes('edit=success')) {
       handleEditReportDefinitionSuccessToast();
+      setTimeout(() => {
+        refreshReportsTable();
+        refreshReportsDefinitionsTable();
+      }, 1000);
+    } else if (window.location.href.includes('delete=success')) {
+      handleDeleteReportDefinitionSuccessToast();
       setTimeout(() => {
         refreshReportsTable();
         refreshReportsDefinitionsTable();
