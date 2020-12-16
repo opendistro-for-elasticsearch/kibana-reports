@@ -179,9 +179,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _elastic_eui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @elastic/eui */ "@elastic/eui");
 /* harmony import */ var _elastic_eui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _reports_table__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./reports_table */ "./public/components/main/reports_table.tsx");
-/* harmony import */ var _report_definitions_table__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./report_definitions_table */ "./public/components/main/report_definitions_table.tsx");
-/* harmony import */ var _main_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./main_utils */ "./public/components/main/main_utils.tsx");
-/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/utils */ "./public/components/utils/utils.tsx");
+/* harmony import */ var _main_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./main_utils */ "./public/components/main/main_utils.tsx");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/utils */ "./public/components/utils/utils.tsx");
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -201,7 +200,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 const reportCountStyles = {
   color: 'gray',
   display: 'inline'
@@ -212,7 +210,7 @@ function Main(props) {
   const [toasts, setToasts] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]);
 
   const addPermissionsMissingDownloadToastHandler = () => {
-    const toast = Object(_utils_utils__WEBPACK_IMPORTED_MODULE_5__["permissionsMissingToast"])(_utils_utils__WEBPACK_IMPORTED_MODULE_5__["permissionsMissingActions"].GENERATING_REPORT);
+    const toast = Object(_utils_utils__WEBPACK_IMPORTED_MODULE_4__["permissionsMissingToast"])(_utils_utils__WEBPACK_IMPORTED_MODULE_4__["permissionsMissingActions"].GENERATING_REPORT);
     setToasts(toasts.concat(toast));
   };
 
@@ -224,7 +222,7 @@ function Main(props) {
     let toast = {};
 
     if (errorType === 'permissions') {
-      toast = Object(_utils_utils__WEBPACK_IMPORTED_MODULE_5__["permissionsMissingToast"])(_utils_utils__WEBPACK_IMPORTED_MODULE_5__["permissionsMissingActions"].LOADING_REPORTS_TABLE);
+      toast = Object(_utils_utils__WEBPACK_IMPORTED_MODULE_4__["permissionsMissingToast"])(_utils_utils__WEBPACK_IMPORTED_MODULE_4__["permissionsMissingActions"].LOADING_REPORTS_TABLE);
     } else if (errorType === 'API') {
       toast = {
         title: 'Error generating reports table.',
@@ -245,7 +243,7 @@ function Main(props) {
     let toast = {};
 
     if (errorType === 'permissions') {
-      toast = Object(_utils_utils__WEBPACK_IMPORTED_MODULE_5__["permissionsMissingToast"])(_utils_utils__WEBPACK_IMPORTED_MODULE_5__["permissionsMissingActions"].LOADING_DEFINITIONS_TABLE);
+      toast = Object(_utils_utils__WEBPACK_IMPORTED_MODULE_4__["permissionsMissingToast"])(_utils_utils__WEBPACK_IMPORTED_MODULE_4__["permissionsMissingActions"].LOADING_DEFINITIONS_TABLE);
     } else if (errorType === 'API') {
       toast = {
         title: 'Error generating report definitions table.',
@@ -358,7 +356,7 @@ function Main(props) {
       httpClient
     } = props;
     await httpClient.get('../api/reporting/reports').then(response => {
-      setReportsTableContent(Object(_main_utils__WEBPACK_IMPORTED_MODULE_4__["addReportsTableContent"])(response.data));
+      setReportsTableContent(Object(_main_utils__WEBPACK_IMPORTED_MODULE_3__["addReportsTableContent"])(response.data));
     }).catch(error => {
       console.log('error when fetching all reports: ', error); // permission denied error
 
@@ -375,7 +373,7 @@ function Main(props) {
       httpClient
     } = props;
     await httpClient.get('../api/reporting/reportDefinitions').then(response => {
-      setReportDefinitionsTableContent(Object(_main_utils__WEBPACK_IMPORTED_MODULE_4__["addReportDefinitionsTableContent"])(response.data));
+      setReportDefinitionsTableContent(Object(_main_utils__WEBPACK_IMPORTED_MODULE_3__["addReportDefinitionsTableContent"])(response.data));
     }).catch(error => {
       console.log('error when fetching all report definitions: ', error);
 
@@ -406,28 +404,6 @@ function Main(props) {
     handleSuccessToast: handleOnDemandDownloadSuccessToast,
     handleErrorToast: handleOnDemandDownloadErrorToast,
     handlePermissionsMissingToast: handlePermissionsMissingDownloadToast
-  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiPanel"], {
-    paddingSize: 'l'
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexGroup"], {
-    justifyContent: "spaceEvenly"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexItem"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiTitle"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Report definitions", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
-    style: reportCountStyles
-  }, ' ', "(", reportDefinitionsTableContent.length, ")")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexItem"], {
-    grow: false
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiButton"], {
-    onClick: refreshReportsDefinitionsTable
-  }, "Refresh")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFlexItem"], {
-    component: "span",
-    grow: false
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiButton"], {
-    fill: true,
-    onClick: () => {
-      window.location.assign('opendistro_kibana_reports#/create');
-    },
-    id: 'createReportHomepageButton'
-  }, "Create"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiHorizontalRule"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_report_definitions_table__WEBPACK_IMPORTED_MODULE_3__["ReportDefinitions"], {
-    pagination: pagination,
-    reportDefinitionsTableContent: reportDefinitionsTableContent
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiGlobalToastList"], {
     toasts: toasts,
     dismissToast: removeToast,
@@ -731,7 +707,6 @@ function ReportDefinitionDetails(props) {
   };
 
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(() => {
-    handleErrorChangingScheduleStatusToast('permissions');
     const {
       httpClient
     } = props;
@@ -944,141 +919,6 @@ function ReportDefinitionDetails(props) {
     dismissToast: removeToast,
     toastLifeTimeMs: 6000
   }), showDeleteConfirmationModal));
-}
-
-/***/ }),
-
-/***/ "./public/components/main/report_definitions_table.tsx":
-/*!*************************************************************!*\
-  !*** ./public/components/main/report_definitions_table.tsx ***!
-  \*************************************************************/
-/*! exports provided: ReportDefinitions */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ReportDefinitions", function() { return ReportDefinitions; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _elastic_eui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @elastic/eui */ "@elastic/eui");
-/* harmony import */ var _elastic_eui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _main_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./main_utils */ "./public/components/main/main_utils.tsx");
-/*
- * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License").
- * You may not use this file except in compliance with the License.
- * A copy of the License is located at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * or in the "license" file accompanying this file. This file is distributed
- * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
- */
-
-
-
-const emptyMessageReportDefinitions = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiEmptyPrompt"], {
-  title: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "No report definitions to display"),
-  titleSize: "xs",
-  body: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiText"], null, "Create a new report definition to get started"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiText"], null, "To learn more, see", ' ', /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiLink"], null, "Get started with Kibana reporting ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiIcon"], {
-    type: "popout"
-  })))),
-  actions: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiButton"], {
-    onClick: () => {
-      window.location.assign('opendistro_kibana_reports#/create');
-    }
-  }, "Create report definition"))
-});
-const reportDefinitionsSearch = {
-  box: {
-    incremental: true
-  },
-  filters: []
-};
-function ReportDefinitions(props) {
-  const {
-    pagination,
-    reportDefinitionsTableContent
-  } = props;
-  const [sortField, setSortField] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('lastUpdated');
-  const [sortDirection, setSortDirection] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('des');
-  const sorting = {
-    sort: {
-      field: sortField,
-      direction: sortDirection
-    }
-  };
-
-  const getDefinitionTableItemId = name => {
-    let index;
-
-    for (index = 0; index < props.reportDefinitionsTableContent.length; ++index) {
-      if (name === reportDefinitionsTableContent[index].reportName) {
-        return reportDefinitionsTableContent[index].id;
-      }
-    }
-  };
-
-  const navigateToDefinitionDetails = name => {
-    let id = getDefinitionTableItemId(name);
-    window.location.assign(`opendistro_kibana_reports#/report_definition_details/${id}`);
-  };
-
-  const reportDefinitionsColumns = [{
-    field: 'reportName',
-    name: 'Name',
-    render: name => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiLink"], {
-      onClick: () => navigateToDefinitionDetails(name),
-      id: 'reportDefinitionDetailsLink'
-    }, name)
-  }, {
-    field: 'source',
-    name: 'Source',
-    render: (value, item) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiLink"], {
-      href: item.baseUrl,
-      target: "_blank"
-    }, value)
-  }, {
-    field: 'type',
-    name: 'Type',
-    sortable: true,
-    truncateText: false
-  }, {
-    field: 'details',
-    name: 'Schedule details',
-    sortable: false,
-    truncateText: true
-  }, {
-    field: 'lastUpdated',
-    name: 'Last Updated',
-    render: date => {
-      let readable = Object(_main_utils__WEBPACK_IMPORTED_MODULE_2__["humanReadableDate"])(date);
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiText"], {
-        size: "s"
-      }, readable);
-    }
-  }, {
-    field: 'status',
-    name: 'Status',
-    sortable: true,
-    truncateText: false
-  }];
-  const displayMessage = reportDefinitionsTableContent.length === 0 ? emptyMessageReportDefinitions : '0 report definitions match the search criteria. Search again.';
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiInMemoryTable"], {
-    items: reportDefinitionsTableContent,
-    itemId: "id",
-    loading: false,
-    message: displayMessage,
-    columns: reportDefinitionsColumns,
-    search: reportDefinitionsSearch,
-    pagination: pagination,
-    sorting: sorting,
-    isSelectable: true,
-    tableLayout: 'auto'
-  }));
 }
 
 /***/ }),

@@ -261,7 +261,7 @@ export function Main(props) {
           handlePermissionsMissingToast={handlePermissionsMissingDownloadToast}
         />
       </EuiPanel>
-      <EuiSpacer />
+      {/* <EuiSpacer />
       <EuiPanel paddingSize={'l'}>
         <EuiFlexGroup justifyContent="spaceEvenly">
           <EuiFlexItem>
@@ -297,7 +297,7 @@ export function Main(props) {
           pagination={pagination}
           reportDefinitionsTableContent={reportDefinitionsTableContent}
         />
-      </EuiPanel>
+      </EuiPanel> */}
       <EuiGlobalToastList
         toasts={toasts}
         dismissToast={removeToast}
