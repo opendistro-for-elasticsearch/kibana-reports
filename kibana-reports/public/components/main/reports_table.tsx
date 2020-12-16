@@ -154,7 +154,7 @@ export function ReportsTable(props) {
             {fileFormatsUpper[item.format]} <EuiIcon type="importAction" />
           </EuiText>
         ) : (
-          <EuiLink onClick={() => onDemandDownload(id)}>
+          <EuiLink onClick={() => onDemandDownload(id)} id="landingPageOnDemandDownload">
             {fileFormatsUpper[item.format]} <EuiIcon type="importAction" />
           </EuiLink>
         ),
