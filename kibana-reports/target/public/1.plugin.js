@@ -396,7 +396,8 @@ function Main(props) {
     grow: false
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiButton"], {
     size: "m",
-    onClick: refreshReportsTable
+    onClick: refreshReportsTable,
+    iconType: "refresh"
   }, "Refresh"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiHorizontalRule"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_reports_table__WEBPACK_IMPORTED_MODULE_2__["ReportsTable"], {
     pagination: pagination,
     reportsTableItems: reportsTableContent,
@@ -404,7 +405,7 @@ function Main(props) {
     handleSuccessToast: handleOnDemandDownloadSuccessToast,
     handleErrorToast: handleOnDemandDownloadErrorToast,
     handlePermissionsMissingToast: handlePermissionsMissingDownloadToast
-  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiGlobalToastList"], {
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiGlobalToastList"], {
     toasts: toasts,
     dismissToast: removeToast,
     toastLifeTimeMs: 6000
@@ -1201,6 +1202,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _elastic_eui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @elastic/eui */ "@elastic/eui");
 /* harmony import */ var _elastic_eui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _main_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./main_utils */ "./public/components/main/main_utils.tsx");
+/* harmony import */ var _elastic_datemath__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @elastic/datemath */ "../../packages/elastic-datemath/target/index.js");
+/* harmony import */ var _elastic_datemath__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_elastic_datemath__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var uuid_v4__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! uuid/v4 */ "../../node_modules/uuid/v4.js");
+/* harmony import */ var uuid_v4__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(uuid_v4__WEBPACK_IMPORTED_MODULE_4__);
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -1215,6 +1220,8 @@ __webpack_require__.r(__webpack_exports__);
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+
+
 
 
 
@@ -1292,32 +1299,43 @@ function ReportsTable(props) {
     handleLoading(false);
   };
 
+  const parseTimePeriod = queryUrl => {
+    let [timeStringRegEx, fromDateString, toDateString] = queryUrl.match(/time:\(from:(.+),to:(.+?)\)/);
+    fromDateString = fromDateString.replace(/[']+/g, '');
+    toDateString = toDateString.replace(/[']+/g, '');
+    let fromDateParsed = _elastic_datemath__WEBPACK_IMPORTED_MODULE_3___default.a.parse(fromDateString);
+    let toDateParsed = _elastic_datemath__WEBPACK_IMPORTED_MODULE_3___default.a.parse(toDateString);
+    const fromTimePeriod = fromDateParsed === null || fromDateParsed === void 0 ? void 0 : fromDateParsed.toDate();
+    const toTimePeriod = toDateParsed === null || toDateParsed === void 0 ? void 0 : toDateParsed.toDate();
+    return (fromTimePeriod === null || fromTimePeriod === void 0 ? void 0 : fromTimePeriod.toLocaleString()) + ' -> ' + (toTimePeriod === null || toTimePeriod === void 0 ? void 0 : toTimePeriod.toLocaleString());
+  };
+
   const reportsTableColumns = [{
     field: 'reportName',
-    name: 'Name',
-    render: (reportName, item) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiLink"], {
-      disabled: item.state === 'Pending',
-      onClick: () => {
-        window.location.assign(`opendistro_kibana_reports#/report_details/${item.id}`);
-      },
-      id: 'reportDetailsLink'
-    }, reportName)
+    name: 'Report ID',
+    render: reportName => {
+      const id = reportName + '_' + uuid_v4__WEBPACK_IMPORTED_MODULE_4___default()();
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiText"], {
+        size: "s"
+      }, id);
+    }
   }, {
     // TODO: link to dashboard/visualization snapshot, use "queryUrl" field. Display dashboard name?
-    field: 'reportSource',
+    field: 'reportName',
     name: 'Source',
-    render: (source, item) => item.state === 'Pending' ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiText"], {
+    render: (reportName, item) => item.state === 'Pending' ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiText"], {
       size: "s"
-    }, source) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiLink"], {
+    }, reportName) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiLink"], {
       href: item.url,
       target: "_blank"
-    }, source)
-  }, {
-    field: 'type',
-    name: 'Type',
-    sortable: true,
-    truncateText: false
-  }, {
+    }, reportName)
+  }, // {
+  //   field: 'type',
+  //   name: 'Type',
+  //   sortable: true, 
+  //   truncateText: false,
+  // },
+  {
     field: 'timeCreated',
     name: 'Creation time',
     render: date => {
@@ -1327,11 +1345,19 @@ function ReportsTable(props) {
       }, readable);
     }
   }, {
-    field: 'state',
-    name: 'State',
-    sortable: true,
-    truncateText: false
-  }, {
+    field: 'url',
+    name: 'Time period',
+    render: url => {
+      let timePeriod = parseTimePeriod(url);
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiText"], null, timePeriod);
+    }
+  }, // {
+  //   field: 'state',
+  //   name: 'State',
+  //   sortable: true,
+  //   truncateText: false,
+  // },
+  {
     field: 'id',
     name: 'Generate',
     render: (id, item) => item.state === 'Pending' ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiText"], {
@@ -1352,29 +1378,33 @@ function ReportsTable(props) {
   };
   const reportsListSearch = {
     box: {
-      incremental: true
-    },
-    filters: [{
-      type: 'field_value_selection',
-      field: 'type',
-      name: 'Type',
-      multiselect: false,
-      options: reportTypeOptions.map(type => ({
-        value: type,
-        name: type,
-        view: type
-      }))
-    }, {
-      type: 'field_value_selection',
-      field: 'state',
-      name: 'State',
-      multiselect: false,
-      options: reportStatusOptions.map(state => ({
-        value: state,
-        name: state,
-        view: state
-      }))
-    }]
+      incremental: true,
+      placeholder: 'Search by Report ID'
+    } // filters: [
+    //   {
+    //     type: 'field_value_selection',
+    //     field: 'type',
+    //     name: 'Type',
+    //     multiselect: false,
+    //     options: reportTypeOptions.map((type) => ({
+    //       value: type,
+    //       name: type,
+    //       view: type,
+    //     })),
+    //   },
+    //   {
+    //     type: 'field_value_selection',
+    //     field: 'state',
+    //     name: 'State',
+    //     multiselect: false,
+    //     options: reportStatusOptions.map((state) => ({
+    //       value: state,
+    //       name: state,
+    //       view: state,
+    //     })),
+    //   },
+    // ],
+
   };
   const displayMessage = reportsTableItems.length === 0 ? emptyMessageReports : '0 reports match the search criteria. Search again';
   const showLoadingModal = showLoading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(GenerateReportLoadingModal, null) : null;

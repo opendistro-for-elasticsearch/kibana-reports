@@ -246,7 +246,7 @@ export function Main(props) {
             </EuiTitle>
           </EuiFlexItem>
           <EuiFlexItem component="span" grow={false}>
-            <EuiButton size="m" onClick={refreshReportsTable}>
+            <EuiButton size="m" onClick={refreshReportsTable} iconType='refresh'>
               Refresh
             </EuiButton>
           </EuiFlexItem>
@@ -261,8 +261,8 @@ export function Main(props) {
           handlePermissionsMissingToast={handlePermissionsMissingDownloadToast}
         />
       </EuiPanel>
-      {/* <EuiSpacer />
-      <EuiPanel paddingSize={'l'}>
+      {/* <EuiSpacer /> */}
+      {/* <EuiPanel paddingSize={'l'}>
         <EuiFlexGroup justifyContent="spaceEvenly">
           <EuiFlexItem>
             <EuiTitle>

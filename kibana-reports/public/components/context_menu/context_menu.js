@@ -93,7 +93,7 @@ const generateInContextReport = (
     time_to: timeRanges.time_to.valueOf(),
     report_definition: {
       report_params: {
-        report_name: 'On_demand_report',
+        report_name: $('span.euiBreadcrumb').prop('title'),
         report_source: reportSource,
         description: 'In-context report download',
         core_params: {

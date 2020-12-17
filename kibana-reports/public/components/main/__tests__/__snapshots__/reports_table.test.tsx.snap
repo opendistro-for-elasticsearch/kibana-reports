@@ -599,7 +599,7 @@ exports[`<ReportsTable /> panel render empty component 1`] = `
           <input
             aria-label="This is a search bar. As you type, the results lower in the page will automatically filter."
             class="euiFieldSearch euiFieldSearch--fullWidth"
-            placeholder="Search..."
+            placeholder="Search by Report ID"
             type="search"
             value=""
           />
@@ -611,115 +611,15 @@ exports[`<ReportsTable /> panel render empty component 1`] = `
             >
               <svg
                 aria-hidden="true"
-                class="euiIcon euiIcon--medium euiFormControlLayoutCustomIcon__icon"
+                class="euiIcon euiIcon--medium euiIcon-isLoading euiFormControlLayoutCustomIcon__icon"
                 focusable="false"
                 height="16"
                 role="img"
                 viewBox="0 0 16 16"
                 width="16"
                 xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M11.271 11.978l3.872 3.873a.502.502 0 00.708 0 .502.502 0 000-.708l-3.565-3.564c2.38-2.747 2.267-6.923-.342-9.532-2.73-2.73-7.17-2.73-9.898 0-2.728 2.729-2.728 7.17 0 9.9a6.955 6.955 0 004.949 2.05.5.5 0 000-1 5.96 5.96 0 01-4.242-1.757 6.01 6.01 0 010-8.486c2.337-2.34 6.143-2.34 8.484 0a6.01 6.01 0 010 8.486.5.5 0 00.034.738z"
-                />
-              </svg>
+              />
             </span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="euiFlexItem euiFlexItem--flexGrowZero euiSearchBar__filtersHolder"
-    >
-      <div
-        class="euiFilterGroup"
-      >
-        <div
-          class="euiPopover euiPopover--anchorDownCenter"
-          id="field_value_selection_0"
-        >
-          <div
-            class="euiPopover__anchor"
-          >
-            <button
-              class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--iconRight euiFilterButton euiFilterButton--hasIcon"
-              type="button"
-            >
-              <span
-                class="euiButtonEmpty__content"
-              >
-                <svg
-                  aria-hidden="true"
-                  class="euiIcon euiIcon--medium euiButtonEmpty__icon"
-                  focusable="false"
-                  height="16"
-                  role="img"
-                  viewBox="0 0 16 16"
-                  width="16"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
-                    fill-rule="non-zero"
-                  />
-                </svg>
-                <span
-                  class="euiButtonEmpty__text"
-                >
-                  <span
-                    class="euiFilterButton__textShift"
-                    data-text="Type"
-                    title="Type"
-                  >
-                    Type
-                  </span>
-                </span>
-              </span>
-            </button>
-          </div>
-        </div>
-        <div
-          class="euiPopover euiPopover--anchorDownCenter"
-          id="field_value_selection_1"
-        >
-          <div
-            class="euiPopover__anchor"
-          >
-            <button
-              class="euiButtonEmpty euiButtonEmpty--text euiButtonEmpty--iconRight euiFilterButton euiFilterButton--hasIcon"
-              type="button"
-            >
-              <span
-                class="euiButtonEmpty__content"
-              >
-                <svg
-                  aria-hidden="true"
-                  class="euiIcon euiIcon--medium euiButtonEmpty__icon"
-                  focusable="false"
-                  height="16"
-                  role="img"
-                  viewBox="0 0 16 16"
-                  width="16"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
-                    fill-rule="non-zero"
-                  />
-                </svg>
-                <span
-                  class="euiButtonEmpty__text"
-                >
-                  <span
-                    class="euiFilterButton__textShift"
-                    data-text="State"
-                    title="State"
-                  >
-                    State
-                  </span>
-                </span>
-              </span>
-            </button>
           </div>
         </div>
       </div>
@@ -743,49 +643,7 @@ exports[`<ReportsTable /> panel render empty component 1`] = `
           />
           <div
             class="euiFlexItem euiFlexItem--flexGrowZero"
-          >
-            <div
-              class="euiTableSortMobile"
-            >
-              <div
-                class="euiPopover euiPopover--anchorDownRight"
-              >
-                <div
-                  class="euiPopover__anchor"
-                >
-                  <button
-                    class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--iconRight euiButtonEmpty--flushRight"
-                    type="button"
-                  >
-                    <span
-                      class="euiButtonEmpty__content"
-                    >
-                      <svg
-                        aria-hidden="true"
-                        class="euiIcon euiIcon--medium euiButtonEmpty__icon"
-                        focusable="false"
-                        height="16"
-                        role="img"
-                        viewBox="0 0 16 16"
-                        width="16"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
-                          fill-rule="non-zero"
-                        />
-                      </svg>
-                      <span
-                        class="euiButtonEmpty__text"
-                      >
-                        Sorting
-                      </span>
-                    </span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          />
         </div>
       </div>
       <table
@@ -809,15 +667,15 @@ exports[`<ReportsTable /> panel render empty component 1`] = `
               >
                 <span
                   class="euiTableCellContent__text"
-                  title="Name"
+                  title="Report ID"
                 >
-                  Name
+                  Report ID
                 </span>
               </div>
             </th>
             <th
               class="euiTableHeaderCell"
-              data-test-subj="tableHeaderCell_reportSource_1"
+              data-test-subj="tableHeaderCell_reportName_1"
               role="columnheader"
               scope="col"
             >
@@ -833,38 +691,8 @@ exports[`<ReportsTable /> panel render empty component 1`] = `
               </div>
             </th>
             <th
-              aria-live="polite"
-              aria-sort="none"
               class="euiTableHeaderCell"
-              data-test-subj="tableHeaderCell_type_2"
-              role="columnheader"
-              scope="col"
-            >
-              <button
-                class="euiTableHeaderButton"
-                data-test-subj="tableHeaderSortButton"
-                type="button"
-              >
-                <span
-                  class="euiTableCellContent"
-                >
-                  <span
-                    class="euiTableCellContent__text"
-                    title="Type"
-                  >
-                    Type
-                  </span>
-                  <span
-                    class="euiScreenReaderOnly"
-                  >
-                    Click to sort in ascending order
-                  </span>
-                </span>
-              </button>
-            </th>
-            <th
-              class="euiTableHeaderCell"
-              data-test-subj="tableHeaderCell_timeCreated_3"
+              data-test-subj="tableHeaderCell_timeCreated_2"
               role="columnheader"
               scope="col"
             >
@@ -880,38 +708,25 @@ exports[`<ReportsTable /> panel render empty component 1`] = `
               </div>
             </th>
             <th
-              aria-live="polite"
-              aria-sort="none"
               class="euiTableHeaderCell"
-              data-test-subj="tableHeaderCell_state_4"
+              data-test-subj="tableHeaderCell_url_3"
               role="columnheader"
               scope="col"
             >
-              <button
-                class="euiTableHeaderButton"
-                data-test-subj="tableHeaderSortButton"
-                type="button"
+              <div
+                class="euiTableCellContent"
               >
                 <span
-                  class="euiTableCellContent"
+                  class="euiTableCellContent__text"
+                  title="Time period"
                 >
-                  <span
-                    class="euiTableCellContent__text"
-                    title="State"
-                  >
-                    State
-                  </span>
-                  <span
-                    class="euiScreenReaderOnly"
-                  >
-                    Click to sort in ascending order
-                  </span>
+                  Time period
                 </span>
-              </button>
+              </div>
             </th>
             <th
               class="euiTableHeaderCell"
-              data-test-subj="tableHeaderCell_id_5"
+              data-test-subj="tableHeaderCell_id_4"
               role="columnheader"
               scope="col"
             >
@@ -934,7 +749,7 @@ exports[`<ReportsTable /> panel render empty component 1`] = `
           >
             <td
               class="euiTableRowCell euiTableRowCell--isMobileFullWidth"
-              colspan="6"
+              colspan="5"
             >
               <div
                 class="euiTableCellContent euiTableCellContent--alignCenter"
