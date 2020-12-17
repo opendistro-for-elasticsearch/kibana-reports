@@ -81,7 +81,7 @@ describe('<Main /> panel', () => {
     expect(container.firstChild).toMatchSnapshot();
   });
 
-  test('test refresh reports definitions button', async () => {
+  test.skip('test refresh reports definitions button', async () => {
     const promise = Promise.resolve();
     const data = [
       {
@@ -132,7 +132,7 @@ describe('<Main /> panel', () => {
     await act(() => promise);
   });
 
-  test('test refresh reports table button', async () => {
+  test.skip('test refresh reports table button', async () => {
     const promise = Promise.resolve();
     const data = [
       {

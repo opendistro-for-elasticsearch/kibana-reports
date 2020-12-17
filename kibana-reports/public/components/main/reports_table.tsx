@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useState } from 'react';
+import ReactDOM from "react-dom";
 import {
   EuiButton,
   // @ts-ignore
@@ -37,6 +38,8 @@ import {
   humanReadableDate,
   generateReportById,
 } from './main_utils';
+import dateMath from '@elastic/datemath';
+import uuidv4 from 'uuid/v4';
 
 const reportStatusOptions = [
   'Created',
@@ -149,43 +152,52 @@ export function ReportsTable(props) {
     handleLoading(false);
   };
 
+  const parseTimePeriod = (queryUrl: string) => {
+    let [timeStringRegEx, fromDateString, toDateString] = queryUrl.match(
+      /time:\(from:(.+),to:(.+?)\)/
+    );
+
+    fromDateString = fromDateString.replace(/[']+/g, '');
+    toDateString = toDateString.replace(/[']+/g, '');
+
+    let fromDateParsed = dateMath.parse(fromDateString);
+    let toDateParsed = dateMath.parse(toDateString);
+
+    const fromTimePeriod = fromDateParsed?.toDate();
+    const toTimePeriod = toDateParsed?.toDate();
+    return (
+      fromTimePeriod?.toLocaleString() + ' -> ' + toTimePeriod?.toLocaleString()
+    );
+  };
+
   const reportsTableColumns = [
     {
       field: 'reportName',
-      name: 'Name',
-      render: (reportName, item) => (
-        <EuiLink
-          disabled={item.state === 'Pending'}
-          onClick={() => {
-            window.location.assign(
-              `opendistro_kibana_reports#/report_details/${item.id}`
-            );
-          }}
-          id={'reportDetailsLink'}
-        >
-          {reportName}
-        </EuiLink>
-      ),
+      name: 'Report ID',
+      render: (reportName) => {
+        const id = reportName + '_' + uuidv4();
+        return <EuiText size="s">{id}</EuiText>
+      }
     },
     {
       // TODO: link to dashboard/visualization snapshot, use "queryUrl" field. Display dashboard name?
-      field: 'reportSource',
+      field: 'reportName',
       name: 'Source',
-      render: (source, item) =>
+      render: (reportName, item) =>
         item.state === 'Pending' ? (
-          <EuiText size="s">{source}</EuiText>
+          <EuiText size="s">{reportName}</EuiText>
         ) : (
           <EuiLink href={item.url} target="_blank">
-            {source}
+            {reportName}
           </EuiLink>
         ),
-    },
-    {
-      field: 'type',
-      name: 'Type',
-      sortable: true,
-      truncateText: false,
-    },
+    },    
+    // {
+    //   field: 'type',
+    //   name: 'Type',
+    //   sortable: true, 
+    //   truncateText: false,
+    // },
     {
       field: 'timeCreated',
       name: 'Creation time',
@@ -195,11 +207,19 @@ export function ReportsTable(props) {
       },
     },
     {
-      field: 'state',
-      name: 'State',
-      sortable: true,
-      truncateText: false,
+      field: 'url',
+      name: 'Time period',
+      render: (url) => {
+        let timePeriod = parseTimePeriod(url);
+        return <EuiText>{timePeriod}</EuiText>
+      }
     },
+    // {
+    //   field: 'state',
+    //   name: 'State',
+    //   sortable: true,
+    //   truncateText: false,
+    // },
     {
       field: 'id',
       name: 'Generate',
@@ -226,31 +246,32 @@ export function ReportsTable(props) {
   const reportsListSearch = {
     box: {
       incremental: true,
+      placeholder: 'Search by Report ID'
     },
-    filters: [
-      {
-        type: 'field_value_selection',
-        field: 'type',
-        name: 'Type',
-        multiselect: false,
-        options: reportTypeOptions.map((type) => ({
-          value: type,
-          name: type,
-          view: type,
-        })),
-      },
-      {
-        type: 'field_value_selection',
-        field: 'state',
-        name: 'State',
-        multiselect: false,
-        options: reportStatusOptions.map((state) => ({
-          value: state,
-          name: state,
-          view: state,
-        })),
-      },
-    ],
+    // filters: [
+    //   {
+    //     type: 'field_value_selection',
+    //     field: 'type',
+    //     name: 'Type',
+    //     multiselect: false,
+    //     options: reportTypeOptions.map((type) => ({
+    //       value: type,
+    //       name: type,
+    //       view: type,
+    //     })),
+    //   },
+    //   {
+    //     type: 'field_value_selection',
+    //     field: 'state',
+    //     name: 'State',
+    //     multiselect: false,
+    //     options: reportStatusOptions.map((state) => ({
+    //       value: state,
+    //       name: state,
+    //       view: state,
+    //     })),
+    //   },
+    // ],
   };
 
   const displayMessage =

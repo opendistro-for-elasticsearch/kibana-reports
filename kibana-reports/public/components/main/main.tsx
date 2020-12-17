@@ -246,7 +246,7 @@ export function Main(props) {
             </EuiTitle>
           </EuiFlexItem>
           <EuiFlexItem component="span" grow={false}>
-            <EuiButton size="m" onClick={refreshReportsTable}>
+            <EuiButton size="m" onClick={refreshReportsTable} iconType='refresh'>
               Refresh
             </EuiButton>
           </EuiFlexItem>
@@ -262,7 +262,8 @@ export function Main(props) {
         />
       </EuiPanel>
       <EuiSpacer />
-      <EuiPanel paddingSize={'l'}>
+      
+      {/* <EuiPanel paddingSize={'l'}>
         <EuiFlexGroup justifyContent="spaceEvenly">
           <EuiFlexItem>
             <EuiTitle>
@@ -297,7 +298,7 @@ export function Main(props) {
           pagination={pagination}
           reportDefinitionsTableContent={reportDefinitionsTableContent}
         />
-      </EuiPanel>
+      </EuiPanel> */}
       <EuiGlobalToastList
         toasts={toasts}
         dismissToast={removeToast}

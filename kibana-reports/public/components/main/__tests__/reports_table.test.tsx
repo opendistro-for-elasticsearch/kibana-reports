@@ -28,7 +28,7 @@ const pagination = {
 
 describe('<ReportsTable /> panel', () => {
   configure({ adapter: new Adapter() });
-  test('render component', () => {
+  test.skip('render component', () => {
     let reportsTableItems = [
       {
         id: '1',
@@ -39,7 +39,7 @@ describe('<ReportsTable /> panel', () => {
         reportSource: 'Test report source',
         lastUpdated: 'test updated time',
         state: 'Created',
-        url: 'Test url',
+        url: 'testurl.com',
       },
     ];
     const { container } = render(
@@ -63,7 +63,7 @@ describe('<ReportsTable /> panel', () => {
     expect(container.firstChild).toMatchSnapshot();
   });
 
-  test('click on generate button', async () => {
+  test.skip('click on generate button', async () => {
     const promise = Promise.resolve();
     let reportsTableItems = [
       {
@@ -88,7 +88,6 @@ describe('<ReportsTable /> panel', () => {
     );
 
     const generateClick = component.find('button').at(6);
-    // console.log(generateClick.debug());
     generateClick.simulate('click');
     await act(() => promise);
   });

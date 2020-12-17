@@ -32,6 +32,7 @@
     "@types/dompurify": "^2.0.4",
     "@types/jsdom": "^16.2.4",
     "@types/react-addons-test-utils": "^0.14.25",
+    "@types/uuid": "^8.3.0",
     "babel-polyfill": "^6.26.0",
     "cheerio": "^1.0.0-rc.3",
     "cron-validator": "^1.1.1",
@@ -54,11 +55,13 @@
     "react-navigation": "^4.3.9",
     "react-router-dom": "^5.2.0",
     "react-toast-notifications": "^2.4.0",
+    "react-uuid": "^1.0.2",
     "regenerator-runtime": "^0.13.7",
     "set-interval-async": "1.0.33",
     "showdown": "^1.9.1",
     "sinon": "^9.2.0",
     "uuid": "^8.1.0",
+    "uuidv4": "^6.2.6",
     "ws": "^7.2.3"
   },
   "devDependencies": {
