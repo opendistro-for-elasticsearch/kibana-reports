@@ -675,7 +675,7 @@ exports[`<ReportsTable /> panel render empty component 1`] = `
             </th>
             <th
               class="euiTableHeaderCell"
-              data-test-subj="tableHeaderCell_reportName_1"
+              data-test-subj="tableHeaderCell_reportSource_1"
               role="columnheader"
               scope="col"
             >

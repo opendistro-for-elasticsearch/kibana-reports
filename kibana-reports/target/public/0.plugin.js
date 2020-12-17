@@ -1,9 +1,9 @@
 (window["opendistroKibanaReports_bundle_jsonpfunction"] = window["opendistroKibanaReports_bundle_jsonpfunction"] || []).push([[0],{
 
 /***/ "../../node_modules/css-loader/dist/cjs.js?!./node_modules/react-mde/lib/styles/css/react-mde-all.css":
-/*!********************************************************************************************************************************************************!*\
-  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/css-loader/dist/cjs.js??ref--5-1!./node_modules/react-mde/lib/styles/css/react-mde-all.css ***!
-  \********************************************************************************************************************************************************/
+/*!****************************************************************************************************************************************************!*\
+  !*** /Users/davidcui/kibana-master/kibana/node_modules/css-loader/dist/cjs.js??ref--5-1!./node_modules/react-mde/lib/styles/css/react-mde-all.css ***!
+  \****************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14,126 +14,6 @@ exports = ___CSS_LOADER_API_IMPORT___(true);
 exports.push([module.i, ".mde-header {\n  flex-shrink: 0;\n  display: flex;\n  flex-wrap: wrap;\n  align-items: stretch;\n  border-bottom: 1px solid #c8ccd0;\n  border-radius: 2px 2px 0 0;\n  background: #f9f9f9; }\n  .mde-header .mde-tabs {\n    display: flex;\n    flex-direction: row; }\n    .mde-header .mde-tabs button {\n      border-radius: 2px;\n      margin: 6px 3px;\n      background-color: transparent;\n      border: 1px solid transparent;\n      cursor: pointer; }\n      .mde-header .mde-tabs button:first-child {\n        margin-left: 6px; }\n      .mde-header .mde-tabs button.selected {\n        border: 1px solid #c8ccd0; }\n  .mde-header .svg-icon {\n    width: 1em;\n    height: 1em;\n    display: inline-block;\n    font-size: inherit;\n    overflow: visible;\n    vertical-align: -.125em; }\n  .mde-header ul.mde-header-group {\n    margin: 0;\n    padding: 10px;\n    list-style: none;\n    display: flex;\n    flex-wrap: nowrap; }\n    .mde-header ul.mde-header-group.hidden {\n      visibility: hidden; }\n    .mde-header ul.mde-header-group li.mde-header-item {\n      display: inline-block;\n      position: relative;\n      margin: 0 4px; }\n      .mde-header ul.mde-header-group li.mde-header-item button {\n        text-align: left;\n        cursor: pointer;\n        height: 22px;\n        padding: 4px;\n        margin: 0;\n        border: none;\n        background: none;\n        color: #242729; }\n\n@keyframes tooltip-appear {\n  from {\n    opacity: 0; }\n  to {\n    opacity: 1; } }\n        .mde-header ul.mde-header-group li.mde-header-item button.tooltipped:hover::before {\n          animation-name: tooltip-appear;\n          animation-duration: 0.2s;\n          animation-delay: 0.5s;\n          animation-fill-mode: forwards;\n          opacity: 0;\n          position: absolute;\n          z-index: 1000001;\n          width: 0;\n          height: 0;\n          color: rgba(0, 0, 0, 0.8);\n          pointer-events: none;\n          content: \"\";\n          border: 5px solid transparent;\n          top: -5px;\n          right: 50%;\n          bottom: auto;\n          margin-right: -5px;\n          border-top-color: rgba(0, 0, 0, 0.8); }\n        .mde-header ul.mde-header-group li.mde-header-item button.tooltipped:hover::after {\n          animation-name: tooltip-appear;\n          animation-duration: 0.2s;\n          animation-delay: 0.5s;\n          animation-fill-mode: forwards;\n          font-size: 11px;\n          opacity: 0;\n          position: absolute;\n          z-index: 1000000;\n          padding: 5px 8px;\n          color: #fff;\n          pointer-events: none;\n          content: attr(aria-label);\n          background: rgba(0, 0, 0, 0.8);\n          border-radius: 3px;\n          right: 50%;\n          bottom: 100%;\n          transform: translateX(50%);\n          margin-bottom: 5px;\n          white-space: nowrap; }\n\n.mde-textarea-wrapper {\n  position: relative; }\n  .mde-textarea-wrapper textarea.mde-text {\n    width: 100%;\n    border: 0;\n    padding: 10px;\n    vertical-align: top;\n    resize: none;\n    overflow-y: auto; }\n\n.mde-preview .mde-preview-content {\n  padding: 10px; }\n  .mde-preview .mde-preview-content p, .mde-preview .mde-preview-content blockquote, .mde-preview .mde-preview-content ul, .mde-preview .mde-preview-content ol, .mde-preview .mde-preview-content dl, .mde-preview .mde-preview-content table, .mde-preview .mde-preview-content pre {\n    margin-top: 0;\n    margin-bottom: 16px; }\n  .mde-preview .mde-preview-content h1, .mde-preview .mde-preview-content h2, .mde-preview .mde-preview-content h3 {\n    margin-top: 24px;\n    margin-bottom: 16px;\n    font-weight: 600;\n    line-height: 1.25;\n    border-bottom: 1px solid #eee;\n    padding-bottom: 0.3em; }\n  .mde-preview .mde-preview-content h1 {\n    font-size: 1.6em; }\n  .mde-preview .mde-preview-content h2 {\n    font-size: 1.4em; }\n  .mde-preview .mde-preview-content h3 {\n    font-size: 1.2em; }\n  .mde-preview .mde-preview-content ul, .mde-preview .mde-preview-content ol {\n    padding-left: 2em; }\n  .mde-preview .mde-preview-content blockquote {\n    margin-left: 0;\n    padding: 0 1em;\n    color: #777;\n    border-left: 0.25em solid #ddd; }\n    .mde-preview .mde-preview-content blockquote > :first-child {\n      margin-top: 0; }\n    .mde-preview .mde-preview-content blockquote > :last-child {\n      margin-bottom: 0; }\n  .mde-preview .mde-preview-content code {\n    padding: 0.2em 0 0.2em 0;\n    margin: 0;\n    font-size: 90%;\n    background-color: rgba(0, 0, 0, 0.04);\n    border-radius: 3px; }\n    .mde-preview .mde-preview-content code::before, .mde-preview .mde-preview-content code::after {\n      letter-spacing: -0.2em;\n      content: \"\\00a0\"; }\n  .mde-preview .mde-preview-content pre {\n    padding: 16px;\n    overflow: auto;\n    font-size: 85%;\n    line-height: 1.45;\n    background-color: #f7f7f7;\n    border-radius: 3px; }\n    .mde-preview .mde-preview-content pre code {\n      display: inline;\n      padding: 0;\n      margin: 0;\n      overflow: visible;\n      line-height: inherit;\n      word-wrap: normal;\n      background-color: transparent;\n      border: 0; }\n      .mde-preview .mde-preview-content pre code::before, .mde-preview .mde-preview-content pre code::after {\n        content: none; }\n    .mde-preview .mde-preview-content pre > code {\n      padding: 0;\n      margin: 0;\n      font-size: 100%;\n      word-break: normal;\n      white-space: pre;\n      background: transparent;\n      border: 0; }\n  .mde-preview .mde-preview-content a {\n    color: #4078c0;\n    text-decoration: none; }\n    .mde-preview .mde-preview-content a:hover {\n      text-decoration: underline; }\n  .mde-preview .mde-preview-content > *:first-child {\n    margin-top: 0 !important; }\n  .mde-preview .mde-preview-content > *:last-child {\n    margin-bottom: 0 !important; }\n  .mde-preview .mde-preview-content::after {\n    display: table;\n    clear: both;\n    content: \"\"; }\n  .mde-preview .mde-preview-content table {\n    display: block;\n    width: 100%;\n    border-spacing: 0;\n    border-collapse: collapse; }\n    .mde-preview .mde-preview-content table thead th {\n      font-weight: bold; }\n    .mde-preview .mde-preview-content table th, .mde-preview .mde-preview-content table td {\n      padding: 6px 13px;\n      border: 1px solid #c8ccd0; }\n\n.react-mde {\n  border: 1px solid #c8ccd0;\n  border-radius: 2px; }\n  .react-mde * {\n    box-sizing: border-box; }\n  .react-mde .grip {\n    border-top: 1px solid #c8ccd0;\n    background-color: #f9f9f9;\n    text-align: center;\n    height: 10px;\n    color: black;\n    cursor: s-resize; }\n    .react-mde .grip .icon {\n      height: 10px; }\n  .react-mde .invisible {\n    display: none; }\n\nul.mde-suggestions {\n  position: absolute;\n  min-width: 180px;\n  padding: 0;\n  margin: 20px 0 0;\n  list-style: none;\n  cursor: pointer;\n  background: #fff;\n  border: 1px solid #c8ccd0;\n  border-radius: 3px;\n  box-shadow: 0 1px 5px rgba(27, 31, 35, 0.15); }\n  ul.mde-suggestions li {\n    padding: 4px 8px;\n    border-bottom: 1px solid #e1e4e8; }\n    ul.mde-suggestions li:first-child {\n      border-top-left-radius: 2px;\n      border-top-right-radius: 2px; }\n    ul.mde-suggestions li:last-child {\n      border-bottom-right-radius: 2px;\n      border-bottom-left-radius: 2px; }\n    ul.mde-suggestions li:hover, ul.mde-suggestions li[aria-selected=true] {\n      color: white;\n      background-color: #0366d6; }\n", "",{"version":3,"sources":["react-mde-all.css"],"names":[],"mappings":"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","file":"react-mde-all.css","sourcesContent":[".mde-header {\n  flex-shrink: 0;\n  display: flex;\n  flex-wrap: wrap;\n  align-items: stretch;\n  border-bottom: 1px solid #c8ccd0;\n  border-radius: 2px 2px 0 0;\n  background: #f9f9f9; }\n  .mde-header .mde-tabs {\n    display: flex;\n    flex-direction: row; }\n    .mde-header .mde-tabs button {\n      border-radius: 2px;\n      margin: 6px 3px;\n      background-color: transparent;\n      border: 1px solid transparent;\n      cursor: pointer; }\n      .mde-header .mde-tabs button:first-child {\n        margin-left: 6px; }\n      .mde-header .mde-tabs button.selected {\n        border: 1px solid #c8ccd0; }\n  .mde-header .svg-icon {\n    width: 1em;\n    height: 1em;\n    display: inline-block;\n    font-size: inherit;\n    overflow: visible;\n    vertical-align: -.125em; }\n  .mde-header ul.mde-header-group {\n    margin: 0;\n    padding: 10px;\n    list-style: none;\n    display: flex;\n    flex-wrap: nowrap; }\n    .mde-header ul.mde-header-group.hidden {\n      visibility: hidden; }\n    .mde-header ul.mde-header-group li.mde-header-item {\n      display: inline-block;\n      position: relative;\n      margin: 0 4px; }\n      .mde-header ul.mde-header-group li.mde-header-item button {\n        text-align: left;\n        cursor: pointer;\n        height: 22px;\n        padding: 4px;\n        margin: 0;\n        border: none;\n        background: none;\n        color: #242729; }\n\n@keyframes tooltip-appear {\n  from {\n    opacity: 0; }\n  to {\n    opacity: 1; } }\n        .mde-header ul.mde-header-group li.mde-header-item button.tooltipped:hover::before {\n          animation-name: tooltip-appear;\n          animation-duration: 0.2s;\n          animation-delay: 0.5s;\n          animation-fill-mode: forwards;\n          opacity: 0;\n          position: absolute;\n          z-index: 1000001;\n          width: 0;\n          height: 0;\n          color: rgba(0, 0, 0, 0.8);\n          pointer-events: none;\n          content: \"\";\n          border: 5px solid transparent;\n          top: -5px;\n          right: 50%;\n          bottom: auto;\n          margin-right: -5px;\n          border-top-color: rgba(0, 0, 0, 0.8); }\n        .mde-header ul.mde-header-group li.mde-header-item button.tooltipped:hover::after {\n          animation-name: tooltip-appear;\n          animation-duration: 0.2s;\n          animation-delay: 0.5s;\n          animation-fill-mode: forwards;\n          font-size: 11px;\n          opacity: 0;\n          position: absolute;\n          z-index: 1000000;\n          padding: 5px 8px;\n          color: #fff;\n          pointer-events: none;\n          content: attr(aria-label);\n          background: rgba(0, 0, 0, 0.8);\n          border-radius: 3px;\n          right: 50%;\n          bottom: 100%;\n          transform: translateX(50%);\n          margin-bottom: 5px;\n          white-space: nowrap; }\n\n.mde-textarea-wrapper {\n  position: relative; }\n  .mde-textarea-wrapper textarea.mde-text {\n    width: 100%;\n    border: 0;\n    padding: 10px;\n    vertical-align: top;\n    resize: none;\n    overflow-y: auto; }\n\n.mde-preview .mde-preview-content {\n  padding: 10px; }\n  .mde-preview .mde-preview-content p, .mde-preview .mde-preview-content blockquote, .mde-preview .mde-preview-content ul, .mde-preview .mde-preview-content ol, .mde-preview .mde-preview-content dl, .mde-preview .mde-preview-content table, .mde-preview .mde-preview-content pre {\n    margin-top: 0;\n    margin-bottom: 16px; }\n  .mde-preview .mde-preview-content h1, .mde-preview .mde-preview-content h2, .mde-preview .mde-preview-content h3 {\n    margin-top: 24px;\n    margin-bottom: 16px;\n    font-weight: 600;\n    line-height: 1.25;\n    border-bottom: 1px solid #eee;\n    padding-bottom: 0.3em; }\n  .mde-preview .mde-preview-content h1 {\n    font-size: 1.6em; }\n  .mde-preview .mde-preview-content h2 {\n    font-size: 1.4em; }\n  .mde-preview .mde-preview-content h3 {\n    font-size: 1.2em; }\n  .mde-preview .mde-preview-content ul, .mde-preview .mde-preview-content ol {\n    padding-left: 2em; }\n  .mde-preview .mde-preview-content blockquote {\n    margin-left: 0;\n    padding: 0 1em;\n    color: #777;\n    border-left: 0.25em solid #ddd; }\n    .mde-preview .mde-preview-content blockquote > :first-child {\n      margin-top: 0; }\n    .mde-preview .mde-preview-content blockquote > :last-child {\n      margin-bottom: 0; }\n  .mde-preview .mde-preview-content code {\n    padding: 0.2em 0 0.2em 0;\n    margin: 0;\n    font-size: 90%;\n    background-color: rgba(0, 0, 0, 0.04);\n    border-radius: 3px; }\n    .mde-preview .mde-preview-content code::before, .mde-preview .mde-preview-content code::after {\n      letter-spacing: -0.2em;\n      content: \"\\00a0\"; }\n  .mde-preview .mde-preview-content pre {\n    padding: 16px;\n    overflow: auto;\n    font-size: 85%;\n    line-height: 1.45;\n    background-color: #f7f7f7;\n    border-radius: 3px; }\n    .mde-preview .mde-preview-content pre code {\n      display: inline;\n      padding: 0;\n      margin: 0;\n      overflow: visible;\n      line-height: inherit;\n      word-wrap: normal;\n      background-color: transparent;\n      border: 0; }\n      .mde-preview .mde-preview-content pre code::before, .mde-preview .mde-preview-content pre code::after {\n        content: none; }\n    .mde-preview .mde-preview-content pre > code {\n      padding: 0;\n      margin: 0;\n      font-size: 100%;\n      word-break: normal;\n      white-space: pre;\n      background: transparent;\n      border: 0; }\n  .mde-preview .mde-preview-content a {\n    color: #4078c0;\n    text-decoration: none; }\n    .mde-preview .mde-preview-content a:hover {\n      text-decoration: underline; }\n  .mde-preview .mde-preview-content > *:first-child {\n    margin-top: 0 !important; }\n  .mde-preview .mde-preview-content > *:last-child {\n    margin-bottom: 0 !important; }\n  .mde-preview .mde-preview-content::after {\n    display: table;\n    clear: both;\n    content: \"\"; }\n  .mde-preview .mde-preview-content table {\n    display: block;\n    width: 100%;\n    border-spacing: 0;\n    border-collapse: collapse; }\n    .mde-preview .mde-preview-content table thead th {\n      font-weight: bold; }\n    .mde-preview .mde-preview-content table th, .mde-preview .mde-preview-content table td {\n      padding: 6px 13px;\n      border: 1px solid #c8ccd0; }\n\n.react-mde {\n  border: 1px solid #c8ccd0;\n  border-radius: 2px; }\n  .react-mde * {\n    box-sizing: border-box; }\n  .react-mde .grip {\n    border-top: 1px solid #c8ccd0;\n    background-color: #f9f9f9;\n    text-align: center;\n    height: 10px;\n    color: black;\n    cursor: s-resize; }\n    .react-mde .grip .icon {\n      height: 10px; }\n  .react-mde .invisible {\n    display: none; }\n\nul.mde-suggestions {\n  position: absolute;\n  min-width: 180px;\n  padding: 0;\n  margin: 20px 0 0;\n  list-style: none;\n  cursor: pointer;\n  background: #fff;\n  border: 1px solid #c8ccd0;\n  border-radius: 3px;\n  box-shadow: 0 1px 5px rgba(27, 31, 35, 0.15); }\n  ul.mde-suggestions li {\n    padding: 4px 8px;\n    border-bottom: 1px solid #e1e4e8; }\n    ul.mde-suggestions li:first-child {\n      border-top-left-radius: 2px;\n      border-top-right-radius: 2px; }\n    ul.mde-suggestions li:last-child {\n      border-bottom-right-radius: 2px;\n      border-bottom-left-radius: 2px; }\n    ul.mde-suggestions li:hover, ul.mde-suggestions li[aria-selected=true] {\n      color: white;\n      background-color: #0366d6; }\n"]}]);
 // Exports
 module.exports = exports;
-
-
-/***/ }),
-
-/***/ "../../node_modules/uuid/lib/bytesToUuid.js":
-/*!*********************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/uuid/lib/bytesToUuid.js ***!
-  \*********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/**
- * Convert array of 16 byte values to UUID string format of the form:
- * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
- */
-var byteToHex = [];
-for (var i = 0; i < 256; ++i) {
-  byteToHex[i] = (i + 0x100).toString(16).substr(1);
-}
-
-function bytesToUuid(buf, offset) {
-  var i = offset || 0;
-  var bth = byteToHex;
-  // join used to fix memory issue caused by concatenation: https://bugs.chromium.org/p/v8/issues/detail?id=3175#c4
-  return ([bth[buf[i++]], bth[buf[i++]], 
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]],
-	bth[buf[i++]], bth[buf[i++]],
-	bth[buf[i++]], bth[buf[i++]]]).join('');
-}
-
-module.exports = bytesToUuid;
-
-
-/***/ }),
-
-/***/ "../../node_modules/uuid/lib/rng-browser.js":
-/*!*********************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/uuid/lib/rng-browser.js ***!
-  \*********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-// Unique ID creation requires a high quality random # generator.  In the
-// browser this is a little complicated due to unknown quality of Math.random()
-// and inconsistent support for the `crypto` API.  We do the best we can via
-// feature-detection
-
-// getRandomValues needs to be invoked in a context where "this" is a Crypto
-// implementation. Also, find the complete implementation of crypto on IE11.
-var getRandomValues = (typeof(crypto) != 'undefined' && crypto.getRandomValues && crypto.getRandomValues.bind(crypto)) ||
-                      (typeof(msCrypto) != 'undefined' && typeof window.msCrypto.getRandomValues == 'function' && msCrypto.getRandomValues.bind(msCrypto));
-
-if (getRandomValues) {
-  // WHATWG crypto RNG - http://wiki.whatwg.org/wiki/Crypto
-  var rnds8 = new Uint8Array(16); // eslint-disable-line no-undef
-
-  module.exports = function whatwgRNG() {
-    getRandomValues(rnds8);
-    return rnds8;
-  };
-} else {
-  // Math.random()-based (RNG)
-  //
-  // If all else fails, use Math.random().  It's fast, but is of unspecified
-  // quality.
-  var rnds = new Array(16);
-
-  module.exports = function mathRNG() {
-    for (var i = 0, r; i < 16; i++) {
-      if ((i & 0x03) === 0) r = Math.random() * 0x100000000;
-      rnds[i] = r >>> ((i & 0x03) << 3) & 0xff;
-    }
-
-    return rnds;
-  };
-}
-
-
-/***/ }),
-
-/***/ "../../node_modules/uuid/v4.js":
-/*!********************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/uuid/v4.js ***!
-  \********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var rng = __webpack_require__(/*! ./lib/rng */ "../../node_modules/uuid/lib/rng-browser.js");
-var bytesToUuid = __webpack_require__(/*! ./lib/bytesToUuid */ "../../node_modules/uuid/lib/bytesToUuid.js");
-
-function v4(options, buf, offset) {
-  var i = buf && offset || 0;
-
-  if (typeof(options) == 'string') {
-    buf = options === 'binary' ? new Array(16) : null;
-    options = null;
-  }
-  options = options || {};
-
-  var rnds = options.random || (options.rng || rng)();
-
-  // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
-  rnds[6] = (rnds[6] & 0x0f) | 0x40;
-  rnds[8] = (rnds[8] & 0x3f) | 0x80;
-
-  // Copy bytes to buffer, if provided
-  if (buf) {
-    for (var ii = 0; ii < 16; ++ii) {
-      buf[i + ii] = rnds[ii];
-    }
-  }
-
-  return buf || bytesToUuid(rnds);
-}
-
-module.exports = v4;
 
 
 /***/ }),
