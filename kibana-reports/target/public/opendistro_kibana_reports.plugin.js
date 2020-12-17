@@ -622,6 +622,126 @@ module.exports = function (list, options) {
 
 /***/ }),
 
+/***/ "../../node_modules/uuid/lib/bytesToUuid.js":
+/*!*************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/uuid/lib/bytesToUuid.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Convert array of 16 byte values to UUID string format of the form:
+ * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+ */
+var byteToHex = [];
+for (var i = 0; i < 256; ++i) {
+  byteToHex[i] = (i + 0x100).toString(16).substr(1);
+}
+
+function bytesToUuid(buf, offset) {
+  var i = offset || 0;
+  var bth = byteToHex;
+  // join used to fix memory issue caused by concatenation: https://bugs.chromium.org/p/v8/issues/detail?id=3175#c4
+  return ([bth[buf[i++]], bth[buf[i++]], 
+	bth[buf[i++]], bth[buf[i++]], '-',
+	bth[buf[i++]], bth[buf[i++]], '-',
+	bth[buf[i++]], bth[buf[i++]], '-',
+	bth[buf[i++]], bth[buf[i++]], '-',
+	bth[buf[i++]], bth[buf[i++]],
+	bth[buf[i++]], bth[buf[i++]],
+	bth[buf[i++]], bth[buf[i++]]]).join('');
+}
+
+module.exports = bytesToUuid;
+
+
+/***/ }),
+
+/***/ "../../node_modules/uuid/lib/rng-browser.js":
+/*!*************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/uuid/lib/rng-browser.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// Unique ID creation requires a high quality random # generator.  In the
+// browser this is a little complicated due to unknown quality of Math.random()
+// and inconsistent support for the `crypto` API.  We do the best we can via
+// feature-detection
+
+// getRandomValues needs to be invoked in a context where "this" is a Crypto
+// implementation. Also, find the complete implementation of crypto on IE11.
+var getRandomValues = (typeof(crypto) != 'undefined' && crypto.getRandomValues && crypto.getRandomValues.bind(crypto)) ||
+                      (typeof(msCrypto) != 'undefined' && typeof window.msCrypto.getRandomValues == 'function' && msCrypto.getRandomValues.bind(msCrypto));
+
+if (getRandomValues) {
+  // WHATWG crypto RNG - http://wiki.whatwg.org/wiki/Crypto
+  var rnds8 = new Uint8Array(16); // eslint-disable-line no-undef
+
+  module.exports = function whatwgRNG() {
+    getRandomValues(rnds8);
+    return rnds8;
+  };
+} else {
+  // Math.random()-based (RNG)
+  //
+  // If all else fails, use Math.random().  It's fast, but is of unspecified
+  // quality.
+  var rnds = new Array(16);
+
+  module.exports = function mathRNG() {
+    for (var i = 0, r; i < 16; i++) {
+      if ((i & 0x03) === 0) r = Math.random() * 0x100000000;
+      rnds[i] = r >>> ((i & 0x03) << 3) & 0xff;
+    }
+
+    return rnds;
+  };
+}
+
+
+/***/ }),
+
+/***/ "../../node_modules/uuid/v4.js":
+/*!************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/uuid/v4.js ***!
+  \************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var rng = __webpack_require__(/*! ./lib/rng */ "../../node_modules/uuid/lib/rng-browser.js");
+var bytesToUuid = __webpack_require__(/*! ./lib/bytesToUuid */ "../../node_modules/uuid/lib/bytesToUuid.js");
+
+function v4(options, buf, offset) {
+  var i = buf && offset || 0;
+
+  if (typeof(options) == 'string') {
+    buf = options === 'binary' ? new Array(16) : null;
+    options = null;
+  }
+  options = options || {};
+
+  var rnds = options.random || (options.rng || rng)();
+
+  // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+  rnds[6] = (rnds[6] & 0x0f) | 0x40;
+  rnds[8] = (rnds[8] & 0x3f) | 0x80;
+
+  // Copy bytes to buffer, if provided
+  if (buf) {
+    for (var ii = 0; ii < 16; ++ii) {
+      buf[i + ii] = rnds[ii];
+    }
+  }
+
+  return buf || bytesToUuid(rnds);
+}
+
+module.exports = v4;
+
+
+/***/ }),
+
 /***/ "../../node_modules/val-loader/dist/cjs.js?key=opendistro_kibana_reports!../../packages/kbn-ui-shared-deps/public_path_module_creator.js":
 /*!*********************************************************************************************************************************************************************************************************************!*\
   !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/val-loader/dist/cjs.js?key=opendistro_kibana_reports!/Users/szhongna/Desktop/reporting/kibana/packages/kbn-ui-shared-deps/public_path_module_creator.js ***!
@@ -12043,6 +12163,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _main_main_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../main/main_utils */ "./public/components/main/main_utils.tsx");
 /* harmony import */ var _context_menu_helpers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./context_menu_helpers */ "./public/components/context_menu/context_menu_helpers.js");
 /* harmony import */ var _context_menu_ui__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./context_menu_ui */ "./public/components/context_menu/context_menu_ui.js");
+/* harmony import */ var uuid_v4__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! uuid/v4 */ "../../node_modules/uuid/v4.js");
+/* harmony import */ var uuid_v4__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(uuid_v4__WEBPACK_IMPORTED_MODULE_5__);
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -12059,6 +12181,7 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 /* eslint-disable no-restricted-globals */
+
 
 
 
@@ -12099,7 +12222,7 @@ const generateInContextReport = (timeRanges, queryUrl, fileFormat, rest = {}) =>
     time_to: timeRanges.time_to.valueOf(),
     report_definition: {
       report_params: {
-        report_name: 'On_demand_report',
+        report_name: jquery__WEBPACK_IMPORTED_MODULE_0___default()('span.euiBreadcrumb').prop('title') + '_' + uuid_v4__WEBPACK_IMPORTED_MODULE_5___default()(),
         report_source: reportSource,
         description: 'In-context report download',
         core_params: {
@@ -12507,17 +12630,35 @@ const popoverMenu = () => {
                          </button>
                       </div>
                    </div>
-                   <div class="euiPopoverTitle">
+                   <div hidden class="euiPopoverTitle">
                     <span class="euiContextMenu__itemLayout">
                       Report definition
                     </span>
                   </div>
-                  <div>
+                  <div hidden>
                     <button class="euiContextMenuItem" type="button" data-test-subj="downloadPanel-GeneratePDF" id="createReportDefinition">
                       <span class="euiContextMenu__itemLayout">
                         <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon" focusable="false" role="img" aria-hidden="true"><path d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z" fill-rule="evenodd"></path></svg>
                         <span class="euiContextMenuItem__text">Create report definition</span>
                         </svg>
+                      </span>
+                    </button>
+                  </div>
+                  <div class="euiPopoverTitle">
+                    <span class="euiContextMenu__itemLayout">
+                      View
+                    </span>
+                  </div>
+                  <div>
+                    <button class="euiContextMenuItem" type="button" data-test-subj="downloadPanel-GeneratePDF" id="viewReports">
+                      <span class="euiContextMenu__itemLayout">
+                        <svg id="reports-icon" width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon">
+                            <g transform="translate(1.000000, 0.000000)" fill="currentColor">
+                              <path d="M9.8,0 L1,0 C0.448,0 0,0.448 0,1 L0,15 C0,15.552 0.448,16 1,16 L13,16 C13.552,16 14,15.552 14,15 L14,4.429 C14,4.173 13.902,3.926 13.726,3.74 L10.526,0.312 C10.337,0.113 10.074,0 9.8,0 M9,1 L9,4.5 C9,4.776 9.224,5 9.5,5 L9.5,5 L13,5 L13,15 L1,15 L1,1 L9,1 Z M11.5,13 L2.5,13 L2.5,14 L11.5,14 L11.5,13 Z M10.8553858,6.66036578 L7.924,9.827 L5.42565136,8.13939866 L2.63423628,11.1343544 L3.36576372,11.8161664 L5.574,9.446 L8.07559521,11.1358573 L11.5892757,7.33963422 L10.8553858,6.66036578 Z M7.5,4 L2.5,4 L2.5,5 L7.5,5 L7.5,4 Z M7.5,2 L2.5,2 L2.5,3 L7.5,3 L7.5,2 Z"></path>
+                            </g>
+                        </svg>
+                          <span class="euiContextMenuItem__text">View reports</span>
+                          </svg>
                       </span>
                     </button>
                   </div>
@@ -12532,7 +12673,7 @@ const popoverMenu = () => {
 const popoverMenuDiscover = savedSearchAvailable => {
   const buttonClass = savedSearchAvailable ? 'euiContextMenuItem' : 'euiContextMenuItem euiContextMenuItem-isDisabled';
   const button = savedSearchAvailable ? 'button' : 'button disabled';
-  const popoverHeight = savedSearchAvailable ? '354px' : '322px';
+  const popoverHeight = savedSearchAvailable ? '265px' : '235px';
   const message = savedSearchAvailable ? `Files can take a minute or two to generate depending on the size of your source data.` : `Save this search to enable CSV reports.`;
   return `
     <div>
@@ -12566,12 +12707,12 @@ const popoverMenuDiscover = savedSearchAvailable => {
                       </span>
                     </button>
                   </div>
-                   <div class="euiPopoverTitle">
+                   <div hidden class="euiPopoverTitle">
                     <span class="euiContextMenu__itemLayout">
                       Schedule and share
                     </span>
                   </div>
-                  <div>
+                  <div hidden>
                     <${button} class="${buttonClass}" type="button" data-test-subj="downloadPanel-GeneratePDF" id="createReportDefinition">
                       <span class="euiContextMenu__itemLayout">
                         <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon" focusable="false" role="img" aria-hidden="true"><path d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z" fill-rule="evenodd"></path></svg>
@@ -12593,7 +12734,7 @@ const popoverMenuDiscover = savedSearchAvailable => {
                               <path d="M9.8,0 L1,0 C0.448,0 0,0.448 0,1 L0,15 C0,15.552 0.448,16 1,16 L13,16 C13.552,16 14,15.552 14,15 L14,4.429 C14,4.173 13.902,3.926 13.726,3.74 L10.526,0.312 C10.337,0.113 10.074,0 9.8,0 M9,1 L9,4.5 C9,4.776 9.224,5 9.5,5 L9.5,5 L13,5 L13,15 L1,15 L1,1 L9,1 Z M11.5,13 L2.5,13 L2.5,14 L11.5,14 L11.5,13 Z M10.8553858,6.66036578 L7.924,9.827 L5.42565136,8.13939866 L2.63423628,11.1343544 L3.36576372,11.8161664 L5.574,9.446 L8.07559521,11.1358573 L11.5892757,7.33963422 L10.8553858,6.66036578 Z M7.5,4 L2.5,4 L2.5,5 L7.5,5 L7.5,4 Z M7.5,2 L2.5,2 L2.5,3 L7.5,3 L7.5,2 Z"></path>
                             </g>
                         </svg>
-                          <span class="euiContextMenuItem__text">Reporting home</span>
+                          <span class="euiContextMenuItem__text">View Reports</span>
                           </svg>
                       </span>
                     </button>
@@ -12799,7 +12940,8 @@ const addReportsTableContent = data => {
       sender: `\u2014`,
       kibanaRecipients: `\u2014`,
       emailRecipients: `\u2014`,
-      reportSource: reportParams.report_source,
+      reportSource: reportParams.report_name.substring(0, reportParams.report_name.lastIndexOf('_')),
+      // remove uuid from report name to display report source
       //TODO: wrong name
       timeCreated: report.time_created,
       state: report.state,

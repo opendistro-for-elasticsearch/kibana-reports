@@ -29,6 +29,7 @@ import {
   generateReportById,
 } from './main_utils';
 import { GenerateReportLoadingModal } from './loading_modal';
+import dateMath from '@elastic/datemath';
 
 const reportStatusOptions = [
   'Created',
@@ -94,43 +95,51 @@ export function ReportsTable(props) {
     handleLoading(false);
   };
 
+  const parseTimePeriod = (queryUrl: string) => {
+    let [timeStringRegEx, fromDateString, toDateString] = queryUrl.match(
+      /time:\(from:(.+),to:(.+?)\)/
+    );
+
+    fromDateString = fromDateString.replace(/[']+/g, '');
+    toDateString = toDateString.replace(/[']+/g, '');
+
+    let fromDateParsed = dateMath.parse(fromDateString);
+    let toDateParsed = dateMath.parse(toDateString);
+
+    const fromTimePeriod = fromDateParsed?.toDate();
+    const toTimePeriod = toDateParsed?.toDate();
+    return (
+      fromTimePeriod?.toLocaleString() + ' -> ' + toTimePeriod?.toLocaleString()
+    );
+  };
+
   const reportsTableColumns = [
     {
       field: 'reportName',
-      name: 'Name',
-      render: (reportName, item) => (
-        <EuiLink
-          disabled={item.state === 'Pending'}
-          onClick={() => {
-            window.location.assign(
-              `opendistro_kibana_reports#/report_details/${item.id}`
-            );
-          }}
-          id={'reportDetailsLink'}
-        >
-          {reportName}
-        </EuiLink>
-      ),
+      name: 'Report ID',
+      render: (reportName) => {
+        return <EuiText size="s">{reportName}</EuiText>;
+      },
     },
     {
       // TODO: link to dashboard/visualization snapshot, use "queryUrl" field. Display dashboard name?
       field: 'reportSource',
       name: 'Source',
-      render: (source, item) =>
+      render: (reportSource, item) =>
         item.state === 'Pending' ? (
-          <EuiText size="s">{source}</EuiText>
+          <EuiText size="s">{reportSource}</EuiText>
         ) : (
           <EuiLink href={item.url} target="_blank">
-            {source}
+            {reportSource}
           </EuiLink>
         ),
     },
-    {
-      field: 'type',
-      name: 'Type',
-      sortable: true,
-      truncateText: false,
-    },
+    // {
+    //   field: 'type',
+    //   name: 'Type',
+    //   sortable: true,
+    //   truncateText: false,
+    // },
     {
       field: 'timeCreated',
       name: 'Creation time',
@@ -140,11 +149,19 @@ export function ReportsTable(props) {
       },
     },
     {
-      field: 'state',
-      name: 'State',
-      sortable: true,
-      truncateText: false,
+      field: 'url',
+      name: 'Time period',
+      render: (url) => {
+        let timePeriod = parseTimePeriod(url);
+        return <EuiText size="s">{timePeriod}</EuiText>;
+      },
     },
+    // {
+    //   field: 'state',
+    //   name: 'State',
+    //   sortable: true,
+    //   truncateText: false,
+    // },
     {
       field: 'id',
       name: 'Generate',
@@ -171,31 +188,32 @@ export function ReportsTable(props) {
   const reportsListSearch = {
     box: {
       incremental: true,
+      placeholder: 'Search by Report ID',
     },
-    filters: [
-      {
-        type: 'field_value_selection',
-        field: 'type',
-        name: 'Type',
-        multiSelect: 'or',
-        options: reportTypeOptions.map((type) => ({
-          value: type,
-          name: type,
-          view: type,
-        })),
-      },
-      {
-        type: 'field_value_selection',
-        field: 'state',
-        name: 'State',
-        multiSelect: 'or',
-        options: reportStatusOptions.map((state) => ({
-          value: state,
-          name: state,
-          view: state,
-        })),
-      },
-    ],
+    // filters: [
+    //   {
+    //     type: 'field_value_selection',
+    //     field: 'type',
+    //     name: 'Type',
+    //     multiselect: false,
+    //     options: reportTypeOptions.map((type) => ({
+    //       value: type,
+    //       name: type,
+    //       view: type,
+    //     })),
+    //   },
+    //   {
+    //     type: 'field_value_selection',
+    //     field: 'state',
+    //     name: 'State',
+    //     multiselect: false,
+    //     options: reportStatusOptions.map((state) => ({
+    //       value: state,
+    //       name: state,
+    //       view: state,
+    //     })),
+    //   },
+    // ],
   };
 
   const displayMessage =
@@ -203,8 +221,9 @@ export function ReportsTable(props) {
       ? emptyMessageReports
       : '0 reports match the search criteria. Search again';
 
-  const showLoadingModal = showLoading ? 
-    <GenerateReportLoadingModal setShowLoading={setShowLoading} /> : null;
+  const showLoadingModal = showLoading ? (
+    <GenerateReportLoadingModal setShowLoading={setShowLoading} />
+  ) : null;
 
   return (
     <Fragment>

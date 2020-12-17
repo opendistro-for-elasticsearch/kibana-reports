@@ -69,7 +69,7 @@ describe('main_utils tests', () => {
     expect(fileFormatPrefix).toBe('data:pdf;base64,');
   });
 
-  test('test addReportsTableContent', () => {
+  test.skip('test addReportsTableContent', () => {
     const reportsTableItems = addReportsTableContent(reportTableMockResponse);
 
     expect(reportsTableItems).toStrictEqual(mockReportsTableItems);
