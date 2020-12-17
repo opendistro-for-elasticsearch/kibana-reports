@@ -75,17 +75,35 @@ export const popoverMenu = () => {
                          </button>
                       </div>
                    </div>
-                   <div class="euiPopoverTitle">
+                   <div hidden class="euiPopoverTitle">
                     <span class="euiContextMenu__itemLayout">
                       Report definition
                     </span>
                   </div>
-                  <div>
+                  <div hidden>
                     <button class="euiContextMenuItem" type="button" data-test-subj="downloadPanel-GeneratePDF" id="createReportDefinition">
                       <span class="euiContextMenu__itemLayout">
                         <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon" focusable="false" role="img" aria-hidden="true"><path d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z" fill-rule="evenodd"></path></svg>
                         <span class="euiContextMenuItem__text">Create report definition</span>
                         </svg>
+                      </span>
+                    </button>
+                  </div>
+                  <div class="euiPopoverTitle">
+                    <span class="euiContextMenu__itemLayout">
+                      View
+                    </span>
+                  </div>
+                  <div>
+                    <button class="euiContextMenuItem" type="button" data-test-subj="downloadPanel-GeneratePDF" id="viewReports">
+                      <span class="euiContextMenu__itemLayout">
+                        <svg id="reports-icon" width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon">
+                            <g transform="translate(1.000000, 0.000000)" fill="currentColor">
+                              <path d="M9.8,0 L1,0 C0.448,0 0,0.448 0,1 L0,15 C0,15.552 0.448,16 1,16 L13,16 C13.552,16 14,15.552 14,15 L14,4.429 C14,4.173 13.902,3.926 13.726,3.74 L10.526,0.312 C10.337,0.113 10.074,0 9.8,0 M9,1 L9,4.5 C9,4.776 9.224,5 9.5,5 L9.5,5 L13,5 L13,15 L1,15 L1,1 L9,1 Z M11.5,13 L2.5,13 L2.5,14 L11.5,14 L11.5,13 Z M10.8553858,6.66036578 L7.924,9.827 L5.42565136,8.13939866 L2.63423628,11.1343544 L3.36576372,11.8161664 L5.574,9.446 L8.07559521,11.1358573 L11.5892757,7.33963422 L10.8553858,6.66036578 Z M7.5,4 L2.5,4 L2.5,5 L7.5,5 L7.5,4 Z M7.5,2 L2.5,2 L2.5,3 L7.5,3 L7.5,2 Z"></path>
+                            </g>
+                        </svg>
+                          <span class="euiContextMenuItem__text">View reports</span>
+                          </svg>
                       </span>
                     </button>
                   </div>
@@ -101,7 +119,7 @@ export const popoverMenu = () => {
 export const popoverMenuDiscover = (savedSearchAvailable) => {
   const buttonClass = savedSearchAvailable ? 'euiContextMenuItem' : 'euiContextMenuItem euiContextMenuItem-isDisabled';
   const button = savedSearchAvailable ? 'button' : 'button disabled';
-  const popoverHeight = savedSearchAvailable ? '354px' : '322px';
+  const popoverHeight = savedSearchAvailable ? '265px' : '235px';
   const message = savedSearchAvailable ?
     `Files can take a minute or two to generate depending on the size of your source data.` :
     `Save this search to enable CSV reports.`;
@@ -138,12 +156,12 @@ export const popoverMenuDiscover = (savedSearchAvailable) => {
                       </span>
                     </button>
                   </div>
-                   <div class="euiPopoverTitle">
+                   <div hidden class="euiPopoverTitle">
                     <span class="euiContextMenu__itemLayout">
                       Schedule and share
                     </span>
                   </div>
-                  <div>
+                  <div hidden>
                     <${button} class="${buttonClass}" type="button" data-test-subj="downloadPanel-GeneratePDF" id="createReportDefinition">
                       <span class="euiContextMenu__itemLayout">
                         <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon" focusable="false" role="img" aria-hidden="true"><path d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z" fill-rule="evenodd"></path></svg>
@@ -165,7 +183,7 @@ export const popoverMenuDiscover = (savedSearchAvailable) => {
                               <path d="M9.8,0 L1,0 C0.448,0 0,0.448 0,1 L0,15 C0,15.552 0.448,16 1,16 L13,16 C13.552,16 14,15.552 14,15 L14,4.429 C14,4.173 13.902,3.926 13.726,3.74 L10.526,0.312 C10.337,0.113 10.074,0 9.8,0 M9,1 L9,4.5 C9,4.776 9.224,5 9.5,5 L9.5,5 L13,5 L13,15 L1,15 L1,1 L9,1 Z M11.5,13 L2.5,13 L2.5,14 L11.5,14 L11.5,13 Z M10.8553858,6.66036578 L7.924,9.827 L5.42565136,8.13939866 L2.63423628,11.1343544 L3.36576372,11.8161664 L5.574,9.446 L8.07559521,11.1358573 L11.5892757,7.33963422 L10.8553858,6.66036578 Z M7.5,4 L2.5,4 L2.5,5 L7.5,5 L7.5,4 Z M7.5,2 L2.5,2 L2.5,3 L7.5,3 L7.5,2 Z"></path>
                             </g>
                         </svg>
-                          <span class="euiContextMenuItem__text">Reporting home</span>
+                          <span class="euiContextMenuItem__text">View Reports</span>
                           </svg>
                       </span>
                     </button>
