@@ -291,9 +291,6 @@ exports[`<Main /> panel render component 1`] = `
     </div>
   </div>
   <div
-    class="euiSpacer euiSpacer--l"
-  />
-  <div
     aria-live="polite"
     class="euiGlobalToastList euiGlobalToastList--right"
     role="region"
@@ -603,9 +600,6 @@ exports[`<Main /> panel render component after create success 1`] = `
       </div>
     </div>
   </div>
-  <div
-    class="euiSpacer euiSpacer--l"
-  />
   <div
     aria-live="polite"
     class="euiGlobalToastList euiGlobalToastList--right"
@@ -965,9 +959,6 @@ exports[`<Main /> panel render component after edit success 1`] = `
       </div>
     </div>
   </div>
-  <div
-    class="euiSpacer euiSpacer--l"
-  />
   <div
     aria-live="polite"
     class="euiGlobalToastList euiGlobalToastList--right"
