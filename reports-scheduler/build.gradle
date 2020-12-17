@@ -126,8 +126,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-common:${kotlin_version}"
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9"
     // TODO: this is temp change for backporting
-    // compile "${group}:common-utils:${opendistroVersion}.2"
-    implementation files("lib/common-utils-1.12.0.2.jar")
+    compile "${group}:common-utils:1.11.1.0"
     compileOnly "${group}:opendistro-job-scheduler-spi:${opendistroVersion}.0"
     compile group: 'com.google.guava', name: 'guava', version: '15.0'
     testImplementation(
