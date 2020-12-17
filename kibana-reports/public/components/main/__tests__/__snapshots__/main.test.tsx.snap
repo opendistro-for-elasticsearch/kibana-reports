@@ -149,7 +149,7 @@ exports[`<Main /> panel render component 1`] = `
                 </th>
                 <th
                   class="euiTableHeaderCell"
-                  data-test-subj="tableHeaderCell_reportName_1"
+                  data-test-subj="tableHeaderCell_reportSource_1"
                   role="columnheader"
                   scope="col"
                 >
@@ -455,7 +455,7 @@ exports[`<Main /> panel render component after create success 1`] = `
                 </th>
                 <th
                   class="euiTableHeaderCell"
-                  data-test-subj="tableHeaderCell_reportName_1"
+                  data-test-subj="tableHeaderCell_reportSource_1"
                   role="columnheader"
                   scope="col"
                 >
@@ -814,7 +814,7 @@ exports[`<Main /> panel render component after edit success 1`] = `
                 </th>
                 <th
                   class="euiTableHeaderCell"
-                  data-test-subj="tableHeaderCell_reportName_1"
+                  data-test-subj="tableHeaderCell_reportSource_1"
                   role="columnheader"
                   scope="col"
                 >

@@ -405,7 +405,7 @@ function Main(props) {
     handleSuccessToast: handleOnDemandDownloadSuccessToast,
     handleErrorToast: handleOnDemandDownloadErrorToast,
     handlePermissionsMissingToast: handlePermissionsMissingDownloadToast
-  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiGlobalToastList"], {
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiGlobalToastList"], {
     toasts: toasts,
     dismissToast: removeToast,
     toastLifeTimeMs: 6000
@@ -1204,8 +1204,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _main_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./main_utils */ "./public/components/main/main_utils.tsx");
 /* harmony import */ var _elastic_datemath__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @elastic/datemath */ "../../packages/elastic-datemath/target/index.js");
 /* harmony import */ var _elastic_datemath__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_elastic_datemath__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var uuid_v4__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! uuid/v4 */ "../../node_modules/uuid/v4.js");
-/* harmony import */ var uuid_v4__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(uuid_v4__WEBPACK_IMPORTED_MODULE_4__);
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -1220,7 +1218,6 @@ __webpack_require__.r(__webpack_exports__);
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-
 
 
 
@@ -1314,22 +1311,21 @@ function ReportsTable(props) {
     field: 'reportName',
     name: 'Report ID',
     render: reportName => {
-      const id = reportName + '_' + uuid_v4__WEBPACK_IMPORTED_MODULE_4___default()();
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiText"], {
         size: "s"
-      }, id);
+      }, reportName);
     }
   }, {
     // TODO: link to dashboard/visualization snapshot, use "queryUrl" field. Display dashboard name?
-    field: 'reportName',
+    field: 'reportSource',
     name: 'Source',
-    render: (reportName, item) => item.state === 'Pending' ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiText"], {
+    render: (reportSource, item) => item.state === 'Pending' ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiText"], {
       size: "s"
-    }, reportName) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiLink"], {
+    }, reportSource) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiLink"], {
       href: item.url,
       target: "_blank"
-    }, reportName)
-  }, // {
+    }, reportSource)
+  }, // { 
   //   field: 'type',
   //   name: 'Type',
   //   sortable: true, 
@@ -1349,7 +1345,9 @@ function ReportsTable(props) {
     name: 'Time period',
     render: url => {
       let timePeriod = parseTimePeriod(url);
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiText"], null, timePeriod);
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiText"], {
+        size: "s"
+      }, timePeriod);
     }
   }, // {
   //   field: 'state',

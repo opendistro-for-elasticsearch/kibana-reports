@@ -38,7 +38,6 @@ import {
   generateReportById,
 } from './main_utils';
 import dateMath from '@elastic/datemath';
-import uuidv4 from 'uuid/v4';
 
 const reportStatusOptions = [
   'Created',
@@ -174,24 +173,23 @@ export function ReportsTable(props) {
       field: 'reportName',
       name: 'Report ID',
       render: (reportName) => {
-        const id = reportName + '_' + uuidv4();
-        return <EuiText size="s">{id}</EuiText>
+        return <EuiText size="s">{reportName}</EuiText>
       }
     },
     {
       // TODO: link to dashboard/visualization snapshot, use "queryUrl" field. Display dashboard name?
-      field: 'reportName',
+      field: 'reportSource',
       name: 'Source',
-      render: (reportName, item) =>
+      render: (reportSource, item) =>
         item.state === 'Pending' ? (
-          <EuiText size="s">{reportName}</EuiText>
+          <EuiText size="s">{reportSource}</EuiText>
         ) : (
           <EuiLink href={item.url} target="_blank">
-            {reportName}
+            {reportSource}
           </EuiLink>
         ),
     },    
-    // {
+    // { 
     //   field: 'type',
     //   name: 'Type',
     //   sortable: true, 
@@ -210,7 +208,7 @@ export function ReportsTable(props) {
       name: 'Time period',
       render: (url) => {
         let timePeriod = parseTimePeriod(url);
-        return <EuiText>{timePeriod}</EuiText>
+        return <EuiText size="s">{timePeriod}</EuiText>
       }
     },
     // {
