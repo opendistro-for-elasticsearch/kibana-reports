@@ -261,8 +261,7 @@ export function Main(props) {
           handlePermissionsMissingToast={handlePermissionsMissingDownloadToast}
         />
       </EuiPanel>
-      <EuiSpacer />
-      
+      {/* <EuiSpacer /> */}
       {/* <EuiPanel paddingSize={'l'}>
         <EuiFlexGroup justifyContent="spaceEvenly">
           <EuiFlexItem>
