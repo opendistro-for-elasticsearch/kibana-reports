@@ -159,10 +159,17 @@ async function generateReportData(
       },
       isScheduledTask
     );
-    // The location of max result window differs if default overridden.
-    return settings[indexPattern].settings.index.max_result_window != null
-      ? settings[indexPattern].settings.index.max_result_window
-      : settings[indexPattern].defaults.index.max_result_window;
+
+    let maxResultSize = Number.MAX_SAFE_INTEGER;
+    for (let indexName in settings) {
+      // The location of max result window differs if default overridden.
+      maxResultSize = Math.min(
+        maxResultSize,
+        settings[indexName].settings.index.max_result_window ||
+          settings[indexName].defaults.index.max_result_window
+      );
+    }
+    return maxResultSize;
   }
 
   // Build the ES Count query to count the size of result
