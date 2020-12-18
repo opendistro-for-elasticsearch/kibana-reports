@@ -2748,6 +2748,7 @@ exports[`<ReportSettings /> panel render edit, dashboard source 1`] = `
             <input
               checked=""
               class="euiRadio__input"
+              disabled=""
               id="dashboardReportSource"
               type="radio"
               value=""
@@ -2767,6 +2768,7 @@ exports[`<ReportSettings /> panel render edit, dashboard source 1`] = `
           >
             <input
               class="euiRadio__input"
+              disabled=""
               id="visualizationReportSource"
               type="radio"
               value=""
@@ -2786,6 +2788,7 @@ exports[`<ReportSettings /> panel render edit, dashboard source 1`] = `
           >
             <input
               class="euiRadio__input"
+              disabled=""
               id="savedSearchReportSource"
               type="radio"
               value=""
@@ -3248,6 +3251,7 @@ exports[`<ReportSettings /> panel render edit, saved search source 1`] = `
             <input
               checked=""
               class="euiRadio__input"
+              disabled=""
               id="dashboardReportSource"
               type="radio"
               value=""
@@ -3267,6 +3271,7 @@ exports[`<ReportSettings /> panel render edit, saved search source 1`] = `
           >
             <input
               class="euiRadio__input"
+              disabled=""
               id="visualizationReportSource"
               type="radio"
               value=""
@@ -3286,6 +3291,7 @@ exports[`<ReportSettings /> panel render edit, saved search source 1`] = `
           >
             <input
               class="euiRadio__input"
+              disabled=""
               id="savedSearchReportSource"
               type="radio"
               value=""
@@ -3748,6 +3754,7 @@ exports[`<ReportSettings /> panel render edit, visualization source 1`] = `
             <input
               checked=""
               class="euiRadio__input"
+              disabled=""
               id="dashboardReportSource"
               type="radio"
               value=""
@@ -3767,6 +3774,7 @@ exports[`<ReportSettings /> panel render edit, visualization source 1`] = `
           >
             <input
               class="euiRadio__input"
+              disabled=""
               id="visualizationReportSource"
               type="radio"
               value=""
@@ -3786,6 +3794,7 @@ exports[`<ReportSettings /> panel render edit, visualization source 1`] = `
           >
             <input
               class="euiRadio__input"
+              disabled=""
               id="savedSearchReportSource"
               type="radio"
               value=""

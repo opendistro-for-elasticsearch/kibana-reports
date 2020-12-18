@@ -45,7 +45,9 @@ export const saveReport = async (
         },
       },
     },
-    status: BACKEND_REPORT_STATE.executing, // download from in-context menu should always pass executing state to backend
+    // download from in-context menu should always pass executing state to backend
+    // TODO: set to success, since update report status API in temporarily unavailable, need change back to pending later
+    status: BACKEND_REPORT_STATE.success,
     inContextDownloadUrlPath: queryUrl,
   };
 

@@ -13,6 +13,8 @@
  * permissions and limitations under the License.
  */
 
+import { PLUGIN_ID } from '../../../common';
+
 export enum FORMAT {
   pdf = 'pdf',
   png = 'png',
@@ -65,16 +67,18 @@ export enum DELIVERY_TYPE {
 
 export enum SELECTOR {
   dashboard = '#dashboardViewport',
-  visualization = '.visEditor__visualization',
+  visualization = '.visEditor__content',
 }
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/6.8/search-request-from-size.html
 export const DEFAULT_MAX_SIZE = 10000;
-
-export const LOCAL_HOST = 'http://localhost:5601';
+// AES uses 9200, with server.basePath = '/_plugin/kibana'
+export const LOCAL_HOST = 'http://localhost:9200';
+// AES specific server base path
+export const BASE_PATH = '/_plugin/kibana';
 
 export const DEFAULT_REPORT_HEADER = '<h1>Open Distro Kibana Reports</h1>';
 
-export const DEFAULT_REPORT_FOOTER = '<h1>Open Distro Kibana Reports</h1>';
-
 export const SECURITY_AUTH_COOKIE_NAME = 'security_authentication';
+
+export const CHROMIUM_PATH = `${__dirname}/../../../.chromium/headless_shell`;

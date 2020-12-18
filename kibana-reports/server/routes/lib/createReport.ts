@@ -30,8 +30,8 @@ import {
 import { createSavedSearchReport } from '../utils/savedSearchReportHelper';
 import { ReportSchemaType } from '../../model';
 import { CreateReportResultType } from '../utils/types';
-import { createVisualReport } from '../utils/visualReportHelper';
-import { SetCookie } from 'puppeteer';
+import { createVisualReport } from '../utils/visual_report/visualReportHelper';
+import { SetCookie } from 'puppeteer-core';
 import { deliverReport } from './deliverReport';
 import { updateReportState } from './updateReportState';
 import { saveReport } from './saveReport';
@@ -54,6 +54,8 @@ export const createReport = async (
     request
   );
   const esClient = context.core.elasticsearch.legacy.client;
+  // @ts-ignore
+  const timezone = request.query.timezone;
 
   let createReportResult: CreateReportResultType;
   let reportId;
@@ -100,18 +102,19 @@ export const createReport = async (
           }
         });
       }
-
       createReportResult = await createVisualReport(
         reportParams,
         completeQueryUrl,
         logger,
-        cookieObject
+        cookieObject,
+        timezone
       );
     }
     // update report state to "created"
-    if (!savedReportId) {
-      await updateReportState(reportId, esReportsClient, REPORT_STATE.created);
-    }
+    // TODO: temporarily remove the following
+    // if (!savedReportId) {
+    //   await updateReportState(reportId, esReportsClient, REPORT_STATE.created);
+    // }
 
     // deliver report
     if (!savedReportId && deliveryType == DELIVERY_TYPE.channel) {
@@ -125,10 +128,11 @@ export const createReport = async (
     }
   } catch (error) {
     // update report instance with "error" state
-    //TODO: save error detail and display on UI
-    if (!savedReportId) {
-      await updateReportState(reportId, esReportsClient, REPORT_STATE.error);
-    }
+    // TODO: save error detail and display on UI
+    // TODO: temporarily disable the following, will add back
+    // if (!savedReportId) {
+    //   await updateReportState(reportId, esReportsClient, REPORT_STATE.error);
+    // }
     throw error;
   }
 

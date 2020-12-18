@@ -17,7 +17,6 @@ import {
   AppMountParameters,
   CoreSetup,
   CoreStart,
-  DEFAULT_APP_CATEGORIES,
   Plugin,
 } from '../../../src/core/public';
 import {
@@ -39,8 +38,12 @@ export class OpendistroKibanaReportsPlugin
     core.application.register({
       id: PLUGIN_NAME,
       title: 'Reporting',
-      category: DEFAULT_APP_CATEGORIES.kibana,
-      order: 8037,
+      category: {
+        id: 'odfe',
+        label: 'Open Distro for Elasticsearch',
+        order: 2000,
+      },
+      order: 2000,
       async mount(params: AppMountParameters) {
         // Load application bundle
         const { renderApp } = await import('./application');

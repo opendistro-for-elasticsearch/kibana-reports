@@ -165,7 +165,7 @@ export function Main(props) {
 
   const pagination = {
     initialPageSize: 10,
-    pageSizeOptions: [8, 10, 13],
+    pageSizeOptions: [5, 10, 20],
   };
 
   useEffect(() => {
@@ -246,7 +246,11 @@ export function Main(props) {
             </EuiTitle>
           </EuiFlexItem>
           <EuiFlexItem component="span" grow={false}>
-            <EuiButton size="m" onClick={refreshReportsTable} iconType='refresh'>
+            <EuiButton 
+              onClick={refreshReportsTable} 
+              iconSide='left' 
+              iconType='refresh'
+            >
               Refresh
             </EuiButton>
           </EuiFlexItem>
@@ -276,7 +280,11 @@ export function Main(props) {
             </EuiTitle>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton onClick={refreshReportsDefinitionsTable}>
+            <EuiButton 
+              onClick={refreshReportsDefinitionsTable} 
+              iconSide='left' 
+              iconType='refresh'
+            >
               Refresh
             </EuiButton>
           </EuiFlexItem>

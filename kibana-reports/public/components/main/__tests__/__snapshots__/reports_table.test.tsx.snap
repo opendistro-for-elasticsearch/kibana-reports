@@ -785,9 +785,11 @@ exports[`<ReportsTable /> panel render empty component 1`] = `
                           >
                             To learn more, see
                              
-                            <button
+                            <a
                               class="euiLink euiLink--primary"
-                              type="button"
+                              href="https://opendistro.github.io/for-elasticsearch-docs/docs/kibana/reporting/"
+                              rel="noopener noreferrer"
+                              target="_blank"
                             >
                               Get started with Kibana reporting 
                               <svg
@@ -800,7 +802,7 @@ exports[`<ReportsTable /> panel render empty component 1`] = `
                                 width="16"
                                 xmlns="http://www.w3.org/2000/svg"
                               />
-                            </button>
+                            </a>
                           </div>
                         </div>
                       </div>

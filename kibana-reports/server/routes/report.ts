@@ -25,19 +25,22 @@ import { API_PREFIX } from '../../common';
 import { createReport } from './lib/createReport';
 import { reportSchema } from '../model';
 import { errorResponse } from './utils/helpers';
-import { DELIVERY_TYPE } from './utils/constants';
+import { DEFAULT_MAX_SIZE, DELIVERY_TYPE } from './utils/constants';
 import {
   backendToUiReport,
   backendToUiReportsList,
 } from './utils/converters/backendToUi';
 
 export default function (router: IRouter) {
-  // generate report
+  // generate report (with provided metadata)
   router.post(
     {
       path: `${API_PREFIX}/generateReport`,
       validate: {
         body: schema.any(),
+        query: schema.object({
+          timezone: schema.maybe(schema.string()),
+        }),
       },
     },
     async (
@@ -85,13 +88,16 @@ export default function (router: IRouter) {
     }
   );
 
-  // generate report from id
-  router.post(
+  // generate report from report id
+  router.get(
     {
       path: `${API_PREFIX}/generateReport/{reportId}`,
       validate: {
         params: schema.object({
           reportId: schema.string(),
+        }),
+        query: schema.object({
+          timezone: schema.string(),
         }),
       },
     },
@@ -102,7 +108,6 @@ export default function (router: IRouter) {
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       //@ts-ignore
       const logger: Logger = context.reporting_plugin.logger;
-
       try {
         const savedReportId = request.params.reportId;
         // @ts-ignore
@@ -140,16 +145,16 @@ export default function (router: IRouter) {
     }
   );
 
-  // get all reports details
-  router.get(
+  // create report from existing report definition
+  router.post(
     {
-      path: `${API_PREFIX}/reports`,
+      path: `${API_PREFIX}/generateReport/{reportDefinitionId}`,
       validate: {
+        params: schema.object({
+          reportDefinitionId: schema.string(),
+        }),
         query: schema.object({
-          size: schema.maybe(schema.string()),
-          sortField: schema.maybe(schema.string()),
-          sortDirection: schema.maybe(schema.string()),
-          fromIndex: schema.maybe(schema.string()),
+          timezone: schema.string(),
         }),
       },
     },
@@ -158,11 +163,70 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
-      const { fromIndex } = request.query as {
-        size: string;
-        sortField: string;
-        sortDirection: string;
-        fromIndex: string;
+      //@ts-ignore
+      const logger: Logger = context.reporting_plugin.logger;
+      const reportDefinitionId = request.params.reportDefinitionId;
+      try {
+        // @ts-ignore
+        const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
+          request
+        );
+        // call ES API to create report from definition
+        const esResp = await esReportsClient.callAsCurrentUser(
+          'es_reports.createReportFromDefinition',
+          {
+            reportDefinitionId: reportDefinitionId,
+            body: {
+              reportDefinitionId: reportDefinitionId,
+            },
+          }
+        );
+        const reportId = esResp.reportInstance.id;
+        // convert report to use UI model
+        const report = backendToUiReport(esResp.reportInstance);
+        // generate report
+        const reportData = await createReport(
+          request,
+          context,
+          report,
+          reportId
+        );
+
+        return response.ok({
+          body: {
+            data: reportData.dataUrl,
+            filename: reportData.fileName,
+          },
+        });
+      } catch (error) {
+        logger.error(
+          `Failed to generate report from reportDefinition id ${reportDefinitionId} : ${error}`
+        );
+        logger.error(error);
+        return errorResponse(response, error);
+      }
+    }
+  );
+
+  // get all reports details
+  router.get(
+    {
+      path: `${API_PREFIX}/reports`,
+      validate: {
+        query: schema.object({
+          fromIndex: schema.maybe(schema.number()),
+          maxItems: schema.maybe(schema.number()),
+        }),
+      },
+    },
+    async (
+      context,
+      request,
+      response
+    ): Promise<IKibanaResponse<any | ResponseError>> => {
+      const { fromIndex, maxItems } = request.query as {
+        fromIndex: number;
+        maxItems: number;
       };
 
       try {
@@ -170,11 +234,11 @@ export default function (router: IRouter) {
         const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
           request
         );
-
         const esResp = await esReportsClient.callAsCurrentUser(
           'es_reports.getReports',
           {
             fromIndex: fromIndex,
+            maxItems: maxItems || DEFAULT_MAX_SIZE,
           }
         );
 

@@ -47,7 +47,7 @@ export const popoverMenu = () => {
                     <span class="euiContextMenuItem__text" style="padding-left: 10px; padding-right: 10px; margin-top: 10px; box-decoration-break: clone; display: inline-block;">
                       Files can take a minute or two 
                       to generate depending on the 
-                      size of your dashboard
+                      size of your source data
                     </span>
                    </div>
                    <div>

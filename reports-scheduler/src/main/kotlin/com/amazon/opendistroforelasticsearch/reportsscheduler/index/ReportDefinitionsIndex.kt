@@ -20,6 +20,7 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPl
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinitionDetails
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinitionDetailsSearchResults
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ACCESS_LIST_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.TENANT_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.UPDATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.SecureIndexClient
@@ -147,21 +148,28 @@ internal object ReportDefinitionsIndex {
 
     /**
      * Query index for report definition for given access details
+     * @param tenant the tenant of the user
      * @param access the list of access details to search reports for.
      * @param from the paginated start index
      * @param maxItems the max items to query
      * @return search result of Report definition details
      */
-    fun getAllReportDefinitions(access: List<String>, from: Int, maxItems: Int): ReportDefinitionDetailsSearchResults {
+    fun getAllReportDefinitions(tenant: String, access: List<String>, from: Int, maxItems: Int): ReportDefinitionDetailsSearchResults {
         createIndex()
         val sourceBuilder = SearchSourceBuilder()
             .timeout(TimeValue(PluginSettings.operationTimeoutMs, TimeUnit.MILLISECONDS))
             .sort(UPDATED_TIME_FIELD)
             .size(maxItems)
             .from(from)
+        val tenantQuery = QueryBuilders.termsQuery(TENANT_FIELD, tenant)
         if (access.isNotEmpty()) {
-            val query = QueryBuilders.termsQuery(ACCESS_LIST_FIELD, access)
+            val accessQuery = QueryBuilders.termsQuery(ACCESS_LIST_FIELD, access)
+            val query = QueryBuilders.boolQuery()
+            query.filter(tenantQuery)
+            query.filter(accessQuery)
             sourceBuilder.query(query)
+        } else {
+            sourceBuilder.query(tenantQuery)
         }
         val searchRequest = SearchRequest()
             .indices(REPORT_DEFINITIONS_INDEX_NAME)

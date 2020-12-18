@@ -27,6 +27,7 @@ internal object RestTag {
     const val STATUS_TEXT_FIELD = "statusText"
     const val UPDATED_TIME_FIELD = "lastUpdatedTimeMs"
     const val CREATED_TIME_FIELD = "createdTimeMs"
+    const val TENANT_FIELD = "tenant"
     const val ACCESS_LIST_FIELD = "access"
     const val REPORT_DEFINITION_LIST_FIELD = "reportDefinitionDetailsList"
     const val REPORT_INSTANCE_LIST_FIELD = "reportInstanceList"

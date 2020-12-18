@@ -3,7 +3,7 @@ name: Release Kibana Reports Artifacts
 on:
   push:
     tags:
-      - "v*"
+      - 'v*'
 
 jobs:
   build:
@@ -30,33 +30,69 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: "10.22.0"
+          node-version: '10.22.0'
 
       - name: Move Kibana Reports to Plugins Dir
+        run: mv kibana-reports kibana/plugins/${{ env.PLUGIN_NAME }}
+
+      - name: Add Chromium Binary to Reporting for Testing
         run: |
-          mkdir kibana/plugins
-          mv kibana-reports kibana/plugins
+          sudo apt install -y libnss3-dev fonts-liberation libfontconfig1
+          cd kibana/plugins/${{ env.PLUGIN_NAME }}
+          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-linux-x64.zip
+          unzip chromium-linux-x64.zip
+          rm chromium-linux-x64.zip
 
       - name: Kibana Plugin Bootstrap
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 30
           max_attempts: 3
-          command: cd kibana/plugins/kibana-reports; yarn kbn bootstrap
+          command: cd kibana/plugins/${{ env.PLUGIN_NAME }}; yarn kbn bootstrap
 
       - name: Test
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 30
           max_attempts: 3
-          command: cd kibana/plugins/kibana-reports; yarn test
+          command: cd kibana/plugins/${{ env.PLUGIN_NAME }}; yarn test
 
       - name: Build Artifact
         run: |
-          cd kibana/plugins/kibana-reports
+          cd kibana/plugins/${{ env.PLUGIN_NAME }}
           yarn build
-          artifact=`ls ./build/*.zip`
 
-          # TODO: rename S3 bucket path after infra team assigns one
-          aws s3 cp $artifact s3://kiabna-reports/kibana-reports-plugin/
+          cd build
+          mkdir -p ./{linux-x64,linux-arm64,windows-x64}/kibana/${{ env.PLUGIN_NAME }}
+          cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux-x64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip
+          cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux-arm64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip
+          mv ./${{ env.PLUGIN_NAME }}-*.zip ./windows-x64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip
+
+          cd linux-x64
+          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-linux-x64.zip
+          unzip chromium-linux-x64.zip -d ./kibana/${{ env.PLUGIN_NAME }}
+          rm chromium-linux-x64.zip
+          zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
+          linux_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip`
+          aws s3 cp $linux_artifact s3://artifacts.opendistroforelasticsearch.amazon.com/downloads/kibana-plugins/opendistro-reports/linux/x64/
+          cd ..
+
+          cd linux-arm64
+          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-linux-arm64.zip
+          unzip chromium-linux-arm64.zip -d ./kibana/${{ env.PLUGIN_NAME }}
+          rm chromium-linux-arm64.zip
+          zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
+          arm_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip`
+          aws s3 cp $arm_artifact s3://artifacts.opendistroforelasticsearch.amazon.com/downloads/kibana-plugins/opendistro-reports/linux/arm64/
+          cd ..
+
+          cd windows-x64
+          wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-windows-x64.zip
+          unzip chromium-windows-x64.zip -d ./kibana/${{ env.PLUGIN_NAME }}
+          rm chromium-windows-x64.zip
+          zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
+          windows_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip`
+          aws s3 cp $windows_artifact s3://artifacts.opendistroforelasticsearch.amazon.com/downloads/kibana-plugins/opendistro-reports/windows/x64/
+          cd ..
+
           aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths "/downloads/*"

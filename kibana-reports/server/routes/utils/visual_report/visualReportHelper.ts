@@ -13,26 +13,29 @@
  * permissions and limitations under the License.
  */
 
-import puppeteer, { SetCookie } from 'puppeteer';
+import puppeteer, { ElementHandle, SetCookie } from 'puppeteer-core';
 import createDOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
-import { Logger } from '../../../../../src/core/server';
+import { Logger } from '../../../../../../src/core/server';
 import {
   DEFAULT_REPORT_HEADER,
-  DEFAULT_REPORT_FOOTER,
   REPORT_TYPE,
   FORMAT,
   SELECTOR,
-} from './constants';
-import { getFileName } from './helpers';
-import { CreateReportResultType } from './types';
+  CHROMIUM_PATH,
+} from '../constants';
+import { getFileName } from '../helpers';
+import { CreateReportResultType } from '../types';
 import { ReportParamsSchemaType, VisualReportSchemaType } from 'server/model';
+import fs from 'fs';
+import cheerio from 'cheerio';
 
 export const createVisualReport = async (
   reportParams: ReportParamsSchemaType,
   queryUrl: string,
   logger: Logger,
-  cookie?: SetCookie
+  cookie?: SetCookie,
+  timezone?: string
 ): Promise<CreateReportResultType> => {
   const {
     core_params,
@@ -48,16 +51,13 @@ export const createVisualReport = async (
     report_format: reportFormat,
   } = coreParams;
 
-  // TODO: polish default header, maybe add a logo, depends on UX design
   const window = new JSDOM('').window;
   const DOMPurify = createDOMPurify(window);
 
   const reportHeader = header
     ? DOMPurify.sanitize(header)
     : DEFAULT_REPORT_HEADER;
-  const reportFooter = footer
-    ? DOMPurify.sanitize(footer)
-    : DEFAULT_REPORT_FOOTER;
+  const reportFooter = footer ? DOMPurify.sanitize(footer) : '';
 
   // set up puppeteer
   const browser = await puppeteer.launch({
@@ -66,7 +66,11 @@ export const createVisualReport = async (
      * TODO: temp fix to disable sandbox when launching chromium on Linux instance
      * https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#setting-up-chrome-linux-sandbox
      */
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'],
+    executablePath: CHROMIUM_PATH,
+    env: {
+      TZ: timezone || 'UTC',
+    },
   });
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(0);
@@ -84,33 +88,50 @@ export const createVisualReport = async (
     height: windowHeight,
   });
 
-  let buffer: any;
-  let element: any;
+  let buffer: Buffer;
+  // remove top nav bar
+  await page.evaluate(
+    /* istanbul ignore next */
+    () => {
+      // remove buttons
+      document
+        .querySelectorAll("[class^='euiButton']")
+        .forEach((e) => e.remove());
+      // remove top navBar
+      document
+        .querySelectorAll("[class^='euiHeader']")
+        .forEach((e) => e.remove());
+      document.body.style.paddingTop = '0px';
+    }
+  );
+  // force wait for any resize to load after the above DOM modification
+  await page.waitFor(1000);
   // crop content
-  if (reportSource === REPORT_TYPE.dashboard) {
-    await page.waitForSelector(SELECTOR.dashboard);
-    element = await page.$(SELECTOR.dashboard);
-  } else if (reportSource === REPORT_TYPE.visualization) {
-    await page.waitForSelector(SELECTOR.visualization);
-    element = await page.$(SELECTOR.visualization);
+  switch (reportSource) {
+    case REPORT_TYPE.dashboard:
+      await page.waitForSelector(SELECTOR.dashboard, {
+        visible: true,
+      });
+      break;
+    case REPORT_TYPE.visualization:
+      await page.waitForSelector(SELECTOR.visualization, {
+        visible: true,
+      });
+      break;
+    default:
+      throw Error(
+        `report source can only be one of [Dashboard, Visualization]`
+      );
   }
 
-  const screenshot = await element.screenshot({ fullPage: false });
+  const screenshot = await page.screenshot({ fullPage: true });
 
-  /**
-   * Sets the content of the page to have the header be above the trimmed screenshot
-   * and the footer be below it
-   */
-  await page.setContent(`
-    <!DOCTYPE html>
-    <html>
-      <div>
-      ${reportHeader}
-        <img src="data:image/png;base64,${screenshot.toString('base64')}">
-      ${reportFooter}
-      </div>
-    </html>
-    `);
+  const templateHtml = composeReportHtml(
+    reportHeader,
+    reportFooter,
+    screenshot.toString('base64')
+  );
+  await page.setContent(templateHtml);
 
   // create pdf or png accordingly
   if (reportFormat === FORMAT.pdf) {
@@ -138,4 +159,28 @@ export const createVisualReport = async (
   await browser.close();
 
   return { timeCreated, dataUrl: buffer.toString('base64'), fileName };
+};
+
+const composeReportHtml = (
+  header: string,
+  footer: string,
+  screenshot: string
+) => {
+  const $ = cheerio.load(fs.readFileSync(`${__dirname}/report_template.html`), {
+    decodeEntities: false,
+  });
+
+  $('.reportWrapper img').attr('src', `data:image/png;base64,${screenshot}`);
+  $('#reportingHeader > div.mde-preview > div.mde-preview-content').html(
+    header
+  );
+  if (footer === '') {
+    $('#reportingFooter').attr('hidden', 'true');
+  } else {
+    $('#reportingFooter > div.mde-preview > div.mde-preview-content').html(
+      footer
+    );
+  }
+
+  return $.root().html() || '';
 };

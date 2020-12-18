@@ -32,6 +32,20 @@ export default function (Client: any, config: any, components: any) {
     needBody: true,
   });
 
+  esReports.createReportFromDefinition = clientAction({
+    url: {
+      fmt: `${ES_REPORTS_API.ON_DEMAND_REPORT}/<%=reportDefinitionId%>`,
+      req: {
+        reportDefinitionId: {
+          type: 'string',
+          required: true,
+        },
+      },
+    },
+    method: 'POST',
+    needBody: true,
+  });
+
   esReports.updateReportInstanceStatus = clientAction({
     url: {
       fmt: `${ES_REPORTS_API.REPORT_INSTANCE}/<%=reportInstanceId%>`,
@@ -62,13 +76,14 @@ export default function (Client: any, config: any, components: any) {
   esReports.getReports = clientAction({
     url: {
       fmt: `${ES_REPORTS_API.LIST_REPORT_INSTANCES}`,
-      //TODO: wrong format error thrown even required = false, need to figure it out the correct setting to make it truly optional
-      // req: {
-      //   fromIndex: {
-      //     type: 'string',
-      //     required: false,
-      //   },
-      // },
+      params: {
+        fromIndex: {
+          type: 'number',
+        },
+        maxItems: {
+          type: 'number',
+        },
+      },
     },
     method: 'GET',
   });
@@ -114,13 +129,14 @@ export default function (Client: any, config: any, components: any) {
   esReports.getReportDefinitions = clientAction({
     url: {
       fmt: `${ES_REPORTS_API.LIST_REPORT_DEFINITIONS}`,
-      //TODO: wrong format error thrown even required = false, need to figure it out the correct setting to make it truly optional
-      // req: {
-      //   fromIndex: {
-      //     type: 'string',
-      //     required: false,
-      //   },
-      // },
+      params: {
+        fromIndex: {
+          type: 'number',
+        },
+        maxItems: {
+          type: 'number',
+        },
+      },
     },
     method: 'GET',
   });

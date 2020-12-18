@@ -22,21 +22,13 @@ import {
   EuiIcon,
   EuiEmptyPrompt,
   EuiInMemoryTable,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiLoadingSpinner,
-  EuiModal,
-  EuiModalBody,
-  EuiModalHeader,
-  EuiOverlayMask,
-  EuiSpacer,
-  EuiTitle,
 } from '@elastic/eui';
 import {
   fileFormatsUpper,
   humanReadableDate,
   generateReportById,
 } from './main_utils';
+import { GenerateReportLoadingModal } from './loading_modal';
 import dateMath from '@elastic/datemath';
 
 const reportStatusOptions = [
@@ -60,7 +52,10 @@ const emptyMessageReports = (
         </EuiText>
         <EuiText>
           To learn more, see{' '}
-          <EuiLink>
+          <EuiLink
+            href="https://opendistro.github.io/for-elasticsearch-docs/docs/kibana/reporting/"
+            target="_blank"
+          >
             Get started with Kibana reporting <EuiIcon type="popout" />
           </EuiLink>
         </EuiText>
@@ -86,56 +81,6 @@ export function ReportsTable(props) {
 
   const handleLoading = (e) => {
     setShowLoading(e);
-  };
-
-  const GenerateReportLoadingModal = () => {
-    const [isModalVisible, setIsModalVisible] = useState(true);
-
-    const closeModal = () => {
-      setIsModalVisible(false);
-      setShowLoading(false);
-    };
-    const showModal = () => setIsModalVisible(true);
-
-    return (
-      <div>
-        <EuiOverlayMask>
-          <EuiModal
-            onClose={closeModal}
-            style={{ maxWidth: 350, minWidth: 300 }}
-          >
-            <EuiModalHeader>
-              <EuiTitle>
-                <EuiText textAlign="right">
-                  <h2>Generating report</h2>
-                </EuiText>
-              </EuiTitle>
-            </EuiModalHeader>
-            <EuiModalBody>
-              <EuiText>Preparing your file for download.</EuiText>
-              <EuiText>
-                You can close this dialog while we continue in the background.
-              </EuiText>
-              <EuiSpacer />
-              <EuiFlexGroup justifyContent="center" alignItems="center">
-                <EuiFlexItem grow={false}>
-                  <EuiLoadingSpinner
-                    size="xl"
-                    style={{ minWidth: 75, minHeight: 75 }}
-                  />
-                </EuiFlexItem>
-              </EuiFlexGroup>
-              <EuiSpacer size="l" />
-              <EuiFlexGroup alignItems="flexEnd" justifyContent="flexEnd">
-                <EuiFlexItem grow={false}>
-                  <EuiButton onClick={closeModal}>Close</EuiButton>
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiModalBody>
-          </EuiModal>
-        </EuiOverlayMask>
-      </div>
-    );
   };
 
   const onDemandDownload = async (id: any) => {
@@ -173,8 +118,8 @@ export function ReportsTable(props) {
       field: 'reportName',
       name: 'Report ID',
       render: (reportName) => {
-        return <EuiText size="s">{reportName}</EuiText>
-      }
+        return <EuiText size="s">{reportName}</EuiText>;
+      },
     },
     {
       // TODO: link to dashboard/visualization snapshot, use "queryUrl" field. Display dashboard name?
@@ -188,11 +133,11 @@ export function ReportsTable(props) {
             {reportSource}
           </EuiLink>
         ),
-    },    
-    // { 
+    },
+    // {
     //   field: 'type',
     //   name: 'Type',
-    //   sortable: true, 
+    //   sortable: true,
     //   truncateText: false,
     // },
     {
@@ -208,8 +153,8 @@ export function ReportsTable(props) {
       name: 'Time period',
       render: (url) => {
         let timePeriod = parseTimePeriod(url);
-        return <EuiText size="s">{timePeriod}</EuiText>
-      }
+        return <EuiText size="s">{timePeriod}</EuiText>;
+      },
     },
     // {
     //   field: 'state',
@@ -243,7 +188,7 @@ export function ReportsTable(props) {
   const reportsListSearch = {
     box: {
       incremental: true,
-      placeholder: 'Search by Report ID'
+      placeholder: 'Search by Report ID',
     },
     // filters: [
     //   {
@@ -276,7 +221,9 @@ export function ReportsTable(props) {
       ? emptyMessageReports
       : '0 reports match the search criteria. Search again';
 
-  const showLoadingModal = showLoading ? <GenerateReportLoadingModal /> : null;
+  const showLoadingModal = showLoading ? (
+    <GenerateReportLoadingModal setShowLoading={setShowLoading} />
+  ) : null;
 
   return (
     <Fragment>

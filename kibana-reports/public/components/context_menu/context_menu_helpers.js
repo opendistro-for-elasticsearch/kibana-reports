@@ -19,7 +19,7 @@ import {
   reportGenerationInProgressModal,
   reportGenerationSuccess,
   reportGenerationFailure,
-  permissionsMissingOnGeneration
+  permissionsMissingOnGeneration,
 } from './context_menu_ui';
 
 const getReportSourceURL = (baseURI) => {
@@ -51,31 +51,14 @@ export const contextMenuViewReports = () =>
   window.location.assign('opendistro_kibana_reports#/');
 
 export const getTimeFieldsFromUrl = () => {
-  let url = window.location.href;
-  let timeString = url.substring(
-    url.lastIndexOf('time:'),
-    url.lastIndexOf('))')
-  );
-  if (url.includes('visualize') || url.includes('discover')) {
-    timeString = url.substring(url.lastIndexOf('time:'), url.indexOf('))'));
-  }
+  const url = window.location.href;
 
-  let fromDateString = timeString.substring(
-    timeString.lastIndexOf('from:') + 5,
-    timeString.lastIndexOf(',')
+  let [, fromDateString, toDateString] = url.match(
+    /time:\(from:(.+),to:(.+?)\)/
   );
-
-  // remove extra quotes if the 'from' date is absolute time
   fromDateString = fromDateString.replace(/[']+/g, '');
-
   // convert time range to from date format in case time range is relative
-  let fromDateFormat = dateMath.parse(fromDateString);
-
-  let toDateString = timeString.substring(
-    timeString.lastIndexOf('to:') + 3,
-    timeString.length
-  );
-
+  const fromDateFormat = dateMath.parse(fromDateString);
   toDateString = toDateString.replace(/[']+/g, '');
   let toDateFormat = dateMath.parse(toDateString);
 
@@ -121,7 +104,9 @@ export const addSuccessOrFailureToast = (status) => {
       } else if (status === 'permissionsFailure') {
         generateInProgressToast.innerHTML = permissionsMissingOnGeneration();
         setTimeout(function () {
-          document.getElementById('permissionsMissingErrorToast').style.display = 'none';
+          document.getElementById(
+            'permissionsMissingErrorToast'
+          ).style.display = 'none';
         }, 6000);
       }
       generateToast[0].appendChild(generateInProgressToast.children[0]);

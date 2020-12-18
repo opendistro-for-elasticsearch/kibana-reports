@@ -24,7 +24,9 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ACCE
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.CREATED_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.TENANT_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.UPDATED_TIME_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.security.UserAccessManager.DEFAULT_TENANT
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.stringList
@@ -44,7 +46,8 @@ import java.time.Instant
  *   "id":"id",
  *   "lastUpdatedTimeMs":1603506908773,
  *   "createdTimeMs":1603506908773,
- *   "access":["u:user", "r:sample_role", "ber:sample_backend_role"]
+ *   "tenant":"__user__",
+ *   "access":["User:user", "Role:sample_role", "BERole:sample_backend_role"]
  *   "reportDefinition":{
  *      // refer [com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinition]
  *   }
@@ -55,6 +58,7 @@ internal data class ReportDefinitionDetails(
     val id: String,
     val updatedTime: Instant,
     val createdTime: Instant,
+    val tenant: String,
     val access: List<String>,
     val reportDefinition: ReportDefinition
 ) : ScheduledJobParameter {
@@ -71,6 +75,7 @@ internal data class ReportDefinitionDetails(
             var id: String? = useId
             var updatedTime: Instant? = null
             var createdTime: Instant? = null
+            var tenant: String? = null
             var access: List<String> = listOf()
             var reportDefinition: ReportDefinition? = null
             XContentParserUtils.ensureExpectedToken(XContentParser.Token.START_OBJECT, parser.currentToken(), parser::getTokenLocation)
@@ -81,6 +86,7 @@ internal data class ReportDefinitionDetails(
                     ID_FIELD -> id = parser.text()
                     UPDATED_TIME_FIELD -> updatedTime = Instant.ofEpochMilli(parser.longValue())
                     CREATED_TIME_FIELD -> createdTime = Instant.ofEpochMilli(parser.longValue())
+                    TENANT_FIELD -> tenant = parser.text()
                     ACCESS_LIST_FIELD -> access = parser.stringList()
                     REPORT_DEFINITION_FIELD -> reportDefinition = ReportDefinition.parse(parser)
                     else -> {
@@ -92,10 +98,12 @@ internal data class ReportDefinitionDetails(
             id ?: throw IllegalArgumentException("$ID_FIELD field absent")
             updatedTime ?: throw IllegalArgumentException("$UPDATED_TIME_FIELD field absent")
             createdTime ?: throw IllegalArgumentException("$CREATED_TIME_FIELD field absent")
+            tenant = tenant ?: DEFAULT_TENANT
             reportDefinition ?: throw IllegalArgumentException("$REPORT_DEFINITION_FIELD field absent")
             return ReportDefinitionDetails(id,
                 updatedTime,
                 createdTime,
+                tenant,
                 access,
                 reportDefinition)
         }
@@ -121,6 +129,7 @@ internal data class ReportDefinitionDetails(
         }
         builder.field(UPDATED_TIME_FIELD, updatedTime.toEpochMilli())
             .field(CREATED_TIME_FIELD, createdTime.toEpochMilli())
+            .field(TENANT_FIELD, tenant)
         if (params?.paramAsBoolean(ACCESS_LIST_FIELD, true) == true && access.isNotEmpty()) {
             builder.field(ACCESS_LIST_FIELD, access)
         }

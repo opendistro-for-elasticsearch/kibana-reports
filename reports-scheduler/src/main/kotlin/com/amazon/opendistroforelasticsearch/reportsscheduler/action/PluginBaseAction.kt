@@ -16,6 +16,7 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.action
 
+import com.amazon.opendistroforelasticsearch.commons.ConfigConstants.OPENDISTRO_SECURITY_USER_INFO_THREAD_CONTEXT
 import com.amazon.opendistroforelasticsearch.commons.authuser.User
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
@@ -49,7 +50,6 @@ abstract class PluginBaseAction<Request : ActionRequest, Response : ActionRespon
     companion object {
         private val log by logger(PluginBaseAction::class.java)
         private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-        private const val OPENDISTRO_SECURITY_USER_AND_ROLES = "_opendistro_security_user_and_roles"
     }
 
     /**
@@ -61,7 +61,7 @@ abstract class PluginBaseAction<Request : ActionRequest, Response : ActionRespon
         request: Request,
         listener: ActionListener<Response>
     ) {
-        val userStr: String? = client.threadPool().threadContext.getTransient<String>(OPENDISTRO_SECURITY_USER_AND_ROLES)
+        val userStr: String? = client.threadPool().threadContext.getTransient<String>(OPENDISTRO_SECURITY_USER_INFO_THREAD_CONTEXT)
         val user: User? = User.parse(userStr)
         scope.launch {
             try {

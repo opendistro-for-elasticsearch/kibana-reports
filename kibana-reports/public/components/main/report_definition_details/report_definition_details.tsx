@@ -37,7 +37,7 @@ import {
   formatEmails,
   trimAndRenderAsText,
 } from '../report_details/report_details';
-import { fileFormatsUpper, generateReport } from '../main_utils';
+import { fileFormatsUpper, generateReportFromDefinitionId } from '../main_utils';
 import { ReportDefinitionSchemaType } from '../../../../server/model';
 import moment from 'moment';
 import { converter } from '../../report_definitions/utils';
@@ -45,6 +45,7 @@ import {
   permissionsMissingToast,
   permissionsMissingActions,
 } from '../../utils/utils';
+import { GenerateReportLoadingModal } from '../loading_modal';
 
 const ON_DEMAND = 'On demand';
 
@@ -56,7 +57,12 @@ export function ReportDefinitionDetails(props) {
   ] = useState({});
   const [toasts, setToasts] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
   const reportDefinitionId = props.match['params']['reportDefinitionId'];
+
+  const handleLoading = (e) => {
+    setShowLoading(e);
+  }
 
   const handleShowDeleteModal = (e) => {
     setShowDeleteModal(e);
@@ -330,10 +336,10 @@ export function ReportDefinitionDetails(props) {
       // TODO: need better display
       timePeriod: moment.duration(timeDuration).humanize(),
       fileFormat: reportFormat,
-      reportHeader: reportParams.core_params.hasOwnProperty('header')
+      reportHeader: reportParams.core_params.hasOwnProperty('header') && reportParams.core_params.header != ""
         ? converter.makeMarkdown(reportParams.core_params.header)
         : `\u2014`,
-      reportFooter: reportParams.core_params.hasOwnProperty('footer')
+      reportFooter: reportParams.core_params.hasOwnProperty('footer') && reportParams.core_params.footer != ""
         ? converter.makeMarkdown(reportParams.core_params.footer)
         : `\u2014`,
       triggerType: triggerType,
@@ -380,11 +386,17 @@ export function ReportDefinitionDetails(props) {
       });
   }, []);
 
+  const downloadIconDownload = async () => {
+    handleLoading(true);
+    await generateReportFromDetails();
+    handleLoading(false);
+  }
+
   const fileFormatDownload = (data) => {
     let formatUpper = data['fileFormat'];
     formatUpper = fileFormatsUpper[formatUpper];
     return (
-      <EuiLink onClick={generateReportFromDetails}>
+      <EuiLink onClick={downloadIconDownload}>
         {formatUpper + ' '}
         <EuiIcon type="importAction" />
       </EuiLink>
@@ -463,21 +475,9 @@ export function ReportDefinitionDetails(props) {
   };
 
   const generateReportFromDetails = async () => {
-    let duration =
-      reportDefinitionRawResponse.report_definition.report_params.core_params
-        .time_duration;
-    const fromDate = getRelativeStartDate(duration);
-    let onDemandDownloadMetadata = {
-      query_url: `${
-        reportDefinitionDetails.baseUrl
-      }?_g=(time:(from:'${fromDate.toISOString()}',to:'${moment().toISOString()}'))`,
-      time_from: fromDate.valueOf(),
-      time_to: moment().valueOf(),
-      report_definition: reportDefinitionRawResponse.report_definition,
-    };
     const { httpClient } = props;
-    let generateReportSuccess = await generateReport(
-      onDemandDownloadMetadata,
+    let generateReportSuccess = await generateReportFromDefinitionId(
+      reportDefinitionId,
       httpClient
     );
     if (generateReportSuccess.status) {
@@ -549,6 +549,9 @@ export function ReportDefinitionDetails(props) {
   const showDeleteConfirmationModal = showDeleteModal ? (
     <DeleteConfirmationModal />
   ) : null;
+
+  const showLoadingModal = showLoading ?
+    <GenerateReportLoadingModal setShowLoading={setShowLoading} /> : null;
 
   return (
     <EuiPage>
@@ -699,6 +702,7 @@ export function ReportDefinitionDetails(props) {
           toastLifeTimeMs={6000}
         />
         {showDeleteConfirmationModal}
+        {showLoadingModal}
       </EuiPageBody>
     </EuiPage>
   );
