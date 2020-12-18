@@ -689,7 +689,6 @@ export function ReportSettings(props: ReportSettingProps) {
         />
         <EuiSpacer />
         {displayVisualReportsFormatAndMarkdown}
-        <EuiSpacer />
       </EuiPageContentBody>
     </EuiPageContent>
   );
