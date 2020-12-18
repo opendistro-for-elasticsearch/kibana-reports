@@ -44,6 +44,7 @@ export default function (router: IRouter) {
         const params: RequestParams.Search = {
           index: '.kibana',
           q: 'type:dashboard',
+          size: DEFAULT_MAX_SIZE,
         };
         responseParams = params;
       } else if (request.params.reportSourceType === 'visualization') {
