@@ -26,7 +26,6 @@ import {
 } from '../../../../../src/core/server';
 import { getFileName, callCluster } from './helpers';
 import { CreateReportResultType } from './types';
-import { DEFAULT_MAX_SIZE } from './constants';
 
 /**
  * Specify how long scroll context should be maintained for scrolled search
