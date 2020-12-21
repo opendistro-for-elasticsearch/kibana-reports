@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+// import com.github.wnameless.json.flattener.JsonFlattener;
+import com.github.wnameless.json.unflattener.JsonUnflattener;
+
 public class Metrics {
 
     private static Metrics metrics = new Metrics();
@@ -82,6 +85,22 @@ public class Metrics {
         }
 
         return metricsJSONObject.toString();
+    }
+
+    public String collectToFlattenedJSON() {
+        String flattenedJson = "{\"report_definition.create.count\":2,\"report_definition.create.total\":4," +
+            "\"report_definition.create.system_error\":2,\"report_definition.create.customer_error\":3," +
+            "\"report_definition.list.count\":2,\"report_definition.list.total\":4," +
+            "\"report_definition.list.system_error\":2,\"report_definition.list.customer_error\":3," +
+            "\"report_instance.create.count\":2,\"report_instance.create.total\":4," +
+            "\"report_instance.create.system_error\":2,\"report_instance.create.customer_error\":3}";
+        String nestedJson = "{\"report_definition\":{\"create\":{\"count\":2," +
+            "\"total\":4,\"system_error\":2,\"customer_error\":3},\"list\":" +
+            "{\"count\":2,\"total\":4,\"system_error\":2,\"customer_error\":3}}," +
+            "\"report_instance\":{\"create\":{\"count\":2,\"total\":4,\"system_error\":2," +
+            "\"customer_error\":3}}}";
+        String metricsJson = JsonUnflattener.unflatten(flattenedJson);
+        return metricsJson;
     }
 
     public void clear() {
