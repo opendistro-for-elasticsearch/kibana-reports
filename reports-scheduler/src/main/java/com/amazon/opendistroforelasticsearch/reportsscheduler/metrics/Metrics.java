@@ -13,8 +13,12 @@
  *   permissions and limitations under the License.
  */
 
+// import org.json.JSONObject;
+
 package com.amazon.opendistroforelasticsearch.reportsscheduler.metrics;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Metrics {
@@ -22,7 +26,66 @@ public class Metrics {
     private static Metrics metrics = new Metrics();
     private ConcurrentHashMap<String, Metric<?>> registeredMetricsByName = new ConcurrentHashMap<>();
 
+    private Metrics() {
+    }
+
+    public void registerDefaultMetrics() {
+        for (MetricName metricName : MetricName.values()) {
+            registerMetric(MetricFactory.createMetric(metricName));
+        }
+    }
+
+    public void registerMetric(Metric<?> metric) {
+        registeredMetricsByName.put(metric.getName(), metric);
+    }
+
+    public void unregisterMetric(String name) {
+        if (name == null) {
+            return;
+        }
+
+        registeredMetricsByName.remove(name);
+    }
+
+    public Metric<?> getMetric(String name) {
+        if (name == null) {
+            return null;
+        }
+
+        return registeredMetricsByName.get(name);
+    }
+
+    public NumericMetric<?> getNumericalMetric(MetricName metricName) {
+        String name = metricName.getName();
+        if (!metricName.isNumerical()) {
+            name = MetricName.DEFAULT.getName();
+        }
+
+        return (NumericMetric) registeredMetricsByName.get(name);
+    }
+
+    public List<Metric<?>> getAllMetrics() {
+        return new ArrayList<>(registeredMetricsByName.values());
+    }
+
     public static Metrics getInstance() {
         return metrics;
+    }
+
+//    public String collectToJSON() {
+//        JSONObject metricsJSONObject = new JSONObject();
+//
+//        for (Metric metric : registeredMetricsByName.values()) {
+//            if (metric.getName().equals("default")) {
+//                continue;
+//            }
+//            metricsJSONObject.put(metric.getName(), metric.getValue());
+//        }
+//
+//        return metricsJSONObject.toString();
+//    }
+
+    public void clear() {
+        registeredMetricsByName.clear();
     }
 }
