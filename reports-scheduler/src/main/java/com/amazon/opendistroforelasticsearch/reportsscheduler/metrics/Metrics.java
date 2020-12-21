@@ -13,10 +13,9 @@
  *   permissions and limitations under the License.
  */
 
-// import org.json.JSONObject;
-
 package com.amazon.opendistroforelasticsearch.reportsscheduler.metrics;
 
+import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -72,18 +71,18 @@ public class Metrics {
         return metrics;
     }
 
-//    public String collectToJSON() {
-//        JSONObject metricsJSONObject = new JSONObject();
-//
-//        for (Metric metric : registeredMetricsByName.values()) {
-//            if (metric.getName().equals("default")) {
-//                continue;
-//            }
-//            metricsJSONObject.put(metric.getName(), metric.getValue());
-//        }
-//
-//        return metricsJSONObject.toString();
-//    }
+    public String collectToJSON() {
+        JSONObject metricsJSONObject = new JSONObject();
+
+        for (Metric<?> metric : registeredMetricsByName.values()) {
+            if (metric.getName().equals("default")) {
+                continue;
+            }
+            metricsJSONObject.put(metric.getName(), metric.getValue());
+        }
+
+        return metricsJSONObject.toString();
+    }
 
     public void clear() {
         registeredMetricsByName.clear();
