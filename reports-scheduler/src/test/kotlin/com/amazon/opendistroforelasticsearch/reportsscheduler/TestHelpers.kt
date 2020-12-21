@@ -18,7 +18,33 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import org.junit.Assert
+import java.time.Instant
+import kotlin.test.assertTrue
 
 fun jsonify(text: String): JsonObject {
     return JsonParser.parseString(text).asJsonObject
+}
+
+fun validateTimeNearRefTime(time: Instant, refTime: Instant, accuracySeconds: Long) {
+    assertTrue(time.plusSeconds(accuracySeconds).isAfter(refTime))
+    assertTrue(time.minusSeconds(accuracySeconds).isBefore(refTime))
+}
+
+fun validateTimeRecency(time: Instant, accuracySeconds: Long) {
+    validateTimeNearRefTime(time, Instant.now(), accuracySeconds)
+}
+
+fun validateErrorResponse(response: JsonObject, statusCode: Int) {
+    Assert.assertNotNull("Error response content should be generated", response)
+    val status = response.get("status").asInt
+    val error = response.get("error").asJsonObject
+    val rootCause = error.get("root_cause").asJsonArray
+    val type = error.get("type").asString
+    val reason = error.get("reason").asString
+    Assert.assertEquals(statusCode, status)
+    Assert.assertEquals("status_exception", type)
+    Assert.assertNotNull(reason)
+    Assert.assertNotNull(rootCause)
+    Assert.assertTrue(rootCause.size() > 0)
 }
