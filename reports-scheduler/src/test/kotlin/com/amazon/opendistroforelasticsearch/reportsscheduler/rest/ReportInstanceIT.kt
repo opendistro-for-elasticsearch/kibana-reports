@@ -18,52 +18,14 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.rest
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.PluginRestTestCase
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
+import com.amazon.opendistroforelasticsearch.reportsscheduler.constructReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.validateErrorResponse
 import org.elasticsearch.rest.RestRequest
 import org.elasticsearch.rest.RestStatus
 import org.junit.Assert
 
 class ReportInstanceIT : PluginRestTestCase() {
-    private fun constructReportDefinitionRequest(
-        trigger: String = """
-            "trigger":{
-                "triggerType":"OnDemand"
-            },
-        """.trimIndent(),
-        name: String = "report_definition"
-    ): String {
-        return """
-            {
-                "reportDefinition":{
-                    "name":"$name",
-                    "isEnabled":true,
-                    "source":{
-                        "description":"description",
-                        "type":"Dashboard",
-                        "origin":"localhost:5601",
-                        "id":"id"
-                    },
-                    "format":{
-                        "duration":"PT1H",
-                        "fileFormat":"Pdf",
-                        "limit":1000,
-                        "header":"optional header",
-                        "footer":"optional footer"
-                    },
-                    $trigger
-                    "delivery":{
-                        "recipients":["nobody@email.com"],
-                        "deliveryFormat":"LinkOnly",
-                        "title":"title",
-                        "textDescription":"textDescription",
-                        "htmlDescription":"optional htmlDescription",
-                        "channelIds":["optional_channelIds"]
-                    }
-                }
-            }
-            """.trimIndent()
-    }
-    fun `test update on-demand report definition status after creation`() {
+    fun `test update on-demand report definition status to success after creation`() {
         val reportDefinitionRequest = constructReportDefinitionRequest()
         val reportDefinitionResponse = executeRequest(
             RestRequest.Method.POST.name,
@@ -82,7 +44,7 @@ class ReportInstanceIT : PluginRestTestCase() {
             RestRequest.Method.POST.name,
             "$BASE_REPORTS_URI/on_demand/$reportDefinitionId",
             onDemandRequest,
-            200
+            RestStatus.OK.status
         )
 
         val updateStatus = """
@@ -97,7 +59,7 @@ class ReportInstanceIT : PluginRestTestCase() {
             RestRequest.Method.POST.name,
             "$BASE_REPORTS_URI/instance/$reportInstanceId",
             updateStatus,
-            200
+            RestStatus.OK.status
         )
         Assert.assertNotNull("report definition should be updated", reportDefinitionUpdateResponse)
         Assert.assertEquals(
@@ -108,7 +70,7 @@ class ReportInstanceIT : PluginRestTestCase() {
             RestRequest.Method.GET.name,
             "$BASE_REPORTS_URI/instance/$reportInstanceId",
             "",
-            200
+            RestStatus.OK.status
         )
         val updatedReportInstance = reportInstanceInfo.get("reportInstance").asJsonObject
         val updatedReportInstanceStatus = updatedReportInstance.get("status").asString
@@ -119,6 +81,66 @@ class ReportInstanceIT : PluginRestTestCase() {
         )
         Assert.assertEquals(
             "Operation completed",
+            updatedReportInstanceText
+        )
+    }
+
+    fun `test update report instance status to failed after creation`() {
+        val reportDefinitionRequest = constructReportDefinitionRequest()
+        val reportDefinitionResponse = executeRequest(
+            RestRequest.Method.POST.name,
+            "$BASE_REPORTS_URI/definition",
+            reportDefinitionRequest,
+            RestStatus.OK.status
+        )
+
+        val reportDefinitionId = reportDefinitionResponse.get("reportDefinitionId").asString
+        Assert.assertNotNull("reportDefinitionId should be generated", reportDefinitionId)
+        Thread.sleep(100)
+        val onDemandRequest = """
+            {}
+        """.trimIndent()
+        val onDemandResponse = executeRequest(
+            RestRequest.Method.POST.name,
+            "$BASE_REPORTS_URI/on_demand/$reportDefinitionId",
+            onDemandRequest,
+            RestStatus.OK.status
+        )
+
+        val updateStatus = """
+            {
+                "status":"Failed",
+                "statusText":"Operation failed"
+            }
+        """.trimIndent()
+        val reportInstance = onDemandResponse.get("reportInstance").asJsonObject
+        val reportInstanceId = reportInstance.get("id").asString
+        val reportDefinitionUpdateResponse = executeRequest(
+            RestRequest.Method.POST.name,
+            "$BASE_REPORTS_URI/instance/$reportInstanceId",
+            updateStatus,
+            RestStatus.OK.status
+        )
+        Assert.assertNotNull("report definition should be updated", reportDefinitionUpdateResponse)
+        Assert.assertEquals(
+            reportInstanceId,
+            reportDefinitionUpdateResponse.get("reportInstanceId").asString
+        )
+        val reportInstanceInfo = executeRequest(
+            RestRequest.Method.GET.name,
+            "$BASE_REPORTS_URI/instance/$reportInstanceId",
+            "",
+            RestStatus.OK.status
+        )
+        val updatedReportInstance = reportInstanceInfo.get("reportInstance").asJsonObject
+        val updatedReportInstanceStatus = updatedReportInstance.get("status").asString
+        val updatedReportInstanceText = updatedReportInstance.get("statusText").asString
+        Assert.assertEquals(
+            "Failed",
+            updatedReportInstanceStatus
+        )
+        Assert.assertEquals(
+            "Operation failed",
             updatedReportInstanceText
         )
     }
@@ -171,7 +193,7 @@ class ReportInstanceIT : PluginRestTestCase() {
             RestRequest.Method.POST.name,
             "$BASE_REPORTS_URI/on_demand/$reportDefinitionId",
             onDemandRequest,
-            200
+            RestStatus.OK.status
         )
 
         val updateStatus = """
@@ -189,11 +211,10 @@ class ReportInstanceIT : PluginRestTestCase() {
             updateStatus,
             RestStatus.BAD_REQUEST.status
         )
-        val error = reportDefinitionUpdateResponse.get("error").asJsonObject
-        val type = error.get("type").asString
-        Assert.assertEquals(
-            "illegal_argument_exception",
-            type
+        validateErrorResponse(
+            reportDefinitionUpdateResponse,
+            RestStatus.BAD_REQUEST.status,
+            "illegal_argument_exception"
         )
     }
 
@@ -216,43 +237,12 @@ class ReportInstanceIT : PluginRestTestCase() {
             RestRequest.Method.POST.name,
             "$BASE_REPORTS_URI/on_demand/$reportDefinitionId",
             onDemandRequest,
-            200
+            RestStatus.OK.status
         )
         val reportInstance = onDemandResponse.get("reportInstance").asJsonObject
         val reportInstanceId = reportInstance.get("id").asString
 
-        val addReportDefinition = """
-            {
-                "reportDefinition":{
-                    "name":"new report definition",
-                    "isEnabled":true,
-                    "source":{
-                        "description":"new description",
-                        "type":"Dashboard",
-                        "origin":"localhost:5601",
-                        "id":"id"
-                    },
-                    "format":{
-                        "duration":"PT1H",
-                        "fileFormat":"Pdf",
-                        "limit":1000,
-                        "header":"optional header",
-                        "footer":"optional footer"
-                    },
-                    "trigger":{
-                        "triggerType":"OnDemand"
-                    },
-                    "delivery":{
-                        "recipients":["nobody@email.com"],
-                        "deliveryFormat":"LinkOnly",
-                        "title":"title",
-                        "textDescription":"textDescription",
-                        "htmlDescription":"optional htmlDescription",
-                        "channelIds":["optional_channelIds"]
-                    }
-                }
-            }
-            """.trimIndent()
+        val addReportDefinition = constructReportDefinitionRequest(name = "new definition")
         val addReportDefinitionResponse = executeRequest(
             RestRequest.Method.POST.name,
             "$BASE_REPORTS_URI/definition",
@@ -266,11 +256,11 @@ class ReportInstanceIT : PluginRestTestCase() {
             RestRequest.Method.POST.name,
             "$BASE_REPORTS_URI/on_demand/$newReportDefinitionId",
             onDemandRequest,
-            200
+            RestStatus.OK.status
         )
         val newReportInstance = newOnDemandResponse.get("reportInstance").asJsonObject
         val newReportInstanceId = newReportInstance.get("id").asString
-        Thread.sleep(3000)
+        Thread.sleep(1000)
         val listReportInstancesResponse = executeRequest(
             RestRequest.Method.GET.name,
             "$BASE_REPORTS_URI/instances",
