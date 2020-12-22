@@ -64,32 +64,32 @@ class ReportDefinitionIT : PluginRestTestCase() {
     }
 
     fun `test create, get, update, delete report definition`() {
-        var reportDefinitionRequest = constructReportDefinitionRequest()
-        var reportDefinitionResponse = executeRequest(
+        val reportDefinitionOnDemandRequest = constructReportDefinitionRequest()
+        val reportDefinitionOnDemandResponse = executeRequest(
             RestRequest.Method.POST.name,
             "$BASE_REPORTS_URI/definition",
-            reportDefinitionRequest,
+            reportDefinitionOnDemandRequest,
             RestStatus.OK.status
         )
-        var reportDefinitionId = reportDefinitionResponse.get("reportDefinitionId").asString
-        Assert.assertNotNull("reportDefinitionId should be generated", reportDefinitionId)
+        val reportDefinitionOnDemandId = reportDefinitionOnDemandResponse.get("reportDefinitionId").asString
+        Assert.assertNotNull("reportDefinitionId should be generated", reportDefinitionOnDemandId)
         Thread.sleep(100)
 
-        reportDefinitionRequest = constructReportDefinitionRequest(
+        val reportDefinitionDownloadRequest = constructReportDefinitionRequest(
             """
                 "trigger":{
                     "triggerType":"Download"
                 },
             """.trimIndent()
         )
-        reportDefinitionResponse = executeRequest(
+        val reportDefinitionDownloadResponse = executeRequest(
             RestRequest.Method.POST.name,
             "$BASE_REPORTS_URI/definition",
-            reportDefinitionRequest,
+            reportDefinitionDownloadRequest,
             RestStatus.OK.status
         )
-        reportDefinitionId = reportDefinitionResponse.get("reportDefinitionId").asString
-        Assert.assertNotNull("reportDefinitionId should be generated", reportDefinitionId)
+        val reportDefinitionDownloadId = reportDefinitionDownloadResponse.get("reportDefinitionId").asString
+        Assert.assertNotNull("reportDefinitionId should be generated", reportDefinitionDownloadId)
         Thread.sleep(1000)
 
         val reportDefinitionsResponse = executeRequest(
@@ -102,76 +102,82 @@ class ReportDefinitionIT : PluginRestTestCase() {
         Thread.sleep(100)
 
         val newName = "updated_report"
-        reportDefinitionRequest = constructReportDefinitionRequest(name = newName)
-        reportDefinitionResponse = executeRequest(
+        val reportDefinitionUpdateRequest = constructReportDefinitionRequest(name = newName)
+        val reportDefinitionUpdateResponse = executeRequest(
             RestRequest.Method.PUT.name,
-            "$BASE_REPORTS_URI/definition/$reportDefinitionId",
-            reportDefinitionRequest,
+            "$BASE_REPORTS_URI/definition/$reportDefinitionOnDemandId",
+            reportDefinitionUpdateRequest,
             RestStatus.OK.status
         )
-        Assert.assertEquals(reportDefinitionId, reportDefinitionResponse.get("reportDefinitionId").asString)
+        Assert.assertEquals(
+            reportDefinitionOnDemandId,
+            reportDefinitionUpdateResponse.get("reportDefinitionId").asString
+        )
         Thread.sleep(100)
 
-        reportDefinitionResponse = executeRequest(
+        val reportDefinitionGetResponse = executeRequest(
             RestRequest.Method.GET.name,
-            "$BASE_REPORTS_URI/definition/$reportDefinitionId",
+            "$BASE_REPORTS_URI/definition/$reportDefinitionOnDemandId",
             "",
             RestStatus.OK.status
         )
         Assert.assertEquals(
-            reportDefinitionId,
-            reportDefinitionResponse.get("reportDefinitionDetails").asJsonObject.get("id").asString
+            reportDefinitionOnDemandId,
+            reportDefinitionGetResponse.get("reportDefinitionDetails").asJsonObject.get("id").asString
         )
         Assert.assertEquals(
             newName,
-            reportDefinitionResponse.get("reportDefinitionDetails").asJsonObject
+            reportDefinitionGetResponse.get("reportDefinitionDetails").asJsonObject
                 .get("reportDefinition").asJsonObject.get("name").asString
         )
         Thread.sleep(100)
 
-        reportDefinitionResponse = executeRequest(
+        val reportDefinitionDeleteResponse = executeRequest(
             RestRequest.Method.DELETE.name,
-            "$BASE_REPORTS_URI/definition/$reportDefinitionId",
+            "$BASE_REPORTS_URI/definition/$reportDefinitionOnDemandId",
             "",
             RestStatus.OK.status
         )
-        Assert.assertEquals(reportDefinitionId, reportDefinitionResponse.get("reportDefinitionId").asString)
+        Assert.assertEquals(
+            reportDefinitionOnDemandId,
+            reportDefinitionDeleteResponse.get("reportDefinitionId").asString
+        )
         Thread.sleep(100)
 
-        reportDefinitionResponse = executeRequest(
+        val reportDefinitionGetNotFoundResponse = executeRequest(
             RestRequest.Method.GET.name,
-            "$BASE_REPORTS_URI/definition/$reportDefinitionId",
+            "$BASE_REPORTS_URI/definition/$reportDefinitionOnDemandId",
             "",
             RestStatus.NOT_FOUND.status
         )
-        validateErrorResponse(reportDefinitionResponse, RestStatus.NOT_FOUND.status)
+        validateErrorResponse(reportDefinitionGetNotFoundResponse, RestStatus.NOT_FOUND.status)
         Thread.sleep(100)
 
-        reportDefinitionResponse = executeRequest(
+        val reportDefinitionInvalidGetResponse = executeRequest(
             RestRequest.Method.GET.name,
             "$BASE_REPORTS_URI/definition/invalid-id",
             "",
             RestStatus.NOT_FOUND.status
         )
-        validateErrorResponse(reportDefinitionResponse, RestStatus.NOT_FOUND.status)
+        validateErrorResponse(reportDefinitionInvalidGetResponse, RestStatus.NOT_FOUND.status)
         Thread.sleep(100)
 
-        reportDefinitionResponse = executeRequest(
+        val reportDefinitionInvalidUpdateResponse = executeRequest(
             RestRequest.Method.PUT.name,
             "$BASE_REPORTS_URI/definition/invalid-id",
             constructReportDefinitionRequest(),
             RestStatus.NOT_FOUND.status
         )
-        validateErrorResponse(reportDefinitionResponse, RestStatus.NOT_FOUND.status)
+        validateErrorResponse(reportDefinitionInvalidUpdateResponse, RestStatus.NOT_FOUND.status)
         Thread.sleep(100)
 
-        reportDefinitionResponse = executeRequest(
+        val reportDefinitionInvalidDeleteResponse = executeRequest(
             RestRequest.Method.DELETE.name,
             "$BASE_REPORTS_URI/definition/invalid-id",
             "",
             RestStatus.NOT_FOUND.status
         )
-        validateErrorResponse(reportDefinitionResponse, RestStatus.NOT_FOUND.status)
+        validateErrorResponse(reportDefinitionInvalidDeleteResponse, RestStatus.NOT_FOUND.status)
         Thread.sleep(100)
     }
 
@@ -225,22 +231,22 @@ class ReportDefinitionIT : PluginRestTestCase() {
     }
 
     fun `test create invalid cron scheduled report definition`() {
-        var trigger = """
+        val cronTrigger = """
             "trigger":{
                 "triggerType":"CronSchedule"
             },
         """.trimIndent()
-        var reportDefinitionRequest = constructReportDefinitionRequest(trigger)
-        var reportDefinitionResponse = executeRequest(
+        val reportDefinitionCronRequest = constructReportDefinitionRequest(cronTrigger)
+        val reportDefinitionCronResponse = executeRequest(
             RestRequest.Method.POST.name,
             "$BASE_REPORTS_URI/definition",
-            reportDefinitionRequest,
+            reportDefinitionCronRequest,
             RestStatus.BAD_REQUEST.status
         )
-        validateErrorResponse(reportDefinitionResponse, RestStatus.BAD_REQUEST.status, "illegal_argument_exception")
+        validateErrorResponse(reportDefinitionCronResponse, RestStatus.BAD_REQUEST.status, "illegal_argument_exception")
         Thread.sleep(100)
 
-        trigger = """
+        val invalidCronTrigger = """
             "trigger":{
                 "triggerType":"CronSchedule",
                 "schedule":{
@@ -251,34 +257,42 @@ class ReportDefinitionIT : PluginRestTestCase() {
                 }
             },
         """.trimIndent()
-        reportDefinitionRequest = constructReportDefinitionRequest(trigger)
-        reportDefinitionResponse = executeRequest(
+        val reportDefinitionInvalidCronRequest = constructReportDefinitionRequest(invalidCronTrigger)
+        val reportDefinitionInvalidCronResponse = executeRequest(
             RestRequest.Method.POST.name,
             "$BASE_REPORTS_URI/definition",
-            reportDefinitionRequest,
+            reportDefinitionInvalidCronRequest,
             RestStatus.BAD_REQUEST.status
         )
-        validateErrorResponse(reportDefinitionResponse, RestStatus.BAD_REQUEST.status, "illegal_argument_exception")
+        validateErrorResponse(
+            reportDefinitionInvalidCronResponse,
+            RestStatus.BAD_REQUEST.status,
+            "illegal_argument_exception"
+        )
         Thread.sleep(100)
     }
 
     fun `test create invalid interval scheduled report definition`() {
-        var trigger = """
+        val intervalTrigger = """
             "trigger":{
                 "triggerType":"IntervalSchedule"
             },
         """.trimIndent()
-        var reportDefinitionRequest = constructReportDefinitionRequest(trigger)
-        var reportDefinitionResponse = executeRequest(
+        val reportDefinitionIntervalRequest = constructReportDefinitionRequest(intervalTrigger)
+        val reportDefinitionIntervalResponse = executeRequest(
             RestRequest.Method.POST.name,
             "$BASE_REPORTS_URI/definition",
-            reportDefinitionRequest,
+            reportDefinitionIntervalRequest,
             RestStatus.BAD_REQUEST.status
         )
-        validateErrorResponse(reportDefinitionResponse, RestStatus.BAD_REQUEST.status, "illegal_argument_exception")
+        validateErrorResponse(
+            reportDefinitionIntervalResponse,
+            RestStatus.BAD_REQUEST.status,
+            "illegal_argument_exception"
+        )
         Thread.sleep(100)
 
-        trigger = """
+        val invalidIntervalTrigger = """
             "trigger":{
                 "triggerType":"IntervalSchedule",
                 "schedule":{
@@ -287,14 +301,18 @@ class ReportDefinitionIT : PluginRestTestCase() {
                 }
             },
         """.trimIndent()
-        reportDefinitionRequest = constructReportDefinitionRequest(trigger)
-        reportDefinitionResponse = executeRequest(
+        val reportDefinitionInvalidIntervalRequest = constructReportDefinitionRequest(invalidIntervalTrigger)
+        val reportDefinitionInvalidIntervalResponse = executeRequest(
             RestRequest.Method.POST.name,
             "$BASE_REPORTS_URI/definition",
-            reportDefinitionRequest,
+            reportDefinitionInvalidIntervalRequest,
             RestStatus.BAD_REQUEST.status
         )
-        validateErrorResponse(reportDefinitionResponse, RestStatus.BAD_REQUEST.status, "illegal_argument_exception")
+        validateErrorResponse(
+            reportDefinitionInvalidIntervalResponse,
+            RestStatus.BAD_REQUEST.status,
+            "illegal_argument_exception"
+        )
         Thread.sleep(100)
     }
 }
