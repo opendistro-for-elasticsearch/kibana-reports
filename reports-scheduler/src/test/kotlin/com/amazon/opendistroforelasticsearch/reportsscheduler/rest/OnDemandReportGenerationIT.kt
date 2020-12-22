@@ -85,9 +85,9 @@ class OnDemandReportGenerationIT : PluginRestTestCase() {
                 .get("reportDefinition").asJsonObject,
             reportDefinition
         )
-        validateTimeRecency(Instant.ofEpochMilli(reportInstance.get("lastUpdatedTimeMs").asLong), 1)
-        validateTimeRecency(Instant.ofEpochMilli(reportInstance.get("createdTimeMs").asLong), 1)
-        validateTimeRecency(Instant.ofEpochMilli(reportInstance.get("endTimeMs").asLong), 1)
+        validateTimeRecency(Instant.ofEpochMilli(reportInstance.get("lastUpdatedTimeMs").asLong))
+        validateTimeRecency(Instant.ofEpochMilli(reportInstance.get("createdTimeMs").asLong))
+        validateTimeRecency(Instant.ofEpochMilli(reportInstance.get("endTimeMs").asLong))
         validateTimeNearRefTime(
             Instant.ofEpochMilli(reportInstance.get("beginTimeMs").asLong),
             Instant.now().minus(Duration.parse(reportDefinition.get("format").asJsonObject.get("duration").asString)),
