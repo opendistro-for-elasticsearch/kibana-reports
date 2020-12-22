@@ -1,25 +1,45 @@
+/*
+ * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ *
+ */
 package com.amazon.opendistroforelasticsearch.reportsscheduler.rest
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.PluginRestTestCase
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
+import com.amazon.opendistroforelasticsearch.reportsscheduler.validateErrorResponse
 import org.elasticsearch.rest.RestRequest
+import org.elasticsearch.rest.RestStatus
 import org.junit.Assert
 
 class ReportDefinitionIT : PluginRestTestCase() {
     private fun constructReportDefinitionRequest(
-        trigger: String,
-        type: String = "Dashboard",
-        origin: String = "localhost:5601"
+        trigger: String = """
+            "trigger":{
+                "triggerType":"OnDemand"
+            },
+        """.trimIndent(),
+        name: String = "report_definition"
     ): String {
         return """
             {
                 "reportDefinition":{
-                    "name":"report_definition",
+                    "name":"$name",
                     "isEnabled":true,
                     "source":{
                         "description":"description",
-                        "type":"$type",
-                        "origin":"$origin",
+                        "type":"Dashboard",
+                        "origin":"localhost:5601",
                         "id":"id"
                     },
                     "format":{
@@ -43,51 +63,118 @@ class ReportDefinitionIT : PluginRestTestCase() {
             """.trimIndent()
     }
 
-    fun `test create and get on-demand report definition`() {
-        val trigger = """
-            "trigger":{
-                "triggerType":"OnDemand"
-            },
-        """.trimIndent()
-        val createReportDefinitionRequest = constructReportDefinitionRequest(trigger)
-        val createReportDefinitionResponse = executeRequest(
-            RestRequest.Method.POST.name,
-            "$BASE_REPORTS_URI/definition",
-            createReportDefinitionRequest,
-            200
-        )
-        val reportDefinitionId = createReportDefinitionResponse.get("reportDefinitionId").asString
-        Assert.assertNotNull("reportDefinitionId should be generated", reportDefinitionId)
-        Thread.sleep(100)
-
-        val getReportDefinitionResponse = executeRequest(
-            RestRequest.Method.GET.name,
-            "$BASE_REPORTS_URI/definition/$reportDefinitionId",
-            "",
-            200
-        )
-        Assert.assertEquals(
-            reportDefinitionId,
-            getReportDefinitionResponse.get("reportDefinitionDetails").asJsonObject.get("id").asString
-        )
-        Thread.sleep(100)
-    }
-
-    fun `test create download report definition`() {
-        val trigger = """
-            "trigger":{
-                "triggerType":"Download"
-            },
-        """.trimIndent()
-        val reportDefinitionRequest = constructReportDefinitionRequest(trigger)
-        val reportDefinitionResponse = executeRequest(
+    fun `test create, get, update, delete report definition`() {
+        var reportDefinitionRequest = constructReportDefinitionRequest()
+        var reportDefinitionResponse = executeRequest(
             RestRequest.Method.POST.name,
             "$BASE_REPORTS_URI/definition",
             reportDefinitionRequest,
-            200
+            RestStatus.OK.status
         )
-        val reportDefinitionId = reportDefinitionResponse.get("reportDefinitionId").asString
+        var reportDefinitionId = reportDefinitionResponse.get("reportDefinitionId").asString
         Assert.assertNotNull("reportDefinitionId should be generated", reportDefinitionId)
+        Thread.sleep(100)
+
+        reportDefinitionRequest = constructReportDefinitionRequest(
+            """
+                "trigger":{
+                    "triggerType":"Download"
+                },
+            """.trimIndent()
+        )
+        reportDefinitionResponse = executeRequest(
+            RestRequest.Method.POST.name,
+            "$BASE_REPORTS_URI/definition",
+            reportDefinitionRequest,
+            RestStatus.OK.status
+        )
+        reportDefinitionId = reportDefinitionResponse.get("reportDefinitionId").asString
+        Assert.assertNotNull("reportDefinitionId should be generated", reportDefinitionId)
+        Thread.sleep(3000)
+
+        val reportDefinitionsResponse = executeRequest(
+            RestRequest.Method.GET.name,
+            "$BASE_REPORTS_URI/definitions",
+            "",
+            RestStatus.OK.status
+        )
+        Assert.assertEquals(2, reportDefinitionsResponse.get("totalHits").asInt)
+        Thread.sleep(100)
+
+        val newName = "updated_report"
+        reportDefinitionRequest = constructReportDefinitionRequest(name = newName)
+        reportDefinitionResponse = executeRequest(
+            RestRequest.Method.PUT.name,
+            "$BASE_REPORTS_URI/definition/$reportDefinitionId",
+            reportDefinitionRequest,
+            RestStatus.OK.status
+        )
+        Assert.assertEquals(reportDefinitionId, reportDefinitionResponse.get("reportDefinitionId").asString)
+        Thread.sleep(100)
+
+        reportDefinitionResponse = executeRequest(
+            RestRequest.Method.GET.name,
+            "$BASE_REPORTS_URI/definition/$reportDefinitionId",
+            "",
+            RestStatus.OK.status
+        )
+        Assert.assertEquals(
+            reportDefinitionId,
+            reportDefinitionResponse.get("reportDefinitionDetails").asJsonObject.get("id").asString
+        )
+        Assert.assertEquals(
+            newName,
+            reportDefinitionResponse.get("reportDefinitionDetails").asJsonObject.get("reportDefinition").asJsonObject.get(
+                "name"
+            ).asString
+        )
+        Thread.sleep(100)
+
+        reportDefinitionResponse = executeRequest(
+            RestRequest.Method.DELETE.name,
+            "$BASE_REPORTS_URI/definition/$reportDefinitionId",
+            "",
+            RestStatus.OK.status
+        )
+        Assert.assertEquals(reportDefinitionId, reportDefinitionResponse.get("reportDefinitionId").asString)
+        Thread.sleep(100)
+
+        reportDefinitionResponse = executeRequest(
+            RestRequest.Method.GET.name,
+            "$BASE_REPORTS_URI/definition/$reportDefinitionId",
+            "",
+            RestStatus.NOT_FOUND.status
+        )
+        validateErrorResponse(reportDefinitionResponse, RestStatus.NOT_FOUND.status)
+        Thread.sleep(100)
+    }
+
+    fun `test invalid get, update, delete report definition`() {
+        var reportDefinitionResponse = executeRequest(
+            RestRequest.Method.GET.name,
+            "$BASE_REPORTS_URI/definition/invalid-id",
+            "",
+            RestStatus.NOT_FOUND.status
+        )
+        validateErrorResponse(reportDefinitionResponse, RestStatus.NOT_FOUND.status)
+        Thread.sleep(100)
+
+        reportDefinitionResponse = executeRequest(
+            RestRequest.Method.PUT.name,
+            "$BASE_REPORTS_URI/definition/invalid-id",
+            constructReportDefinitionRequest(),
+            RestStatus.NOT_FOUND.status
+        )
+        validateErrorResponse(reportDefinitionResponse, RestStatus.NOT_FOUND.status)
+        Thread.sleep(100)
+
+        reportDefinitionResponse = executeRequest(
+            RestRequest.Method.DELETE.name,
+            "$BASE_REPORTS_URI/definition/invalid-id",
+            "",
+            RestStatus.NOT_FOUND.status
+        )
+        validateErrorResponse(reportDefinitionResponse, RestStatus.NOT_FOUND.status)
         Thread.sleep(100)
     }
 
@@ -108,7 +195,7 @@ class ReportDefinitionIT : PluginRestTestCase() {
             RestRequest.Method.POST.name,
             "$BASE_REPORTS_URI/definition",
             reportDefinitionRequest,
-            200
+            RestStatus.OK.status
         )
         val reportDefinitionId = reportDefinitionResponse.get("reportDefinitionId").asString
         Assert.assertNotNull("reportDefinitionId should be generated", reportDefinitionId)
@@ -133,54 +220,84 @@ class ReportDefinitionIT : PluginRestTestCase() {
             RestRequest.Method.POST.name,
             "$BASE_REPORTS_URI/definition",
             reportDefinitionRequest,
-            200
+            RestStatus.OK.status
         )
         val reportDefinitionId = reportDefinitionResponse.get("reportDefinitionId").asString
         Assert.assertNotNull("reportDefinitionId should be generated", reportDefinitionId)
         Thread.sleep(100)
     }
 
-//    fun `test create invalid cron scheduled report definition`() {
-//        var trigger = """
-//            "trigger":{
-//                "triggerType":"CronSchedule"
-//            },
-//        """.trimIndent()
-//        var reportDefinitionRequest = constructReportDefinitionRequest(trigger)
-//        var reportDefinitionResponse = executeRequest(
-//            RestRequest.Method.POST.name,
-//            "$BASE_REPORTS_URI/definition",
-//            reportDefinitionRequest,
-//            400
-//        )
-//        Assert.assertEquals(
-//            "{\"error\":{\"root_cause\":[{\"type\":\"illegal_argument_exception\",\"reason\":\"schedule field absent\"}],\"type\":\"illegal_argument_exception\",\"reason\":\"schedule field absent\"},\"status\":400}",
-//            reportDefinitionResponse.toString()
-//        )
-//        Thread.sleep(100)
-//        trigger = """
-//            "trigger":{
-//                "triggerType":"CronSchedule",
-//                "schedule":{
-//                    "cron":{
-//                        "expression":"0 ",
-//                        "timezone":"PST"
-//                    },
-//                },
-//            },
-//        """.trimIndent()
-//        reportDefinitionRequest = constructReportDefinitionRequest(trigger)
-//        reportDefinitionResponse = executeRequest(
-//            RestRequest.Method.POST.name,
-//            "$BASE_REPORTS_URI/definition",
-//            reportDefinitionRequest,
-//            500
-//        )
-//        Assert.assertEquals(
-//            "{\"error\":{\"root_cause\":[{\"type\":\"zone_rules_exception\",\"reason\":\"Unknown time-zone ID: PST\"}],\"type\":\"zone_rules_exception\",\"reason\":\"Unknown time-zone ID: PST\"},\"status\":500}",
-//            reportDefinitionResponse.toString()
-//        )
-//    }
+    fun `test create invalid cron scheduled report definition`() {
+        var trigger = """
+            "trigger":{
+                "triggerType":"CronSchedule"
+            },
+        """.trimIndent()
+        var reportDefinitionRequest = constructReportDefinitionRequest(trigger)
+        var reportDefinitionResponse = executeRequest(
+            RestRequest.Method.POST.name,
+            "$BASE_REPORTS_URI/definition",
+            reportDefinitionRequest,
+            RestStatus.BAD_REQUEST.status
+        )
+        validateErrorResponse(reportDefinitionResponse, RestStatus.BAD_REQUEST.status, "illegal_argument_exception")
+        Thread.sleep(100)
 
+        trigger = """
+            "trigger":{
+                "triggerType":"CronSchedule",
+                "schedule":{
+                    "cron":{
+                        "expression":"1234567",
+                        "timezone":"America/Los_Angeles"
+                    }
+                }
+            },
+        """.trimIndent()
+        reportDefinitionRequest = constructReportDefinitionRequest(trigger)
+        reportDefinitionResponse = executeRequest(
+            RestRequest.Method.POST.name,
+            "$BASE_REPORTS_URI/definition",
+            reportDefinitionRequest,
+            RestStatus.BAD_REQUEST.status
+        )
+        validateErrorResponse(reportDefinitionResponse, RestStatus.BAD_REQUEST.status, "illegal_argument_exception")
+        Thread.sleep(100)
+    }
+
+    fun `test create invalid interval scheduled report definition`() {
+        var trigger = """
+            "trigger":{
+                "triggerType":"IntervalSchedule"
+            },
+        """.trimIndent()
+        var reportDefinitionRequest = constructReportDefinitionRequest(trigger)
+        var reportDefinitionResponse = executeRequest(
+            RestRequest.Method.POST.name,
+            "$BASE_REPORTS_URI/definition",
+            reportDefinitionRequest,
+            RestStatus.BAD_REQUEST.status
+        )
+        validateErrorResponse(reportDefinitionResponse, RestStatus.BAD_REQUEST.status, "illegal_argument_exception")
+        Thread.sleep(100)
+
+        trigger = """
+            "trigger":{
+                "triggerType":"IntervalSchedule",
+                "schedule":{
+                    "interval":{
+                    }
+                }
+            },
+        """.trimIndent()
+        reportDefinitionRequest = constructReportDefinitionRequest(trigger)
+        reportDefinitionResponse = executeRequest(
+            RestRequest.Method.POST.name,
+            "$BASE_REPORTS_URI/definition",
+            reportDefinitionRequest,
+            RestStatus.BAD_REQUEST.status
+        )
+        validateErrorResponse(reportDefinitionResponse, RestStatus.BAD_REQUEST.status, "illegal_argument_exception")
+        Thread.sleep(100)
+    }
 }
-
