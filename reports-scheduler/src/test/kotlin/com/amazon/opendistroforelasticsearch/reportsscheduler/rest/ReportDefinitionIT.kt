@@ -51,7 +51,7 @@ class ReportDefinitionIT : PluginRestTestCase() {
                     },
                     $trigger
                     "delivery":{
-                        "recipients":["banantha@amazon.com"],
+                        "recipients":["nobody@email.com"],
                         "deliveryFormat":"LinkOnly",
                         "title":"title",
                         "textDescription":"textDescription",
@@ -90,7 +90,7 @@ class ReportDefinitionIT : PluginRestTestCase() {
         )
         reportDefinitionId = reportDefinitionResponse.get("reportDefinitionId").asString
         Assert.assertNotNull("reportDefinitionId should be generated", reportDefinitionId)
-        Thread.sleep(3000)
+        Thread.sleep(1000)
 
         val reportDefinitionsResponse = executeRequest(
             RestRequest.Method.GET.name,
@@ -124,9 +124,8 @@ class ReportDefinitionIT : PluginRestTestCase() {
         )
         Assert.assertEquals(
             newName,
-            reportDefinitionResponse.get("reportDefinitionDetails").asJsonObject.get("reportDefinition").asJsonObject.get(
-                "name"
-            ).asString
+            reportDefinitionResponse.get("reportDefinitionDetails").asJsonObject
+                .get("reportDefinition").asJsonObject.get("name").asString
         )
         Thread.sleep(100)
 
@@ -147,10 +146,8 @@ class ReportDefinitionIT : PluginRestTestCase() {
         )
         validateErrorResponse(reportDefinitionResponse, RestStatus.NOT_FOUND.status)
         Thread.sleep(100)
-    }
 
-    fun `test invalid get, update, delete report definition`() {
-        var reportDefinitionResponse = executeRequest(
+        reportDefinitionResponse = executeRequest(
             RestRequest.Method.GET.name,
             "$BASE_REPORTS_URI/definition/invalid-id",
             "",
