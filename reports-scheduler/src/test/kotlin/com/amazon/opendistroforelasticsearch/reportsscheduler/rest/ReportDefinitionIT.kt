@@ -17,52 +17,13 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.rest
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.PluginRestTestCase
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
+import com.amazon.opendistroforelasticsearch.reportsscheduler.constructReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.validateErrorResponse
 import org.elasticsearch.rest.RestRequest
 import org.elasticsearch.rest.RestStatus
 import org.junit.Assert
 
 class ReportDefinitionIT : PluginRestTestCase() {
-    private fun constructReportDefinitionRequest(
-        trigger: String = """
-            "trigger":{
-                "triggerType":"OnDemand"
-            },
-        """.trimIndent(),
-        name: String = "report_definition"
-    ): String {
-        return """
-            {
-                "reportDefinition":{
-                    "name":"$name",
-                    "isEnabled":true,
-                    "source":{
-                        "description":"description",
-                        "type":"Dashboard",
-                        "origin":"localhost:5601",
-                        "id":"id"
-                    },
-                    "format":{
-                        "duration":"PT1H",
-                        "fileFormat":"Pdf",
-                        "limit":1000,
-                        "header":"optional header",
-                        "footer":"optional footer"
-                    },
-                    $trigger
-                    "delivery":{
-                        "recipients":["nobody@email.com"],
-                        "deliveryFormat":"LinkOnly",
-                        "title":"title",
-                        "textDescription":"textDescription",
-                        "htmlDescription":"optional htmlDescription",
-                        "channelIds":["optional_channelIds"]
-                    }
-                }
-            }
-            """.trimIndent()
-    }
-
     fun `test create, get, update, delete report definition`() {
         val reportDefinitionOnDemandRequest = constructReportDefinitionRequest()
         val reportDefinitionOnDemandResponse = executeRequest(

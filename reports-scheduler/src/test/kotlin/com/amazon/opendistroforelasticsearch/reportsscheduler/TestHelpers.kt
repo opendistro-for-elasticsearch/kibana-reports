@@ -22,6 +22,46 @@ import org.junit.Assert
 import java.time.Instant
 import kotlin.test.assertTrue
 
+fun constructReportDefinitionRequest(
+    trigger: String = """
+            "trigger":{
+                "triggerType":"OnDemand"
+            },
+        """.trimIndent(),
+    name: String = "report_definition"
+): String {
+    return """
+            {
+                "reportDefinition":{
+                    "name":"$name",
+                    "isEnabled":true,
+                    "source":{
+                        "description":"description",
+                        "type":"Dashboard",
+                        "origin":"localhost:5601",
+                        "id":"id"
+                    },
+                    "format":{
+                        "duration":"PT1H",
+                        "fileFormat":"Pdf",
+                        "limit":1000,
+                        "header":"optional header",
+                        "footer":"optional footer"
+                    },
+                    $trigger
+                    "delivery":{
+                        "recipients":["nobody@email.com"],
+                        "deliveryFormat":"LinkOnly",
+                        "title":"title",
+                        "textDescription":"textDescription",
+                        "htmlDescription":"optional htmlDescription",
+                        "channelIds":["optional_channelIds"]
+                    }
+                }
+            }
+            """.trimIndent()
+}
+
 fun jsonify(text: String): JsonObject {
     return JsonParser.parseString(text).asJsonObject
 }
