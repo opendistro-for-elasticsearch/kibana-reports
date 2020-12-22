@@ -22,6 +22,8 @@ import org.junit.Assert
 import java.time.Instant
 import kotlin.test.assertTrue
 
+private const val DEFAULT_TIME_ACCURACY_SEC = 5L
+
 fun constructReportDefinitionRequest(
     trigger: String = """
             "trigger":{
@@ -67,11 +69,11 @@ fun jsonify(text: String): JsonObject {
 }
 
 fun validateTimeNearRefTime(time: Instant, refTime: Instant, accuracySeconds: Long) {
-    assertTrue(time.plusSeconds(accuracySeconds).isAfter(refTime))
-    assertTrue(time.minusSeconds(accuracySeconds).isBefore(refTime))
+    assertTrue(time.plusSeconds(accuracySeconds).isAfter(refTime), "$time + $accuracySeconds > $refTime")
+    assertTrue(time.minusSeconds(accuracySeconds).isBefore(refTime), "$time - $accuracySeconds < $refTime")
 }
 
-fun validateTimeRecency(time: Instant, accuracySeconds: Long) {
+fun validateTimeRecency(time: Instant, accuracySeconds: Long = DEFAULT_TIME_ACCURACY_SEC) {
     validateTimeNearRefTime(time, Instant.now(), accuracySeconds)
 }
 
