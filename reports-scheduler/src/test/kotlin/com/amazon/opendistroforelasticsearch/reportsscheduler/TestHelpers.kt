@@ -35,7 +35,7 @@ fun validateTimeRecency(time: Instant, accuracySeconds: Long) {
     validateTimeNearRefTime(time, Instant.now(), accuracySeconds)
 }
 
-fun validateErrorResponse(response: JsonObject, statusCode: Int) {
+fun validateErrorResponse(response: JsonObject, statusCode: Int, errorType: String = "status_exception") {
     Assert.assertNotNull("Error response content should be generated", response)
     val status = response.get("status").asInt
     val error = response.get("error").asJsonObject
@@ -43,7 +43,7 @@ fun validateErrorResponse(response: JsonObject, statusCode: Int) {
     val type = error.get("type").asString
     val reason = error.get("reason").asString
     Assert.assertEquals(statusCode, status)
-    Assert.assertEquals("status_exception", type)
+    Assert.assertEquals(errorType, type)
     Assert.assertNotNull(reason)
     Assert.assertNotNull(rootCause)
     Assert.assertTrue(rootCause.size() > 0)
