@@ -15,77 +15,97 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.metrics;
 
-//enum class MetricName(val metricName: String, val value: Int, val numerical: Boolean) {
-//
-//    REPORT_DEFINITION_CREATE_COUNT("report_definition_create_count", COUNT, true),
-//    REPORT_DEFINITION_CREATE_USER_ERROR("report_definition_create_user_error", COUNT, true),
-//    REPORT_DEFINITION_CREATE_SYSTEM_ERROR("report_definition_create_system_error", COUNT, true),
-//    REPORT_DEFINITION_UPDATE_COUNT("report_definition_update_count", COUNT, true),
-//    REPORT_DEFINITION_UPDATE_USER_ERROR("report_definition_update_user_error", COUNT, true),
-//    REPORT_DEFINITION_UPDATE_SYSTEM_ERROR("report_definition_update_system_error", COUNT, true),
-//    REPORT_DEFINITION_DELETE_COUNT("report_definition_delete_count", COUNT, true),
-//    REPORT_DEFINITION_DELETE_USER_ERROR("report_definition_delete_user_error", COUNT, true),
-//    REPORT_DEFINITION_DELETE_SYSTEM_ERROR("report_definition_delete_system_error", COUNT, true),
-//    REPORT_DEFINITION_LIST_COUNT("report_definition_list_count", COUNT, true),
-//    REPORT_DEFINITION_LIST_USER_ERROR("report_definition_list_user_error", COUNT, true),
-//    REPORT_DEFINITION_LIST_SYSTEM_ERROR("report_definition_list_system_error", COUNT, true),
-//
-//    REPORT_INSTANCE_LIST_COUNT("report_instance_list_count", COUNT, true),
-//    REPORT_INSTANCE_LIST_USER_ERROR("report_instance_list_user_error", COUNT, true),
-//    REPORT_INSTANCE_LIST_SYSTEM_ERROR("report_instance_list_system_error", COUNT, true)
-//}
-
-
-import com.google.common.collect.ImmutableSet;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public enum MetricName {
-    REQ_TOTAL("request_total"),
-    REQ_COUNT_TOTAL("request_count"),
-    FAILED_REQ_COUNT_SYS("failed_request_count_syserr"),
-    FAILED_REQ_COUNT_CUS("failed_request_count_cuserr"),
-    FAILED_REQ_COUNT_CB("failed_request_count_cb"),
-    DEFAULT_CURSOR_REQUEST_TOTAL("default_cursor_request_total"),
-    DEFAULT_CURSOR_REQUEST_COUNT_TOTAL("default_cursor_request_count"),
-    DEFAULT("default"),
 
-    PPL_REQ_TOTAL("ppl_request_total"),
-    PPL_REQ_COUNT_TOTAL("ppl_request_count"),
-    PPL_FAILED_REQ_COUNT_SYS("ppl_failed_request_count_syserr"),
-    PPL_FAILED_REQ_COUNT_CUS("ppl_failed_request_count_cuserr");
+    REPORT_DEFINITION_CREATE_TOTAL("report_definition.create.total", true),
+    REPORT_DEFINITION_CREATE_INTERVAL_COUNT("report_definition.create.count", true),
+    REPORT_DEFINITION_CREATE_USER_ERROR("report_definition.create.user_error", true),
+    REPORT_DEFINITION_CREATE_SYSTEM_ERROR("report_definition.create.system_error.", true),
+
+    REPORT_DEFINITION_UPDATE_TOTAL("report_definition.update.total", true),
+    REPORT_DEFINITION_UPDATE_INTERVAL_COUNT("report_definition.update.count", true),
+    REPORT_DEFINITION_UPDATE_USER_ERROR("report_definition.update.user_error", true),
+    REPORT_DEFINITION_UPDATE_SYSTEM_ERROR("report_definition.update.system_error.", true),
+
+    REPORT_DEFINITION_INFO_TOTAL("report_definition.info.total", true),
+    REPORT_DEFINITION_INFO_INTERVAL_COUNT("report_definition.info.count", true),
+    REPORT_DEFINITION_INFO_USER_ERROR("report_definition.info.user_error", true),
+    REPORT_DEFINITION_INFO_SYSTEM_ERROR("report_definition.info.system_error.", true),
+
+    REPORT_DEFINITION_DELETE_TOTAL("report_definition.delete.total", true),
+    REPORT_DEFINITION_DELETE_INTERVAL_COUNT("report_definition.delete.count", true),
+    REPORT_DEFINITION_DELETE_USER_ERROR("report_definition.delete.user_error", true),
+    REPORT_DEFINITION_DELETE_SYSTEM_ERROR("report_definition.delete.system_error.", true),
+
+    REPORT_DEFINITION_LIST_TOTAL("report_definition.list.total", true),
+    REPORT_DEFINITION_LIST_INTERVAL_COUNT("report_definition.list.count", true),
+    REPORT_DEFINITION_LIST_USER_ERROR("report_definition.list.user_error", true),
+    REPORT_DEFINITION_LIST_SYSTEM_ERROR("report_definition.list.system_error.", true),
+
+    REPORT_INSTANCE_UPDATE_TOTAL("report_instance.update.total", true),
+    REPORT_INSTANCE_UPDATE_INTERVAL_COUNT("report_instance.update.count", true),
+    REPORT_INSTANCE_UPDATE_USER_ERROR("report_instance.update.user_error", true),
+    REPORT_INSTANCE_UPDATE_SYSTEM_ERROR("report_instance.update.system_error.", true),
+
+    REPORT_INSTANCE_INFO_TOTAL("report_instance.info.total", true),
+    REPORT_INSTANCE_INFO_COUNT("report_instance.info.count", true),
+    REPORT_INSTANCE_INFO_USER_ERROR("report_instance.info.user_error", true),
+    REPORT_INSTANCE_INFO_SYSTEM_ERROR("report_instance.info.system_error.", true),
+
+    REPORT_INSTANCE_LIST_TOTAL("report_instance.list.total", true),
+    REPORT_INSTANCE_LIST_INTERVAL_COUNT("report_instance.list.count", true),
+    REPORT_INSTANCE_LIST_USER_ERROR("report_instance.list.user_error", true),
+    REPORT_INSTANCE_LIST_SYSTEM_ERROR("report_instance.list.system_error.", true),
+
+    REPORT_FROM_DEFINITION_TOTAL("on_demand.create.total", true),
+    REPORT_FROM_DEFINITION_INTERVAL_COUNT("on_demand.create.count", true),
+    REPORT_FROM_DEFINITION_USER_ERROR("on_demand.create.user_error", true),
+    REPORT_FROM_DEFINITION_SYSTEM_ERROR("on_demand.create.system_error.", true),
+
+    REPORT_FROM_DEFINITION_ID_TOTAL("on_demand_from_definition.create.total", true),
+    REPORT_FROM_DEFINITION_ID_INTERVAL_COUNT("on_demand_from_definition.create.count", true),
+    REPORT_FROM_DEFINITION_ID_USER_ERROR("on_demand_from_definition.create.user_error", true),
+    REPORT_FROM_DEFINITION_ID_SYSTEM_ERROR("on_demand_from_definition.create.system_error.", true),
+
+    DEFAULT("default", true);
 
     private String name;
+    private boolean numerical;
 
-    MetricName(String name) {
+    MetricName(String name, boolean numerical) {
         this.name = name;
+        this.numerical = numerical;
     }
 
     public String getName() {
         return name;
     }
 
+    public boolean isNumerical() {
+        return numerical;
+    }
+
     public static List<String> getNames() {
         return Arrays.stream(MetricName.values()).map(v -> v.name).collect(Collectors.toList());
     }
 
+//    private static Set<MetricName> NUMERICAL_METRIC = new ImmutableSet.Builder<MetricName>()
+//        .add(PPL_REQ_TOTAL)
+//        .add(PPL_REQ_COUNT_TOTAL)
+//        .add(PPL_FAILED_REQ_COUNT_SYS)
+//        .add(PPL_FAILED_REQ_COUNT_CUS)
+//        .build();
 
-    private static Set<MetricName> NUMERICAL_METRIC = new ImmutableSet.Builder<MetricName>()
-        .add(PPL_REQ_TOTAL)
-        .add(PPL_REQ_COUNT_TOTAL)
-        .add(PPL_FAILED_REQ_COUNT_SYS)
-        .add(PPL_FAILED_REQ_COUNT_CUS)
-        .build();
-
-    public boolean isNumerical() {
-        return this == REQ_TOTAL || this == REQ_COUNT_TOTAL || this == FAILED_REQ_COUNT_SYS
-            || this == FAILED_REQ_COUNT_CUS || this == FAILED_REQ_COUNT_CB || this == DEFAULT
-            || this == DEFAULT_CURSOR_REQUEST_TOTAL || this == DEFAULT_CURSOR_REQUEST_COUNT_TOTAL
-            || NUMERICAL_METRIC.contains(this);
-    }
+//    public boolean isNumerical() {
+//        return this == REQ_TOTAL || this == REQ_COUNT_TOTAL || this == FAILED_REQ_COUNT_SYS
+//            || this == FAILED_REQ_COUNT_CUS || this == FAILED_REQ_COUNT_CB || this == DEFAULT
+//            || this == DEFAULT_CURSOR_REQUEST_TOTAL || this == DEFAULT_CURSOR_REQUEST_COUNT_TOTAL
+//            || NUMERICAL_METRIC.contains(this);
+//    }
 }
 
 
