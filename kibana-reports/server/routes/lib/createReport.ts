@@ -35,7 +35,7 @@ import { SetCookie } from 'puppeteer-core';
 import { deliverReport } from './deliverReport';
 import { updateReportState } from './updateReportState';
 import { saveReport } from './saveReport';
-import { MutexInterface } from 'async-mutex';
+import { SemaphoreInterface } from 'async-mutex';
 
 export const createReport = async (
   request: KibanaRequest,
@@ -47,7 +47,7 @@ export const createReport = async (
   //@ts-ignore
   const logger: Logger = context.reporting_plugin.logger;
   //@ts-ignore
-  const mutex: MutexInterface = context.reporting_plugin.mutex;
+  const semaphore: SemaphoreInterface = context.reporting_plugin.semaphore;
   // @ts-ignore
   const notificationClient: ILegacyScopedClusterClient = context.reporting_plugin.notificationClient.asScoped(
     request
@@ -105,7 +105,7 @@ export const createReport = async (
           }
         });
       }
-      const release = await mutex.acquire();
+      const [value, release] = await semaphore.acquire();
       try {
         createReportResult = await createVisualReport(
           reportParams,

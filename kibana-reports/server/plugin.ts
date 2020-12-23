@@ -22,7 +22,7 @@ import {
   ILegacyClusterClient,
 } from '../../../src/core/server';
 import { setIntervalAsync } from 'set-interval-async/dynamic';
-import { Mutex, MutexInterface } from 'async-mutex';
+import {Semaphore, SemaphoreInterface} from 'async-mutex';
 import esReportsPlugin from './backend/opendistro-es-reports-plugin';
 import notificationPlugin from './backend/opendistro-notification-plugin';
 import {
@@ -51,11 +51,11 @@ export class OpendistroKibanaReportsPlugin
       OpendistroKibanaReportsPluginStart
     > {
   private readonly logger: Logger;
-  private readonly mutex: MutexInterface;
+  private readonly semaphore: SemaphoreInterface;
 
   constructor(initializerContext: PluginInitializerContext) {
     this.logger = initializerContext.logger.get();
-    this.mutex = new Mutex();
+    this.semaphore = new Semaphore(2);
   }
 
   public setup(core: CoreSetup) {
@@ -86,7 +86,7 @@ export class OpendistroKibanaReportsPlugin
       (context, request) => {
         return {
           logger: this.logger,
-          mutex: this.mutex,
+          semaphore: this.semaphore,
           notificationClient,
           esReportsClient,
         };
