@@ -276,4 +276,45 @@ class ReportDefinitionIT : PluginRestTestCase() {
         )
         Thread.sleep(100)
     }
+
+    fun `test listing multiple report definitions`() {
+        val reportDefinitionRequest = constructReportDefinitionRequest()
+        val reportDefinitionResponse = executeRequest(
+            RestRequest.Method.POST.name,
+            "$BASE_REPORTS_URI/definition",
+            reportDefinitionRequest,
+            RestStatus.OK.status
+        )
+        val reportDefinitionId = reportDefinitionResponse.get("reportDefinitionId").asString
+        Assert.assertNotNull("reportDefinitionId should be generated", reportDefinitionId)
+        Thread.sleep(100)
+
+        val secondReportDefinitionRequest = constructReportDefinitionRequest(name = "new report definition")
+        val secondReportDefinitionResponse = executeRequest(
+            RestRequest.Method.POST.name,
+            "$BASE_REPORTS_URI/definition",
+            secondReportDefinitionRequest,
+            RestStatus.OK.status
+        )
+        val newReportDefinitionId = secondReportDefinitionResponse.get("reportDefinitionId").asString
+        Assert.assertNotNull("reportDefinitionId should be generated", newReportDefinitionId)
+        Thread.sleep(1000)
+        val listReportDefinitions = executeRequest(
+            RestRequest.Method.GET.name,
+            "$BASE_REPORTS_URI/definitions",
+            "",
+            RestStatus.OK.status
+        )
+        val totalHits = listReportDefinitions.get("totalHits").asInt
+        Assert.assertEquals(totalHits, 2)
+        val reportDefinitionsList = listReportDefinitions.get("reportDefinitionDetailsList").asJsonArray
+        Assert.assertEquals(
+            reportDefinitionId,
+            reportDefinitionsList[0].asJsonObject.get("id").asString
+        )
+        Assert.assertEquals(
+            newReportDefinitionId,
+            reportDefinitionsList[1].asJsonObject.get("id").asString
+        )
+    }
 }
