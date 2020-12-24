@@ -21,6 +21,7 @@ export interface CreateReportResultType {
 
 type ReportSource = 'dashboard' | 'visualization' | 'saved_search';
 type ReportFormat = 'pdf' | 'png' | 'csv';
+type UserActionType = 'download';
 export type RollingCountersNameType =
   | 'count'
   | 'system_error'
@@ -29,7 +30,7 @@ export type RollingCountersNameType =
 export type RollingCountersType = {
   [source in ReportSource]: {
     [format in ReportFormat]?: {
-      download: {
+      [action in UserActionType]: {
         [counter in RollingCountersNameType]: number;
       };
     };
@@ -39,7 +40,7 @@ export type RollingCountersType = {
 export type BasicCounterType = {
   [source in ReportSource]: {
     [format in ReportFormat]?: {
-      download: {
+      [action in UserActionType]: {
         total: number;
       };
     };

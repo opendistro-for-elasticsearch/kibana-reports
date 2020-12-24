@@ -122,6 +122,13 @@ export const addToMetric = (
       );
 };
 
+export const getMetrics = () => {
+  const preTimeKey = getPreKey(Date.now());
+  const rollingCounters = time2CountWin.get(preTimeKey);
+  const metrics = buildMetrics(rollingCounters, globalBasicCounter);
+  return metrics;
+};
+
 const trim = () => {
   if (time2CountWin.size > CAPACITY) {
     time2CountWin.forEach((_value, key, map) => {
@@ -138,13 +145,6 @@ const getKey = (milliseconds: number) => {
 
 const getPreKey = (milliseconds: number) => {
   return getKey(milliseconds) - 1;
-};
-
-export const getMetrics = () => {
-  const preTimeKey = getPreKey(Date.now());
-  const rollingCounters = time2CountWin.get(preTimeKey);
-  const metrics = buildMetrics(rollingCounters, globalBasicCounter);
-  return metrics;
 };
 
 const buildMetrics = (

@@ -13,8 +13,6 @@
  * permissions and limitations under the License.
  */
 
-import { PLUGIN_ID } from '../../../common';
-
 export enum FORMAT {
   pdf = 'pdf',
   png = 'png',
@@ -82,7 +80,7 @@ export const SECURITY_AUTH_COOKIE_NAME = 'security_authentication';
 export const CHROMIUM_PATH = `${__dirname}/../../../.chromium/headless_shell`;
 
 /**
- * Metrics setting
+ * Metrics setting constants
  */
 export const WINDOW = 3600;
 export const INTERVAL = 60;

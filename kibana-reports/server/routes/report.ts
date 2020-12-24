@@ -52,7 +52,6 @@ export default function (router: IRouter) {
       //@ts-ignore
       const logger: Logger = context.reporting_plugin.logger;
       let report = request.body;
-      // Add to metric
       addToMetric(report, 'count');
       // input validation
       try {
@@ -133,7 +132,6 @@ export default function (router: IRouter) {
         );
         // convert report to use UI model
         report = backendToUiReport(esResp.reportInstance);
-        // Add to metric
         addToMetric(report, 'count');
         // generate report
         const reportData = await createReport(
@@ -202,7 +200,6 @@ export default function (router: IRouter) {
         const reportId = esResp.reportInstance.id;
         // convert report to use UI model
         report = backendToUiReport(esResp.reportInstance);
-        // Add to metric
         addToMetric(report, 'count');
         // generate report
         const reportData = await createReport(
