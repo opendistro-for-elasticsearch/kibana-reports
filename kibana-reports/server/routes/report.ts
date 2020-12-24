@@ -30,6 +30,7 @@ import {
   backendToUiReport,
   backendToUiReportsList,
 } from './utils/converters/backendToUi';
+import { addToMetric } from './utils/metricHelper';
 
 export default function (router: IRouter) {
   // generate report (with provided metadata)
@@ -51,6 +52,8 @@ export default function (router: IRouter) {
       //@ts-ignore
       const logger: Logger = context.reporting_plugin.logger;
       let report = request.body;
+      // Add to metric
+      addToMetric(report, 'count');
       // input validation
       try {
         report.report_definition.report_params.core_params.origin =
@@ -58,6 +61,7 @@ export default function (router: IRouter) {
         report = reportSchema.validate(report);
       } catch (error) {
         logger.error(`Failed input validation for create report ${error}`);
+        addToMetric(report, 'customer_error');
         return response.badRequest({ body: error });
       }
 
@@ -83,6 +87,11 @@ export default function (router: IRouter) {
         // TODO: better error handling for delivery and stages in generating report, pass logger to deeper level
         logger.error(`Failed to generate report: ${error}`);
         logger.error(error);
+        if (error.statusCode && Math.floor(error.statusCode / 100) === 4) {
+          addToMetric(report, 'customer_error');
+        } else {
+          addToMetric(report, 'system_error');
+        }
         return errorResponse(response, error);
       }
     }
@@ -108,6 +117,7 @@ export default function (router: IRouter) {
     ): Promise<IKibanaResponse<any | ResponseError>> => {
       //@ts-ignore
       const logger: Logger = context.reporting_plugin.logger;
+      let report: any;
       try {
         const savedReportId = request.params.reportId;
         // @ts-ignore
@@ -122,7 +132,9 @@ export default function (router: IRouter) {
           }
         );
         // convert report to use UI model
-        const report = backendToUiReport(esResp.reportInstance);
+        report = backendToUiReport(esResp.reportInstance);
+        // Add to metric
+        addToMetric(report, 'count');
         // generate report
         const reportData = await createReport(
           request,
@@ -140,6 +152,11 @@ export default function (router: IRouter) {
       } catch (error) {
         logger.error(`Failed to generate report by id: ${error}`);
         logger.error(error);
+        if (error.statusCode && Math.floor(error.statusCode / 100) === 4) {
+          addToMetric(report, 'customer_error');
+        } else {
+          addToMetric(report, 'system_error');
+        }
         return errorResponse(response, error);
       }
     }
@@ -166,6 +183,7 @@ export default function (router: IRouter) {
       //@ts-ignore
       const logger: Logger = context.reporting_plugin.logger;
       const reportDefinitionId = request.params.reportDefinitionId;
+      let report: any;
       try {
         // @ts-ignore
         const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
@@ -183,7 +201,9 @@ export default function (router: IRouter) {
         );
         const reportId = esResp.reportInstance.id;
         // convert report to use UI model
-        const report = backendToUiReport(esResp.reportInstance);
+        report = backendToUiReport(esResp.reportInstance);
+        // Add to metric
+        addToMetric(report, 'count');
         // generate report
         const reportData = await createReport(
           request,
@@ -203,6 +223,11 @@ export default function (router: IRouter) {
           `Failed to generate report from reportDefinition id ${reportDefinitionId} : ${error}`
         );
         logger.error(error);
+        if (error.statusCode && Math.floor(error.statusCode / 100) === 4) {
+          addToMetric(report, 'customer_error');
+        } else {
+          addToMetric(report, 'system_error');
+        }
         return errorResponse(response, error);
       }
     }

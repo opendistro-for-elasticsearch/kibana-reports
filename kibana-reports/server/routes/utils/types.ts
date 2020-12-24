@@ -18,3 +18,30 @@ export interface CreateReportResultType {
   dataUrl: string;
   fileName: string;
 }
+
+type ReportSource = 'dashboard' | 'visualization' | 'saved_search';
+type ReportFormat = 'pdf' | 'png' | 'csv';
+export type RollingCountersNameType =
+  | 'count'
+  | 'system_error'
+  | 'customer_error';
+
+export type RollingCountersType = {
+  [source in ReportSource]: {
+    [format in ReportFormat]?: {
+      download: {
+        [counter in RollingCountersNameType]: number;
+      };
+    };
+  };
+};
+
+export type BasicCounterType = {
+  [source in ReportSource]: {
+    [format in ReportFormat]?: {
+      download: {
+        total: number;
+      };
+    };
+  };
+};

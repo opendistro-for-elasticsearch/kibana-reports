@@ -13,15 +13,20 @@
  * permissions and limitations under the License.
  */
 
-import registerReportRoute from './report';
-import registerReportDefinitionRoute from './reportDefinition';
-import registerReportSourceRoute from './reportSource';
-import registerMetricRoute from './metric';
 import { IRouter } from '../../../../src/core/server';
+import { API_PREFIX } from '../../common';
+import { getMetrics } from './utils/metricHelper';
 
 export default function (router: IRouter) {
-  registerReportRoute(router);
-  registerReportDefinitionRoute(router);
-  registerReportSourceRoute(router);
-  registerMetricRoute(router);
+  router.get(
+    {
+      path: `${API_PREFIX}/stats`,
+      validate: false,
+    },
+    async (context, request, response): Promise<any> => {
+      return response.ok({
+        body: getMetrics(),
+      });
+    }
+  );
 }
