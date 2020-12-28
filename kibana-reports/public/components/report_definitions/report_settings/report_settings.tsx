@@ -30,6 +30,7 @@ import {
   EuiSelect,
   EuiTextArea,
   EuiCheckboxGroup,
+  EuiComboBox
 } from '@elastic/eui';
 import {
   REPORT_SOURCE_RADIOS,
@@ -85,7 +86,7 @@ export function ReportSettings(props: ReportSettingProps) {
   const [reportDescription, setReportDescription] = useState('');
   const [reportSourceId, setReportSourceId] = useState('dashboardReportSource');
 
-  const [dashboardSourceSelect, setDashboardSourceSelect] = useState('');
+  const [dashboardSourceSelect, setDashboardSourceSelect] = useState([{label: 'test'}]);
   const [dashboards, setDashboards] = useState([]);
 
   const [visualizationSourceSelect, setVisualizationSourceSelect] = useState(
@@ -99,7 +100,9 @@ export function ReportSettings(props: ReportSettingProps) {
   const [fileFormat, setFileFormat] = useState('pdf');
 
   const handleDashboards = (e) => {
+    console.log('in handleDashboards');
     setDashboards(e);
+    console.log('just set dashboards');
   };
 
   const handleVisualizations = (e) => {
@@ -162,9 +165,7 @@ export function ReportSettings(props: ReportSettingProps) {
     }
   };
 
-  const handleDashboardSelect = (e: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
+  const handleDashboardSelect = (e) => {
     setDashboardSourceSelect(e.target.value);
     let fromInContext = false;
     if (window.location.href.includes('?')) {
@@ -365,12 +366,19 @@ export function ReportSettings(props: ReportSettingProps) {
     return (
       <div>
         <EuiFormRow label="Select dashboard">
-          <EuiSelect
+          {/* <EuiSelect
             id="reportSourceDashboardSelect"
             options={dashboards}
             value={dashboardSourceSelect}
             onChange={handleDashboardSelect}
-          />
+          /> */}
+        <EuiComboBox
+          placeholder="Select a dashboard"
+          singleSelection={{ asPlainText: true }}
+          options={dashboards}
+          onChange={handleDashboardSelect}
+          selectedOptions={dashboardSourceSelect}
+        />
         </EuiFormRow>
         <EuiSpacer />
       </div>
@@ -526,15 +534,22 @@ export function ReportSettings(props: ReportSettingProps) {
       visualizations: [],
       savedSearch: [],
     };
+    console.log('in defaultConfigurationCreate');
     reportDefinitionRequest.report_params.core_params.report_format = fileFormat;
     await httpClientProps
       .get('../api/reporting/getReportSource/dashboard')
       .then(async (response) => {
+        console.log('in getDashboards response');
         let dashboardOptions = getDashboardOptions(response['hits']['hits']);
+        console.log('called getDashboardOptions');
         reportSourceOptions.dashboard = dashboardOptions;
+        console.log('dashboardOptions is', dashboardOptions);
         handleDashboards(dashboardOptions);
+        console.log('called handleDashboards');
         if (!edit) {
-          setDashboardSourceSelect(dashboardOptions[0].value);
+          console.log('in !edit block')
+          setDashboardSourceSelect(dashboardOptions[0]);
+          console.log('set dashboard source select');
           reportDefinitionRequest.report_params.report_source = 'Dashboard';
           reportDefinitionRequest['report_params']['core_params']['base_url'] =
             getDashboardBaseUrlCreate(edit, editDefinitionId, false) +

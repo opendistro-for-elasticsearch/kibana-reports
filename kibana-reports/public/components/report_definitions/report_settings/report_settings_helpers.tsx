@@ -101,15 +101,17 @@ export const getSavedSearchBaseUrlCreate = (
 };
 
 export const getDashboardOptions = (data) => {
+  console.log('in getDashboardOptions');
   let index;
   let dashboard_options = [];
   for (index = 0; index < data.length; ++index) {
     let entry = {
       value: data[index]['_id'].substring(10),
-      text: data[index]['_source']['dashboard']['title'],
+      label: data[index]['_source']['dashboard']['title'],
     };
     dashboard_options.push(entry);
   }
+  console.log('returning getDashboardOptions');
   return dashboard_options;
 };
 
