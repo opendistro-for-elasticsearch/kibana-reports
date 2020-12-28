@@ -15,10 +15,17 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.metrics;
 
+import org.elasticsearch.rest.RestRequest;
 import org.json.JSONObject;
+import java.time.Clock;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATS_START_TIME;
+import static com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATS_END_TIME;
 
 // import com.github.wnameless.json.flattener.JsonFlattener;
 import com.github.wnameless.json.unflattener.JsonUnflattener;
@@ -27,6 +34,7 @@ public class Metrics {
 
     private static Metrics metrics = new Metrics();
     private ConcurrentHashMap<String, Metric<?>> registeredMetricsByName = new ConcurrentHashMap<>();
+    private final Clock clock = Clock.systemDefaultZone();
 
     private Metrics() {
     }
@@ -84,6 +92,8 @@ public class Metrics {
             metricsJSONObject.put(metric.getName(), metric.getValue());
         }
 
+        metricsJSONObject.put("time", clock.millis());
+
         return metricsJSONObject.toString();
     }
 
@@ -99,9 +109,27 @@ public class Metrics {
             "{\"count\":2,\"total\":4,\"system_error\":2,\"customer_error\":3}}," +
             "\"report_instance\":{\"create\":{\"count\":2,\"total\":4,\"system_error\":2," +
             "\"customer_error\":3}}}";
-        String metricsJson = JsonUnflattener.unflatten(flattenedJson);
+        String metricsJson = JsonUnflattener.unflatten(collectToJSON());
         return metricsJson;
     }
+
+
+    public String requestString(RestRequest request) {
+        Map<String, String> map = new HashMap<>();
+        map.put("path" , request.path());
+        map.put("rawPath", request.rawPath());
+        map.put("uri" , request.uri());
+        return map.toString();
+    }
+
+    public String test(RestRequest request) {
+        Map<String, String> map = new HashMap<>();
+        map.put("startTime" , request.param(STATS_START_TIME, "0000-00-00T00:00:00"));
+        map.put("endTime" , request.param(STATS_END_TIME, "0000-00-00T00:00:00"));
+        return map.toString();
+    }
+
+
 
     public void clear() {
         registeredMetricsByName.clear();

@@ -38,6 +38,8 @@ internal object RestTag {
     const val END_TIME_FIELD = "endTimeMs"
     const val REPORT_DEFINITION_FIELD = "reportDefinition"
     const val REPORT_DEFINITION_ID_FIELD = "reportDefinitionId"
+    const val STATS_START_TIME = "startTime"
+    const val STATS_END_TIME = "endTime"
     const val REPORT_DEFINITION_DETAILS_FIELD = "reportDefinitionDetails"
     const val FROM_INDEX_FIELD = "fromIndex"
     const val MAX_ITEMS_FIELD = "maxItems"

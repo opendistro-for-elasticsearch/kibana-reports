@@ -25,6 +25,8 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportDefin
 // import com.amazon.opendistroforelasticsearch.reportsscheduler.model.DeleteReportDefinitionRequest
 // import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionRequest
 // import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_ID_FIELD
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATS_START_TIME
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATS_END_TIME
 // import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportDefinitionRequest
 // import com.amazon.opendistroforelasticsearch.reportsscheduler.util.contentParserNextToken
 import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
@@ -45,6 +47,7 @@ internal class ReportStatsRestHandler : BaseRestHandler() {
     companion object {
         private const val REPORT_STATS_ACTION = "report_definition_stats"
         private const val REPORT_STATS_URL = "$BASE_REPORTS_URI/stats"
+        private const val REPORT_TEST_URL = "$BASE_REPORTS_URI/test"
         public const val COUNT = 4
     }
 
@@ -66,7 +69,8 @@ internal class ReportStatsRestHandler : BaseRestHandler() {
              * Request body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionRequest]
              * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionResponse]
              */
-            Route(GET, "$REPORT_STATS_URL")
+            Route(GET, "$REPORT_STATS_URL"),
+            Route(GET, "$REPORT_TEST_URL")
         )
     }
 
@@ -74,7 +78,7 @@ internal class ReportStatsRestHandler : BaseRestHandler() {
      * {@inheritDoc}
      */
     override fun responseParams(): Set<String> {
-        return setOf()
+        return setOf(STATS_START_TIME, STATS_END_TIME)
     }
 
     /**
@@ -83,8 +87,14 @@ internal class ReportStatsRestHandler : BaseRestHandler() {
     override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
         return when (request.method()) {
             GET -> RestChannelConsumer {
-//                it.sendResponse(BytesRestResponse(RestStatus.OK, Metrics.getInstance().collectToJSON()))
-                it.sendResponse(BytesRestResponse(RestStatus.OK, Metrics.getInstance().collectToFlattenedJSON()))
+                when (request.path()) {
+                    REPORT_STATS_URL -> {
+                        it.sendResponse(BytesRestResponse(RestStatus.OK, Metrics.getInstance().collectToFlattenedJSON()))
+                    }
+                    REPORT_TEST_URL -> {
+                        it.sendResponse(BytesRestResponse(RestStatus.OK, Metrics.getInstance().test(request)))
+                    }
+                }
             }
             else -> RestChannelConsumer {
                 it.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))
