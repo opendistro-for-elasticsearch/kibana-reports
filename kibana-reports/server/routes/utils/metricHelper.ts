@@ -15,95 +15,27 @@
 
 import { ReportSchemaType } from 'server/model';
 import {
-  BasicCounterType,
+  EntityType,
   RollingCountersNameType,
-  RollingCountersType,
+  RollingCounters,
+  UsageActionType,
 } from './types';
 import _ from 'lodash';
-import { CAPACITY, INTERVAL, WINDOW } from './constants';
+import {
+  CAPACITY,
+  DEFAULT_ROLLING_COUNTER,
+  GLOBAL_BASIC_COUNTER,
+  INTERVAL,
+  WINDOW,
+} from './constants';
 
-export let time2CountWin: Map<number, RollingCountersType> = new Map();
-let globalBasicCounter: BasicCounterType = {
-  dashboard: {
-    pdf: {
-      download: {
-        total: 0,
-      },
-    },
-    png: {
-      download: {
-        total: 0,
-      },
-    },
-  },
-  visualization: {
-    pdf: {
-      download: {
-        total: 0,
-      },
-    },
-    png: {
-      download: {
-        total: 0,
-      },
-    },
-  },
-  saved_search: {
-    csv: {
-      download: {
-        total: 0,
-      },
-    },
-  },
-};
-
-let defaultRollingCounter: RollingCountersType = {
-  dashboard: {
-    pdf: {
-      download: {
-        count: 0,
-        system_error: 0,
-        customer_error: 0,
-      },
-    },
-    png: {
-      download: {
-        count: 0,
-        system_error: 0,
-        customer_error: 0,
-      },
-    },
-  },
-  visualization: {
-    pdf: {
-      download: {
-        count: 0,
-        system_error: 0,
-        customer_error: 0,
-      },
-    },
-    png: {
-      download: {
-        count: 0,
-        system_error: 0,
-        customer_error: 0,
-      },
-    },
-  },
-  saved_search: {
-    csv: {
-      download: {
-        count: 0,
-        system_error: 0,
-        customer_error: 0,
-      },
-    },
-  },
-};
+export const time2CountWin: Map<number, RollingCounters> = new Map();
 
 export const addToMetric = (
-  report: ReportSchemaType,
-  field: RollingCountersNameType
+  entity: EntityType,
+  action: UsageActionType,
+  counter: RollingCountersNameType,
+  reportMetadata?: ReportSchemaType
 ) => {
   const count = 1;
   // remove outdated key-value pairs
@@ -111,28 +43,32 @@ export const addToMetric = (
 
   const timeKey = getKey(Date.now());
   const rollingCounters = time2CountWin.get(timeKey);
-  rollingCounters
-    ? time2CountWin.set(
-        timeKey,
-        updateCounters(report, field, rollingCounters, count)
-      )
-    : time2CountWin.set(
-        timeKey,
-        updateCounters(report, field, _.cloneDeep(defaultRollingCounter), count)
-      );
+
+  time2CountWin.set(
+    timeKey,
+    updateCounters(
+      entity,
+      action,
+      counter,
+      rollingCounters || _.cloneDeep(DEFAULT_ROLLING_COUNTER),
+      count,
+      reportMetadata
+    )
+  );
 };
 
 export const getMetrics = () => {
   const preTimeKey = getPreKey(Date.now());
   const rollingCounters = time2CountWin.get(preTimeKey);
-  const metrics = buildMetrics(rollingCounters, globalBasicCounter);
+  const metrics = buildMetrics(rollingCounters);
   return metrics;
 };
 
 const trim = () => {
   if (time2CountWin.size > CAPACITY) {
+    const currentKey = getKey(Date.now() - WINDOW * 1000);
     time2CountWin.forEach((_value, key, map) => {
-      if (key < getKey(Date.now() - WINDOW * 1000)) {
+      if (key < currentKey) {
         map.delete(key);
       }
     });
@@ -147,41 +83,50 @@ const getPreKey = (milliseconds: number) => {
   return getKey(milliseconds) - 1;
 };
 
-const buildMetrics = (
-  rollingCounters: RollingCountersType | undefined,
-  basicCounters: BasicCounterType
-) => {
+const buildMetrics = (rollingCounters: RollingCounters | undefined) => {
   if (!rollingCounters) {
-    rollingCounters = defaultRollingCounter;
+    rollingCounters = DEFAULT_ROLLING_COUNTER;
   }
-  return _.merge(rollingCounters, basicCounters);
+  return _.merge(rollingCounters, GLOBAL_BASIC_COUNTER);
 };
 
 const updateCounters = (
-  report: ReportSchemaType,
-  field: RollingCountersNameType,
-  rollingCounter: RollingCountersType,
-  count: number
+  entity: EntityType,
+  action: UsageActionType,
+  counter: RollingCountersNameType,
+  rollingCounter: RollingCounters,
+  count: number,
+  reportMetadata?: ReportSchemaType
 ) => {
-  const {
-    report_definition: {
-      report_params: {
-        report_source: source,
-        core_params: { report_format: format },
+  // update business metrics
+  if (reportMetadata) {
+    const {
+      report_definition: {
+        report_params: {
+          report_source: source,
+          core_params: { report_format: format },
+        },
       },
-    },
-  } = report;
+    } = reportMetadata;
 
-  // @ts-ignore
-  rollingCounter[source.toLowerCase().replace(' ', '_')][format]['download'][
-    field
-  ] += count;
-  //update basic counter for total
-  if (field === 'count') {
-    //@ts-ignore
-    globalBasicCounter[source.toLowerCase().replace(' ', '_')][format][
+    // @ts-ignore
+    rollingCounter.business[source.toLowerCase().replace(' ', '_')][format][
       'download'
-    ]['total']++;
+    ][counter] += count;
+    //update basic counter for total
+    if (counter === 'count') {
+      //@ts-ignore
+      GLOBAL_BASIC_COUNTER.business[source.toLowerCase().replace(' ', '_')][
+        format
+      ]['download']['total']++;
+    }
+  }
+  // update usage metric
+  // @ts-ignore
+  rollingCounter.usage[entity][action][counter] += count;
+  if (counter === 'count') {
+    // @ts-ignore
+    GLOBAL_BASIC_COUNTER.usage[entity][action]['total']++;
   }
 
   return rollingCounter;

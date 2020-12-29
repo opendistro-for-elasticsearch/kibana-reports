@@ -24,7 +24,7 @@ import {
 import { API_PREFIX } from '../../common';
 import { createReport } from './lib/createReport';
 import { reportSchema } from '../model';
-import { errorResponse } from './utils/helpers';
+import { checkErrorType, errorResponse } from './utils/helpers';
 import { DEFAULT_MAX_SIZE, DELIVERY_TYPE } from './utils/constants';
 import {
   backendToUiReport,
@@ -52,7 +52,7 @@ export default function (router: IRouter) {
       //@ts-ignore
       const logger: Logger = context.reporting_plugin.logger;
       let report = request.body;
-      addToMetric(report, 'count');
+
       // input validation
       try {
         report.report_definition.report_params.core_params.origin =
@@ -60,7 +60,7 @@ export default function (router: IRouter) {
         report = reportSchema.validate(report);
       } catch (error) {
         logger.error(`Failed input validation for create report ${error}`);
-        addToMetric(report, 'customer_error');
+        addToMetric('report', 'create', 'user_error', report);
         return response.badRequest({ body: error });
       }
 
@@ -69,6 +69,7 @@ export default function (router: IRouter) {
 
         // if not deliver to user himself , no need to send actual file data to client
         const delivery = report.report_definition.delivery;
+        addToMetric('report', 'create', 'count', report);
         if (
           delivery.delivery_type === DELIVERY_TYPE.kibanaUser &&
           delivery.delivery_params.kibana_recipients.length === 0
@@ -86,11 +87,7 @@ export default function (router: IRouter) {
         // TODO: better error handling for delivery and stages in generating report, pass logger to deeper level
         logger.error(`Failed to generate report: ${error}`);
         logger.error(error);
-        if (error.statusCode && Math.floor(error.statusCode / 100) === 4) {
-          addToMetric(report, 'customer_error');
-        } else {
-          addToMetric(report, 'system_error');
-        }
+        addToMetric('report', 'create', checkErrorType(error), report);
         return errorResponse(response, error);
       }
     }
@@ -132,7 +129,6 @@ export default function (router: IRouter) {
         );
         // convert report to use UI model
         report = backendToUiReport(esResp.reportInstance);
-        addToMetric(report, 'count');
         // generate report
         const reportData = await createReport(
           request,
@@ -140,6 +136,7 @@ export default function (router: IRouter) {
           report,
           savedReportId
         );
+        addToMetric('report', 'download', 'count', report);
 
         return response.ok({
           body: {
@@ -150,11 +147,7 @@ export default function (router: IRouter) {
       } catch (error) {
         logger.error(`Failed to generate report by id: ${error}`);
         logger.error(error);
-        if (error.statusCode && Math.floor(error.statusCode / 100) === 4) {
-          addToMetric(report, 'customer_error');
-        } else {
-          addToMetric(report, 'system_error');
-        }
+        addToMetric('report', 'download', checkErrorType(error), report);
         return errorResponse(response, error);
       }
     }
@@ -200,7 +193,6 @@ export default function (router: IRouter) {
         const reportId = esResp.reportInstance.id;
         // convert report to use UI model
         report = backendToUiReport(esResp.reportInstance);
-        addToMetric(report, 'count');
         // generate report
         const reportData = await createReport(
           request,
@@ -208,6 +200,7 @@ export default function (router: IRouter) {
           report,
           reportId
         );
+        addToMetric('report', 'create', 'count', report);
 
         return response.ok({
           body: {
@@ -220,11 +213,7 @@ export default function (router: IRouter) {
           `Failed to generate report from reportDefinition id ${reportDefinitionId} : ${error}`
         );
         logger.error(error);
-        if (error.statusCode && Math.floor(error.statusCode / 100) === 4) {
-          addToMetric(report, 'customer_error');
-        } else {
-          addToMetric(report, 'system_error');
-        }
+        addToMetric('report', 'create', checkErrorType(error), report);
         return errorResponse(response, error);
       }
     }
@@ -265,6 +254,7 @@ export default function (router: IRouter) {
         );
 
         const reportsList = backendToUiReportsList(esResp.reportInstanceList);
+        addToMetric('report', 'list', 'count');
 
         return response.ok({
           body: {
@@ -276,6 +266,7 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to get reports details: ${error}`
         );
+        addToMetric('report', 'list', checkErrorType(error));
         return errorResponse(response, error);
       }
     }
@@ -310,6 +301,7 @@ export default function (router: IRouter) {
         );
 
         const report = backendToUiReport(esResp.reportInstance);
+        addToMetric('report', 'info', 'count');
 
         return response.ok({
           body: report,
@@ -319,6 +311,7 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to get single report details: ${error}`
         );
+        addToMetric('report', 'info', checkErrorType(error));
         return errorResponse(response, error);
       }
     }

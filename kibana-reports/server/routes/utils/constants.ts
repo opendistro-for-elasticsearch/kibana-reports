@@ -13,6 +13,8 @@
  * permissions and limitations under the License.
  */
 
+import { BasicCounters, RollingCounters } from './types';
+
 export enum FORMAT {
   pdf = 'pdf',
   png = 'png',
@@ -80,8 +82,164 @@ export const SECURITY_AUTH_COOKIE_NAME = 'security_authentication';
 export const CHROMIUM_PATH = `${__dirname}/../../../.chromium/headless_shell`;
 
 /**
- * Metrics setting constants
+ * Metric constants
  */
 export const WINDOW = 3600;
 export const INTERVAL = 60;
 export const CAPACITY = (WINDOW / INTERVAL) * 2;
+
+export const GLOBAL_BASIC_COUNTER: BasicCounters = {
+  usage: {
+    report: {
+      create: {
+        total: 0,
+      },
+      download: {
+        total: 0,
+      },
+      list: {
+        total: 0,
+      },
+      info: {
+        total: 0,
+      },
+    },
+    report_definition: {
+      create: {
+        total: 0,
+      },
+      list: {
+        total: 0,
+      },
+      info: {
+        total: 0,
+      },
+      update: {
+        total: 0,
+      },
+      delete: {
+        total: 0,
+      },
+    },
+  },
+  business: {
+    dashboard: {
+      pdf: {
+        download: {
+          total: 0,
+        },
+      },
+      png: {
+        download: {
+          total: 0,
+        },
+      },
+    },
+    visualization: {
+      pdf: {
+        download: {
+          total: 0,
+        },
+      },
+      png: {
+        download: {
+          total: 0,
+        },
+      },
+    },
+    saved_search: {
+      csv: {
+        download: {
+          total: 0,
+        },
+      },
+    },
+  },
+};
+
+export const DEFAULT_ROLLING_COUNTER: RollingCounters = {
+  usage: {
+    report: {
+      create: {
+        count: 0,
+        system_error: 0,
+        user_error: 0,
+      },
+      download: {
+        count: 0,
+        system_error: 0,
+        user_error: 0,
+      },
+      list: {
+        count: 0,
+        system_error: 0,
+        user_error: 0,
+      },
+      info: {
+        count: 0,
+        system_error: 0,
+        user_error: 0,
+      },
+    },
+    report_definition: {
+      create: {
+        count: 0,
+        system_error: 0,
+        user_error: 0,
+      },
+      list: {
+        count: 0,
+        system_error: 0,
+        user_error: 0,
+      },
+      info: {
+        count: 0,
+        system_error: 0,
+        user_error: 0,
+      },
+      update: {
+        count: 0,
+        system_error: 0,
+        user_error: 0,
+      },
+      delete: {
+        count: 0,
+        system_error: 0,
+        user_error: 0,
+      },
+    },
+  },
+  business: {
+    dashboard: {
+      pdf: {
+        download: {
+          count: 0,
+        },
+      },
+      png: {
+        download: {
+          count: 0,
+        },
+      },
+    },
+    visualization: {
+      pdf: {
+        download: {
+          count: 0,
+        },
+      },
+      png: {
+        download: {
+          count: 0,
+        },
+      },
+    },
+    saved_search: {
+      csv: {
+        download: {
+          count: 0,
+        },
+      },
+    },
+  },
+};

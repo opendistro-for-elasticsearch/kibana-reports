@@ -19,30 +19,54 @@ export interface CreateReportResultType {
   fileName: string;
 }
 
-type ReportSource = 'dashboard' | 'visualization' | 'saved_search';
-type ReportFormat = 'pdf' | 'png' | 'csv';
-type UserActionType = 'download';
-export type RollingCountersNameType =
-  | 'count'
-  | 'system_error'
-  | 'customer_error';
+type ReportSourceType = 'dashboard' | 'visualization' | 'saved_search';
+type ReportFormatType = 'pdf' | 'png' | 'csv';
+type BusinessActionType = 'download';
+export type RollingCountersNameType = 'count' | 'system_error' | 'user_error';
 
-export type RollingCountersType = {
-  [source in ReportSource]: {
-    [format in ReportFormat]?: {
-      [action in UserActionType]: {
+export type EntityType = 'report' | 'report_definition';
+export type UsageActionType =
+  | 'info'
+  | 'list'
+  | 'delete'
+  | 'create'
+  | 'download'
+  | 'update';
+
+export interface RollingCounters {
+  usage: {
+    [entity in EntityType]: {
+      [action in UsageActionType]?: {
         [counter in RollingCountersNameType]: number;
       };
     };
   };
-};
+  business: {
+    [source in ReportSourceType]: {
+      [format in ReportFormatType]?: {
+        [action in BusinessActionType]: {
+          [counter in RollingCountersNameType]?: number;
+        };
+      };
+    };
+  };
+}
 
-export type BasicCounterType = {
-  [source in ReportSource]: {
-    [format in ReportFormat]?: {
-      [action in UserActionType]: {
+export interface BasicCounters {
+  usage: {
+    [entity in EntityType]: {
+      [action in UsageActionType]?: {
         total: number;
       };
     };
   };
-};
+  business: {
+    [source in ReportSourceType]: {
+      [format in ReportFormatType]?: {
+        [action in BusinessActionType]: {
+          total: number;
+        };
+      };
+    };
+  };
+}
