@@ -609,7 +609,8 @@ export function ReportTrigger(props: ReportTriggerProps) {
 
   const defaultEditScheduleFrequency = (trigger_params) => {
     if (trigger_params.schedule_type === SCHEDULE_TYPE_OPTIONS[0].id) {
-      if (trigger_params.schedule.interval.unit === 'DAYS') {
+      if (trigger_params.schedule.interval.unit === 'Days' && 
+          trigger_params.schedule.interval.period === 1) {
         setScheduleRecurringFrequency('daily');
       } else {
         setScheduleRecurringFrequency('byInterval');
