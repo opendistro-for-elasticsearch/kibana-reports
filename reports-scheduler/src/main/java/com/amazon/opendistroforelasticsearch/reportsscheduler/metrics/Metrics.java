@@ -27,7 +27,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATS_START_TIME;
 import static com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATS_END_TIME;
 
-// import com.github.wnameless.json.flattener.JsonFlattener;
 import com.github.wnameless.json.unflattener.JsonUnflattener;
 
 public class Metrics {
