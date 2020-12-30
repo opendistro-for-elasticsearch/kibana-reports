@@ -35,7 +35,8 @@ export type ActionType =
   | 'delete'
   | 'create'
   | 'download'
-  | 'update';
+  | 'update'
+  | 'create_from_definition';
 
 export type CountersType = ActionCountersType & UsageCountersType;
 

@@ -93,6 +93,9 @@ export const GLOBAL_BASIC_COUNTER: CountersType = {
     create: {
       total: 0,
     },
+    create_from_definition: {
+      total: 0,
+    },
     download: {
       total: 0,
     },
@@ -161,6 +164,11 @@ export const GLOBAL_BASIC_COUNTER: CountersType = {
 export const DEFAULT_ROLLING_COUNTER: CountersType = {
   report: {
     create: {
+      count: 0,
+      system_error: 0,
+      user_error: 0,
+    },
+    create_from_definition: {
       count: 0,
       system_error: 0,
       user_error: 0,

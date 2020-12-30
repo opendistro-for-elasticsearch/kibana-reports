@@ -60,7 +60,7 @@ export default function (router: IRouter) {
         report = reportSchema.validate(report);
       } catch (error) {
         logger.error(`Failed input validation for create report ${error}`);
-        addToMetric('report', 'create', 'user_error', report);
+        addToMetric('report', 'create', 'user_error');
         return response.badRequest({ body: error });
       }
 
@@ -87,7 +87,7 @@ export default function (router: IRouter) {
         // TODO: better error handling for delivery and stages in generating report, pass logger to deeper level
         logger.error(`Failed to generate report: ${error}`);
         logger.error(error);
-        addToMetric('report', 'create', checkErrorType(error), report);
+        addToMetric('report', 'create', checkErrorType(error));
         return errorResponse(response, error);
       }
     }
@@ -147,7 +147,7 @@ export default function (router: IRouter) {
       } catch (error) {
         logger.error(`Failed to generate report by id: ${error}`);
         logger.error(error);
-        addToMetric('report', 'download', checkErrorType(error), report);
+        addToMetric('report', 'download', checkErrorType(error));
         return errorResponse(response, error);
       }
     }
@@ -200,7 +200,7 @@ export default function (router: IRouter) {
           report,
           reportId
         );
-        addToMetric('report', 'create', 'count', report);
+        addToMetric('report', 'create_from_definition', 'count', report);
 
         return response.ok({
           body: {
@@ -213,7 +213,7 @@ export default function (router: IRouter) {
           `Failed to generate report from reportDefinition id ${reportDefinitionId} : ${error}`
         );
         logger.error(error);
-        addToMetric('report', 'create', checkErrorType(error), report);
+        addToMetric('report', 'create_from_definition', checkErrorType(error));
         return errorResponse(response, error);
       }
     }
