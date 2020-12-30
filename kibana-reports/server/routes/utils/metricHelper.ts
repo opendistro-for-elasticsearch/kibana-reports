@@ -16,9 +16,9 @@
 import { ReportSchemaType } from 'server/model';
 import {
   EntityType,
-  RollingCountersNameType,
-  RollingCounters,
-  UsageActionType,
+  CountersNameType,
+  CountersType,
+  ActionType,
 } from './types';
 import _ from 'lodash';
 import {
@@ -29,12 +29,12 @@ import {
   WINDOW,
 } from './constants';
 
-export const time2CountWin: Map<number, RollingCounters> = new Map();
+export const time2CountWin: Map<number, CountersType> = new Map();
 
 export const addToMetric = (
   entity: EntityType,
-  action: UsageActionType,
-  counter: RollingCountersNameType,
+  action: ActionType,
+  counter: CountersNameType,
   reportMetadata?: ReportSchemaType
 ) => {
   const count = 1;
@@ -83,7 +83,7 @@ const getPreKey = (milliseconds: number) => {
   return getKey(milliseconds) - 1;
 };
 
-const buildMetrics = (rollingCounters: RollingCounters | undefined) => {
+const buildMetrics = (rollingCounters: CountersType | undefined) => {
   if (!rollingCounters) {
     rollingCounters = DEFAULT_ROLLING_COUNTER;
   }
@@ -92,13 +92,13 @@ const buildMetrics = (rollingCounters: RollingCounters | undefined) => {
 
 const updateCounters = (
   entity: EntityType,
-  action: UsageActionType,
-  counter: RollingCountersNameType,
-  rollingCounter: RollingCounters,
+  action: ActionType,
+  counter: CountersNameType,
+  rollingCounter: CountersType,
   count: number,
   reportMetadata?: ReportSchemaType
 ) => {
-  // update business metrics
+  // update usage metrics
   if (reportMetadata) {
     const {
       report_definition: {
@@ -110,23 +110,23 @@ const updateCounters = (
     } = reportMetadata;
 
     // @ts-ignore
-    rollingCounter.business[source.toLowerCase().replace(' ', '_')][format][
-      'download'
-    ][counter] += count;
-    //update basic counter for total
+    rollingCounter[source.toLowerCase().replace(' ', '_')][format]['download'][
+      counter
+    ] += count;
+    // update basic counter for total request count
     if (counter === 'count') {
       //@ts-ignore
-      GLOBAL_BASIC_COUNTER.business[source.toLowerCase().replace(' ', '_')][
-        format
-      ]['download']['total']++;
+      GLOBAL_BASIC_COUNTER[source.toLowerCase().replace(' ', '_')][format][
+        'download'
+      ]['total']++;
     }
   }
-  // update usage metric
+  // update action metric per API
   // @ts-ignore
-  rollingCounter.usage[entity][action][counter] += count;
+  rollingCounter[entity][action][counter] += count;
   if (counter === 'count') {
     // @ts-ignore
-    GLOBAL_BASIC_COUNTER.usage[entity][action]['total']++;
+    GLOBAL_BASIC_COUNTER[entity][action]['total']++;
   }
 
   return rollingCounter;

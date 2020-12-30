@@ -21,11 +21,15 @@ export interface CreateReportResultType {
 
 type ReportSourceType = 'dashboard' | 'visualization' | 'saved_search';
 type ReportFormatType = 'pdf' | 'png' | 'csv';
-type BusinessActionType = 'download';
-export type RollingCountersNameType = 'count' | 'system_error' | 'user_error';
+type UsageActionType = 'download';
+export type EntityType = 'report' | 'report_definition' | 'report_source';
 
-export type EntityType = 'report' | 'report_definition';
-export type UsageActionType =
+export type CountersNameType =
+  | 'count'
+  | 'system_error'
+  | 'user_error'
+  | 'total';
+export type ActionType =
   | 'info'
   | 'list'
   | 'delete'
@@ -33,40 +37,22 @@ export type UsageActionType =
   | 'download'
   | 'update';
 
-export interface RollingCounters {
-  usage: {
-    [entity in EntityType]: {
-      [action in UsageActionType]?: {
-        [counter in RollingCountersNameType]: number;
-      };
-    };
-  };
-  business: {
-    [source in ReportSourceType]: {
-      [format in ReportFormatType]?: {
-        [action in BusinessActionType]: {
-          [counter in RollingCountersNameType]?: number;
-        };
-      };
-    };
-  };
-}
+export type CountersType = ActionCountersType & UsageCountersType;
 
-export interface BasicCounters {
-  usage: {
-    [entity in EntityType]: {
-      [action in UsageActionType]?: {
-        total: number;
+type ActionCountersType = {
+  [entity in EntityType]: {
+    [action in ActionType]?: {
+      [counter in CountersNameType]?: number;
+    };
+  };
+};
+
+type UsageCountersType = {
+  [source in ReportSourceType]: {
+    [format in ReportFormatType]?: {
+      [action in UsageActionType]: {
+        [counter in CountersNameType]?: number;
       };
     };
   };
-  business: {
-    [source in ReportSourceType]: {
-      [format in ReportFormatType]?: {
-        [action in BusinessActionType]: {
-          total: number;
-        };
-      };
-    };
-  };
-}
+};
