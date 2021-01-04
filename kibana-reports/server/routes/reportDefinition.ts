@@ -22,7 +22,7 @@ import {
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 import { reportDefinitionSchema } from '../model';
-import { errorResponse } from './utils/helpers';
+import { checkErrorType, errorResponse } from './utils/helpers';
 import { createReportDefinition } from './lib/createReportDefinition';
 import {
   backendToUiReportDefinition,
@@ -30,6 +30,7 @@ import {
 } from './utils/converters/backendToUi';
 import { updateReportDefinition } from './lib/updateReportDefinition';
 import { DEFAULT_MAX_SIZE } from './utils/constants';
+import { addToMetric } from './utils/metricHelper';
 
 export default function (router: IRouter) {
   // Create report Definition
@@ -57,6 +58,7 @@ export default function (router: IRouter) {
         logger.error(
           `Failed input validation for create report definition ${error}`
         );
+        addToMetric('report_definition', 'create', 'user_error');
         return response.badRequest({ body: error });
       }
 
@@ -68,6 +70,7 @@ export default function (router: IRouter) {
           reportDefinition
         );
 
+        addToMetric('report_definition', 'create', 'count');
         return response.ok({
           body: {
             state: 'Report definition created',
@@ -76,6 +79,7 @@ export default function (router: IRouter) {
         });
       } catch (error) {
         logger.error(`Failed to create report definition: ${error}`);
+        addToMetric('report_definition', 'create', checkErrorType(error));
         return errorResponse(response, error);
       }
     }
@@ -109,6 +113,7 @@ export default function (router: IRouter) {
         logger.error(
           `Failed input validation for update report definition ${error}`
         );
+        addToMetric('report_definition', 'update', 'user_error');
         return response.badRequest({ body: error });
       }
       // Update report definition metadata
@@ -119,6 +124,7 @@ export default function (router: IRouter) {
           reportDefinition
         );
 
+        addToMetric('report_definition', 'update', 'count');
         return response.ok({
           body: {
             state: 'Report definition updated',
@@ -127,6 +133,7 @@ export default function (router: IRouter) {
         });
       } catch (error) {
         logger.error(`Failed to update report definition: ${error}`);
+        addToMetric('report_definition', 'update', checkErrorType(error));
         return errorResponse(response, error);
       }
     }
@@ -170,6 +177,8 @@ export default function (router: IRouter) {
         const reportDefinitionsList = backendToUiReportDefinitionsList(
           esResp.reportDefinitionDetailsList
         );
+        addToMetric('report_definition', 'list', 'count');
+
         return response.ok({
           body: {
             data: reportDefinitionsList,
@@ -180,6 +189,7 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to get report definition details: ${error}`
         );
+        addToMetric('report_definition', 'list', checkErrorType(error));
         return errorResponse(response, error);
       }
     }
@@ -216,6 +226,7 @@ export default function (router: IRouter) {
         const reportDefinition = backendToUiReportDefinition(
           esResp.reportDefinitionDetails
         );
+        addToMetric('report_definition', 'info', 'count');
 
         return response.ok({
           body: { report_definition: reportDefinition },
@@ -225,6 +236,7 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to get single report details: ${error}`
         );
+        addToMetric('report_definition', 'info', checkErrorType(error));
         return errorResponse(response, error);
       }
     }
@@ -257,6 +269,7 @@ export default function (router: IRouter) {
             reportDefinitionId: request.params.reportDefinitionId,
           }
         );
+        addToMetric('report_definition', 'delete', 'count');
 
         return response.ok({
           body: {
@@ -269,6 +282,7 @@ export default function (router: IRouter) {
         context.reporting_plugin.logger.error(
           `Failed to delete report definition: ${error}`
         );
+        addToMetric('report_definition', 'delete', checkErrorType(error));
         return errorResponse(response, error);
       }
     }
