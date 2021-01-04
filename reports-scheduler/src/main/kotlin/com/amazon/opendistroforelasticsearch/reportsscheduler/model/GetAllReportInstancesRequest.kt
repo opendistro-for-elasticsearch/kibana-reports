@@ -101,7 +101,7 @@ internal data class GetAllReportInstancesRequest(
     override fun validate(): ActionRequestValidationException? {
         return if (fromIndex < 0) {
             val exception = ActionRequestValidationException()
-            exception.addValidationError("fromIndex should be grater than 0")
+            exception.addValidationError("fromIndex should be greater than 0")
             Metrics.getInstance().getNumericalMetric(MetricName.REPORT_INSTANCE_LIST_USER_ERROR).increment()
             exception
         } else {

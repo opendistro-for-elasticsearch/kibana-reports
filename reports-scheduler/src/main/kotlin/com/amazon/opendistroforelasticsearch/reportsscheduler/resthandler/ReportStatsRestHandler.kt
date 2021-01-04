@@ -16,19 +16,9 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
-// import com.amazon.opendistroforelasticsearch.reportsscheduler.action.CreateReportDefinitionAction
-// import com.amazon.opendistroforelasticsearch.reportsscheduler.action.DeleteReportDefinitionAction
-// import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetReportDefinitionAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportDefinitionActions
-// import com.amazon.opendistroforelasticsearch.reportsscheduler.action.UpdateReportDefinitionAction
-// import com.amazon.opendistroforelasticsearch.reportsscheduler.model.CreateReportDefinitionRequest
-// import com.amazon.opendistroforelasticsearch.reportsscheduler.model.DeleteReportDefinitionRequest
-// import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionRequest
-// import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATS_START_TIME
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATS_END_TIME
-// import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportDefinitionRequest
-// import com.amazon.opendistroforelasticsearch.reportsscheduler.util.contentParserNextToken
 import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
 import org.elasticsearch.client.node.NodeClient
 import org.elasticsearch.rest.BaseRestHandler
