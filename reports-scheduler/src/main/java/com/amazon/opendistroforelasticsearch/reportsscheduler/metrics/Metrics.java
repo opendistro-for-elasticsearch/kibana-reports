@@ -15,17 +15,11 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.metrics;
 
-import org.elasticsearch.rest.RestRequest;
 import org.json.JSONObject;
 import java.time.Clock;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATS_START_TIME;
-import static com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATS_END_TIME;
 
 import com.github.wnameless.json.unflattener.JsonUnflattener;
 

@@ -72,7 +72,7 @@ public class MetricFactory {
             case REPORT_FROM_DEFINITION_ID_USER_ERROR:
             case REPORT_FROM_DEFINITION_ID_SYSTEM_ERROR:
 
-            case REPORT_PERMISSION_ERROR:
+            case REPORT_PERMISSION_USER_ERROR:
                 return new NumericMetric<>(name.getName(), new RollingCounter());
             default:
                 return new NumericMetric<>(name.getName(), new BasicCounter());

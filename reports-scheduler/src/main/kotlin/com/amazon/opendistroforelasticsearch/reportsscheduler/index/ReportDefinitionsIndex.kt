@@ -141,7 +141,6 @@ internal object ReportDefinitionsIndex {
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
         return if (response.sourceAsString == null) {
             log.warn("$LOG_PREFIX:getReportDefinition - $id not found; response:$response")
-            Metrics.getInstance().getNumericalMetric(MetricName.REPORT_DEFINITION_INFO_SYSTEM_ERROR)
             null
         } else {
             val parser = XContentType.JSON.xContent().createParser(NamedXContentRegistry.EMPTY,

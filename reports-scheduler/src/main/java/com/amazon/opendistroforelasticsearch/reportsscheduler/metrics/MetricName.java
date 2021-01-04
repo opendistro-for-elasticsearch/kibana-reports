@@ -71,7 +71,7 @@ public enum MetricName {
     REPORT_FROM_DEFINITION_ID_USER_ERROR("on_demand_from_definition.create.user_error", true),
     REPORT_FROM_DEFINITION_ID_SYSTEM_ERROR("on_demand_from_definition.create.system_error.", true),
 
-    REPORT_PERMISSION_ERROR("permission_error", true),
+    REPORT_PERMISSION_USER_ERROR("permission_error", true),
 
     DEFAULT("default", true);
 
