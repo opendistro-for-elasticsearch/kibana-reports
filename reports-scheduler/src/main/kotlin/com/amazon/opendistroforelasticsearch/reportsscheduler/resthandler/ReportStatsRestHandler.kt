@@ -87,14 +87,7 @@ internal class ReportStatsRestHandler : BaseRestHandler() {
     override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
         return when (request.method()) {
             GET -> RestChannelConsumer {
-                when (request.path()) {
-                    REPORT_STATS_URL -> {
-                        it.sendResponse(BytesRestResponse(RestStatus.OK, Metrics.getInstance().collectToFlattenedJSON()))
-                    }
-                    REPORT_TEST_URL -> {
-                        it.sendResponse(BytesRestResponse(RestStatus.OK, Metrics.getInstance().test(request)))
-                    }
-                }
+                it.sendResponse(BytesRestResponse(RestStatus.OK, Metrics.getInstance().collectToFlattenedJSON()))
             }
             else -> RestChannelConsumer {
                 it.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))
