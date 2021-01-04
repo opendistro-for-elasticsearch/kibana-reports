@@ -18,6 +18,8 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetAllReportInstancesAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportInstancesRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.FROM_INDEX_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.MAX_ITEMS_FIELD
@@ -78,6 +80,8 @@ internal class ReportInstanceListRestHandler : BaseRestHandler() {
         val maxItems = request.param(MAX_ITEMS_FIELD)?.toIntOrNull() ?: PluginSettings.defaultItemsQueryCount
         return when (request.method()) {
             GET -> RestChannelConsumer {
+                Metrics.getInstance().getNumericalMetric(MetricName.REPORT_INSTANCE_LIST_TOTAL).increment()
+                Metrics.getInstance().getNumericalMetric(MetricName.REPORT_INSTANCE_LIST_INTERVAL_COUNT).increment()
                 client.execute(GetAllReportInstancesAction.ACTION_TYPE,
                     GetAllReportInstancesRequest(from, maxItems),
                     RestResponseToXContentListener(it))

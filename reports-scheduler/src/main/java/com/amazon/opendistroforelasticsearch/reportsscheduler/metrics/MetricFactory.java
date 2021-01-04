@@ -56,7 +56,7 @@ public class MetricFactory {
             case REPORT_INSTANCE_UPDATE_USER_ERROR:
             case REPORT_INSTANCE_UPDATE_SYSTEM_ERROR:
 
-            case REPORT_INSTANCE_INFO_COUNT:
+            case REPORT_INSTANCE_INFO_INTERVAL_COUNT:
             case REPORT_INSTANCE_INFO_USER_ERROR:
             case REPORT_INSTANCE_INFO_SYSTEM_ERROR:
 
@@ -71,6 +71,8 @@ public class MetricFactory {
             case REPORT_FROM_DEFINITION_ID_INTERVAL_COUNT:
             case REPORT_FROM_DEFINITION_ID_USER_ERROR:
             case REPORT_FROM_DEFINITION_ID_SYSTEM_ERROR:
+
+            case REPORT_PERMISSION_ERROR:
                 return new NumericMetric<>(name.getName(), new RollingCounter());
             default:
                 return new NumericMetric<>(name.getName(), new BasicCounter());

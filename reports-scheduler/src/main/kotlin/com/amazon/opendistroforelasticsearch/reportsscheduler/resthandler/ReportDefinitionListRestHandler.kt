@@ -18,10 +18,13 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetAllReportDefinitionsAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportDefinitionActions
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportDefinitionsRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.FROM_INDEX_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.MAX_ITEMS_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
+
 import org.elasticsearch.client.node.NodeClient
 import org.elasticsearch.rest.BaseRestHandler
 import org.elasticsearch.rest.BaseRestHandler.RestChannelConsumer
@@ -71,6 +74,8 @@ internal class ReportDefinitionListRestHandler : BaseRestHandler() {
         val maxItems = request.param(MAX_ITEMS_FIELD)?.toIntOrNull() ?: PluginSettings.defaultItemsQueryCount
         return when (request.method()) {
             GET -> RestChannelConsumer {
+                Metrics.getInstance().getNumericalMetric(MetricName.REPORT_DEFINITION_LIST_TOTAL).increment()
+                Metrics.getInstance().getNumericalMetric(MetricName.REPORT_DEFINITION_LIST_INTERVAL_COUNT).increment()
                 client.execute(GetAllReportDefinitionsAction.ACTION_TYPE,
                     GetAllReportDefinitionsRequest(from, maxItems),
                     RestResponseToXContentListener(it))

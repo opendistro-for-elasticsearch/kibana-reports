@@ -19,6 +19,8 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPl
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.InContextReportCreateAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.OnDemandReportCreateAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.InContextReportCreateRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.OnDemandReportCreateRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_ID_FIELD
@@ -86,11 +88,15 @@ internal class OnDemandReportRestHandler : BaseRestHandler() {
     override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
         return when (request.method()) {
             PUT -> RestChannelConsumer {
+                Metrics.getInstance().getNumericalMetric(MetricName.REPORT_FROM_DEFINITION_TOTAL).increment()
+                Metrics.getInstance().getNumericalMetric(MetricName.REPORT_FROM_DEFINITION_INTERVAL_COUNT).increment()
                 client.execute(InContextReportCreateAction.ACTION_TYPE,
                     InContextReportCreateRequest(request.contentParserNextToken()),
                     RestResponseToXContentListener(it))
             }
             POST -> RestChannelConsumer {
+                Metrics.getInstance().getNumericalMetric(MetricName.REPORT_FROM_DEFINITION_ID_TOTAL).increment()
+                Metrics.getInstance().getNumericalMetric(MetricName.REPORT_FROM_DEFINITION_ID_INTERVAL_COUNT).increment()
                 client.execute(OnDemandReportCreateAction.ACTION_TYPE,
                     OnDemandReportCreateRequest.parse(request.contentParserNextToken(), request.param(REPORT_DEFINITION_ID_FIELD)),
                     RestResponseToXContentListener(it))

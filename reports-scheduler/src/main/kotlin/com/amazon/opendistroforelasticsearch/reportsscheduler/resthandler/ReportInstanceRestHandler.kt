@@ -19,6 +19,8 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPl
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetReportInstanceAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.UpdateReportInstanceStatusAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportInstanceRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_INSTANCE_ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportInstanceStatusRequest
@@ -86,11 +88,15 @@ internal class ReportInstanceRestHandler : BaseRestHandler() {
         val reportInstanceId = request.param(REPORT_INSTANCE_ID_FIELD) ?: throw IllegalArgumentException("Must specify id")
         return when (request.method()) {
             POST -> RestChannelConsumer {
+                Metrics.getInstance().getNumericalMetric(MetricName.REPORT_INSTANCE_UPDATE_TOTAL).increment()
+                Metrics.getInstance().getNumericalMetric(MetricName.REPORT_INSTANCE_UPDATE_INTERVAL_COUNT).increment()
                 client.execute(UpdateReportInstanceStatusAction.ACTION_TYPE,
                     UpdateReportInstanceStatusRequest.parse(request.contentParserNextToken(), reportInstanceId),
                     RestResponseToXContentListener(it))
             }
             GET -> RestChannelConsumer {
+                Metrics.getInstance().getNumericalMetric(MetricName.REPORT_INSTANCE_INFO_TOTAL).increment()
+                Metrics.getInstance().getNumericalMetric(MetricName.REPORT_INSTANCE_INFO_INTERVAL_COUNT).increment()
                 client.execute(GetReportInstanceAction.ACTION_TYPE,
                     GetReportInstanceRequest(reportInstanceId),
                     RestResponseToXContentListener(it))

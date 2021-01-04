@@ -52,7 +52,7 @@ public enum MetricName {
     REPORT_INSTANCE_UPDATE_SYSTEM_ERROR("report_instance.update.system_error.", true),
 
     REPORT_INSTANCE_INFO_TOTAL("report_instance.info.total", true),
-    REPORT_INSTANCE_INFO_COUNT("report_instance.info.count", true),
+    REPORT_INSTANCE_INFO_INTERVAL_COUNT("report_instance.info.count", true),
     REPORT_INSTANCE_INFO_USER_ERROR("report_instance.info.user_error", true),
     REPORT_INSTANCE_INFO_SYSTEM_ERROR("report_instance.info.system_error.", true),
 
