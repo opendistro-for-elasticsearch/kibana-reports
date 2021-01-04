@@ -94,20 +94,6 @@ public enum MetricName {
     public static List<String> getNames() {
         return Arrays.stream(MetricName.values()).map(v -> v.name).collect(Collectors.toList());
     }
-
-//    private static Set<MetricName> NUMERICAL_METRIC = new ImmutableSet.Builder<MetricName>()
-//        .add(PPL_REQ_TOTAL)
-//        .add(PPL_REQ_COUNT_TOTAL)
-//        .add(PPL_FAILED_REQ_COUNT_SYS)
-//        .add(PPL_FAILED_REQ_COUNT_CUS)
-//        .build();
-
-//    public boolean isNumerical() {
-//        return this == REQ_TOTAL || this == REQ_COUNT_TOTAL || this == FAILED_REQ_COUNT_SYS
-//            || this == FAILED_REQ_COUNT_CUS || this == FAILED_REQ_COUNT_CB || this == DEFAULT
-//            || this == DEFAULT_CURSOR_REQUEST_TOTAL || this == DEFAULT_CURSOR_REQUEST_COUNT_TOTAL
-//            || NUMERICAL_METRIC.contains(this);
-//    }
 }
 
 
