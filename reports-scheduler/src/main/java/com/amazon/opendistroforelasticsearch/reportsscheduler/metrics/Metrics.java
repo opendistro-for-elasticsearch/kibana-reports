@@ -84,9 +84,6 @@ public class Metrics {
             }
             metricsJSONObject.put(metric.getName(), metric.getValue());
         }
-
-        metricsJSONObject.put("time", clock.millis());
-
         return metricsJSONObject.toString();
     }
 
