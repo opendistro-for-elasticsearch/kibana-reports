@@ -16,10 +16,12 @@
 import registerReportRoute from './report';
 import registerReportDefinitionRoute from './reportDefinition';
 import registerReportSourceRoute from './reportSource';
+import registerMetricRoute from './metric';
 import { IRouter } from '../../../../src/core/server';
 
 export default function (router: IRouter) {
   registerReportRoute(router);
   registerReportDefinitionRoute(router);
   registerReportSourceRoute(router);
+  registerMetricRoute(router);
 }
