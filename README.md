@@ -1,6 +1,6 @@
 [![Kibana Reports CI](https://github.com/opendistro-for-elasticsearch/kibana-reports/workflows/Test%20and%20Build%20Kibana%20Reports/badge.svg)](https://github.com/opendistro-for-elasticsearch/kibana-reports/actions?query=workflow%3A%22Test+and+Build+Kibana+Reports%22)
 [![Reports Scheduler CI](https://github.com/opendistro-for-elasticsearch/kibana-reports/workflows/Test%20and%20Build%20Reports%20Scheduler/badge.svg)](https://github.com/opendistro-for-elasticsearch/kibana-reports/actions?query=workflow%3A%22Test+and+Build+Reports+Scheduler%22)
-[![codecov](https://codecov.io/gh/opendistro-for-elasticsearch/kibana-reports/branch/dev/graph/badge.svg?token=FBVYQSZD3B)](https://codecov.io/gh/opendistro-for-elasticsearch/kibana-reports)
+[![codecov](https://codecov.io/gh/opendistro-for-elasticsearch/kibana-reports/branch/7.9.1/graph/badge.svg?token=FBVYQSZD3B)](https://codecov.io/gh/opendistro-for-elasticsearch/kibana-reports)
 [![Documentation](https://img.shields.io/badge/documentation-blue.svg)](https://opendistro.github.io/for-elasticsearch-docs/docs/kibana/reporting/)
 ![PRs welcome!](https://img.shields.io/badge/PRs-welcome!-success)
 
