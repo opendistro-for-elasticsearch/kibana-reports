@@ -22,7 +22,7 @@ import {
   ILegacyClusterClient,
 } from '../../../src/core/server';
 import { setIntervalAsync } from 'set-interval-async/dynamic';
-import { Semaphore, SemaphoreInterface } from 'async-mutex';
+import { Semaphore, SemaphoreInterface, withTimeout } from 'async-mutex';
 import esReportsPlugin from './backend/opendistro-es-reports-plugin';
 import notificationPlugin from './backend/opendistro-notification-plugin';
 import {
@@ -55,7 +55,7 @@ export class OpendistroKibanaReportsPlugin
 
   constructor(initializerContext: PluginInitializerContext) {
     this.logger = initializerContext.logger.get();
-    this.semaphore = new Semaphore(1);
+    this.semaphore = withTimeout(new Semaphore(1), 30000, new Error('timeout'));
   }
 
   public setup(core: CoreSetup) {
