@@ -132,6 +132,14 @@ export function CreateReport(props) {
     setSettingsReportNameErrorMessage,
   ] = useState('');
   const [
+    showSettingsReportSourceError,
+    setShowSettingsReportSourceError
+  ] = useState(false);
+  const [
+    settingsReportSourceErrorMessage,
+    setSettingsReportSourceErrorMessage
+  ] = useState('');
+  const [
     showTriggerIntervalNaNError,
     setShowTriggerIntervalNaNError,
   ] = useState(false);
@@ -213,7 +221,7 @@ export function CreateReport(props) {
     timeRange: timeRangeParams
   ) => {
     const { httpClient } = props;
-
+    console.log('metadata on create is', metadata);
     //TODO: need better handle
     if (
       metadata.trigger.trigger_type === 'On demand' &&
@@ -228,6 +236,8 @@ export function CreateReport(props) {
       error,
       setShowSettingsReportNameError,
       setSettingsReportNameErrorMessage,
+      setShowSettingsReportSourceError,
+      setSettingsReportSourceErrorMessage,
       setShowTriggerIntervalNaNError,
       timeRange,
       setShowTimeRangeError,
@@ -307,6 +317,8 @@ export function CreateReport(props) {
           timeRange={timeRange}
           showSettingsReportNameError={showSettingsReportNameError}
           settingsReportNameErrorMessage={settingsReportNameErrorMessage}
+          showSettingsReportSourceError={showSettingsReportSourceError}
+          settingsReportSourceErrorMessage={settingsReportSourceErrorMessage}
           showTimeRangeError={showTimeRangeError}
         />
         <EuiSpacer />

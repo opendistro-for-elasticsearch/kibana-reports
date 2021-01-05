@@ -67,6 +67,8 @@ type ReportSettingProps = {
   timeRange: timeRangeParams;
   showSettingsReportNameError: boolean;
   settingsReportNameErrorMessage: string;
+  showSettingsReportSourceError: boolean;
+  settingsReportSourceErrorMessage: string;
   showTimeRangeError: boolean;
 };
 
@@ -79,6 +81,8 @@ export function ReportSettings(props: ReportSettingProps) {
     timeRange,
     showSettingsReportNameError,
     settingsReportNameErrorMessage,
+    showSettingsReportSourceError,
+    settingsReportSourceErrorMessage,
     showTimeRangeError,
   } = props;
 
@@ -86,23 +90,19 @@ export function ReportSettings(props: ReportSettingProps) {
   const [reportDescription, setReportDescription] = useState('');
   const [reportSourceId, setReportSourceId] = useState('dashboardReportSource');
 
-  const [dashboardSourceSelect, setDashboardSourceSelect] = useState([{label: 'test'}]);
-  const [dashboards, setDashboards] = useState([]);
+  const [dashboardSourceSelect, setDashboardSourceSelect] = useState([] as any);
+  const [dashboards, setDashboards] = useState([] as any);
 
-  const [visualizationSourceSelect, setVisualizationSourceSelect] = useState(
-    ''
-  );
-  const [visualizations, setVisualizations] = useState([]);
+  const [visualizationSourceSelect, setVisualizationSourceSelect] = useState([] as any);
+  const [visualizations, setVisualizations] = useState([] as any);
 
-  const [savedSearchSourceSelect, setSavedSearchSourceSelect] = useState('');
-  const [savedSearches, setSavedSearches] = useState([]);
+  const [savedSearchSourceSelect, setSavedSearchSourceSelect] = useState([] as any);
+  const [savedSearches, setSavedSearches] = useState([] as any);
 
   const [fileFormat, setFileFormat] = useState('pdf');
 
   const handleDashboards = (e) => {
-    console.log('in handleDashboards');
     setDashboards(e);
-    console.log('just set dashboards');
   };
 
   const handleVisualizations = (e) => {
@@ -150,7 +150,6 @@ export function ReportSettings(props: ReportSettingProps) {
 
       // set params to visual report params after switch from saved search
       handleDataToVisualReportSourceChange(reportDefinitionRequest);
-
       setFileFormat('pdf');
     } else if (e === 'savedSearchReportSource') {
       reportDefinitionRequest.report_params.report_source = 'Saved search';
@@ -165,44 +164,59 @@ export function ReportSettings(props: ReportSettingProps) {
     }
   };
 
-  const handleDashboardSelect = (e) => {
-    setDashboardSourceSelect(e.target.value);
+  const handleDashboardSelect = async (e: string | any[]) => {
+      setDashboardSourceSelect(e);
+  
     let fromInContext = false;
     if (window.location.href.includes('?')) {
       fromInContext = true;
     }
-    reportDefinitionRequest.report_params.core_params.base_url =
-      getDashboardBaseUrlCreate(edit, editDefinitionId, fromInContext) +
-      e.target.value;
+    
+    if (e.length > 0) {
+      reportDefinitionRequest.report_params.core_params.base_url =
+        getDashboardBaseUrlCreate(edit, editDefinitionId, fromInContext) +
+        e[0].value;
+    }
+    else {
+      reportDefinitionRequest.report_params.core_params.base_url = "";
+    }
+    return e;
   };
 
-  const handleVisualizationSelect = (e: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    setVisualizationSourceSelect(e.target.value);
+  const handleVisualizationSelect = (e) => {
+    setVisualizationSourceSelect(e);
     let fromInContext = false;
     if (window.location.href.includes('?')) {
       fromInContext = true;
     }
-    reportDefinitionRequest.report_params.core_params.base_url =
-      getVisualizationBaseUrlCreate(edit, editDefinitionId, fromInContext) +
-      e.target.value;
+
+    if (e.length > 0) {
+      reportDefinitionRequest.report_params.core_params.base_url =
+        getVisualizationBaseUrlCreate(edit, editDefinitionId, fromInContext) +
+        e[0].value;      
+    }
+    else {
+      reportDefinitionRequest.report_params.core_params.base_url = "";
+    }
   };
 
-  const handleSavedSearchSelect = (e: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    setSavedSearchSourceSelect(e.target.value);
-    reportDefinitionRequest.report_params.core_params.saved_search_id =
-      e.target.value;
-
+  const handleSavedSearchSelect = (e) => {
+    setSavedSearchSourceSelect(e);
     let fromInContext = false;
     if (window.location.href.includes('?')) {
       fromInContext = true;
     }
-    reportDefinitionRequest.report_params.core_params.base_url =
-      getSavedSearchBaseUrlCreate(edit, editDefinitionId, fromInContext) +
-      e.target.value;
+    if (e.length > 0) {
+      reportDefinitionRequest.report_params.core_params.saved_search_id =
+        e[0].value;
+
+      reportDefinitionRequest.report_params.core_params.base_url =
+        getSavedSearchBaseUrlCreate(edit, editDefinitionId, fromInContext) +
+        e[0].value;
+    }
+    else {
+      reportDefinitionRequest.report_params.core_params.base_url = "";
+    }
   };
 
   const handleFileFormat = (e: React.SetStateAction<string>) => {
@@ -297,6 +311,7 @@ export function ReportSettings(props: ReportSettingProps) {
     ) : null;
 
     useEffect(() => {
+      console.log('aaaaa');
       let unmounted = false;
       if (edit) {
         httpClientProps
@@ -330,6 +345,11 @@ export function ReportSettings(props: ReportSettingProps) {
             );
           });
       } else {
+        if (dashboardSourceSelect) {
+          if (!unmounted) {
+            setDashboardSourceSelect(dashboardSourceSelect);
+          }
+        }
         // keeps header/footer from re-rendering empty when other fields in Report Settings are changed
         checkboxIdSelectHeaderFooter.header =
           'header' in reportDefinitionRequest.report_params.core_params;
@@ -365,14 +385,13 @@ export function ReportSettings(props: ReportSettingProps) {
   const ReportSourceDashboard = () => {
     return (
       <div>
-        <EuiFormRow label="Select dashboard">
-          {/* <EuiSelect
-            id="reportSourceDashboardSelect"
-            options={dashboards}
-            value={dashboardSourceSelect}
-            onChange={handleDashboardSelect}
-          /> */}
+        <EuiFormRow 
+          label="Select dashboard"
+          isInvalid={showSettingsReportSourceError}
+          error={settingsReportSourceErrorMessage}
+        >
         <EuiComboBox
+          id="reportSourceDashboardSelect"
           placeholder="Select a dashboard"
           singleSelection={{ asPlainText: true }}
           options={dashboards}
@@ -388,12 +407,18 @@ export function ReportSettings(props: ReportSettingProps) {
   const ReportSourceVisualization = () => {
     return (
       <div>
-        <EuiFormRow label="Select visualization">
-          <EuiSelect
+        <EuiFormRow 
+          label="Select visualization"
+          isInvalid={showSettingsReportSourceError}
+          error={settingsReportSourceErrorMessage}
+        >
+          <EuiComboBox
             id="reportSourceVisualizationSelect"
+            placeholder="Select a visualization"
+            singleSelection={{ asPlainText: true }}
             options={visualizations}
-            value={visualizationSourceSelect}
             onChange={handleVisualizationSelect}
+            selectedOptions={visualizationSourceSelect}
           />
         </EuiFormRow>
         <EuiSpacer />
@@ -404,12 +429,18 @@ export function ReportSettings(props: ReportSettingProps) {
   const ReportSourceSavedSearch = () => {
     return (
       <div>
-        <EuiFormRow label="Select saved search">
-          <EuiSelect
+        <EuiFormRow
+          label="Select saved search"
+          isInvalid={showSettingsReportSourceError}
+          error={settingsReportSourceErrorMessage}
+        >
+          <EuiComboBox
             id="reportSourceSavedSearchSelect"
+            placeholder="Select a saved search"
+            singleSelection={{ asPlainText: true }}
             options={savedSearches}
-            value={savedSearchSourceSelect}
             onChange={handleSavedSearchSelect}
+            selectedOptions={savedSearchSourceSelect}
           />
         </EuiFormRow>
         <EuiSpacer />
@@ -431,19 +462,19 @@ export function ReportSettings(props: ReportSettingProps) {
     if (reportSource === REPORT_SOURCE_TYPES.dashboard) {
       for (index = 0; index < options.dashboard.length; ++index) {
         if (url.includes(options.dashboard[index].value)) {
-          setDashboardSourceSelect(options.dashboard[index].value);
+          setDashboardSourceSelect([options.dashboard[index]]);
         }
       }
     } else if (reportSource === REPORT_SOURCE_TYPES.visualization) {
       for (index = 0; index < options.visualizations.length; ++index) {
         if (url.includes(options.visualizations[index].value)) {
-          setVisualizationSourceSelect(options.visualizations[index].value);
+          setVisualizationSourceSelect([options.visualizations[index]]);
         }
       }
     } else if (reportSource === REPORT_SOURCE_TYPES.savedSearch) {
       for (index = 0; index < options.savedSearch.length; ++index) {
         if (url.includes(options.savedSearch[index].value)) {
-          setSavedSearchSourceSelect(options.savedSearch[index].value);
+          setSavedSearchSourceSelect([options.savedSearch[index]]);
         }
       }
     }
@@ -460,21 +491,51 @@ export function ReportSettings(props: ReportSettingProps) {
     }
   };
 
-  const setInContextDefaultConfiguration = () => {
+  const setDashboardFromInContextMenu = (response, id) => {
+    let index;
+    for (index = 0; index < response.dashboard.length; ++index) {
+      if (id === response.dashboard[index].value) {
+        setDashboardSourceSelect([response.dashboard[index]]);
+      }
+    }
+  }
+
+  const setVisualizationFromInContextMenu = (response, id) => {
+    let index;
+    for (index = 0; index < response.visualizations.length; ++index) {
+      if (id === response.visualizations[index].value) {
+        setVisualizationSourceSelect([response.visualizations[index]]);
+      }
+    }
+  }
+
+  const setSavedSearchFromInContextMenu = (response, id) => {
+    let index;
+    for (index = 0; index < response.savedSearch.length; ++index) {
+      if (id === response.savedSearch[index].value) {
+        setSavedSearchSourceSelect([response.savedSearch[index]]);
+      }
+    }
+  }
+ 
+  const setInContextDefaultConfiguration = (response) => {
+    console.log(response);
     const url = window.location.href;
     const id = parseInContextUrl(url, 'id');
     if (url.includes('dashboard')) {
       setReportSourceId('dashboardReportSource');
       reportDefinitionRequest.report_params.report_source =
         REPORT_SOURCE_RADIOS[0].label;
-      setDashboardSourceSelect(id);
+
+      setDashboardFromInContextMenu(response, id);
       reportDefinitionRequest.report_params.core_params.base_url =
         getDashboardBaseUrlCreate(edit, id, true) + id;
     } else if (url.includes('visualize')) {
       setReportSourceId('visualizationReportSource');
       reportDefinitionRequest.report_params.report_source =
         REPORT_SOURCE_RADIOS[1].label;
-      setVisualizationSourceSelect(id);
+
+      setVisualizationFromInContextMenu(response, id);
       reportDefinitionRequest.report_params.core_params.base_url =
         getVisualizationBaseUrlCreate(edit, editDefinitionId, true) + id;
     } else if (url.includes('discover')) {
@@ -483,7 +544,8 @@ export function ReportSettings(props: ReportSettingProps) {
       reportDefinitionRequest.report_params.core_params.saved_search_id = id;
       reportDefinitionRequest.report_params.report_source =
         REPORT_SOURCE_RADIOS[2].label;
-      setSavedSearchSourceSelect(id);
+
+      setSavedSearchFromInContextMenu(response, id)
       reportDefinitionRequest.report_params.core_params.base_url =
         getSavedSearchBaseUrlCreate(edit, editDefinitionId, true) + id;
     }
@@ -534,22 +596,15 @@ export function ReportSettings(props: ReportSettingProps) {
       visualizations: [],
       savedSearch: [],
     };
-    console.log('in defaultConfigurationCreate');
     reportDefinitionRequest.report_params.core_params.report_format = fileFormat;
     await httpClientProps
       .get('../api/reporting/getReportSource/dashboard')
       .then(async (response) => {
-        console.log('in getDashboards response');
         let dashboardOptions = getDashboardOptions(response['hits']['hits']);
-        console.log('called getDashboardOptions');
         reportSourceOptions.dashboard = dashboardOptions;
-        console.log('dashboardOptions is', dashboardOptions);
         handleDashboards(dashboardOptions);
-        console.log('called handleDashboards');
         if (!edit) {
-          console.log('in !edit block')
-          setDashboardSourceSelect(dashboardOptions[0]);
-          console.log('set dashboard source select');
+          setDashboardSourceSelect([dashboardOptions[0]]);
           reportDefinitionRequest.report_params.report_source = 'Dashboard';
           reportDefinitionRequest['report_params']['core_params']['base_url'] =
             getDashboardBaseUrlCreate(edit, editDefinitionId, false) +
@@ -568,7 +623,7 @@ export function ReportSettings(props: ReportSettingProps) {
         );
         reportSourceOptions.visualizations = visualizationOptions;
         await handleVisualizations(visualizationOptions);
-        await setVisualizationSourceSelect(visualizationOptions[0].value);
+        await setVisualizationSourceSelect([visualizationOptions[0]]);
       })
       .catch((error) => {
         console.log('error when fetching visualizations:', error);
@@ -582,7 +637,7 @@ export function ReportSettings(props: ReportSettingProps) {
         );
         reportSourceOptions.savedSearch = savedSearchOptions;
         await handleSavedSearches(savedSearchOptions);
-        await setSavedSearchSourceSelect(savedSearchOptions[0].value);
+        await setSavedSearchSourceSelect([savedSearchOptions[0]]);
       })
       .catch((error) => {
         console.log('error when fetching saved searches:', error);
@@ -591,6 +646,7 @@ export function ReportSettings(props: ReportSettingProps) {
   };
 
   useEffect(() => {
+    console.log('use effect running');
     let reportSourceOptions = {};
     let editData = {};
     if (edit) {
@@ -602,13 +658,18 @@ export function ReportSettings(props: ReportSettingProps) {
       reportSourceOptions = response;
       // if coming from in-context menu
       if (window.location.href.indexOf('?') > -1) {
-        setInContextDefaultConfiguration();
+        setInContextDefaultConfiguration(response);
       }
       if (edit) {
         setDefaultEditValues(editData, reportSourceOptions);
       }
     });
   }, []);
+
+  // report source use effect
+  useEffect(() => {
+    handleDashboardSelect(dashboardSourceSelect).then(data => setDashboardSourceSelect(data));
+  }, [dashboardSourceSelect]);
 
   const displayDashboardSelect =
     reportSourceId === 'dashboardReportSource' ? (
