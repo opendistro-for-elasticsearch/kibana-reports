@@ -242,7 +242,8 @@ function GenerateReportLoadingModal(props) {
     style: {
       maxWidth: 350,
       minWidth: 300
-    }
+    },
+    id: "downloadInProgressLoadingModal"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiModalHeader"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiTitle"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiText"], {
     textAlign: "right"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h2", null, "Generating report")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiModalBody"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiText"], null, "Preparing your file for download."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiText"], null, "You can close this dialog while we continue in the background."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiSpacer"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_0__["EuiFlexGroup"], {
@@ -423,6 +424,20 @@ function Main(props) {
     addEditReportDefinitionSuccessToastHandler();
   };
 
+  const addDeleteReportDefinitionSuccessToastHandler = () => {
+    const successToast = {
+      title: 'Successfully deleted report definition.',
+      color: 'success',
+      iconType: 'check',
+      id: 'deleteReportDefinitionSuccessToast'
+    };
+    setToasts(toasts.concat(successToast));
+  };
+
+  const handleDeleteReportDefinitionSuccessToast = () => {
+    addDeleteReportDefinitionSuccessToastHandler();
+  };
+
   const removeToast = removedToast => {
     setToasts(toasts.filter(toast => toast.id !== removedToast.id));
   };
@@ -449,6 +464,12 @@ function Main(props) {
       }, 1000);
     } else if (window.location.href.includes('edit=success')) {
       handleEditReportDefinitionSuccessToast();
+      setTimeout(() => {
+        refreshReportsTable();
+        refreshReportsDefinitionsTable();
+      }, 1000);
+    } else if (window.location.href.includes('delete=success')) {
+      handleDeleteReportDefinitionSuccessToast();
       setTimeout(() => {
         refreshReportsTable();
         refreshReportsDefinitionsTable();
@@ -926,7 +947,9 @@ function ReportDefinitionDetails(props) {
     const {
       httpClient
     } = props;
+    handleLoading(true);
     let generateReportSuccess = await Object(_main_utils__WEBPACK_IMPORTED_MODULE_3__["generateReportFromDefinitionId"])(reportDefinitionId, httpClient);
+    handleLoading(false);
 
     if (generateReportSuccess.status) {
       handleSuccessGeneratingReportToast();
@@ -944,7 +967,7 @@ function ReportDefinitionDetails(props) {
       httpClient
     } = props;
     httpClient.delete(`../api/reporting/reportDefinitions/${reportDefinitionId}`).then(() => {
-      window.location.assign(`opendistro_kibana_reports#/`);
+      window.location.assign(`opendistro_kibana_reports#/delete=success`);
     }).catch(error => {
       console.log('error when deleting report definition:', error);
 
@@ -1467,7 +1490,8 @@ function ReportsTable(props) {
     }, _main_utils__WEBPACK_IMPORTED_MODULE_2__["fileFormatsUpper"][item.format], " ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiIcon"], {
       type: "importAction"
     })) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiLink"], {
-      onClick: () => onDemandDownload(id)
+      onClick: () => onDemandDownload(id),
+      id: "landingPageOnDemandDownload"
     }, _main_utils__WEBPACK_IMPORTED_MODULE_2__["fileFormatsUpper"][item.format], " ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiIcon"], {
       type: "importAction"
     }))
@@ -2934,7 +2958,7 @@ function ReportSettings(props) {
     id: editDefinitionId,
     httpClientProps: httpClientProps,
     showTimeRangeError: showTimeRangeError
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null), displayVisualReportsFormatAndMarkdown, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null)));
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null), displayVisualReportsFormatAndMarkdown));
 }
 
 /***/ }),
@@ -3760,7 +3784,8 @@ function ReportTrigger(props) {
         size: "xs"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiLink"], {
         href: "https://opendistro.github.io/for-elasticsearch-docs/docs/alerting/cron/",
-        target: "_blank"
+        target: "_blank",
+        external: true
       }, "Cron help"))
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFieldText"], {
       placeholder: 'Ex: 0 12 * * * (Fire at 12:00 PM (noon) every day)',
@@ -3844,7 +3869,7 @@ function ReportTrigger(props) {
 
   const defaultEditScheduleFrequency = trigger_params => {
     if (trigger_params.schedule_type === _report_trigger_constants__WEBPACK_IMPORTED_MODULE_3__["SCHEDULE_TYPE_OPTIONS"][0].id) {
-      if (trigger_params.schedule.interval.unit === 'DAYS') {
+      if (trigger_params.schedule.interval.unit === 'Days' && trigger_params.schedule.interval.period === 1) {
         setScheduleRecurringFrequency('daily');
       } else {
         setScheduleRecurringFrequency('byInterval');

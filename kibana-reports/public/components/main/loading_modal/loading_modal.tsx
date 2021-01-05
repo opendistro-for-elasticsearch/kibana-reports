@@ -47,6 +47,7 @@ export function GenerateReportLoadingModal(props: { setShowLoading: any; }) {
         <EuiModal
           onClose={closeModal}
           style={{ maxWidth: 350, minWidth: 300 }}
+          id="downloadInProgressLoadingModal"
         >
           <EuiModalHeader>
             <EuiTitle>

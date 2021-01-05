@@ -81,6 +81,24 @@ describe('<Main /> panel', () => {
     expect(container.firstChild).toMatchSnapshot();
   });
 
+  test.skip('render component after delete success', async () => {
+    delete window.location;
+
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: {
+        assign: jest.fn(),
+        href: 'opendistro_kibana_reports#/delete=success',
+      },
+    });
+
+    const { container } = render(
+      <Main httpClient={httpClientMock} setBreadcrumbs={setBreadcrumbs} />
+    );
+
+    expect(container.firstChild).toMatchSnapshot();
+  });
+
   test.skip('test refresh reports definitions button', async () => {
     const promise = Promise.resolve();
     const data = [

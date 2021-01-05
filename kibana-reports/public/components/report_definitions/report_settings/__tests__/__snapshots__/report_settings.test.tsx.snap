@@ -1055,9 +1055,6 @@ exports[`<ReportSettings /> panel dashboard create from in-context 1`] = `
         </div>
       </div>
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
   </div>
 </div>
 `;
@@ -2124,9 +2121,6 @@ exports[`<ReportSettings /> panel display errors on create 1`] = `
         </div>
       </div>
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
   </div>
 </div>
 `;
@@ -2609,9 +2603,6 @@ exports[`<ReportSettings /> panel render component 1`] = `
         />
       </div>
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
   </div>
 </div>
 `;
@@ -3112,9 +3103,6 @@ exports[`<ReportSettings /> panel render edit, dashboard source 1`] = `
         />
       </div>
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
   </div>
 </div>
 `;
@@ -3615,9 +3603,6 @@ exports[`<ReportSettings /> panel render edit, saved search source 1`] = `
         />
       </div>
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
   </div>
 </div>
 `;
@@ -4118,9 +4103,6 @@ exports[`<ReportSettings /> panel render edit, visualization source 1`] = `
         />
       </div>
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
   </div>
 </div>
 `;
@@ -5180,9 +5162,6 @@ exports[`<ReportSettings /> panel saved search create from in-context 1`] = `
         </div>
       </div>
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
   </div>
 </div>
 `;
@@ -6242,9 +6221,6 @@ exports[`<ReportSettings /> panel visualization create from in-context 1`] = `
         </div>
       </div>
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
   </div>
 </div>
 `;

@@ -476,10 +476,12 @@ export function ReportDefinitionDetails(props) {
 
   const generateReportFromDetails = async () => {
     const { httpClient } = props;
+    handleLoading(true);
     let generateReportSuccess = await generateReportFromDefinitionId(
       reportDefinitionId,
       httpClient
     );
+    handleLoading(false);
     if (generateReportSuccess.status) {
       handleSuccessGeneratingReportToast();
     } else {
@@ -496,7 +498,7 @@ export function ReportDefinitionDetails(props) {
     httpClient
       .delete(`../api/reporting/reportDefinitions/${reportDefinitionId}`)
       .then(() => {
-        window.location.assign(`opendistro_kibana_reports#/`);
+        window.location.assign(`opendistro_kibana_reports#/delete=success`);
       })
       .catch((error) => {
         console.log('error when deleting report definition:', error);
