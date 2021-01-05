@@ -3869,7 +3869,7 @@ function ReportTrigger(props) {
 
   const defaultEditScheduleFrequency = trigger_params => {
     if (trigger_params.schedule_type === _report_trigger_constants__WEBPACK_IMPORTED_MODULE_3__["SCHEDULE_TYPE_OPTIONS"][0].id) {
-      if (trigger_params.schedule.interval.unit === 'DAYS') {
+      if (trigger_params.schedule.interval.unit === 'Days' && trigger_params.schedule.interval.period === 1) {
         setScheduleRecurringFrequency('daily');
       } else {
         setScheduleRecurringFrequency('byInterval');
