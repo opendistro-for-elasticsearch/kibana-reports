@@ -15,6 +15,7 @@
 
 import { RequestParams } from '@elastic/elasticsearch';
 import path from 'path';
+import { ILegacyScopedClusterClient } from '../../../../src/core/server';
 import {
   reportDefinitionSchema,
   ReportDefinitionSchemaType,
@@ -43,7 +44,7 @@ export const regexReportName = /^[\w\-\s\(\)\[\]\,\_\-+]+$/;
 export const regexRelativeUrl = /^\/(_plugin\/kibana\/app|app)\/(dashboards|visualize|discover)#\/(view|edit)\/[^\/]+$/;
 
 export const validateReport = async (
-  context: any,
+  client: ILegacyScopedClusterClient,
   report: ReportSchemaType
 ) => {
   // validate basic schema
@@ -56,12 +57,12 @@ export const validateReport = async (
     },
   } = report;
   // Check if saved object actually exists
-  await validateSavedObject(context, queryUrl, reportSource);
+  await validateSavedObject(client, queryUrl, reportSource);
   return report;
 };
 
 export const validateReportDefinition = async (
-  context: any,
+  client: ILegacyScopedClusterClient,
   reportDefinition: ReportDefinitionSchemaType
 ) => {
   // validate basic schema
@@ -74,12 +75,12 @@ export const validateReportDefinition = async (
     },
   } = reportDefinition;
   // Check if saved object actually exists
-  await validateSavedObject(context, baseUrl, reportSource);
+  await validateSavedObject(client, baseUrl, reportSource);
   return reportDefinition;
 };
 
 const validateSavedObject = async (
-  context: any,
+  client: ILegacyScopedClusterClient,
   url: string,
   source: REPORT_TYPE
 ) => {
@@ -106,10 +107,7 @@ const validateSavedObject = async (
     id: savedObjectId,
   };
 
-  const exist = await context.core.elasticsearch.legacy.client.callAsCurrentUser(
-    'exists',
-    params
-  );
+  const exist = await client.callAsCurrentUser('exists', params);
   if (!exist) {
     throw Error(`saved object with id ${savedObjectId} does not exist`);
   }

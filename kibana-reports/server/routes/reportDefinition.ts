@@ -54,7 +54,7 @@ export default function (router: IRouter) {
         reportDefinition.report_params.core_params.origin =
           request.headers.origin;
         reportDefinition = await validateReportDefinition(
-          context,
+          context.core.elasticsearch.legacy.client,
           reportDefinition
         );
       } catch (error) {
@@ -112,7 +112,7 @@ export default function (router: IRouter) {
         reportDefinition.report_params.core_params.origin =
           request.headers.origin;
         reportDefinition = await validateReportDefinition(
-          context,
+          context.core.elasticsearch.legacy.client,
           reportDefinition
         );
       } catch (error) {

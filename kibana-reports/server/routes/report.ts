@@ -57,7 +57,10 @@ export default function (router: IRouter) {
       try {
         report.report_definition.report_params.core_params.origin =
           request.headers.origin;
-        report = await validateReport(context, report);
+        report = await validateReport(
+          context.core.elasticsearch.legacy.client,
+          report
+        );
       } catch (error) {
         logger.error(`Failed input validation for create report ${error}`);
         addToMetric('report', 'create', 'user_error');
