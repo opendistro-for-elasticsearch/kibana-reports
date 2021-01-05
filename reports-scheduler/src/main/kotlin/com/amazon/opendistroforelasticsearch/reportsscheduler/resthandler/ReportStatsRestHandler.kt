@@ -16,9 +16,6 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
-import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportDefinitionActions
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATS_START_TIME
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATS_END_TIME
 import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
 import org.elasticsearch.client.node.NodeClient
 import org.elasticsearch.rest.BaseRestHandler
@@ -31,14 +28,11 @@ import org.elasticsearch.rest.RestStatus
 
 /**
  * Rest handler for getting reporting backend stats
- * This handler uses [ReportDefinitionActions]. TODO: change this
  */
 internal class ReportStatsRestHandler : BaseRestHandler() {
     companion object {
         private const val REPORT_STATS_ACTION = "report_definition_stats"
-        private const val REPORT_STATS_URL = "$BASE_REPORTS_URI/stats"
-        private const val REPORT_TEST_URL = "$BASE_REPORTS_URI/test"
-        public const val COUNT = 4
+        private const val REPORT_STATS_URL = "$BASE_REPORTS_URI/_local/stats"
     }
 
     /**
@@ -56,11 +50,9 @@ internal class ReportStatsRestHandler : BaseRestHandler() {
             /**
              * Get reporting backend stats
              * Request URL: GET REPORT_STATS_URL
-             * Request body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionRequest]
-             * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionResponse]
+             * Response body derived from: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName]
              */
-            Route(GET, "$REPORT_STATS_URL"),
-            Route(GET, "$REPORT_TEST_URL")
+            Route(GET, "$REPORT_STATS_URL")
         )
     }
 
@@ -68,7 +60,7 @@ internal class ReportStatsRestHandler : BaseRestHandler() {
      * {@inheritDoc}
      */
     override fun responseParams(): Set<String> {
-        return setOf(STATS_START_TIME, STATS_END_TIME)
+        return setOf()
     }
 
     /**

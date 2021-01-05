@@ -15,11 +15,14 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.metrics;
 
+import org.jetbrains.annotations.NotNull;
+
 public abstract class Metric<T> {
 
-    private String name;
+    @NotNull
+    private final String name;
 
-    public Metric(String name) {
+    public Metric(@NotNull String name) {
         this.name = name;
     }
 

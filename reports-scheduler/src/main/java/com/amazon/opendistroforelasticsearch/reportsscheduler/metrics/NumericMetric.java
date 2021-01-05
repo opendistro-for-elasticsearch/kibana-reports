@@ -15,10 +15,13 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.metrics;
 
-public class NumericMetric<T> extends Metric<T> {
-    private Counter<T> counter;
+import org.jetbrains.annotations.NotNull;
 
-    public NumericMetric(String name, Counter<T> counter) {
+public class NumericMetric<T> extends Metric<T> {
+    @NotNull
+    private final Counter<T> counter;
+
+    public NumericMetric(@NotNull String name, @NotNull Counter<T> counter) {
         super(name);
         this.counter = counter;
     }

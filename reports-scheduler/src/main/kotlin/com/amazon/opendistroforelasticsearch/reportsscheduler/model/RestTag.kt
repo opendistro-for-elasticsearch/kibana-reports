@@ -38,12 +38,14 @@ internal object RestTag {
     const val END_TIME_FIELD = "endTimeMs"
     const val REPORT_DEFINITION_FIELD = "reportDefinition"
     const val REPORT_DEFINITION_ID_FIELD = "reportDefinitionId"
-    const val STATS_START_TIME = "startTime"
-    const val STATS_END_TIME = "endTime"
     const val REPORT_DEFINITION_DETAILS_FIELD = "reportDefinitionDetails"
     const val FROM_INDEX_FIELD = "fromIndex"
     const val MAX_ITEMS_FIELD = "maxItems"
     const val RETRY_AFTER_FIELD = "retryAfter"
+    const val SUCCESS_START_STATUS_CODE = 200
+    const val SUCCESS_END_STATUS_CODE = 299
+    const val CLIENT_START_STATUS_CODE = 400
+    const val CLIENT_END_STATUS_CODE = 499
     private val INCLUDE_ID = Pair(ID_FIELD, "true")
     private val EXCLUDE_ACCESS = Pair(ACCESS_LIST_FIELD, "false")
     val INSTANCE_INDEX_PARAMS: Params = ToXContent.MapParams(mapOf(INCLUDE_ID))

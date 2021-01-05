@@ -19,6 +19,8 @@ public class MetricFactory {
     public static Metric<?> createMetric(MetricName name) {
 
         switch (name) {
+
+            case REQUEST_TOTAL:
             case REPORT_DEFINITION_CREATE_TOTAL:
             case REPORT_DEFINITION_UPDATE_TOTAL:
             case REPORT_DEFINITION_INFO_TOTAL:
@@ -31,6 +33,20 @@ public class MetricFactory {
             case REPORT_FROM_DEFINITION_ID_TOTAL:
             case DEFAULT:
                 return new NumericMetric<>(name.getName(), new BasicCounter());
+
+            case REQUEST_INTERVAL_COUNT:
+            case REQUEST_SUCCESS:
+            case REQUEST_USER_ERROR:
+            case REQUEST_SYSTEM_ERROR:
+            case REPORT_EXCEPTIONS_ES_STATUS_EXCEPTION:
+            case REPORT_EXCEPTIONS_ES_SECURITY_EXCEPTION:
+            case REPORT_EXCEPTIONS_VERSION_CONFLICT_ENGINE_EXCEPTION:
+            case REPORT_EXCEPTIONS_INDEX_NOT_FOUND_EXCEPTION:
+            case REPORT_EXCEPTIONS_INVALID_INDEX_NAME_EXCEPTION:
+            case REPORT_EXCEPTIONS_ILLEGAL_ARGUMENT_EXCEPTION:
+            case REPORT_EXCEPTIONS_ILLEGAL_STATE_EXCEPTION:
+            case REPORT_EXCEPTIONS_IO_EXCEPTION:
+            case REPORT_EXCEPTIONS_INTERNAL_SERVER_ERROR:
 
             case REPORT_DEFINITION_CREATE_INTERVAL_COUNT:
             case REPORT_DEFINITION_CREATE_USER_ERROR:
@@ -72,6 +88,7 @@ public class MetricFactory {
             case REPORT_FROM_DEFINITION_ID_USER_ERROR:
             case REPORT_FROM_DEFINITION_ID_SYSTEM_ERROR:
 
+            case REPORT_SECURITY_PERMISSION_ERROR:
             case REPORT_PERMISSION_USER_ERROR:
                 return new NumericMetric<>(name.getName(), new RollingCounter());
             default:

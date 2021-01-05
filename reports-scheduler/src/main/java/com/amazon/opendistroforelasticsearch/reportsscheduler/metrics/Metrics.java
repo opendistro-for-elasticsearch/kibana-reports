@@ -88,8 +88,7 @@ public class Metrics {
     }
 
     public String collectToFlattenedJSON() {
-        String metricsJson = JsonUnflattener.unflatten(collectToJSON());
-        return metricsJson;
+        return JsonUnflattener.unflatten(collectToJSON());
     }
 
     public void clear() {

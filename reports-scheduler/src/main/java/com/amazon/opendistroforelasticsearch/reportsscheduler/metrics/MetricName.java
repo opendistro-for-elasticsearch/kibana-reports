@@ -21,6 +21,29 @@ import java.util.stream.Collectors;
 
 public enum MetricName {
 
+    REQUEST_TOTAL("request_total", true),
+    REQUEST_INTERVAL_COUNT("request_count", true),
+    REQUEST_SUCCESS("success_count", true),
+    REQUEST_USER_ERROR("failed_request_count_user_error", true),
+    REQUEST_SYSTEM_ERROR("failed_request_count_system_error", true),
+
+    /**
+     * Exceptions from:
+     * @see com.amazon.opendistroforelasticsearch.reportsscheduler.action.PluginBaseAction
+     */
+    REPORT_EXCEPTIONS_ES_STATUS_EXCEPTION("exception.es_status", true),
+    REPORT_EXCEPTIONS_ES_SECURITY_EXCEPTION("exception.es_security", true),
+    REPORT_EXCEPTIONS_VERSION_CONFLICT_ENGINE_EXCEPTION("exception.version_conflict_engine", true),
+    REPORT_EXCEPTIONS_INDEX_NOT_FOUND_EXCEPTION("exception.index_not_found", true),
+    REPORT_EXCEPTIONS_INVALID_INDEX_NAME_EXCEPTION("exception.invalid_index_name", true),
+    REPORT_EXCEPTIONS_ILLEGAL_ARGUMENT_EXCEPTION("exception.illegal_argument", true),
+    REPORT_EXCEPTIONS_ILLEGAL_STATE_EXCEPTION("exception.illegal_state", true),
+    REPORT_EXCEPTIONS_IO_EXCEPTION("exception.io", true),
+    REPORT_EXCEPTIONS_INTERNAL_SERVER_ERROR("exception.internal_server_error", true),
+
+    /**
+     * Per REST endpoint metrics
+     */
     REPORT_DEFINITION_CREATE_TOTAL("report_definition.create.total", true),
     REPORT_DEFINITION_CREATE_INTERVAL_COUNT("report_definition.create.count", true),
     REPORT_DEFINITION_CREATE_USER_ERROR("report_definition.create.user_error", true),
@@ -71,12 +94,13 @@ public enum MetricName {
     REPORT_FROM_DEFINITION_ID_USER_ERROR("on_demand_from_definition.create.user_error", true),
     REPORT_FROM_DEFINITION_ID_SYSTEM_ERROR("on_demand_from_definition.create.system_error", true),
 
+    REPORT_SECURITY_PERMISSION_ERROR("es_security_permission_error", true),
     REPORT_PERMISSION_USER_ERROR("permission_user_error", true),
 
     DEFAULT("default", true);
 
-    private String name;
-    private boolean numerical;
+    private final String name;
+    private final boolean numerical;
 
     MetricName(String name, boolean numerical) {
         this.name = name;

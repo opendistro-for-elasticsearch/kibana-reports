@@ -17,7 +17,6 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.metrics;
 
 import java.time.Clock;
 import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.atomic.LongAdder;
 
 /**
  * Rolling counter. The count is refreshed every interval. In every interval the count is cumulative.
@@ -30,8 +29,7 @@ public class RollingCounter implements Counter<Long> {
     private final long window;
     private final long interval;
     private final Clock clock;
-    private final ConcurrentSkipListMap<Long, Long> time2CountWin;
-    private final LongAdder count;
+    private final ConcurrentSkipListMap<Long, Long> timeToCountMap = new ConcurrentSkipListMap<>();
 
     public RollingCounter() {
         this(METRICS_ROLLING_WINDOW_VALUE, METRICS_ROLLING_INTERVAL_VALUE);
@@ -41,8 +39,6 @@ public class RollingCounter implements Counter<Long> {
         this.window = window;
         this.interval = interval;
         this.clock = clock;
-        time2CountWin = new ConcurrentSkipListMap<>();
-        count = new LongAdder();
         capacity = window / interval * 2;
     }
 
@@ -50,37 +46,45 @@ public class RollingCounter implements Counter<Long> {
         this(window, interval, Clock.systemDefaultZone());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void increment() {
         add(1L);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void add(long n) {
         trim();
-        time2CountWin.compute(getKey(clock.millis()), (k, v) -> (v == null) ? n : v + n);
+        timeToCountMap.compute(getKey(clock.millis()), (k, v) -> (v == null) ? n : v + n);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Long getValue() {
         return getValue(getPreKey(clock.millis()));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public long getValue(long key) {
-        Long res = time2CountWin.get(key);
+        Long res = timeToCountMap.get(key);
         if (res == null) {
             return 0;
         }
         return res;
     }
 
-    public long getSum() {
-        return count.longValue();
-    }
-
     private void trim() {
-        if (time2CountWin.size() > capacity) {
-            time2CountWin.headMap(getKey(clock.millis() - window * 1000)).clear();
+        if (timeToCountMap.size() > capacity) {
+            timeToCountMap.headMap(getKey(clock.millis() - window * 1000)).clear();
         }
     }
 
@@ -92,11 +96,17 @@ public class RollingCounter implements Counter<Long> {
         return getKey(millis) - 1;
     }
 
+    /**
+     * Number of existing intervals
+     */
     public int size() {
-        return time2CountWin.size();
+        return timeToCountMap.size();
     }
 
+    /**
+     * Remove all the items from counter
+     */
     public void reset() {
-        time2CountWin.clear();
+        timeToCountMap.clear();
     }
 }

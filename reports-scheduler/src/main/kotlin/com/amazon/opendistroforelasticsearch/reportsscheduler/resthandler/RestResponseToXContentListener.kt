@@ -16,6 +16,12 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.SUCCESS_END_STATUS_CODE
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.SUCCESS_START_STATUS_CODE
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.CLIENT_END_STATUS_CODE
+import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.CLIENT_START_STATUS_CODE
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.BaseResponse
 import org.elasticsearch.rest.RestChannel
 import org.elasticsearch.rest.RestStatus
@@ -31,6 +37,14 @@ internal class RestResponseToXContentListener<Response : BaseResponse>(channel: 
      * {@inheritDoc}
      */
     override fun getStatus(response: Response): RestStatus {
-        return response.getStatus()
+        val restStatus = response.getStatus()
+        when (restStatus.status) {
+            in SUCCESS_START_STATUS_CODE..SUCCESS_END_STATUS_CODE -> Metrics.getInstance().getNumericalMetric(MetricName.REQUEST_SUCCESS).increment()
+            RestStatus.FORBIDDEN.status -> Metrics.getInstance().getNumericalMetric(MetricName.REPORT_SECURITY_PERMISSION_ERROR).increment()
+            in CLIENT_START_STATUS_CODE..CLIENT_END_STATUS_CODE -> Metrics.getInstance().getNumericalMetric(MetricName.REQUEST_USER_ERROR).increment()
+            else -> Metrics.getInstance().getNumericalMetric(MetricName.REQUEST_SYSTEM_ERROR).increment()
+        }
+
+        return restStatus
     }
 }
