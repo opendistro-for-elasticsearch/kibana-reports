@@ -21,7 +21,6 @@ import {
   ILegacyScopedClusterClient,
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
-import { reportDefinitionSchema } from '../model';
 import { checkErrorType, errorResponse } from './utils/helpers';
 import { createReportDefinition } from './lib/createReportDefinition';
 import {
@@ -31,6 +30,7 @@ import {
 import { updateReportDefinition } from './lib/updateReportDefinition';
 import { DEFAULT_MAX_SIZE } from './utils/constants';
 import { addToMetric } from './utils/metricHelper';
+import { validateReportDefinition } from '../../server/utils/validationHelper';
 
 export default function (router: IRouter) {
   // Create report Definition
@@ -53,7 +53,10 @@ export default function (router: IRouter) {
       try {
         reportDefinition.report_params.core_params.origin =
           request.headers.origin;
-        reportDefinition = reportDefinitionSchema.validate(reportDefinition);
+        reportDefinition = await validateReportDefinition(
+          context,
+          reportDefinition
+        );
       } catch (error) {
         logger.error(
           `Failed input validation for create report definition ${error}`
@@ -108,7 +111,10 @@ export default function (router: IRouter) {
       try {
         reportDefinition.report_params.core_params.origin =
           request.headers.origin;
-        reportDefinition = reportDefinitionSchema.validate(reportDefinition);
+        reportDefinition = await validateReportDefinition(
+          context,
+          reportDefinition
+        );
       } catch (error) {
         logger.error(
           `Failed input validation for update report definition ${error}`

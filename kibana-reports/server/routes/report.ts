@@ -23,7 +23,6 @@ import {
 } from '../../../../src/core/server';
 import { API_PREFIX } from '../../common';
 import { createReport } from './lib/createReport';
-import { reportSchema } from '../model';
 import { checkErrorType, errorResponse } from './utils/helpers';
 import { DEFAULT_MAX_SIZE, DELIVERY_TYPE } from './utils/constants';
 import {
@@ -31,6 +30,7 @@ import {
   backendToUiReportsList,
 } from './utils/converters/backendToUi';
 import { addToMetric } from './utils/metricHelper';
+import { validateReport } from '../../server/utils/validationHelper';
 
 export default function (router: IRouter) {
   // generate report (with provided metadata)
@@ -57,7 +57,7 @@ export default function (router: IRouter) {
       try {
         report.report_definition.report_params.core_params.origin =
           request.headers.origin;
-        report = reportSchema.validate(report);
+        report = await validateReport(context, report);
       } catch (error) {
         logger.error(`Failed input validation for create report ${error}`);
         addToMetric('report', 'create', 'user_error');
