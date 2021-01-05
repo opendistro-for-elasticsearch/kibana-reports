@@ -94,9 +94,9 @@ export function ReportDetails(props) {
     addPermissionsMissingDownloadToastHandler();
   }
 
-  const addErrorToastHandler = () => {
+  const addErrorToastHandler = (title = 'Error loading report details.') => {
     const errorToast = {
-      title: 'Error loading report details.',
+      title,
       color: 'danger',
       iconType: 'alert',
       id: 'reportDetailsErrorToast',
@@ -104,8 +104,8 @@ export function ReportDetails(props) {
     setToasts(toasts.concat(errorToast));
   };
 
-  const handleErrorToast = () => {
-    addErrorToastHandler();
+  const handleErrorToast = (title?: string) => {
+    addErrorToastHandler(title);
   };
 
   const addSuccessToastHandler = () => {

@@ -55,7 +55,10 @@ export class OpendistroKibanaReportsPlugin
 
   constructor(initializerContext: PluginInitializerContext) {
     this.logger = initializerContext.logger.get();
-    this.semaphore = withTimeout(new Semaphore(1), 30000, new Error('timeout'));
+
+    const timeoutError = new Error('Server busy');
+    timeoutError.statusCode = 503;
+    this.semaphore = withTimeout(new Semaphore(1), 180000, timeoutError);
   }
 
   public setup(core: CoreSetup) {
