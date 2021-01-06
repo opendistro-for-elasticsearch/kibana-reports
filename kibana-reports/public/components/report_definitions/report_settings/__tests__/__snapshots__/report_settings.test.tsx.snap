@@ -5161,16 +5161,16 @@ exports[`<ReportSettings /> panel render edit, visualization source 2`] = `
                     >
                       <button
                         aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
+                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--iconRight euiFormControlLayout__prepend"
                         data-test-subj="superDatePickerToggleQuickMenuButton"
                         type="button"
                       >
                         <span
-                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                          class="euiButtonEmpty__content"
                         >
                           <svg
                             aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiButtonContent__icon"
+                            class="euiIcon euiIcon--medium euiButtonEmpty__icon"
                             focusable="false"
                             height="16"
                             role="img"
@@ -5691,16 +5691,16 @@ exports[`<ReportSettings /> panel saved search create from in-context 1`] = `
                     >
                       <button
                         aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
+                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiButtonEmpty--iconRight euiFormControlLayout__prepend"
                         data-test-subj="superDatePickerToggleQuickMenuButton"
                         type="button"
                       >
                         <span
-                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                          class="euiButtonEmpty__content"
                         >
                           <svg
                             aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiButtonContent__icon"
+                            class="euiIcon euiIcon--medium euiButtonEmpty__icon"
                             focusable="false"
                             height="16"
                             role="img"

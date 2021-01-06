@@ -368,9 +368,10 @@ function Main(props) {
     addReportDefinitionsTableErrorToastHandler(errorType);
   };
 
-  const addErrorOnDemandDownloadToastHandler = () => {
+  const addErrorOnDemandDownloadToastHandler = (title = 'Error downloading report.', text = '') => {
     const errorToast = {
-      title: 'Error downloading report.',
+      title,
+      text,
       color: 'danger',
       iconType: 'alert',
       id: 'onDemandDownloadErrorToast'
@@ -378,8 +379,8 @@ function Main(props) {
     setToasts(toasts.concat(errorToast));
   };
 
-  const handleOnDemandDownloadErrorToast = () => {
-    addErrorOnDemandDownloadToastHandler();
+  const handleOnDemandDownloadErrorToast = (title, text) => {
+    addErrorOnDemandDownloadToastHandler(title, text);
   };
 
   const addSuccessOnDemandDownloadToastHandler = () => {
@@ -1146,9 +1147,10 @@ function ReportDetails(props) {
     addPermissionsMissingDownloadToastHandler();
   };
 
-  const addErrorToastHandler = () => {
+  const addErrorToastHandler = (title = 'Error loading report details.', text = '') => {
     const errorToast = {
-      title: 'Error loading report details.',
+      title,
+      text,
       color: 'danger',
       iconType: 'alert',
       id: 'reportDetailsErrorToast'
@@ -1156,8 +1158,8 @@ function ReportDetails(props) {
     setToasts(toasts.concat(errorToast));
   };
 
-  const handleErrorToast = () => {
-    addErrorToastHandler();
+  const handleErrorToast = (title, text) => {
+    addErrorToastHandler(title, text);
   };
 
   const addSuccessToastHandler = () => {
@@ -1621,6 +1623,8 @@ function CreateReport(props) {
   const [preErrorData, setPreErrorData] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({});
   const [showSettingsReportNameError, setShowSettingsReportNameError] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
   const [settingsReportNameErrorMessage, setSettingsReportNameErrorMessage] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('');
+  const [showSettingsReportSourceError, setShowSettingsReportSourceError] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
+  const [settingsReportSourceErrorMessage, setSettingsReportSourceErrorMessage] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('');
   const [showTriggerIntervalNaNError, setShowTriggerIntervalNaNError] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
   const [showCronError, setShowCronError] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
   const [showEmailRecipientsError, setShowEmailRecipientsError] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
@@ -1699,7 +1703,7 @@ function CreateReport(props) {
     }
 
     let error = false;
-    await Object(_utils_utils__WEBPACK_IMPORTED_MODULE_8__["definitionInputValidation"])(metadata, error, setShowSettingsReportNameError, setSettingsReportNameErrorMessage, setShowTriggerIntervalNaNError, timeRange, setShowTimeRangeError, setShowCronError, setShowEmailRecipientsError, setEmailRecipientsErrorMessage).then(response => {
+    await Object(_utils_utils__WEBPACK_IMPORTED_MODULE_8__["definitionInputValidation"])(metadata, error, setShowSettingsReportNameError, setSettingsReportNameErrorMessage, setShowSettingsReportSourceError, setSettingsReportSourceErrorMessage, setShowTriggerIntervalNaNError, timeRange, setShowTimeRangeError, setShowCronError, setShowEmailRecipientsError, setEmailRecipientsErrorMessage).then(response => {
       error = response;
     });
 
@@ -1759,6 +1763,8 @@ function CreateReport(props) {
     timeRange: timeRange,
     showSettingsReportNameError: showSettingsReportNameError,
     settingsReportNameErrorMessage: settingsReportNameErrorMessage,
+    showSettingsReportSourceError: showSettingsReportSourceError,
+    settingsReportSourceErrorMessage: settingsReportSourceErrorMessage,
     showTimeRangeError: showTimeRangeError
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_report_trigger__WEBPACK_IMPORTED_MODULE_4__["ReportTrigger"], {
     edit: false,
@@ -2173,6 +2179,8 @@ function EditReportDefinition(props) {
   const [preErrorData, setPreErrorData] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({});
   const [showSettingsReportNameError, setShowSettingsReportNameError] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
   const [settingsReportNameErrorMessage, setSettingsReportNameErrorMessage] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('');
+  const [showSettingsReportSourceError, setShowSettingsReportSourceError] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
+  const [settingsReportSourceErrorMessage, setSettingsReportSourceErrorMessage] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('');
   const [showTriggerIntervalNaNError, setShowTriggerIntervalNaNError] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
   const [showCronError, setShowCronError] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
   const [showEmailRecipientsError, setShowEmailRecipientsError] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false);
@@ -2324,7 +2332,7 @@ function EditReportDefinition(props) {
 
 
     let error = false;
-    await Object(_utils_utils__WEBPACK_IMPORTED_MODULE_7__["definitionInputValidation"])(metadata, error, setShowSettingsReportNameError, setSettingsReportNameErrorMessage, setShowTriggerIntervalNaNError, timeRange, setShowTimeRangeError, setShowCronError, setShowEmailRecipientsError, setEmailRecipientsErrorMessage).then(response => {
+    await Object(_utils_utils__WEBPACK_IMPORTED_MODULE_7__["definitionInputValidation"])(metadata, error, setShowSettingsReportNameError, setSettingsReportNameErrorMessage, setShowSettingsReportSourceError, setSettingsReportSourceErrorMessage, setShowTriggerIntervalNaNError, timeRange, setShowTimeRangeError, setShowCronError, setShowEmailRecipientsError, setEmailRecipientsErrorMessage).then(response => {
       error = response;
     });
 
@@ -2383,6 +2391,8 @@ function EditReportDefinition(props) {
     timeRange: timeRange,
     showSettingsReportNameError: showSettingsReportNameError,
     settingsReportNameErrorMessage: settingsReportNameErrorMessage,
+    showSettingsReportSourceError: showSettingsReportSourceError,
+    settingsReportSourceErrorMessage: settingsReportSourceErrorMessage,
     showTimeRangeError: showTimeRangeError
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_report_trigger__WEBPACK_IMPORTED_MODULE_4__["ReportTrigger"], {
     edit: true,
@@ -2506,16 +2516,18 @@ function ReportSettings(props) {
     timeRange,
     showSettingsReportNameError,
     settingsReportNameErrorMessage,
+    showSettingsReportSourceError,
+    settingsReportSourceErrorMessage,
     showTimeRangeError
   } = props;
   const [reportName, setReportName] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('');
   const [reportDescription, setReportDescription] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('');
   const [reportSourceId, setReportSourceId] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('dashboardReportSource');
-  const [dashboardSourceSelect, setDashboardSourceSelect] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('');
+  const [dashboardSourceSelect, setDashboardSourceSelect] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]);
   const [dashboards, setDashboards] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]);
-  const [visualizationSourceSelect, setVisualizationSourceSelect] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('');
+  const [visualizationSourceSelect, setVisualizationSourceSelect] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]);
   const [visualizations, setVisualizations] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]);
-  const [savedSearchSourceSelect, setSavedSearchSourceSelect] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('');
+  const [savedSearchSourceSelect, setSavedSearchSourceSelect] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]);
   const [savedSearches, setSavedSearches] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]);
   const [fileFormat, setFileFormat] = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('pdf');
 
@@ -2572,37 +2584,49 @@ function ReportSettings(props) {
   };
 
   const handleDashboardSelect = e => {
-    setDashboardSourceSelect(e.target.value);
+    setDashboardSourceSelect(e);
     let fromInContext = false;
 
     if (window.location.href.includes('?')) {
       fromInContext = true;
     }
 
-    reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getDashboardBaseUrlCreate"])(edit, editDefinitionId, fromInContext) + e.target.value;
+    if (e.length > 0) {
+      reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getDashboardBaseUrlCreate"])(edit, editDefinitionId, fromInContext) + e[0].value;
+    } else {
+      reportDefinitionRequest.report_params.core_params.base_url = "";
+    }
   };
 
   const handleVisualizationSelect = e => {
-    setVisualizationSourceSelect(e.target.value);
+    setVisualizationSourceSelect(e);
     let fromInContext = false;
 
     if (window.location.href.includes('?')) {
       fromInContext = true;
     }
 
-    reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getVisualizationBaseUrlCreate"])(edit, editDefinitionId, fromInContext) + e.target.value;
+    if (e.length > 0) {
+      reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getVisualizationBaseUrlCreate"])(edit, editDefinitionId, fromInContext) + e[0].value;
+    } else {
+      reportDefinitionRequest.report_params.core_params.base_url = "";
+    }
   };
 
   const handleSavedSearchSelect = e => {
-    setSavedSearchSourceSelect(e.target.value);
-    reportDefinitionRequest.report_params.core_params.saved_search_id = e.target.value;
+    setSavedSearchSourceSelect(e);
     let fromInContext = false;
 
     if (window.location.href.includes('?')) {
       fromInContext = true;
     }
 
-    reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getSavedSearchBaseUrlCreate"])(edit, editDefinitionId, fromInContext) + e.target.value;
+    if (e.length > 0) {
+      reportDefinitionRequest.report_params.core_params.saved_search_id = e[0].value;
+      reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getSavedSearchBaseUrlCreate"])(edit, editDefinitionId, fromInContext) + e[0].value;
+    } else {
+      reportDefinitionRequest.report_params.core_params.base_url = "";
+    }
   };
 
   const handleFileFormat = e => {
@@ -2732,39 +2756,6 @@ function ReportSettings(props) {
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null), showHeader, showFooter);
   };
 
-  const ReportSourceDashboard = () => {
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFormRow"], {
-      label: "Select dashboard"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSelect"], {
-      id: "reportSourceDashboardSelect",
-      options: dashboards,
-      value: dashboardSourceSelect,
-      onChange: handleDashboardSelect
-    })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null));
-  };
-
-  const ReportSourceVisualization = () => {
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFormRow"], {
-      label: "Select visualization"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSelect"], {
-      id: "reportSourceVisualizationSelect",
-      options: visualizations,
-      value: visualizationSourceSelect,
-      onChange: handleVisualizationSelect
-    })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null));
-  };
-
-  const ReportSourceSavedSearch = () => {
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFormRow"], {
-      label: "Select saved search"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSelect"], {
-      id: "reportSourceSavedSearchSelect",
-      options: savedSearches,
-      value: savedSearchSourceSelect,
-      onChange: handleSavedSearchSelect
-    })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null));
-  };
-
   const VisualReportFormatAndMarkdown = () => {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(PDFandPNGFileFormats, null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null));
   };
@@ -2775,19 +2766,19 @@ function ReportSettings(props) {
     if (reportSource === _report_settings_constants__WEBPACK_IMPORTED_MODULE_2__["REPORT_SOURCE_TYPES"].dashboard) {
       for (index = 0; index < options.dashboard.length; ++index) {
         if (url.includes(options.dashboard[index].value)) {
-          setDashboardSourceSelect(options.dashboard[index].value);
+          setDashboardSourceSelect([options.dashboard[index]]);
         }
       }
     } else if (reportSource === _report_settings_constants__WEBPACK_IMPORTED_MODULE_2__["REPORT_SOURCE_TYPES"].visualization) {
       for (index = 0; index < options.visualizations.length; ++index) {
         if (url.includes(options.visualizations[index].value)) {
-          setVisualizationSourceSelect(options.visualizations[index].value);
+          setVisualizationSourceSelect([options.visualizations[index]]);
         }
       }
     } else if (reportSource === _report_settings_constants__WEBPACK_IMPORTED_MODULE_2__["REPORT_SOURCE_TYPES"].savedSearch) {
       for (index = 0; index < options.savedSearch.length; ++index) {
         if (url.includes(options.savedSearch[index].value)) {
-          setSavedSearchSourceSelect(options.savedSearch[index].value);
+          setSavedSearchSourceSelect([options.savedSearch[index]]);
         }
       }
     }
@@ -2803,26 +2794,56 @@ function ReportSettings(props) {
     }
   };
 
-  const setInContextDefaultConfiguration = () => {
+  const setDashboardFromInContextMenu = (response, id) => {
+    let index;
+
+    for (index = 0; index < response.dashboard.length; ++index) {
+      if (id === response.dashboard[index].value) {
+        setDashboardSourceSelect([response.dashboard[index]]);
+      }
+    }
+  };
+
+  const setVisualizationFromInContextMenu = (response, id) => {
+    let index;
+
+    for (index = 0; index < response.visualizations.length; ++index) {
+      if (id === response.visualizations[index].value) {
+        setVisualizationSourceSelect([response.visualizations[index]]);
+      }
+    }
+  };
+
+  const setSavedSearchFromInContextMenu = (response, id) => {
+    let index;
+
+    for (index = 0; index < response.savedSearch.length; ++index) {
+      if (id === response.savedSearch[index].value) {
+        setSavedSearchSourceSelect([response.savedSearch[index]]);
+      }
+    }
+  };
+
+  const setInContextDefaultConfiguration = response => {
     const url = window.location.href;
     const id = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["parseInContextUrl"])(url, 'id');
 
     if (url.includes('dashboard')) {
       setReportSourceId('dashboardReportSource');
       reportDefinitionRequest.report_params.report_source = _report_settings_constants__WEBPACK_IMPORTED_MODULE_2__["REPORT_SOURCE_RADIOS"][0].label;
-      setDashboardSourceSelect(id);
+      setDashboardFromInContextMenu(response, id);
       reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getDashboardBaseUrlCreate"])(edit, id, true) + id;
     } else if (url.includes('visualize')) {
       setReportSourceId('visualizationReportSource');
       reportDefinitionRequest.report_params.report_source = _report_settings_constants__WEBPACK_IMPORTED_MODULE_2__["REPORT_SOURCE_RADIOS"][1].label;
-      setVisualizationSourceSelect(id);
+      setVisualizationFromInContextMenu(response, id);
       reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getVisualizationBaseUrlCreate"])(edit, editDefinitionId, true) + id;
     } else if (url.includes('discover')) {
       setReportSourceId('savedSearchReportSource');
       reportDefinitionRequest.report_params.core_params.report_format = 'csv';
       reportDefinitionRequest.report_params.core_params.saved_search_id = id;
       reportDefinitionRequest.report_params.report_source = _report_settings_constants__WEBPACK_IMPORTED_MODULE_2__["REPORT_SOURCE_RADIOS"][2].label;
-      setSavedSearchSourceSelect(id);
+      setSavedSearchFromInContextMenu(response, id);
       reportDefinitionRequest.report_params.core_params.base_url = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getSavedSearchBaseUrlCreate"])(edit, editDefinitionId, true) + id;
     }
   };
@@ -2867,9 +2888,7 @@ function ReportSettings(props) {
       handleDashboards(dashboardOptions);
 
       if (!edit) {
-        setDashboardSourceSelect(dashboardOptions[0].value);
         reportDefinitionRequest.report_params.report_source = 'Dashboard';
-        reportDefinitionRequest['report_params']['core_params']['base_url'] = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getDashboardBaseUrlCreate"])(edit, editDefinitionId, false) + response['hits']['hits'][0]['_id'].substring(10);
       }
     }).catch(error => {
       console.log('error when fetching dashboards:', error);
@@ -2878,7 +2897,6 @@ function ReportSettings(props) {
       let visualizationOptions = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getVisualizationOptions"])(response['hits']['hits']);
       reportSourceOptions.visualizations = visualizationOptions;
       await handleVisualizations(visualizationOptions);
-      await setVisualizationSourceSelect(visualizationOptions[0].value);
     }).catch(error => {
       console.log('error when fetching visualizations:', error);
     });
@@ -2886,7 +2904,6 @@ function ReportSettings(props) {
       let savedSearchOptions = Object(_report_settings_helpers__WEBPACK_IMPORTED_MODULE_5__["getSavedSearchOptions"])(response['hits']['hits']);
       reportSourceOptions.savedSearch = savedSearchOptions;
       await handleSavedSearches(savedSearchOptions);
-      await setSavedSearchSourceSelect(savedSearchOptions[0].value);
     }).catch(error => {
       console.log('error when fetching saved searches:', error);
     });
@@ -2907,7 +2924,7 @@ function ReportSettings(props) {
       reportSourceOptions = response; // if coming from in-context menu
 
       if (window.location.href.indexOf('?') > -1) {
-        setInContextDefaultConfiguration();
+        setInContextDefaultConfiguration(response);
       }
 
       if (edit) {
@@ -2915,9 +2932,48 @@ function ReportSettings(props) {
       }
     });
   }, []);
-  const displayDashboardSelect = reportSourceId === 'dashboardReportSource' ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(ReportSourceDashboard, null) : null;
-  const displayVisualizationSelect = reportSourceId === 'visualizationReportSource' ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(ReportSourceVisualization, null) : null;
-  const displaySavedSearchSelect = reportSourceId === 'savedSearchReportSource' ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(ReportSourceSavedSearch, null) : null;
+  const displayDashboardSelect = reportSourceId === 'dashboardReportSource' ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFormRow"], {
+    label: "Select dashboard",
+    isInvalid: showSettingsReportSourceError,
+    error: settingsReportSourceErrorMessage
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiComboBox"], {
+    id: "reportSourceDashboardSelect",
+    placeholder: "Select a dashboard",
+    singleSelection: {
+      asPlainText: true
+    },
+    options: dashboards,
+    onChange: handleDashboardSelect,
+    selectedOptions: dashboardSourceSelect
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null)) : null;
+  const displayVisualizationSelect = reportSourceId === 'visualizationReportSource' ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFormRow"], {
+    label: "Select visualization",
+    isInvalid: showSettingsReportSourceError,
+    error: settingsReportSourceErrorMessage
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiComboBox"], {
+    id: "reportSourceVisualizationSelect",
+    placeholder: "Select a visualization",
+    singleSelection: {
+      asPlainText: true
+    },
+    options: visualizations,
+    onChange: handleVisualizationSelect,
+    selectedOptions: visualizationSourceSelect
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null)) : null;
+  const displaySavedSearchSelect = reportSourceId === 'savedSearchReportSource' ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFormRow"], {
+    label: "Select saved search",
+    isInvalid: showSettingsReportSourceError,
+    error: settingsReportSourceErrorMessage
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiComboBox"], {
+    id: "reportSourceSavedSearchSelect",
+    placeholder: "Select a saved search",
+    singleSelection: {
+      asPlainText: true
+    },
+    options: savedSearches,
+    onChange: handleSavedSearchSelect,
+    selectedOptions: savedSearchSourceSelect
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiSpacer"], null)) : null;
   const displayVisualReportsFormatAndMarkdown = reportSourceId != 'savedSearchReportSource' ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(VisualReportFormatAndMarkdown, null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(SettingsMarkdown, null)) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiFormRow"], {
     label: "File format"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_elastic_eui__WEBPACK_IMPORTED_MODULE_1__["EuiText"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "CSV"))));
@@ -3150,7 +3206,7 @@ const getDashboardOptions = data => {
   for (index = 0; index < data.length; ++index) {
     let entry = {
       value: data[index]['_id'].substring(10),
-      text: data[index]['_source']['dashboard']['title']
+      label: data[index]['_source']['dashboard']['title']
     };
     dashboard_options.push(entry);
   }
@@ -3164,7 +3220,7 @@ const getVisualizationOptions = data => {
   for (index = 0; index < data.length; ++index) {
     let entry = {
       value: data[index]['_id'].substring(14),
-      text: data[index]['_source']['visualization']['title']
+      label: data[index]['_source']['visualization']['title']
     };
     options.push(entry);
   }
@@ -3178,7 +3234,7 @@ const getSavedSearchOptions = data => {
   for (index = 0; index < data.length; ++index) {
     let entry = {
       value: data[index]['_id'].substring(7),
-      text: data[index]['_source']['search']['title']
+      label: data[index]['_source']['search']['title']
     };
     options.push(entry);
   }
@@ -4167,7 +4223,7 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
-const definitionInputValidation = async (metadata, error, setShowSettingsReportNameError, setSettingsReportNameErrorMessage, setShowTriggerIntervalNaNError, timeRange, setShowTimeRangeError, setShowCronError, setShowEmailRecipientsError, setEmailRecipientsErrorMessage) => {
+const definitionInputValidation = async (metadata, error, setShowSettingsReportNameError, setSettingsReportNameErrorMessage, setShowSettingsReportSourceError, setSettingsReportSourceErrorMessage, setShowTriggerIntervalNaNError, timeRange, setShowTimeRangeError, setShowCronError, setShowEmailRecipientsError, setEmailRecipientsErrorMessage) => {
   // check report name
   // allow a-z, A-Z, 0-9, (), [], ',' - and _ and spaces
   let regexp = /^[\w\-\s\(\)\[\]\,\_\-+]+$/;
@@ -4192,6 +4248,13 @@ const definitionInputValidation = async (metadata, error, setShowSettingsReportN
       setShowTriggerIntervalNaNError(true);
       error = true;
     }
+  } // if report source is blank
+
+
+  if (metadata.report_params.core_params.base_url === "") {
+    setShowSettingsReportSourceError(true);
+    setSettingsReportSourceErrorMessage('Report source must not be empty.');
+    error = true;
   } // if time range is invalid
 
 
