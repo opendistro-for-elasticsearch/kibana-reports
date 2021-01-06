@@ -17,6 +17,7 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.createJsonParser
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import org.elasticsearch.common.io.stream.StreamInput
@@ -74,7 +75,10 @@ internal class GetReportDefinitionResponse : BaseResponse {
                 }
             }
         }
-        reportDefinition ?: throw IllegalArgumentException("${RestTag.REPORT_DEFINITION_FIELD} field absent")
+        reportDefinition ?: run {
+            Metrics.REPORT_DEFINITION_INFO_SYSTEM_ERROR.counter.increment()
+            throw IllegalArgumentException("${RestTag.REPORT_DEFINITION_FIELD} field absent")
+        }
         this.reportDefinitionDetails = reportDefinition
         this.filterSensitiveInfo = false // Sensitive info Must have filtered when created json object
     }
