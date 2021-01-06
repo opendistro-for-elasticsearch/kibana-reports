@@ -127,6 +127,8 @@ const generateInContextReport = (
       } else {
         if (response.status === 403) {
           addSuccessOrFailureToast('permissionsFailure');
+        } else if (response.status === 503) {
+          addSuccessOrFailureToast('timeoutFailure', reportSource);
         } else {
           addSuccessOrFailureToast('failure');
         }

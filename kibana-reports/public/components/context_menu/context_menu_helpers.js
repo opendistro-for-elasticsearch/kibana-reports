@@ -86,7 +86,7 @@ export const displayLoadingModal = () => {
   }
 };
 
-export const addSuccessOrFailureToast = (status) => {
+export const addSuccessOrFailureToast = (status, reportSource) => {
   const generateToast = document.querySelectorAll('.euiGlobalToastList');
   if (generateToast) {
     try {
@@ -98,6 +98,14 @@ export const addSuccessOrFailureToast = (status) => {
         }, 6000); // closes toast automatically after 6s
       } else if (status === 'failure') {
         generateInProgressToast.innerHTML = reportGenerationFailure();
+        setTimeout(function () {
+          document.getElementById('reportFailureToast').style.display = 'none';
+        }, 6000);
+      } else if (status === 'timeoutFailure') {
+        generateInProgressToast.innerHTML = reportGenerationFailure(
+          'Error generating report.',
+          `Timed out generating on-demand report from ${reportSource}. Try again later.`
+        );
         setTimeout(function () {
           document.getElementById('reportFailureToast').style.display = 'none';
         }, 6000);
