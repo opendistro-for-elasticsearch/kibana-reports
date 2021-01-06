@@ -249,6 +249,103 @@ describe('<ReportSettings /> panel', () => {
     await act(() => promise);
   });
 
+  test('render edit, dashboard source', async () => {
+    const promise = Promise.resolve();
+    let report_definition = {
+      report_params: {
+        report_name: 'test create report definition trigger',
+        report_source: 'Saved search',
+        description: 'test description',
+        core_params: {
+          base_url: 'http://localhost:5601',
+          report_format: 'csv',
+          header: 'test header content',
+          footer: 'test footer content',
+          time_duration: 'PT30M',
+          saved_search_id: 'abcdefghijk',
+          limit: 10000,
+          excel: true,
+        },
+      },
+      delivery: {
+        delivery_type: '',
+        delivery_params: {},
+      },
+      trigger: {
+        trigger_type: 'Schedule',
+        trigger_params: {},
+      },
+    };
+
+    httpClientMock.get = jest.fn().mockResolvedValue({
+      report_definition,
+      hits: dashboardHits,
+    });
+
+    const { container } = render(
+      <ReportSettings
+        edit={true}
+        reportDefinitionRequest={emptyRequest}
+        httpClientProps={httpClientMock}
+        timeRange={timeRange}
+        showSettingsReportNameError={false}
+        showTimeRangeError={false}
+      />
+    );
+
+    expect(container.firstChild).toMatchSnapshot();
+    await act(() => promise);
+  });
+
+  test('render edit, visualization source', async () => {
+    const promise = Promise.resolve();
+    let report_definition = {
+      report_params: {
+        report_name: 'test create report definition trigger',
+        report_source: 'Saved search',
+        description: 'test description',
+        core_params: {
+          base_url: 'http://localhost:5601',
+          report_format: 'csv',
+          header: 'test header content',
+          footer: 'test footer content',
+          time_duration: 'PT30M',
+          saved_search_id: 'abcdefghijk',
+          limit: 10000,
+          excel: true,
+        },
+      },
+      delivery: {
+        delivery_type: '',
+        delivery_params: {},
+      },
+      trigger: {
+        trigger_type: 'Schedule',
+        trigger_params: {},
+      },
+    };
+
+    httpClientMock.get = jest.fn().mockResolvedValue({
+      report_definition,
+      hits: visualizationHits,
+    });
+
+    const { container } = render(
+      <ReportSettings
+        edit={true}
+        reportDefinitionRequest={emptyRequest}
+        httpClientProps={httpClientMock}
+        timeRange={timeRange}
+        showSettingsReportNameError={false}
+        showTimeRangeError={false}
+      />
+    );
+
+    expect(container.firstChild).toMatchSnapshot();
+    await act(() => promise);
+  });
+  
+
   test('dashboard create from in-context', async () => {
     window = Object.create(window);
     Object.defineProperty(window, 'location', {
