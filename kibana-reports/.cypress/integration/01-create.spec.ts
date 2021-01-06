@@ -47,6 +47,9 @@ describe('Cypress', () => {
     // enter a report description
     cy.get('#reportSettingsDescription').type('Description for cypress test');
 
+    // select a report source
+    cy.get('.euiComboBox').click({ force: true });
+
     // create an on-demand report definition
     cy.get('#createNewReportDefinition').click({ force: true });
   });

@@ -101,7 +101,7 @@ describe('Cypress', () => {
     // create an on-demand report definition
     cy.get('#createNewReportDefinition').click({ force: true });
 
-    cy.wait(5000);
+    cy.wait(10000);
 
     // visit the details page of the newly created on-demand definition
     cy.get('#reportDefinitionDetailsLink').first().click();

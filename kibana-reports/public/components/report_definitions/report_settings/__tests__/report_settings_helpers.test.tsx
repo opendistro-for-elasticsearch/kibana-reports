@@ -56,6 +56,11 @@ describe('report_settings_helpers tests', () => {
     expect(baseUrlNotFromEdit).toBe('/app/dashboards#/view/');
   });
 
+  test('getDashboardBaseUrlCreate not from in-context', () => {
+    const baseUrl = getDashboardBaseUrlCreate(false, TEST_DEFINITION_ID, false);
+    expect(baseUrl).toBe('/');
+  })
+
   test('getVisualizationBaseUrlCreate', () => {
     const baseUrl = getVisualizationBaseUrlCreate(
       true,
@@ -72,6 +77,15 @@ describe('report_settings_helpers tests', () => {
     expect(baseUrlNotFromEdit).toBe('/app/visualize#/edit/');
   });
 
+  test('getVisualizationBaseUrlCreate not from in-context', () => {
+    const baseUrl = getVisualizationBaseUrlCreate(
+      false,
+      TEST_DEFINITION_ID,
+      false
+    );
+    expect(baseUrl).toBe('/');
+  })
+
   test('getSavedSearchBaseUrlCreate', () => {
     const baseUrl = getSavedSearchBaseUrlCreate(true, TEST_DEFINITION_ID, true);
     expect(baseUrl).toBe('/app/discover#/view/');
@@ -83,6 +97,11 @@ describe('report_settings_helpers tests', () => {
     );
     expect(baseUrlNotFromEdit).toBe('/app/discover#/view/');
   });
+
+  test('getSavedSearchBaseUrlCreate not from in-context', () => {
+    const baseUrl = getSavedSearchBaseUrlCreate(false, TEST_DEFINITION_ID, false);
+    expect(baseUrl).toBe('/');
+  })
 
   test('getDashboardOptions', () => {
     const mockData = [
@@ -98,7 +117,7 @@ describe('report_settings_helpers tests', () => {
 
     const options = getDashboardOptions(mockData);
     expect(options[0].value).toBe('1234567890abcdefghijk');
-    expect(options[0].text).toBe('Mock dashboard title');
+    expect(options[0].label).toBe('Mock dashboard title');
   });
 
   test('getVisualizationOptions', () => {
@@ -115,7 +134,7 @@ describe('report_settings_helpers tests', () => {
 
     const options = getVisualizationOptions(mockData);
     expect(options[0].value).toBe('1234567890abcdefghijk');
-    expect(options[0].text).toBe('Mock visualization title');
+    expect(options[0].label).toBe('Mock visualization title');
   });
 
   test('getSavedSearchOptions', () => {
@@ -131,7 +150,7 @@ describe('report_settings_helpers tests', () => {
     ];
     const options = getSavedSearchOptions(mockData);
     expect(options[0].value).toBe('1234567890abcdefghijk');
-    expect(options[0].text).toBe('Mock saved search title');
+    expect(options[0].label).toBe('Mock saved search title');
   });
 
   test('handleDataToVisualReportSourceChange', () => {

@@ -106,7 +106,7 @@ export const getDashboardOptions = (data) => {
   for (index = 0; index < data.length; ++index) {
     let entry = {
       value: data[index]['_id'].substring(10),
-      text: data[index]['_source']['dashboard']['title'],
+      label: data[index]['_source']['dashboard']['title'],
     };
     dashboard_options.push(entry);
   }
@@ -119,7 +119,7 @@ export const getVisualizationOptions = (data: string | any[]) => {
   for (index = 0; index < data.length; ++index) {
     let entry = {
       value: data[index]['_id'].substring(14),
-      text: data[index]['_source']['visualization']['title'],
+      label: data[index]['_source']['visualization']['title'],
     };
     options.push(entry);
   }
@@ -132,7 +132,7 @@ export const getSavedSearchOptions = (data: string | any[]) => {
   for (index = 0; index < data.length; ++index) {
     let entry = {
       value: data[index]['_id'].substring(7),
-      text: data[index]['_source']['search']['title'],
+      label: data[index]['_source']['search']['title'],
     };
     options.push(entry);
   }
