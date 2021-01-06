@@ -50,6 +50,14 @@ export function EditReportDefinition(props) {
     setSettingsReportNameErrorMessage,
   ] = useState('');
   const [
+    showSettingsReportSourceError,
+    setShowSettingsReportSourceError
+  ] = useState(false);
+  const [
+    settingsReportSourceErrorMessage,
+    setSettingsReportSourceErrorMessage
+  ] = useState('');
+  const [
     showTriggerIntervalNaNError,
     setShowTriggerIntervalNaNError,
   ] = useState(false);
@@ -216,6 +224,8 @@ export function EditReportDefinition(props) {
       error,
       setShowSettingsReportNameError,
       setSettingsReportNameErrorMessage,
+      setShowSettingsReportSourceError,
+      setSettingsReportSourceErrorMessage,
       setShowTriggerIntervalNaNError,
       timeRange,
       setShowTimeRangeError,
@@ -294,6 +304,8 @@ export function EditReportDefinition(props) {
           timeRange={timeRange}
           showSettingsReportNameError={showSettingsReportNameError}
           settingsReportNameErrorMessage={settingsReportNameErrorMessage}
+          showSettingsReportSourceError={showSettingsReportSourceError}
+          settingsReportSourceErrorMessage={settingsReportSourceErrorMessage}
           showTimeRangeError={showTimeRangeError}
         />
         <EuiSpacer />

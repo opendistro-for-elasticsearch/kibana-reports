@@ -19,6 +19,8 @@ import { ReportSettings } from '../report_settings';
 import 'babel-polyfill';
 import 'regenerator-runtime';
 import httpClientMock from '../../../../../test/httpMockClient';
+import { configure, mount, shallow } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 import { act } from 'react-dom/test-utils';
 
 const emptyRequest = {
@@ -96,6 +98,7 @@ const savedSearchHits = {
 
 describe('<ReportSettings /> panel', () => {
   jest.spyOn(console, 'log').mockImplementation(() => {});
+  configure({ adapter: new Adapter() });
   test('render component', () => {
     const { container } = render(
       <ReportSettings
@@ -119,7 +122,7 @@ describe('<ReportSettings /> panel', () => {
         report_source: 'Dashboard',
         description: 'test description',
         core_params: {
-          base_url: 'http://localhost:5601',
+          base_url: 'http://localhost:5601/dashboard/abcdefghijklmnop12345',
           report_format: 'pdf',
           header: 'header content',
           footer: 'footer content',
@@ -164,7 +167,7 @@ describe('<ReportSettings /> panel', () => {
         report_source: 'Visualization',
         description: 'test description',
         core_params: {
-          base_url: 'http://localhost:5601',
+          base_url: 'http://localhost:5601/edit/abcdefghijklmnop12345',
           report_format: 'png',
           header: 'header content',
           footer: 'footer content',
@@ -209,7 +212,7 @@ describe('<ReportSettings /> panel', () => {
         report_source: 'Saved search',
         description: 'test description',
         core_params: {
-          base_url: 'http://localhost:5601',
+          base_url: 'http://localhost:5601/discover/abcdefghijklmnop12345',
           report_format: 'csv',
           header: 'test header content',
           footer: 'test footer content',
@@ -249,13 +252,110 @@ describe('<ReportSettings /> panel', () => {
     await act(() => promise);
   });
 
+  test('render edit, dashboard source', async () => {
+    const promise = Promise.resolve();
+    let report_definition = {
+      report_params: {
+        report_name: 'test create report definition trigger',
+        report_source: 'Saved search',
+        description: 'test description',
+        core_params: {
+          base_url: 'http://localhost:5601',
+          report_format: 'csv',
+          header: 'test header content',
+          footer: 'test footer content',
+          time_duration: 'PT30M',
+          saved_search_id: 'abcdefghijk',
+          limit: 10000,
+          excel: true,
+        },
+      },
+      delivery: {
+        delivery_type: '',
+        delivery_params: {},
+      },
+      trigger: {
+        trigger_type: 'Schedule',
+        trigger_params: {},
+      },
+    };
+
+    httpClientMock.get = jest.fn().mockResolvedValue({
+      report_definition,
+      hits: dashboardHits,
+    });
+
+    const { container } = render(
+      <ReportSettings
+        edit={true}
+        reportDefinitionRequest={emptyRequest}
+        httpClientProps={httpClientMock}
+        timeRange={timeRange}
+        showSettingsReportNameError={false}
+        showTimeRangeError={false}
+      />
+    );
+
+    expect(container.firstChild).toMatchSnapshot();
+    await act(() => promise);
+  });
+
+  test('render edit, visualization source', async () => {
+    const promise = Promise.resolve();
+    let report_definition = {
+      report_params: {
+        report_name: 'test create report definition trigger',
+        report_source: 'Saved search',
+        description: 'test description',
+        core_params: {
+          base_url: 'http://localhost:5601',
+          report_format: 'csv',
+          header: 'test header content',
+          footer: 'test footer content',
+          time_duration: 'PT30M',
+          saved_search_id: 'abcdefghijk',
+          limit: 10000,
+          excel: true,
+        },
+      },
+      delivery: {
+        delivery_type: '',
+        delivery_params: {},
+      },
+      trigger: {
+        trigger_type: 'Schedule',
+        trigger_params: {},
+      },
+    };
+
+    httpClientMock.get = jest.fn().mockResolvedValue({
+      report_definition,
+      hits: visualizationHits,
+    });
+
+    const { container } = render(
+      <ReportSettings
+        edit={true}
+        reportDefinitionRequest={emptyRequest}
+        httpClientProps={httpClientMock}
+        timeRange={timeRange}
+        showSettingsReportNameError={false}
+        showTimeRangeError={false}
+      />
+    );
+
+    expect(container.firstChild).toMatchSnapshot();
+    await act(() => promise);
+  });
+  
+
   test('dashboard create from in-context', async () => {
     window = Object.create(window);
     Object.defineProperty(window, 'location', {
       configurable: true,
       value: {
         href:
-          'http://localhost:5601/app/opendistro_kibana_reports#/create?previous=dashboard:7adfa750-4c81-11e8-b3d7-01146121b73d?timeFrom=2020-10-26T20:52:56.382Z?timeTo=2020-10-27T20:52:56.384Z',
+          'http://localhost:5601/app/opendistro_kibana_reports#/create?previous=dashboard:abcdefghijklmnop12345?timeFrom=2020-10-26T20:52:56.382Z?timeTo=2020-10-27T20:52:56.384Z',
       },
     });
 
@@ -267,7 +367,7 @@ describe('<ReportSettings /> panel', () => {
         report_source: 'Dashboard',
         description: '',
         core_params: {
-          base_url: 'http://localhost:5601',
+          base_url: 'http://localhost:5601/dashboard/abcdefghijklmnop12345',
           report_format: 'png',
           header: '',
           footer: '',
@@ -313,7 +413,7 @@ describe('<ReportSettings /> panel', () => {
       configurable: true,
       value: {
         href:
-          'http://localhost:5601/app/opendistro_kibana_reports#/create?previous=visualize:7adfa750-4c81-11e8-b3d7-01146121b73d?timeFrom=2020-10-26T20:52:56.382Z?timeTo=2020-10-27T20:52:56.384Z',
+          'http://localhost:5601/app/opendistro_kibana_reports#/create?previous=visualize:abcdefghijklmnop12345?timeFrom=2020-10-26T20:52:56.382Z?timeTo=2020-10-27T20:52:56.384Z',
       },
     });
 
@@ -325,7 +425,7 @@ describe('<ReportSettings /> panel', () => {
         report_source: 'Visualization',
         description: '',
         core_params: {
-          base_url: 'http://localhost:5601',
+          base_url: 'http://localhost:5601/edit/abcdefghijklmnop12345',
           report_format: 'pdf',
           header: '',
           footer: '',
@@ -370,7 +470,7 @@ describe('<ReportSettings /> panel', () => {
     Object.defineProperty(window, 'location', {
       value: {
         href:
-          'http://localhost:5601/app/opendistro_kibana_reports#/create?previous=discover:7adfa750-4c81-11e8-b3d7-01146121b73d?timeFrom=2020-10-26T20:52:56.382Z?timeTo=2020-10-27T20:52:56.384Z',
+          'http://localhost:5601/app/opendistro_kibana_reports#/create?previous=discover:abcdefghijklmnop12345?timeFrom=2020-10-26T20:52:56.382Z?timeTo=2020-10-27T20:52:56.384Z',
       },
     });
 
@@ -382,7 +482,7 @@ describe('<ReportSettings /> panel', () => {
         report_source: 'Saved search',
         description: '',
         core_params: {
-          base_url: 'http://localhost:5601',
+          base_url: 'http://localhost:5601/discover/abcdefghijklmnop12345',
           report_format: 'csv',
           header: '',
           footer: '',
@@ -419,6 +519,171 @@ describe('<ReportSettings /> panel', () => {
     );
 
     expect(container.firstChild).toMatchSnapshot();
+    await act(() => promise);
+  });
+
+  test('simulate click on dashboard combo box', async () => {
+    const promise = Promise.resolve();
+    let report_definition = {
+      report_params: {
+        report_name: 'test create report definition trigger',
+        report_source: 'Saved search',
+        description: 'test description',
+        core_params: {
+          base_url: 'http://localhost:5601',
+          report_format: 'csv',
+          header: 'test header content',
+          footer: 'test footer content',
+          time_duration: 'PT30M',
+          saved_search_id: 'abcdefghijk',
+          limit: 10000,
+          excel: true,
+        },
+      },
+      delivery: {
+        delivery_type: '',
+        delivery_params: {},
+      },
+      trigger: {
+        trigger_type: 'Schedule',
+        trigger_params: {},
+      },
+    };
+
+    httpClientMock.get = jest.fn().mockResolvedValue({
+      report_definition,
+      hits: dashboardHits,
+    });
+
+    const component = shallow(
+      <ReportSettings
+        edit={false}
+        reportDefinitionRequest={emptyRequest}
+        httpClientProps={httpClientMock}
+        timeRange={timeRange}
+        showSettingsReportNameError={false}
+        showTimeRangeError={false}
+      />
+    , {disableLifecycleMethods: true});
+    await act(() => promise);
+
+    const comboBox = component.find('EuiComboBox').at(0);
+    comboBox.simulate('change', [{value: 'test', label: 'test'}]);
+
+    await act(() => promise);
+  });
+
+  test('simulate click on visualization combo box', async () => {
+    const promise = Promise.resolve();
+    let report_definition = {
+      report_params: {
+        report_name: 'test create report definition trigger',
+        report_source: 'Visualization',
+        description: 'test description',
+        core_params: {
+          base_url: 'http://localhost:5601',
+          report_format: 'pdf',
+          header: 'test header content',
+          footer: 'test footer content',
+          time_duration: 'PT30M',
+        },
+      },
+      delivery: {
+        delivery_type: '',
+        delivery_params: {},
+      },
+      trigger: {
+        trigger_type: 'Schedule',
+        trigger_params: {},
+      },
+    };
+
+    httpClientMock.get = jest.fn().mockResolvedValue({
+      report_definition,
+      hits: visualizationHits,
+    });
+
+    const component = mount(
+      <ReportSettings
+        edit={false}
+        reportDefinitionRequest={emptyRequest}
+        httpClientProps={httpClientMock}
+        timeRange={timeRange}
+        showSettingsReportNameError={false}
+        showTimeRangeError={false}
+      />
+    );
+    await act(() => promise);
+
+    const reportSourceRadio = component.find('EuiRadioGroup').at(0);
+    const visualizationRadio = reportSourceRadio.find('EuiRadio').at(1);
+
+    visualizationRadio.find('input').simulate('change', 'visualizationReportSource');
+    await act(() => promise);
+    const comboBox = component.find('EuiComboBox').at(0);
+
+    act(() => {
+      comboBox.props().onChange([{ value: 'test', label: 'test' }]);
+    }); 
+    component.update();
+
+    await act(() => promise);
+  });
+
+  test('simulate click on saved search combo box', async () => {
+    const promise = Promise.resolve();
+    let report_definition = {
+      report_params: {
+        report_name: 'test create report definition trigger',
+        report_source: 'Saved search',
+        description: 'test description',
+        core_params: {
+          base_url: 'http://localhost:5601',
+          report_format: 'pdf',
+          header: 'test header content',
+          footer: 'test footer content',
+          time_duration: 'PT30M',
+        },
+      },
+      delivery: {
+        delivery_type: '',
+        delivery_params: {},
+      },
+      trigger: {
+        trigger_type: 'Schedule',
+        trigger_params: {},
+      },
+    };
+
+    httpClientMock.get = jest.fn().mockResolvedValue({
+      report_definition,
+      hits: savedSearchHits,
+    });
+
+    const component = mount(
+      <ReportSettings
+        edit={false}
+        reportDefinitionRequest={emptyRequest}
+        httpClientProps={httpClientMock}
+        timeRange={timeRange}
+        showSettingsReportNameError={false}
+        showTimeRangeError={false}
+      />
+    );
+    await act(() => promise);
+
+    const reportSourceRadio = component.find('EuiRadioGroup').at(0);
+    const visualizationRadio = reportSourceRadio.find('EuiRadio').at(2);
+
+    visualizationRadio.find('input').simulate('change', 'savedSearchReportSource');
+    await act(() => promise);
+    const comboBox = component.find('EuiComboBox').at(0);
+
+    act(() => {
+      comboBox.props().onChange([{ value: 'test', label: 'test' }]);
+    })
+    component.update();
+
     await act(() => promise);
   });
 

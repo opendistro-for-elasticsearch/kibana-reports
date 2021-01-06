@@ -21,6 +21,8 @@ import moment from "moment";
      error,
      setShowSettingsReportNameError,
      setSettingsReportNameErrorMessage,
+     setShowSettingsReportSourceError,
+     setSettingsReportSourceErrorMessage,
      setShowTriggerIntervalNaNError,
      timeRange,
      setShowTimeRangeError,
@@ -53,6 +55,13 @@ import moment from "moment";
         setShowTriggerIntervalNaNError(true);
         error = true;
       }
+    }
+
+    // if report source is blank
+    if (metadata.report_params.core_params.base_url === "") {
+      setShowSettingsReportSourceError(true);
+      setSettingsReportSourceErrorMessage('Report source must not be empty.');
+      error = true;
     }
 
     // if time range is invalid
