@@ -49,6 +49,7 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      addToMetric('report', 'create', 'count');
       //@ts-ignore
       const logger: Logger = context.reporting_plugin.logger;
       let report = request.body;
@@ -111,6 +112,7 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      addToMetric('report', 'download', 'count');
       //@ts-ignore
       const logger: Logger = context.reporting_plugin.logger;
       let report: any;
@@ -171,6 +173,7 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      addToMetric('report', 'create_from_definition', 'count');
       //@ts-ignore
       const logger: Logger = context.reporting_plugin.logger;
       const reportDefinitionId = request.params.reportDefinitionId;
@@ -235,6 +238,7 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      addToMetric('report', 'list', 'count');
       const { fromIndex, maxItems } = request.query as {
         fromIndex: number;
         maxItems: number;
@@ -254,7 +258,6 @@ export default function (router: IRouter) {
         );
 
         const reportsList = backendToUiReportsList(esResp.reportInstanceList);
-        addToMetric('report', 'list', 'count');
 
         return response.ok({
           body: {
@@ -287,6 +290,7 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      addToMetric('report', 'info', 'count');
       try {
         // @ts-ignore
         const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
@@ -301,7 +305,6 @@ export default function (router: IRouter) {
         );
 
         const report = backendToUiReport(esResp.reportInstance);
-        addToMetric('report', 'info', 'count');
 
         return response.ok({
           body: report,

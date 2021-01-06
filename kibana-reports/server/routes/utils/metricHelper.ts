@@ -28,6 +28,7 @@ import {
   INTERVAL,
   WINDOW,
 } from './constants';
+import value from '@elastic/eui/dist/eui_theme_*.json';
 
 export const time2CountWin: Map<number, CountersType> = new Map();
 
@@ -83,11 +84,42 @@ const getPreKey = (milliseconds: number) => {
   return getKey(milliseconds) - 1;
 };
 
+const isEntity = (arg: string): arg is EntityType => {
+  return (
+    arg === 'report' || arg === 'report_definition' || arg === 'report_source'
+  );
+};
+
 const buildMetrics = (rollingCounters: CountersType | undefined) => {
   if (!rollingCounters) {
     rollingCounters = DEFAULT_ROLLING_COUNTER;
   }
-  return _.merge(rollingCounters, GLOBAL_BASIC_COUNTER);
+  const basicMetrics = _.merge(rollingCounters, GLOBAL_BASIC_COUNTER);
+  const overallActionMetrics = {
+    request_total: 0,
+    request_count: 0,
+    success_count: 0,
+    failed_request_count_system_error: 0,
+    failed_request_count_user_error: 0,
+  };
+  Object.keys(basicMetrics).forEach((keys) => {
+    if (isEntity(keys)) {
+      for (const [action, counters] of Object.entries(basicMetrics[keys])) {
+        overallActionMetrics.request_count += counters?.count || 0;
+        overallActionMetrics.request_total += counters?.total || 0;
+        overallActionMetrics.failed_request_count_system_error +=
+          counters?.system_error || 0;
+        overallActionMetrics.failed_request_count_user_error +=
+          counters?.user_error || 0;
+      }
+    }
+  });
+  overallActionMetrics.success_count +=
+    overallActionMetrics.request_count -
+    (overallActionMetrics.failed_request_count_system_error +
+      overallActionMetrics.failed_request_count_user_error);
+
+  return { ...basicMetrics, ...overallActionMetrics };
 };
 
 const updateCounters = (
@@ -120,14 +152,14 @@ const updateCounters = (
         'download'
       ]['total']++;
     }
-  }
-  // update action metric per API
-  // @ts-ignore
-  rollingCounter[entity][action][counter] += count;
-  if (counter === 'count') {
+  } else {
+    // update action metric, per API
     // @ts-ignore
-    GLOBAL_BASIC_COUNTER[entity][action]['total']++;
+    rollingCounter[entity][action][counter] += count;
+    if (counter === 'count') {
+      // @ts-ignore
+      GLOBAL_BASIC_COUNTER[entity][action]['total']++;
+    }
   }
-
   return rollingCounter;
 };
