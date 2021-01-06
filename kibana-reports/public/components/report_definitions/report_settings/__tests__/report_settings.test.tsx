@@ -119,7 +119,7 @@ describe('<ReportSettings /> panel', () => {
         report_source: 'Dashboard',
         description: 'test description',
         core_params: {
-          base_url: 'http://localhost:5601',
+          base_url: 'http://localhost:5601/dashboard/abcdefghijklmnop12345',
           report_format: 'pdf',
           header: 'header content',
           footer: 'footer content',
@@ -164,7 +164,7 @@ describe('<ReportSettings /> panel', () => {
         report_source: 'Visualization',
         description: 'test description',
         core_params: {
-          base_url: 'http://localhost:5601',
+          base_url: 'http://localhost:5601/edit/abcdefghijklmnop12345',
           report_format: 'png',
           header: 'header content',
           footer: 'footer content',
@@ -209,7 +209,7 @@ describe('<ReportSettings /> panel', () => {
         report_source: 'Saved search',
         description: 'test description',
         core_params: {
-          base_url: 'http://localhost:5601',
+          base_url: 'http://localhost:5601/discover/abcdefghijklmnop12345',
           report_format: 'csv',
           header: 'test header content',
           footer: 'test footer content',
@@ -352,7 +352,7 @@ describe('<ReportSettings /> panel', () => {
       configurable: true,
       value: {
         href:
-          'http://localhost:5601/app/opendistro_kibana_reports#/create?previous=dashboard:7adfa750-4c81-11e8-b3d7-01146121b73d?timeFrom=2020-10-26T20:52:56.382Z?timeTo=2020-10-27T20:52:56.384Z',
+          'http://localhost:5601/app/opendistro_kibana_reports#/create?previous=dashboard:abcdefghijklmnop12345?timeFrom=2020-10-26T20:52:56.382Z?timeTo=2020-10-27T20:52:56.384Z',
       },
     });
 
@@ -364,7 +364,7 @@ describe('<ReportSettings /> panel', () => {
         report_source: 'Dashboard',
         description: '',
         core_params: {
-          base_url: 'http://localhost:5601',
+          base_url: 'http://localhost:5601/dashboard/abcdefghijklmnop12345',
           report_format: 'png',
           header: '',
           footer: '',
@@ -410,7 +410,7 @@ describe('<ReportSettings /> panel', () => {
       configurable: true,
       value: {
         href:
-          'http://localhost:5601/app/opendistro_kibana_reports#/create?previous=visualize:7adfa750-4c81-11e8-b3d7-01146121b73d?timeFrom=2020-10-26T20:52:56.382Z?timeTo=2020-10-27T20:52:56.384Z',
+          'http://localhost:5601/app/opendistro_kibana_reports#/create?previous=visualize:abcdefghijklmnop12345?timeFrom=2020-10-26T20:52:56.382Z?timeTo=2020-10-27T20:52:56.384Z',
       },
     });
 
@@ -422,7 +422,7 @@ describe('<ReportSettings /> panel', () => {
         report_source: 'Visualization',
         description: '',
         core_params: {
-          base_url: 'http://localhost:5601',
+          base_url: 'http://localhost:5601/edit/abcdefghijklmnop12345',
           report_format: 'pdf',
           header: '',
           footer: '',
@@ -467,7 +467,7 @@ describe('<ReportSettings /> panel', () => {
     Object.defineProperty(window, 'location', {
       value: {
         href:
-          'http://localhost:5601/app/opendistro_kibana_reports#/create?previous=discover:7adfa750-4c81-11e8-b3d7-01146121b73d?timeFrom=2020-10-26T20:52:56.382Z?timeTo=2020-10-27T20:52:56.384Z',
+          'http://localhost:5601/app/opendistro_kibana_reports#/create?previous=discover:abcdefghijklmnop12345?timeFrom=2020-10-26T20:52:56.382Z?timeTo=2020-10-27T20:52:56.384Z',
       },
     });
 
@@ -479,7 +479,7 @@ describe('<ReportSettings /> panel', () => {
         report_source: 'Saved search',
         description: '',
         core_params: {
-          base_url: 'http://localhost:5601',
+          base_url: 'http://localhost:5601/discover/abcdefghijklmnop12345',
           report_format: 'csv',
           header: '',
           footer: '',
