@@ -103,9 +103,10 @@ export function Main(props) {
     addReportDefinitionsTableErrorToastHandler(errorType);
   };
 
-  const addErrorOnDemandDownloadToastHandler = (title = 'Error downloading report.') => {
+  const addErrorOnDemandDownloadToastHandler = (title = 'Error downloading report.', text = '') => {
     const errorToast = {
       title,
+      text,
       color: 'danger',
       iconType: 'alert',
       id: 'onDemandDownloadErrorToast',
@@ -113,8 +114,8 @@ export function Main(props) {
     setToasts(toasts.concat(errorToast));
   };
 
-  const handleOnDemandDownloadErrorToast = (title?: string) => {
-    addErrorOnDemandDownloadToastHandler(title);
+  const handleOnDemandDownloadErrorToast = (title?: string, text?: string) => {
+    addErrorOnDemandDownloadToastHandler(title, text);
   };
 
   const addSuccessOnDemandDownloadToastHandler = () => {

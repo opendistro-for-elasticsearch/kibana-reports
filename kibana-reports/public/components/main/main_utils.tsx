@@ -199,7 +199,10 @@ export const generateReportById = async (
       if (error.body.statusCode === 403) {
         handlePermissionsMissingToast();
       } else if (error.body.statusCode === 503) {
-        handleErrorToast('Server busy, please try again later.')
+        handleErrorToast(
+          'Error generating report.',
+          `Timed out generating report ID ${reportId}. Try again later.`
+        );
       } else {
         handleErrorToast();
       }
