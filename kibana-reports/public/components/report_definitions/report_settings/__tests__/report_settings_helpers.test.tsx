@@ -13,6 +13,7 @@
  * permissions and limitations under the License.
  */
 
+import { exception } from 'console';
 import {
   getDashboardBaseUrlCreate,
   getDashboardOptions,
@@ -56,6 +57,11 @@ describe('report_settings_helpers tests', () => {
     expect(baseUrlNotFromEdit).toBe('/app/dashboards#/view/');
   });
 
+  test('getDashboardBaseUrlCreate not from in-context', () => {
+    const baseUrl = getDashboardBaseUrlCreate(false, TEST_DEFINITION_ID, false);
+    expect(baseUrl).toBe('/');
+  })
+
   test('getVisualizationBaseUrlCreate', () => {
     const baseUrl = getVisualizationBaseUrlCreate(
       true,
@@ -72,6 +78,15 @@ describe('report_settings_helpers tests', () => {
     expect(baseUrlNotFromEdit).toBe('/app/visualize#/edit/');
   });
 
+  test('getVisualizationBaseUrlCreate not from in-context', () => {
+    const baseUrl = getVisualizationBaseUrlCreate(
+      false,
+      TEST_DEFINITION_ID,
+      false
+    );
+    expect(baseUrl).toBe('/');
+  })
+
   test('getSavedSearchBaseUrlCreate', () => {
     const baseUrl = getSavedSearchBaseUrlCreate(true, TEST_DEFINITION_ID, true);
     expect(baseUrl).toBe('/app/discover#/view/');
@@ -83,6 +98,11 @@ describe('report_settings_helpers tests', () => {
     );
     expect(baseUrlNotFromEdit).toBe('/app/discover#/view/');
   });
+
+  test('getSavedSearchBaseUrlCreate not from in-context', () => {
+    const baseUrl = getSavedSearchBaseUrlCreate(false, TEST_DEFINITION_ID, false);
+    expect(baseUrl).toBe('/');
+  })
 
   test('getDashboardOptions', () => {
     const mockData = [
