@@ -16,10 +16,9 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
-import com.amazon.opendistroforelasticsearch.reportsscheduler.action.PollReportInstanceAction
-import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.PollReportInstanceRequest
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
 import org.elasticsearch.client.node.NodeClient
+import org.elasticsearch.rest.BaseRestHandler
 import org.elasticsearch.rest.BaseRestHandler.RestChannelConsumer
 import org.elasticsearch.rest.BytesRestResponse
 import org.elasticsearch.rest.RestHandler.Route
@@ -28,20 +27,19 @@ import org.elasticsearch.rest.RestRequest.Method.GET
 import org.elasticsearch.rest.RestStatus
 
 /**
- * Rest handler for getting list of report instances.
- * This handler uses [ReportInstanceActions].
+ * Rest handler for getting reporting backend stats
  */
-internal class ReportInstancePollRestHandler : PluginBaseHandler() {
+internal class ReportStatsRestHandler : BaseRestHandler() {
     companion object {
-        private const val REPORT_INSTANCE_POLL_ACTION = "report_instance_poll_actions"
-        private const val POLL_REPORT_INSTANCE_URL = "$BASE_REPORTS_URI/poll_instance"
+        private const val REPORT_STATS_ACTION = "report_definition_stats"
+        private const val REPORT_STATS_URL = "$BASE_REPORTS_URI/_local/stats"
     }
 
     /**
      * {@inheritDoc}
      */
     override fun getName(): String {
-        return REPORT_INSTANCE_POLL_ACTION
+        return REPORT_STATS_ACTION
     }
 
     /**
@@ -50,12 +48,11 @@ internal class ReportInstancePollRestHandler : PluginBaseHandler() {
     override fun routes(): List<Route> {
         return listOf(
             /**
-             * Poll report instances for pending job
-             * Request URL: GET POLL_REPORT_INSTANCE_URL
-             * Request body: None
-             * Response body: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.model.PollReportInstanceResponse]
+             * Get reporting backend stats
+             * Request URL: GET REPORT_STATS_URL
+             * Response body derived from: Ref [com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics]
              */
-            Route(GET, POLL_REPORT_INSTANCE_URL)
+            Route(GET, "$REPORT_STATS_URL")
         )
     }
 
@@ -69,12 +66,12 @@ internal class ReportInstancePollRestHandler : PluginBaseHandler() {
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
+    override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
         return when (request.method()) {
+            // TODO: Wrap this into TransportAction
             GET -> RestChannelConsumer {
-                client.execute(PollReportInstanceAction.ACTION_TYPE,
-                    PollReportInstanceRequest(),
-                    RestResponseToXContentListener(it))
+                // it.sendResponse(BytesRestResponse(RestStatus.OK, Metrics.getInstance().collectToFlattenedJSON()))
+                it.sendResponse(BytesRestResponse(RestStatus.OK, Metrics.collectToFlattenedJSON()))
             }
             else -> RestChannelConsumer {
                 it.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))

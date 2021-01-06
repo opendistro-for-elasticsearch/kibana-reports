@@ -19,12 +19,12 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPl
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetReportInstanceAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.UpdateReportInstanceStatusAction
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportInstanceRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_INSTANCE_ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportInstanceStatusRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.contentParserNextToken
 import org.elasticsearch.client.node.NodeClient
-import org.elasticsearch.rest.BaseRestHandler
 import org.elasticsearch.rest.BaseRestHandler.RestChannelConsumer
 import org.elasticsearch.rest.BytesRestResponse
 import org.elasticsearch.rest.RestHandler.Route
@@ -37,7 +37,7 @@ import org.elasticsearch.rest.RestStatus
  * Rest handler for report instances lifecycle management.
  * This handler uses [ReportInstanceActions].
  */
-internal class ReportInstanceRestHandler : BaseRestHandler() {
+internal class ReportInstanceRestHandler : PluginBaseHandler() {
     companion object {
         private const val REPORT_INSTANCE_LIST_ACTION = "report_instance_actions"
         private const val REPORT_INSTANCE_URL = "$BASE_REPORTS_URI/instance"
@@ -82,15 +82,19 @@ internal class ReportInstanceRestHandler : BaseRestHandler() {
     /**
      * {@inheritDoc}
      */
-    override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
+    override fun executeRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
         val reportInstanceId = request.param(REPORT_INSTANCE_ID_FIELD) ?: throw IllegalArgumentException("Must specify id")
         return when (request.method()) {
             POST -> RestChannelConsumer {
+                Metrics.REPORT_INSTANCE_UPDATE_TOTAL.counter.increment()
+                Metrics.REPORT_INSTANCE_UPDATE_INTERVAL_COUNT.counter.increment()
                 client.execute(UpdateReportInstanceStatusAction.ACTION_TYPE,
                     UpdateReportInstanceStatusRequest.parse(request.contentParserNextToken(), reportInstanceId),
                     RestResponseToXContentListener(it))
             }
             GET -> RestChannelConsumer {
+                Metrics.REPORT_INSTANCE_INFO_TOTAL.counter.increment()
+                Metrics.REPORT_INSTANCE_INFO_INTERVAL_COUNT.counter.increment()
                 client.execute(GetReportInstanceAction.ACTION_TYPE,
                     GetReportInstanceRequest(reportInstanceId),
                     RestResponseToXContentListener(it))

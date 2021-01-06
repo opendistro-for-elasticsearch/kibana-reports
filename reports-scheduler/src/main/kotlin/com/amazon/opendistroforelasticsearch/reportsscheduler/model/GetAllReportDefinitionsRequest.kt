@@ -17,6 +17,7 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.FROM_INDEX_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.MAX_ITEMS_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
@@ -99,7 +100,8 @@ internal class GetAllReportDefinitionsRequest(
     override fun validate(): ActionRequestValidationException? {
         return if (fromIndex < 0) {
             val exception = ActionRequestValidationException()
-            exception.addValidationError("fromIndex should be grater than 0")
+            exception.addValidationError("fromIndex should be greater than 0")
+            Metrics.REPORT_DEFINITION_LIST_USER_ERROR_INVALID_FROM_INDEX.counter.increment()
             exception
         } else {
             null
