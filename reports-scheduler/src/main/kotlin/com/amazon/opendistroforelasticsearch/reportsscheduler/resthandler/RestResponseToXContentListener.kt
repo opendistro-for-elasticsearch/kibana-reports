@@ -16,14 +16,14 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.SUCCESS_END_STATUS_CODE
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.SUCCESS_START_STATUS_CODE
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.CLIENT_END_STATUS_CODE
-import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.CLIENT_START_STATUS_CODE
+// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
+// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MyMetrics
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.BaseResponse
+import org.elasticsearch.common.xcontent.XContentBuilder
+import org.elasticsearch.rest.BytesRestResponse
 import org.elasticsearch.rest.RestChannel
+import org.elasticsearch.rest.RestResponse
 import org.elasticsearch.rest.RestStatus
 import org.elasticsearch.rest.action.RestToXContentListener
 
@@ -32,19 +32,28 @@ import org.elasticsearch.rest.action.RestToXContentListener
  * {@link ToXContent} and automatically builds an XContent based response
  * (wrapping the toXContent in startObject/endObject).
  */
-internal class RestResponseToXContentListener<Response : BaseResponse>(channel: RestChannel) : RestToXContentListener<Response>(channel) {
+internal class RestResponseToXContentListener<Response : BaseResponse>(channel: RestChannel) : RestToXContentListener<Response>(
+    channel
+) {
+    override fun buildResponse(response: Response, builder: XContentBuilder?): RestResponse? {
+        super.buildResponse(response, builder)
+
+        MyMetrics.REQUEST_TOTAL.counter.increment()
+        MyMetrics.REQUEST_INTERVAL_COUNT.counter.increment()
+
+        when (response.getStatus()) {
+            in RestStatus.OK..RestStatus.MULTI_STATUS -> MyMetrics.REQUEST_SUCCESS.counter.increment()
+            RestStatus.FORBIDDEN -> MyMetrics.REPORT_SECURITY_PERMISSION_ERROR.counter.increment()
+            in RestStatus.UNAUTHORIZED..RestStatus.TOO_MANY_REQUESTS -> MyMetrics.REQUEST_USER_ERROR.counter.increment()
+            else -> MyMetrics.REQUEST_SYSTEM_ERROR.counter.increment()
+        }
+        return BytesRestResponse(getStatus(response), builder)
+    }
+
     /**
      * {@inheritDoc}
      */
     override fun getStatus(response: Response): RestStatus {
-        val restStatus = response.getStatus()
-        when (restStatus.status) {
-            in SUCCESS_START_STATUS_CODE..SUCCESS_END_STATUS_CODE -> Metrics.getInstance().getNumericalMetric(MetricName.REQUEST_SUCCESS).increment()
-            RestStatus.FORBIDDEN.status -> Metrics.getInstance().getNumericalMetric(MetricName.REPORT_SECURITY_PERMISSION_ERROR).increment()
-            in CLIENT_START_STATUS_CODE..CLIENT_END_STATUS_CODE -> Metrics.getInstance().getNumericalMetric(MetricName.REQUEST_USER_ERROR).increment()
-            else -> Metrics.getInstance().getNumericalMetric(MetricName.REQUEST_SYSTEM_ERROR).increment()
-        }
-
-        return restStatus
+        return response.getStatus()
     }
 }

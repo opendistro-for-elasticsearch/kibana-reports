@@ -20,8 +20,9 @@ import com.amazon.opendistroforelasticsearch.commons.authuser.User
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
 import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportDefinitionsIndex
 import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportInstancesIndex
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
+// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
+// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MyMetrics
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportInstancesRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportInstancesResponse
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportInstanceRequest
@@ -71,7 +72,7 @@ internal object ReportInstanceActions {
             request.inContextDownloadUrlPath)
         val docId = ReportInstancesIndex.createReportInstance(reportInstance)
         docId ?: run {
-            Metrics.getInstance().getNumericalMetric(MetricName.REPORT_FROM_DEFINITION_SYSTEM_ERROR).increment()
+            MyMetrics.REPORT_FROM_DEFINITION_SYSTEM_ERROR.counter.increment()
             throw ElasticsearchStatusException("Report Instance Creation failed", RestStatus.INTERNAL_SERVER_ERROR)
         }
         val reportInstanceCopy = reportInstance.copy(id = docId)
@@ -90,12 +91,12 @@ internal object ReportInstanceActions {
         val reportDefinitionDetails = ReportDefinitionsIndex.getReportDefinition(request.reportDefinitionId)
         reportDefinitionDetails
             ?: run {
-                Metrics.getInstance().getNumericalMetric(MetricName.REPORT_DEFINITION_INFO_USER_ERROR).increment()
+                MyMetrics.REPORT_DEFINITION_INFO_USER_ERROR.counter.increment()
                 throw ElasticsearchStatusException("Report Definition ${request.reportDefinitionId} not found", RestStatus.NOT_FOUND)
             }
 
         if (!UserAccessManager.doesUserHasAccess(user, reportDefinitionDetails.tenant, reportDefinitionDetails.access)) {
-            Metrics.getInstance().getNumericalMetric(MetricName.REPORT_PERMISSION_USER_ERROR).increment()
+            MyMetrics.REPORT_PERMISSION_USER_ERROR.counter.increment()
             throw ElasticsearchStatusException("Permission denied for Report Definition ${request.reportDefinitionId}", RestStatus.FORBIDDEN)
         }
         val beginTime: Instant = currentTime.minus(reportDefinitionDetails.reportDefinition.format.duration)
@@ -112,7 +113,7 @@ internal object ReportInstanceActions {
             currentStatus)
         val docId = ReportInstancesIndex.createReportInstance(reportInstance)
         docId ?: run {
-            Metrics.getInstance().getNumericalMetric(MetricName.REPORT_FROM_DEFINITION_ID_SYSTEM_ERROR).increment()
+            MyMetrics.REPORT_FROM_DEFINITION_ID_SYSTEM_ERROR.counter.increment()
             throw ElasticsearchStatusException("Report Instance Creation failed", RestStatus.INTERNAL_SERVER_ERROR)
         }
         val reportInstanceCopy = reportInstance.copy(id = docId)
@@ -130,15 +131,15 @@ internal object ReportInstanceActions {
         val currentReportInstance = ReportInstancesIndex.getReportInstance(request.reportInstanceId)
         currentReportInstance
             ?: run {
-                Metrics.getInstance().getNumericalMetric(MetricName.REPORT_INSTANCE_UPDATE_USER_ERROR).increment()
+                MyMetrics.REPORT_INSTANCE_UPDATE_USER_ERROR.counter.increment()
                 throw ElasticsearchStatusException("Report Instance ${request.reportInstanceId} not found", RestStatus.NOT_FOUND)
             }
         if (!UserAccessManager.doesUserHasAccess(user, currentReportInstance.tenant, currentReportInstance.access)) {
-            Metrics.getInstance().getNumericalMetric(MetricName.REPORT_PERMISSION_USER_ERROR).increment()
+            MyMetrics.REPORT_PERMISSION_USER_ERROR.counter.increment()
             throw ElasticsearchStatusException("Permission denied for Report Definition ${request.reportInstanceId}", RestStatus.FORBIDDEN)
         }
         if (request.status == Status.Scheduled) { // Don't allow changing status to Scheduled
-            Metrics.getInstance().getNumericalMetric(MetricName.REPORT_INSTANCE_UPDATE_USER_ERROR).increment()
+            MyMetrics.REPORT_INSTANCE_UPDATE_USER_ERROR.counter.increment()
             throw ElasticsearchStatusException("Status cannot be updated to ${Status.Scheduled}", RestStatus.BAD_REQUEST)
         }
         val currentTime = Instant.now()
@@ -146,7 +147,7 @@ internal object ReportInstanceActions {
             status = request.status,
             statusText = request.statusText)
         if (!ReportInstancesIndex.updateReportInstance(updatedReportInstance)) {
-            Metrics.getInstance().getNumericalMetric(MetricName.REPORT_INSTANCE_UPDATE_SYSTEM_ERROR).increment()
+            MyMetrics.REPORT_INSTANCE_UPDATE_SYSTEM_ERROR.counter.increment()
             throw ElasticsearchStatusException("Report Instance state update failed", RestStatus.INTERNAL_SERVER_ERROR)
         }
         return UpdateReportInstanceStatusResponse(request.reportInstanceId)
@@ -163,12 +164,12 @@ internal object ReportInstanceActions {
         val reportInstance = ReportInstancesIndex.getReportInstance(request.reportInstanceId)
         reportInstance
             ?: run {
-                Metrics.getInstance().getNumericalMetric(MetricName.REPORT_INSTANCE_INFO_USER_ERROR).increment()
+                MyMetrics.REPORT_INSTANCE_INFO_USER_ERROR.counter.increment()
                 throw ElasticsearchStatusException("Report Instance ${request.reportInstanceId} not found", RestStatus.NOT_FOUND)
             }
 
         if (!UserAccessManager.doesUserHasAccess(user, reportInstance.tenant, reportInstance.access)) {
-            Metrics.getInstance().getNumericalMetric(MetricName.REPORT_PERMISSION_USER_ERROR).increment()
+            MyMetrics.REPORT_PERMISSION_USER_ERROR.counter.increment()
             throw ElasticsearchStatusException("Permission denied for Report Definition ${request.reportInstanceId}", RestStatus.FORBIDDEN)
         }
         return GetReportInstanceResponse(reportInstance, UserAccessManager.hasAllInfoAccess(user))

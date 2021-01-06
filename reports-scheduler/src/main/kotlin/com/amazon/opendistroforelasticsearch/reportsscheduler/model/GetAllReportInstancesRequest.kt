@@ -17,8 +17,9 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
+// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
+// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MyMetrics
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.FROM_INDEX_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.MAX_ITEMS_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
@@ -102,7 +103,7 @@ internal data class GetAllReportInstancesRequest(
         return if (fromIndex < 0) {
             val exception = ActionRequestValidationException()
             exception.addValidationError("fromIndex should be greater than 0")
-            Metrics.getInstance().getNumericalMetric(MetricName.REPORT_INSTANCE_LIST_USER_ERROR).increment()
+            MyMetrics.REPORT_INSTANCE_LIST_USER_ERROR.counter.increment()
             exception
         } else {
             null

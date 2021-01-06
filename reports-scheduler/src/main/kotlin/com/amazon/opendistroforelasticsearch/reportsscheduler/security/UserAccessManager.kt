@@ -17,8 +17,9 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.security
 
 import com.amazon.opendistroforelasticsearch.commons.authuser.User
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
+// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
+// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MyMetrics
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings.FilterBy
 import org.elasticsearch.ElasticsearchStatusException
@@ -50,7 +51,7 @@ internal object UserAccessManager {
      */
     fun validateUser(user: User?) {
         if (isUserPrivateTenant(user) && user?.name == null) {
-            Metrics.getInstance().getNumericalMetric(MetricName.REPORT_PERMISSION_USER_ERROR).increment()
+            MyMetrics.REPORT_PERMISSION_USER_ERROR.counter.increment()
             throw ElasticsearchStatusException("User name not provided for private tenant access",
                 RestStatus.FORBIDDEN)
         }
@@ -60,25 +61,25 @@ internal object UserAccessManager {
             FilterBy.User -> { // User name must be present
                 user?.name
                     ?: run {
-                        Metrics.getInstance().getNumericalMetric(MetricName.REPORT_PERMISSION_USER_ERROR).increment()
+                        MyMetrics.REPORT_PERMISSION_USER_ERROR.counter.increment()
                         throw ElasticsearchStatusException("Filter-by enabled with security disabled",
                             RestStatus.FORBIDDEN)
                     }
             }
             FilterBy.Roles -> { // backend roles must be present
                 if (user == null || user.roles.isNullOrEmpty()) {
-                    Metrics.getInstance().getNumericalMetric(MetricName.REPORT_PERMISSION_USER_ERROR).increment()
+                    MyMetrics.REPORT_PERMISSION_USER_ERROR.counter.increment()
                     throw ElasticsearchStatusException("User doesn't have roles configured. Contact administrator.",
                         RestStatus.FORBIDDEN)
                 } else if (user.roles.stream().filter { !PluginSettings.ignoredRoles.contains(it) }.count() == 0L) {
-                    Metrics.getInstance().getNumericalMetric(MetricName.REPORT_PERMISSION_USER_ERROR).increment()
+                    MyMetrics.REPORT_PERMISSION_USER_ERROR.counter.increment()
                     throw ElasticsearchStatusException("No distinguishing roles configured. Contact administrator.",
                         RestStatus.FORBIDDEN)
                 }
             }
             FilterBy.BackendRoles -> { // backend roles must be present
                 if (user?.backendRoles.isNullOrEmpty()) {
-                    Metrics.getInstance().getNumericalMetric(MetricName.REPORT_PERMISSION_USER_ERROR).increment()
+                    MyMetrics.REPORT_PERMISSION_USER_ERROR.counter.increment()
                     throw ElasticsearchStatusException("User doesn't have backend roles configured. Contact administrator.",
                         RestStatus.FORBIDDEN)
                 }
@@ -92,7 +93,7 @@ internal object UserAccessManager {
     fun validatePollingUser(user: User?) {
         if (user != null) { // Check only if security is enabled
             if (user.name != KIBANA_SERVER_USER) {
-                Metrics.getInstance().getNumericalMetric(MetricName.REPORT_PERMISSION_USER_ERROR).increment()
+                MyMetrics.REPORT_PERMISSION_USER_ERROR.counter.increment()
                 throw ElasticsearchStatusException("Permission denied", RestStatus.FORBIDDEN)
             }
         }

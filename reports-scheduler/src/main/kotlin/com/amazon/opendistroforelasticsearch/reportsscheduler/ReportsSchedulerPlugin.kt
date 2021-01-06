@@ -32,7 +32,7 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.action.UpdateRepor
 import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportDefinitionsIndex
 import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportDefinitionsIndex.REPORT_DEFINITIONS_INDEX_NAME
 import com.amazon.opendistroforelasticsearch.reportsscheduler.index.ReportInstancesIndex
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
+// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.OnDemandReportRestHandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportDefinitionListRestHandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportDefinitionRestHandler
@@ -150,9 +150,6 @@ class ReportsSchedulerPlugin : Plugin(), ActionPlugin, JobSchedulerExtension {
         indexNameExpressionResolver: IndexNameExpressionResolver,
         nodesInCluster: Supplier<DiscoveryNodes>
     ): List<RestHandler> {
-
-        Metrics.getInstance().registerDefaultMetrics()
-
         return listOf(
             ReportDefinitionRestHandler(),
             ReportDefinitionListRestHandler(),

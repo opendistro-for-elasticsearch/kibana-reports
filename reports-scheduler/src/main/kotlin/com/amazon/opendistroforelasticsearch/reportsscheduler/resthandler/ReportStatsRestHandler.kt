@@ -16,7 +16,7 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MyMetrics
 import org.elasticsearch.client.node.NodeClient
 import org.elasticsearch.rest.BaseRestHandler
 import org.elasticsearch.rest.BaseRestHandler.RestChannelConsumer
@@ -68,8 +68,10 @@ internal class ReportStatsRestHandler : BaseRestHandler() {
      */
     override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
         return when (request.method()) {
+            // TODO: Wrap this API in TransportAction
             GET -> RestChannelConsumer {
-                it.sendResponse(BytesRestResponse(RestStatus.OK, Metrics.getInstance().collectToFlattenedJSON()))
+                // it.sendResponse(BytesRestResponse(RestStatus.OK, Metrics.getInstance().collectToFlattenedJSON()))
+                it.sendResponse(BytesRestResponse(RestStatus.OK, MyMetrics.collectToFlattenedJSON()))
             }
             else -> RestChannelConsumer {
                 it.sendResponse(BytesRestResponse(RestStatus.METHOD_NOT_ALLOWED, "${request.method()} is not allowed"))

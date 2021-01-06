@@ -17,8 +17,9 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
+// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
+// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MyMetrics
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance.Status
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.BEGIN_TIME_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.END_TIME_FIELD
@@ -120,15 +121,15 @@ internal class InContextReportCreateRequest : ActionRequest, ToXContentObject {
             }
         }
         beginTime ?: run {
-            Metrics.getInstance().getNumericalMetric(MetricName.REPORT_FROM_DEFINITION_USER_ERROR).increment()
+            MyMetrics.REPORT_FROM_DEFINITION_USER_ERROR.counter.increment()
             throw IllegalArgumentException("$BEGIN_TIME_FIELD field absent")
         }
         endTime ?: run {
-            Metrics.getInstance().getNumericalMetric(MetricName.REPORT_FROM_DEFINITION_USER_ERROR).increment()
+            MyMetrics.REPORT_FROM_DEFINITION_USER_ERROR.counter.increment()
             throw IllegalArgumentException("$END_TIME_FIELD field absent")
         }
         status ?: run {
-            Metrics.getInstance().getNumericalMetric(MetricName.REPORT_FROM_DEFINITION_USER_ERROR).increment()
+            MyMetrics.REPORT_FROM_DEFINITION_USER_ERROR.counter.increment()
             throw IllegalArgumentException("$STATUS_FIELD field absent")
         }
         this.beginTime = beginTime

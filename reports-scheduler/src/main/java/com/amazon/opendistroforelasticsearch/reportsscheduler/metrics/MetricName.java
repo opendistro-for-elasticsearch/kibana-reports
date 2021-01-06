@@ -15,10 +15,6 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.metrics;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 public enum MetricName {
 
     REQUEST_TOTAL("request_total", true),
@@ -113,10 +109,6 @@ public enum MetricName {
 
     public boolean isNumerical() {
         return numerical;
-    }
-
-    public static List<String> getNames() {
-        return Arrays.stream(MetricName.values()).map(v -> v.name).collect(Collectors.toList());
     }
 }
 
