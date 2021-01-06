@@ -18,10 +18,8 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.action
 
 import com.amazon.opendistroforelasticsearch.commons.ConfigConstants.OPENDISTRO_SECURITY_USER_INFO_THREAD_CONTEXT
 import com.amazon.opendistroforelasticsearch.commons.authuser.User
-// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
-// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MyMetrics
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -70,40 +68,40 @@ abstract class PluginBaseAction<Request : ActionRequest, Response : ActionRespon
             try {
                 listener.onResponse(executeRequest(request, user))
             } catch (exception: ElasticsearchStatusException) {
-                MyMetrics.REPORT_EXCEPTIONS_ES_STATUS_EXCEPTION.counter.increment()
+                Metrics.REPORT_EXCEPTIONS_ES_STATUS_EXCEPTION.counter.increment()
                 log.warn("$LOG_PREFIX:ElasticsearchStatusException: message:${exception.message}")
                 listener.onFailure(exception)
             } catch (exception: ElasticsearchSecurityException) {
-                MyMetrics.REPORT_EXCEPTIONS_ES_SECURITY_EXCEPTION.counter.increment()
+                Metrics.REPORT_EXCEPTIONS_ES_SECURITY_EXCEPTION.counter.increment()
                 log.warn("$LOG_PREFIX:ElasticsearchSecurityException:", exception)
                 listener.onFailure(ElasticsearchStatusException("Permissions denied: ${exception.message} - Contact administrator",
                     RestStatus.FORBIDDEN))
             } catch (exception: VersionConflictEngineException) {
-                MyMetrics.REPORT_EXCEPTIONS_VERSION_CONFLICT_ENGINE_EXCEPTION.counter.increment()
+                Metrics.REPORT_EXCEPTIONS_VERSION_CONFLICT_ENGINE_EXCEPTION.counter.increment()
                 log.warn("$LOG_PREFIX:VersionConflictEngineException:", exception)
                 listener.onFailure(ElasticsearchStatusException(exception.message, RestStatus.CONFLICT))
             } catch (exception: IndexNotFoundException) {
-                MyMetrics.REPORT_EXCEPTIONS_INDEX_NOT_FOUND_EXCEPTION.counter.increment()
+                Metrics.REPORT_EXCEPTIONS_INDEX_NOT_FOUND_EXCEPTION.counter.increment()
                 log.warn("$LOG_PREFIX:IndexNotFoundException:", exception)
                 listener.onFailure(ElasticsearchStatusException(exception.message, RestStatus.NOT_FOUND))
             } catch (exception: InvalidIndexNameException) {
-                MyMetrics.REPORT_EXCEPTIONS_INVALID_INDEX_NAME_EXCEPTION.counter.increment()
+                Metrics.REPORT_EXCEPTIONS_INVALID_INDEX_NAME_EXCEPTION.counter.increment()
                 log.warn("$LOG_PREFIX:InvalidIndexNameException:", exception)
                 listener.onFailure(ElasticsearchStatusException(exception.message, RestStatus.BAD_REQUEST))
             } catch (exception: IllegalArgumentException) {
-                MyMetrics.REPORT_EXCEPTIONS_ILLEGAL_ARGUMENT_EXCEPTION.counter.increment()
+                Metrics.REPORT_EXCEPTIONS_ILLEGAL_ARGUMENT_EXCEPTION.counter.increment()
                 log.warn("$LOG_PREFIX:IllegalArgumentException:", exception)
                 listener.onFailure(ElasticsearchStatusException(exception.message, RestStatus.BAD_REQUEST))
             } catch (exception: IllegalStateException) {
-                MyMetrics.REPORT_EXCEPTIONS_ILLEGAL_STATE_EXCEPTION.counter.increment()
+                Metrics.REPORT_EXCEPTIONS_ILLEGAL_STATE_EXCEPTION.counter.increment()
                 log.warn("$LOG_PREFIX:IllegalStateException:", exception)
                 listener.onFailure(ElasticsearchStatusException(exception.message, RestStatus.SERVICE_UNAVAILABLE))
             } catch (exception: IOException) {
-                MyMetrics.REPORT_EXCEPTIONS_IO_EXCEPTION.counter.increment()
+                Metrics.REPORT_EXCEPTIONS_IO_EXCEPTION.counter.increment()
                 log.error("$LOG_PREFIX:Uncaught IOException:", exception)
                 listener.onFailure(ElasticsearchStatusException(exception.message, RestStatus.FAILED_DEPENDENCY))
             } catch (exception: Exception) {
-                MyMetrics.REPORT_EXCEPTIONS_INTERNAL_SERVER_ERROR.counter.increment()
+                Metrics.REPORT_EXCEPTIONS_INTERNAL_SERVER_ERROR.counter.increment()
                 log.error("$LOG_PREFIX:Uncaught Exception:", exception)
                 listener.onFailure(ElasticsearchStatusException(exception.message, RestStatus.INTERNAL_SERVER_ERROR))
             }

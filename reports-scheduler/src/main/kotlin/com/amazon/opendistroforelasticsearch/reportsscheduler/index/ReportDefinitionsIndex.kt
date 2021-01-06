@@ -17,9 +17,7 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.index
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
-// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MyMetrics
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinitionDetails
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportDefinitionDetailsSearchResults
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.ACCESS_LIST_FIELD
@@ -87,12 +85,12 @@ internal object ReportDefinitionsIndex {
                 if (response.isAcknowledged) {
                     log.info("$LOG_PREFIX:Index $REPORT_DEFINITIONS_INDEX_NAME creation Acknowledged")
                 } else {
-                    MyMetrics.REPORT_DEFINITION_CREATE_SYSTEM_ERROR.counter.increment()
+                    Metrics.REPORT_DEFINITION_CREATE_SYSTEM_ERROR.counter.increment()
                     throw IllegalStateException("$LOG_PREFIX:Index $REPORT_DEFINITIONS_INDEX_NAME creation not Acknowledged")
                 }
             } catch (exception: Exception) {
                 if (exception !is ResourceAlreadyExistsException && exception.cause !is ResourceAlreadyExistsException) {
-                    MyMetrics.REPORT_DEFINITION_CREATE_SYSTEM_ERROR.counter.increment()
+                    Metrics.REPORT_DEFINITION_CREATE_SYSTEM_ERROR.counter.increment()
                     throw exception
                 }
             }
@@ -122,7 +120,7 @@ internal object ReportDefinitionsIndex {
         val actionFuture = client.index(indexRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
         return if (response.result != DocWriteResponse.Result.CREATED) {
-            MyMetrics.REPORT_DEFINITION_CREATE_SYSTEM_ERROR.counter.increment()
+            Metrics.REPORT_DEFINITION_CREATE_SYSTEM_ERROR.counter.increment()
             log.warn("$LOG_PREFIX:createReportDefinition - response:$response")
             null
         } else {
@@ -204,7 +202,7 @@ internal object ReportDefinitionsIndex {
         val actionFuture = client.update(updateRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
         if (response.result != DocWriteResponse.Result.UPDATED) {
-            MyMetrics.REPORT_DEFINITION_UPDATE_SYSTEM_ERROR.counter.increment()
+            Metrics.REPORT_DEFINITION_UPDATE_SYSTEM_ERROR.counter.increment()
             log.warn("$LOG_PREFIX:updateReportDefinition failed for $id; response:$response")
         }
         return response.result == DocWriteResponse.Result.UPDATED
@@ -223,7 +221,7 @@ internal object ReportDefinitionsIndex {
         val actionFuture = client.delete(deleteRequest)
         val response = actionFuture.actionGet(PluginSettings.operationTimeoutMs)
         if (response.result != DocWriteResponse.Result.DELETED) {
-            MyMetrics.REPORT_DEFINITION_DELETE_SYSTEM_ERROR.counter.increment()
+            Metrics.REPORT_DEFINITION_DELETE_SYSTEM_ERROR.counter.increment()
             log.warn("$LOG_PREFIX:deleteReportDefinition failed for $id; response:$response")
         }
         return response.result == DocWriteResponse.Result.DELETED

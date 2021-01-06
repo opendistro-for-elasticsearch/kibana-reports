@@ -20,7 +20,6 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.action.PollReportI
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.PollReportInstanceRequest
 import org.elasticsearch.client.node.NodeClient
-import org.elasticsearch.rest.BaseRestHandler
 import org.elasticsearch.rest.BaseRestHandler.RestChannelConsumer
 import org.elasticsearch.rest.BytesRestResponse
 import org.elasticsearch.rest.RestHandler.Route
@@ -32,7 +31,7 @@ import org.elasticsearch.rest.RestStatus
  * Rest handler for getting list of report instances.
  * This handler uses [ReportInstanceActions].
  */
-internal class ReportInstancePollRestHandler : BaseRestHandler() {
+internal class ReportInstancePollRestHandler : PluginBaseHandler() {
     companion object {
         private const val REPORT_INSTANCE_POLL_ACTION = "report_instance_poll_actions"
         private const val POLL_REPORT_INSTANCE_URL = "$BASE_REPORTS_URI/poll_instance"
@@ -70,7 +69,7 @@ internal class ReportInstancePollRestHandler : BaseRestHandler() {
     /**
      * {@inheritDoc}
      */
-    override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
+    override fun executeRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
         return when (request.method()) {
             GET -> RestChannelConsumer {
                 client.execute(PollReportInstanceAction.ACTION_TYPE,

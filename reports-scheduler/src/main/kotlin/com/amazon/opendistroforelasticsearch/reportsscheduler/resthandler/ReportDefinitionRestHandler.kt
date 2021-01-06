@@ -21,9 +21,7 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.action.DeleteRepor
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetReportDefinitionAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportDefinitionActions
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.UpdateReportDefinitionAction
-// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
-// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MyMetrics
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.CreateReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.DeleteReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetReportDefinitionRequest
@@ -31,7 +29,6 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPO
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.UpdateReportDefinitionRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.contentParserNextToken
 import org.elasticsearch.client.node.NodeClient
-import org.elasticsearch.rest.BaseRestHandler
 import org.elasticsearch.rest.BaseRestHandler.RestChannelConsumer
 import org.elasticsearch.rest.BytesRestResponse
 import org.elasticsearch.rest.RestHandler.Route
@@ -46,7 +43,7 @@ import org.elasticsearch.rest.RestStatus
  * Rest handler for report definitions lifecycle management.
  * This handler uses [ReportDefinitionActions].
  */
-internal class ReportDefinitionRestHandler : BaseRestHandler() {
+internal class ReportDefinitionRestHandler : PluginBaseHandler() {
     companion object {
         private const val REPORT_DEFINITION_ACTION = "report_definition_actions"
         private const val REPORT_DEFINITION_URL = "$BASE_REPORTS_URI/definition"
@@ -105,33 +102,33 @@ internal class ReportDefinitionRestHandler : BaseRestHandler() {
     /**
      * {@inheritDoc}
      */
-    override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
+    override fun executeRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
         return when (request.method()) {
             POST -> RestChannelConsumer {
-                MyMetrics.REPORT_DEFINITION_CREATE_TOTAL.counter.increment()
-                MyMetrics.REPORT_DEFINITION_CREATE_INTERVAL_COUNT.counter.increment()
+                Metrics.REPORT_DEFINITION_CREATE_TOTAL.counter.increment()
+                Metrics.REPORT_DEFINITION_CREATE_INTERVAL_COUNT.counter.increment()
                 client.execute(CreateReportDefinitionAction.ACTION_TYPE,
                     CreateReportDefinitionRequest(request.contentParserNextToken()),
                     RestResponseToXContentListener(it))
             }
             PUT -> RestChannelConsumer {
-                MyMetrics.REPORT_DEFINITION_UPDATE_TOTAL.counter.increment()
-                MyMetrics.REPORT_DEFINITION_UPDATE_INTERVAL_COUNT.counter.increment()
+                Metrics.REPORT_DEFINITION_UPDATE_TOTAL.counter.increment()
+                Metrics.REPORT_DEFINITION_UPDATE_INTERVAL_COUNT.counter.increment()
                 client.execute(
                     UpdateReportDefinitionAction.ACTION_TYPE,
                     UpdateReportDefinitionRequest(request.contentParserNextToken(), request.param(REPORT_DEFINITION_ID_FIELD)),
                     RestResponseToXContentListener(it))
             }
             GET -> RestChannelConsumer {
-                MyMetrics.REPORT_DEFINITION_INFO_TOTAL.counter.increment()
-                MyMetrics.REPORT_DEFINITION_INFO_INTERVAL_COUNT.counter.increment()
+                Metrics.REPORT_DEFINITION_INFO_TOTAL.counter.increment()
+                Metrics.REPORT_DEFINITION_INFO_INTERVAL_COUNT.counter.increment()
                 client.execute(GetReportDefinitionAction.ACTION_TYPE,
                     GetReportDefinitionRequest(request.param(REPORT_DEFINITION_ID_FIELD)),
                     RestResponseToXContentListener(it))
             }
             DELETE -> RestChannelConsumer {
-                MyMetrics.REPORT_DEFINITION_DELETE_TOTAL.counter.increment()
-                MyMetrics.REPORT_DEFINITION_DELETE_INTERVAL_COUNT.counter.increment()
+                Metrics.REPORT_DEFINITION_DELETE_TOTAL.counter.increment()
+                Metrics.REPORT_DEFINITION_DELETE_INTERVAL_COUNT.counter.increment()
                 client.execute(DeleteReportDefinitionAction.ACTION_TYPE,
                     DeleteReportDefinitionRequest(request.param(REPORT_DEFINITION_ID_FIELD)),
                     RestResponseToXContentListener(it))

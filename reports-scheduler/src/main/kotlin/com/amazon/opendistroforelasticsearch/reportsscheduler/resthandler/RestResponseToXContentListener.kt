@@ -16,9 +16,7 @@
 
 package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 
-// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MetricName
-// import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.MyMetrics
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.BaseResponse
 import org.elasticsearch.common.xcontent.XContentBuilder
 import org.elasticsearch.rest.BytesRestResponse
@@ -38,14 +36,14 @@ internal class RestResponseToXContentListener<Response : BaseResponse>(channel: 
     override fun buildResponse(response: Response, builder: XContentBuilder?): RestResponse? {
         super.buildResponse(response, builder)
 
-        MyMetrics.REQUEST_TOTAL.counter.increment()
-        MyMetrics.REQUEST_INTERVAL_COUNT.counter.increment()
+        Metrics.REQUEST_TOTAL.counter.increment()
+        Metrics.REQUEST_INTERVAL_COUNT.counter.increment()
 
         when (response.getStatus()) {
-            in RestStatus.OK..RestStatus.MULTI_STATUS -> MyMetrics.REQUEST_SUCCESS.counter.increment()
-            RestStatus.FORBIDDEN -> MyMetrics.REPORT_SECURITY_PERMISSION_ERROR.counter.increment()
-            in RestStatus.UNAUTHORIZED..RestStatus.TOO_MANY_REQUESTS -> MyMetrics.REQUEST_USER_ERROR.counter.increment()
-            else -> MyMetrics.REQUEST_SYSTEM_ERROR.counter.increment()
+            in RestStatus.OK..RestStatus.MULTI_STATUS -> Metrics.REQUEST_SUCCESS.counter.increment()
+            RestStatus.FORBIDDEN -> Metrics.REPORT_SECURITY_PERMISSION_ERROR.counter.increment()
+            in RestStatus.UNAUTHORIZED..RestStatus.TOO_MANY_REQUESTS -> Metrics.REQUEST_USER_ERROR.counter.increment()
+            else -> Metrics.REQUEST_SYSTEM_ERROR.counter.increment()
         }
         return BytesRestResponse(getStatus(response), builder)
     }
