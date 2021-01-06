@@ -13,7 +13,16 @@
  * permissions and limitations under the License.
  */
 
+import { RequestParams } from '@elastic/elasticsearch';
 import path from 'path';
+import { ILegacyScopedClusterClient } from '../../../../src/core/server';
+import {
+  reportDefinitionSchema,
+  ReportDefinitionSchemaType,
+  reportSchema,
+  ReportSchemaType,
+} from '../../server/model';
+import { REPORT_TYPE } from '../../server/routes/utils/constants';
 
 export const isValidRelativeUrl = (relativeUrl: string) => {
   const normalizedRelativeUrl = path.posix.normalize(relativeUrl);
@@ -32,4 +41,74 @@ export const isValidRelativeUrl = (relativeUrl: string) => {
 export const regexDuration = /^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$/;
 export const regexEmailAddress = /\S+@\S+\.\S+/;
 export const regexReportName = /^[\w\-\s\(\)\[\]\,\_\-+]+$/;
-export const regexRelativeUrl = /^\/(_plugin\/kibana\/app|app)\/(dashboards|visualize|discover)#\/(view|edit)\/([a-f0-9-]+)($|\?\S+$)/;
+export const regexRelativeUrl = /^\/(_plugin\/kibana\/app|app)\/(dashboards|visualize|discover)#\/(view|edit)\/[^\/]+$/;
+
+export const validateReport = async (
+  client: ILegacyScopedClusterClient,
+  report: ReportSchemaType
+) => {
+  // validate basic schema
+  report = reportSchema.validate(report);
+  // parse to retrieve data
+  const {
+    query_url: queryUrl,
+    report_definition: {
+      report_params: { report_source: reportSource },
+    },
+  } = report;
+  // Check if saved object actually exists
+  await validateSavedObject(client, queryUrl, reportSource);
+  return report;
+};
+
+export const validateReportDefinition = async (
+  client: ILegacyScopedClusterClient,
+  reportDefinition: ReportDefinitionSchemaType
+) => {
+  // validate basic schema
+  reportDefinition = reportDefinitionSchema.validate(reportDefinition);
+  // parse to retrieve data
+  const {
+    report_params: {
+      report_source: reportSource,
+      core_params: { base_url: baseUrl },
+    },
+  } = reportDefinition;
+  // Check if saved object actually exists
+  await validateSavedObject(client, baseUrl, reportSource);
+  return reportDefinition;
+};
+
+const validateSavedObject = async (
+  client: ILegacyScopedClusterClient,
+  url: string,
+  source: REPORT_TYPE
+) => {
+  const getId = (url: string) => {
+    return url
+      .split('/')
+      .pop()
+      ?.replace(/\?\S+$/, '');
+  };
+  const getType = (source: REPORT_TYPE) => {
+    switch (source) {
+      case REPORT_TYPE.dashboard:
+        return 'dashboard';
+      case REPORT_TYPE.savedSearch:
+        return 'search';
+      case REPORT_TYPE.visualization:
+        return 'visualization';
+    }
+  };
+
+  const savedObjectId = `${getType(source)}:${getId(url)}`;
+  const params: RequestParams.Exists = {
+    index: '.kibana',
+    id: savedObjectId,
+  };
+
+  const exist = await client.callAsCurrentUser('exists', params);
+  if (!exist) {
+    throw Error(`saved object with id ${savedObjectId} does not exist`);
+  }
+};
