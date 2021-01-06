@@ -19,6 +19,8 @@ import { ReportSettings } from '../report_settings';
 import 'babel-polyfill';
 import 'regenerator-runtime';
 import httpClientMock from '../../../../../test/httpMockClient';
+import { configure, mount, shallow } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
 import { act } from 'react-dom/test-utils';
 
 const emptyRequest = {
@@ -96,6 +98,7 @@ const savedSearchHits = {
 
 describe('<ReportSettings /> panel', () => {
   jest.spyOn(console, 'log').mockImplementation(() => {});
+  configure({ adapter: new Adapter() });
   test('render component', () => {
     const { container } = render(
       <ReportSettings
@@ -516,6 +519,171 @@ describe('<ReportSettings /> panel', () => {
     );
 
     expect(container.firstChild).toMatchSnapshot();
+    await act(() => promise);
+  });
+
+  test('simulate click on dashboard combo box', async () => {
+    const promise = Promise.resolve();
+    let report_definition = {
+      report_params: {
+        report_name: 'test create report definition trigger',
+        report_source: 'Saved search',
+        description: 'test description',
+        core_params: {
+          base_url: 'http://localhost:5601',
+          report_format: 'csv',
+          header: 'test header content',
+          footer: 'test footer content',
+          time_duration: 'PT30M',
+          saved_search_id: 'abcdefghijk',
+          limit: 10000,
+          excel: true,
+        },
+      },
+      delivery: {
+        delivery_type: '',
+        delivery_params: {},
+      },
+      trigger: {
+        trigger_type: 'Schedule',
+        trigger_params: {},
+      },
+    };
+
+    httpClientMock.get = jest.fn().mockResolvedValue({
+      report_definition,
+      hits: dashboardHits,
+    });
+
+    const component = shallow(
+      <ReportSettings
+        edit={false}
+        reportDefinitionRequest={emptyRequest}
+        httpClientProps={httpClientMock}
+        timeRange={timeRange}
+        showSettingsReportNameError={false}
+        showTimeRangeError={false}
+      />
+    , {disableLifecycleMethods: true});
+    await act(() => promise);
+
+    const comboBox = component.find('EuiComboBox').at(0);
+    comboBox.simulate('change', [{value: 'test', label: 'test'}]);
+
+    await act(() => promise);
+  });
+
+  test('simulate click on visualization combo box', async () => {
+    const promise = Promise.resolve();
+    let report_definition = {
+      report_params: {
+        report_name: 'test create report definition trigger',
+        report_source: 'Visualization',
+        description: 'test description',
+        core_params: {
+          base_url: 'http://localhost:5601',
+          report_format: 'pdf',
+          header: 'test header content',
+          footer: 'test footer content',
+          time_duration: 'PT30M',
+        },
+      },
+      delivery: {
+        delivery_type: '',
+        delivery_params: {},
+      },
+      trigger: {
+        trigger_type: 'Schedule',
+        trigger_params: {},
+      },
+    };
+
+    httpClientMock.get = jest.fn().mockResolvedValue({
+      report_definition,
+      hits: visualizationHits,
+    });
+
+    const component = mount(
+      <ReportSettings
+        edit={false}
+        reportDefinitionRequest={emptyRequest}
+        httpClientProps={httpClientMock}
+        timeRange={timeRange}
+        showSettingsReportNameError={false}
+        showTimeRangeError={false}
+      />
+    );
+    await act(() => promise);
+
+    const reportSourceRadio = component.find('EuiRadioGroup').at(0);
+    const visualizationRadio = reportSourceRadio.find('EuiRadio').at(1);
+
+    visualizationRadio.find('input').simulate('change', 'visualizationReportSource');
+    await act(() => promise);
+    const comboBox = component.find('EuiComboBox').at(0);
+
+    act(() => {
+      comboBox.props().onChange([{ value: 'test', label: 'test' }]);
+    }); 
+    component.update();
+
+    await act(() => promise);
+  });
+
+  test('simulate click on saved search combo box', async () => {
+    const promise = Promise.resolve();
+    let report_definition = {
+      report_params: {
+        report_name: 'test create report definition trigger',
+        report_source: 'Saved search',
+        description: 'test description',
+        core_params: {
+          base_url: 'http://localhost:5601',
+          report_format: 'pdf',
+          header: 'test header content',
+          footer: 'test footer content',
+          time_duration: 'PT30M',
+        },
+      },
+      delivery: {
+        delivery_type: '',
+        delivery_params: {},
+      },
+      trigger: {
+        trigger_type: 'Schedule',
+        trigger_params: {},
+      },
+    };
+
+    httpClientMock.get = jest.fn().mockResolvedValue({
+      report_definition,
+      hits: savedSearchHits,
+    });
+
+    const component = mount(
+      <ReportSettings
+        edit={false}
+        reportDefinitionRequest={emptyRequest}
+        httpClientProps={httpClientMock}
+        timeRange={timeRange}
+        showSettingsReportNameError={false}
+        showTimeRangeError={false}
+      />
+    );
+    await act(() => promise);
+
+    const reportSourceRadio = component.find('EuiRadioGroup').at(0);
+    const visualizationRadio = reportSourceRadio.find('EuiRadio').at(2);
+
+    visualizationRadio.find('input').simulate('change', 'savedSearchReportSource');
+    await act(() => promise);
+    const comboBox = component.find('EuiComboBox').at(0);
+
+    act(() => {
+      comboBox.props().onChange([{ value: 'test', label: 'test' }]);
+    })
+    component.update();
+
     await act(() => promise);
   });
 

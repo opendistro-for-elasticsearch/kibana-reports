@@ -13,7 +13,6 @@
  * permissions and limitations under the License.
  */
 
-import { exception } from 'console';
 import {
   getDashboardBaseUrlCreate,
   getDashboardOptions,
