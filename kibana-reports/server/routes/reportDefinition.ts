@@ -46,6 +46,7 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      addToMetric('report_definition', 'create', 'count');
       let reportDefinition = request.body;
       //@ts-ignore
       const logger = context.reporting_plugin.logger;
@@ -70,7 +71,6 @@ export default function (router: IRouter) {
           reportDefinition
         );
 
-        addToMetric('report_definition', 'create', 'count');
         return response.ok({
           body: {
             state: 'Report definition created',
@@ -101,6 +101,7 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      addToMetric('report_definition', 'update', 'count');
       let reportDefinition = request.body;
       //@ts-ignore
       const logger = context.reporting_plugin.logger;
@@ -124,7 +125,6 @@ export default function (router: IRouter) {
           reportDefinition
         );
 
-        addToMetric('report_definition', 'update', 'count');
         return response.ok({
           body: {
             state: 'Report definition updated',
@@ -155,6 +155,7 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      addToMetric('report_definition', 'list', 'count');
       const { fromIndex, maxItems } = request.query as {
         fromIndex: number;
         maxItems: number;
@@ -177,7 +178,6 @@ export default function (router: IRouter) {
         const reportDefinitionsList = backendToUiReportDefinitionsList(
           esResp.reportDefinitionDetailsList
         );
-        addToMetric('report_definition', 'list', 'count');
 
         return response.ok({
           body: {
@@ -210,6 +210,7 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      addToMetric('report_definition', 'info', 'count');
       try {
         // @ts-ignore
         const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
@@ -226,7 +227,6 @@ export default function (router: IRouter) {
         const reportDefinition = backendToUiReportDefinition(
           esResp.reportDefinitionDetails
         );
-        addToMetric('report_definition', 'info', 'count');
 
         return response.ok({
           body: { report_definition: reportDefinition },
@@ -257,6 +257,7 @@ export default function (router: IRouter) {
       request,
       response
     ): Promise<IKibanaResponse<any | ResponseError>> => {
+      addToMetric('report_definition', 'delete', 'count');
       try {
         // @ts-ignore
         const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
@@ -269,7 +270,6 @@ export default function (router: IRouter) {
             reportDefinitionId: request.params.reportDefinitionId,
           }
         );
-        addToMetric('report_definition', 'delete', 'count');
 
         return response.ok({
           body: {
