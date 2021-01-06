@@ -28,7 +28,6 @@ import {
   INTERVAL,
   WINDOW,
 } from './constants';
-import value from '@elastic/eui/dist/eui_theme_*.json';
 
 export const time2CountWin: Map<number, CountersType> = new Map();
 
