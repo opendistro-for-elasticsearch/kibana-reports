@@ -164,7 +164,7 @@ export function ReportSettings(props: ReportSettingProps) {
     }
   };
 
-  const handleDashboardSelect = async (e: string | any[]) => {
+  const handleDashboardSelect = (e: string | any[]) => {
       setDashboardSourceSelect(e);
   
     let fromInContext = false;
@@ -180,7 +180,6 @@ export function ReportSettings(props: ReportSettingProps) {
     else {
       reportDefinitionRequest.report_params.core_params.base_url = "";
     }
-    return e;
   };
 
   const handleVisualizationSelect = (e) => {
@@ -311,7 +310,6 @@ export function ReportSettings(props: ReportSettingProps) {
     ) : null;
 
     useEffect(() => {
-      console.log('aaaaa');
       let unmounted = false;
       if (edit) {
         httpClientProps
@@ -345,11 +343,6 @@ export function ReportSettings(props: ReportSettingProps) {
             );
           });
       } else {
-        if (dashboardSourceSelect) {
-          if (!unmounted) {
-            setDashboardSourceSelect(dashboardSourceSelect);
-          }
-        }
         // keeps header/footer from re-rendering empty when other fields in Report Settings are changed
         checkboxIdSelectHeaderFooter.header =
           'header' in reportDefinitionRequest.report_params.core_params;
@@ -378,72 +371,6 @@ export function ReportSettings(props: ReportSettingProps) {
         <EuiSpacer />
         {showHeader}
         {showFooter}
-      </div>
-    );
-  };
-
-  const ReportSourceDashboard = () => {
-    return (
-      <div>
-        <EuiFormRow 
-          label="Select dashboard"
-          isInvalid={showSettingsReportSourceError}
-          error={settingsReportSourceErrorMessage}
-        >
-        <EuiComboBox
-          id="reportSourceDashboardSelect"
-          placeholder="Select a dashboard"
-          singleSelection={{ asPlainText: true }}
-          options={dashboards}
-          onChange={handleDashboardSelect}
-          selectedOptions={dashboardSourceSelect}
-        />
-        </EuiFormRow>
-        <EuiSpacer />
-      </div>
-    );
-  };
-
-  const ReportSourceVisualization = () => {
-    return (
-      <div>
-        <EuiFormRow 
-          label="Select visualization"
-          isInvalid={showSettingsReportSourceError}
-          error={settingsReportSourceErrorMessage}
-        >
-          <EuiComboBox
-            id="reportSourceVisualizationSelect"
-            placeholder="Select a visualization"
-            singleSelection={{ asPlainText: true }}
-            options={visualizations}
-            onChange={handleVisualizationSelect}
-            selectedOptions={visualizationSourceSelect}
-          />
-        </EuiFormRow>
-        <EuiSpacer />
-      </div>
-    );
-  };
-
-  const ReportSourceSavedSearch = () => {
-    return (
-      <div>
-        <EuiFormRow
-          label="Select saved search"
-          isInvalid={showSettingsReportSourceError}
-          error={settingsReportSourceErrorMessage}
-        >
-          <EuiComboBox
-            id="reportSourceSavedSearchSelect"
-            placeholder="Select a saved search"
-            singleSelection={{ asPlainText: true }}
-            options={savedSearches}
-            onChange={handleSavedSearchSelect}
-            selectedOptions={savedSearchSourceSelect}
-          />
-        </EuiFormRow>
-        <EuiSpacer />
       </div>
     );
   };
@@ -519,7 +446,6 @@ export function ReportSettings(props: ReportSettingProps) {
   }
  
   const setInContextDefaultConfiguration = (response) => {
-    console.log(response);
     const url = window.location.href;
     const id = parseInContextUrl(url, 'id');
     if (url.includes('dashboard')) {
@@ -604,11 +530,7 @@ export function ReportSettings(props: ReportSettingProps) {
         reportSourceOptions.dashboard = dashboardOptions;
         handleDashboards(dashboardOptions);
         if (!edit) {
-          setDashboardSourceSelect([dashboardOptions[0]]);
           reportDefinitionRequest.report_params.report_source = 'Dashboard';
-          reportDefinitionRequest['report_params']['core_params']['base_url'] =
-            getDashboardBaseUrlCreate(edit, editDefinitionId, false) +
-            response['hits']['hits'][0]['_id'].substring(10);
         }
       })
       .catch((error) => {
@@ -623,7 +545,6 @@ export function ReportSettings(props: ReportSettingProps) {
         );
         reportSourceOptions.visualizations = visualizationOptions;
         await handleVisualizations(visualizationOptions);
-        await setVisualizationSourceSelect([visualizationOptions[0]]);
       })
       .catch((error) => {
         console.log('error when fetching visualizations:', error);
@@ -637,7 +558,6 @@ export function ReportSettings(props: ReportSettingProps) {
         );
         reportSourceOptions.savedSearch = savedSearchOptions;
         await handleSavedSearches(savedSearchOptions);
-        await setSavedSearchSourceSelect([savedSearchOptions[0]]);
       })
       .catch((error) => {
         console.log('error when fetching saved searches:', error);
@@ -646,7 +566,6 @@ export function ReportSettings(props: ReportSettingProps) {
   };
 
   useEffect(() => {
-    console.log('use effect running');
     let reportSourceOptions = {};
     let editData = {};
     if (edit) {
@@ -666,24 +585,73 @@ export function ReportSettings(props: ReportSettingProps) {
     });
   }, []);
 
-  // report source use effect
-  useEffect(() => {
-    handleDashboardSelect(dashboardSourceSelect).then(data => setDashboardSourceSelect(data));
-  }, [dashboardSourceSelect]);
-
   const displayDashboardSelect =
     reportSourceId === 'dashboardReportSource' ? (
-      <ReportSourceDashboard />
+      (
+        <div>
+          <EuiFormRow 
+            label="Select dashboard"
+            isInvalid={showSettingsReportSourceError}
+            error={settingsReportSourceErrorMessage}
+          >
+            <EuiComboBox
+              id="reportSourceDashboardSelect"
+              placeholder="Select a dashboard"
+              singleSelection={{ asPlainText: true }}
+              options={dashboards}
+              onChange={handleDashboardSelect}
+              selectedOptions={dashboardSourceSelect}
+            />
+          </EuiFormRow>
+          <EuiSpacer />
+        </div>
+      )
     ) : null;
 
   const displayVisualizationSelect =
     reportSourceId === 'visualizationReportSource' ? (
-      <ReportSourceVisualization />
+      (
+        <div>
+          <EuiFormRow 
+            label="Select visualization"
+            isInvalid={showSettingsReportSourceError}
+            error={settingsReportSourceErrorMessage}
+          >
+            <EuiComboBox
+              id="reportSourceVisualizationSelect"
+              placeholder="Select a visualization"
+              singleSelection={{ asPlainText: true }}
+              options={visualizations}
+              onChange={handleVisualizationSelect}
+              selectedOptions={visualizationSourceSelect}
+            />
+          </EuiFormRow>
+          <EuiSpacer />
+        </div>
+      )
     ) : null;
 
   const displaySavedSearchSelect =
     reportSourceId === 'savedSearchReportSource' ? (
-      <ReportSourceSavedSearch />
+      (
+        <div>
+          <EuiFormRow
+            label="Select saved search"
+            isInvalid={showSettingsReportSourceError}
+            error={settingsReportSourceErrorMessage}
+          >
+            <EuiComboBox
+              id="reportSourceSavedSearchSelect"
+              placeholder="Select a saved search"
+              singleSelection={{ asPlainText: true }}
+              options={savedSearches}
+              onChange={handleSavedSearchSelect}
+              selectedOptions={savedSearchSourceSelect}
+            />
+          </EuiFormRow>
+          <EuiSpacer />
+        </div>
+      )
     ) : null;
 
   const displayVisualReportsFormatAndMarkdown =
@@ -701,6 +669,8 @@ export function ReportSettings(props: ReportSettingProps) {
         </EuiFormRow>
       </div>
     );
+
+
 
   return (
     <EuiPageContent panelPaddingSize={'l'}>
