@@ -38,9 +38,11 @@ import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.Report
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportInstanceListRestHandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportInstancePollRestHandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportInstanceRestHandler
+import com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler.ReportStatsRestHandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.scheduler.ReportDefinitionJobParser
 import com.amazon.opendistroforelasticsearch.reportsscheduler.scheduler.ReportDefinitionJobRunner
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
+
 import org.elasticsearch.action.ActionRequest
 import org.elasticsearch.action.ActionResponse
 import org.elasticsearch.client.Client
@@ -153,7 +155,8 @@ class ReportsSchedulerPlugin : Plugin(), ActionPlugin, JobSchedulerExtension {
             ReportInstanceRestHandler(),
             ReportInstanceListRestHandler(),
             OnDemandReportRestHandler(),
-            ReportInstancePollRestHandler()
+            ReportInstancePollRestHandler(),
+            ReportStatsRestHandler()
         )
     }
 

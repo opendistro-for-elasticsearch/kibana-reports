@@ -17,6 +17,7 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
+import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
 import org.elasticsearch.action.ActionRequest
@@ -74,7 +75,11 @@ internal class OnDemandReportCreateRequest(
                     }
                 }
             }
-            reportDefinitionId ?: throw IllegalArgumentException("$REPORT_DEFINITION_ID_FIELD field absent")
+            reportDefinitionId ?: run {
+                Metrics.REPORT_FROM_DEFINITION_ID_USER_ERROR_INVALID_REPORT_DEF_ID.counter.increment()
+                throw IllegalArgumentException("$REPORT_DEFINITION_ID_FIELD field absent")
+            }
+
             return OnDemandReportCreateRequest(reportDefinitionId)
         }
     }
