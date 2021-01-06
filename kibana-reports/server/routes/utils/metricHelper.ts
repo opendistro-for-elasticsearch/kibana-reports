@@ -114,7 +114,7 @@ const buildMetrics = (rollingCounters: CountersType | undefined) => {
       }
     }
   });
-  overallActionMetrics.success_count +=
+  overallActionMetrics.success_count =
     overallActionMetrics.request_count -
     (overallActionMetrics.failed_request_count_system_error +
       overallActionMetrics.failed_request_count_user_error);
