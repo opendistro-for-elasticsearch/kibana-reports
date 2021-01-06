@@ -19,6 +19,9 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.metrics;
 import com.github.wnameless.json.unflattener.JsonUnflattener;
 import org.json.JSONObject;
 
+/**
+ * Enum to hold all the metrics that need to be logged into _opendistro/_reports/l_ocal/stats API
+ */
 public enum Metrics {
 
     REQUEST_TOTAL("request_total", new BasicCounter()),
@@ -163,6 +166,9 @@ public enum Metrics {
 
     private static final Metrics[] values = values();
 
+    /**
+     * Converts the enum metric values to JSON string
+     */
     public static String collectToJSON() {
         JSONObject metricsJSONObject = new JSONObject();
         for (Metrics metric: values) {
@@ -170,6 +176,20 @@ public enum Metrics {
         }
         return metricsJSONObject.toString();
     }
+
+    /**
+     * Unflattens the JSON to nested JSON for easy readability and parsing
+     * The metric name is unflattened in the output JSON on the period '.' delimiter
+     *
+     * For ex:  { "a.b.c_d" : 2 } becomes
+     *{
+     *   "a" : {
+     *     "b" : {
+     *       "c_d" : 2
+     *     }
+     *   }
+     * }
+     */
 
     public static String collectToFlattenedJSON() {
         return JsonUnflattener.unflatten(collectToJSON());
