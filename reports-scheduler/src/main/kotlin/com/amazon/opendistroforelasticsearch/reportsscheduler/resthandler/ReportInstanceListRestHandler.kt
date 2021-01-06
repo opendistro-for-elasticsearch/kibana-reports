@@ -18,12 +18,12 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetAllReportInstancesAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportInstanceActions
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportInstancesRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.FROM_INDEX_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.MAX_ITEMS_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
 import org.elasticsearch.client.node.NodeClient
+import org.elasticsearch.rest.BaseRestHandler
 import org.elasticsearch.rest.BaseRestHandler.RestChannelConsumer
 import org.elasticsearch.rest.BytesRestResponse
 import org.elasticsearch.rest.RestHandler.Route
@@ -35,7 +35,7 @@ import org.elasticsearch.rest.RestStatus
  * Rest handler for getting list of report instances.
  * This handler uses [ReportInstanceActions].
  */
-internal class ReportInstanceListRestHandler : PluginBaseHandler() {
+internal class ReportInstanceListRestHandler : BaseRestHandler() {
     companion object {
         private const val REPORT_INSTANCE_LIST_ACTION = "report_instance_list_actions"
         private const val LIST_REPORT_INSTANCES_URL = "$BASE_REPORTS_URI/instances"
@@ -73,13 +73,11 @@ internal class ReportInstanceListRestHandler : PluginBaseHandler() {
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
+    override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
         val from = request.param(FROM_INDEX_FIELD)?.toIntOrNull() ?: 0
         val maxItems = request.param(MAX_ITEMS_FIELD)?.toIntOrNull() ?: PluginSettings.defaultItemsQueryCount
         return when (request.method()) {
             GET -> RestChannelConsumer {
-                Metrics.REPORT_INSTANCE_LIST_TOTAL.counter.increment()
-                Metrics.REPORT_INSTANCE_LIST_INTERVAL_COUNT.counter.increment()
                 client.execute(GetAllReportInstancesAction.ACTION_TYPE,
                     GetAllReportInstancesRequest(from, maxItems),
                     RestResponseToXContentListener(it))

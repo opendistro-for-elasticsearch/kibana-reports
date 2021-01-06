@@ -17,7 +17,6 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_DEFINITION_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.createJsonParser
 import com.amazon.opendistroforelasticsearch.reportsscheduler.util.logger
@@ -60,7 +59,7 @@ internal class CreateReportDefinitionRequest : ActionRequest, ToXContentObject {
     constructor(input: StreamInput) : this(input.createJsonParser())
 
     /**
-     * Parse the data from parser and create [CreateReportDefinitionRequest] object
+     * Parse the data from parser and create [GetAllReportDefinitionsResponse] object
      * @param parser data referenced at parser
      */
     constructor(parser: XContentParser) : super() {
@@ -77,10 +76,7 @@ internal class CreateReportDefinitionRequest : ActionRequest, ToXContentObject {
                 }
             }
         }
-        reportDefinition ?: run {
-            Metrics.REPORT_DEFINITION_CREATE_USER_ERROR.counter.increment()
-            throw IllegalArgumentException("$REPORT_DEFINITION_FIELD field absent")
-        }
+        reportDefinition ?: throw IllegalArgumentException("$REPORT_DEFINITION_FIELD field absent")
         this.reportDefinition = reportDefinition
     }
 

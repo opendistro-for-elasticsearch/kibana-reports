@@ -17,7 +17,6 @@
 package com.amazon.opendistroforelasticsearch.reportsscheduler.model
 
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.LOG_PREFIX
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.ReportInstance.Status
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.REPORT_INSTANCE_ID_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.STATUS_FIELD
@@ -87,14 +86,8 @@ internal class UpdateReportInstanceStatusRequest(
                     }
                 }
             }
-            reportInstanceId ?: run {
-                Metrics.REPORT_INSTANCE_UPDATE_USER_ERROR_INVALID_REPORT_ID.counter.increment()
-                throw IllegalArgumentException("$REPORT_INSTANCE_ID_FIELD field absent")
-            }
-            status ?: run {
-                Metrics.REPORT_INSTANCE_UPDATE_USER_ERROR_INVALID_STATUS.counter.increment()
-                throw IllegalArgumentException("$STATUS_FIELD field absent")
-            }
+            reportInstanceId ?: throw IllegalArgumentException("$REPORT_INSTANCE_ID_FIELD field absent")
+            status ?: throw IllegalArgumentException("$STATUS_FIELD field absent")
             return UpdateReportInstanceStatusRequest(reportInstanceId, status, statusText)
         }
     }

@@ -18,13 +18,12 @@ package com.amazon.opendistroforelasticsearch.reportsscheduler.resthandler
 import com.amazon.opendistroforelasticsearch.reportsscheduler.ReportsSchedulerPlugin.Companion.BASE_REPORTS_URI
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.GetAllReportDefinitionsAction
 import com.amazon.opendistroforelasticsearch.reportsscheduler.action.ReportDefinitionActions
-import com.amazon.opendistroforelasticsearch.reportsscheduler.metrics.Metrics
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.GetAllReportDefinitionsRequest
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.FROM_INDEX_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.model.RestTag.MAX_ITEMS_FIELD
 import com.amazon.opendistroforelasticsearch.reportsscheduler.settings.PluginSettings
-
 import org.elasticsearch.client.node.NodeClient
+import org.elasticsearch.rest.BaseRestHandler
 import org.elasticsearch.rest.BaseRestHandler.RestChannelConsumer
 import org.elasticsearch.rest.BytesRestResponse
 import org.elasticsearch.rest.RestHandler.Route
@@ -36,7 +35,7 @@ import org.elasticsearch.rest.RestStatus
  * Rest handler for getting list of report definitions.
  * This handler uses [ReportDefinitionActions].
  */
-internal class ReportDefinitionListRestHandler : PluginBaseHandler() {
+internal class ReportDefinitionListRestHandler : BaseRestHandler() {
     companion object {
         private const val REPORT_DEFINITION_LIST_ACTION = "report_definition_list_actions"
         private const val LIST_REPORT_DEFINITIONS_URL = "$BASE_REPORTS_URI/definitions"
@@ -67,13 +66,11 @@ internal class ReportDefinitionListRestHandler : PluginBaseHandler() {
     /**
      * {@inheritDoc}
      */
-    override fun executeRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
+    override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
         val from = request.param(FROM_INDEX_FIELD)?.toIntOrNull() ?: 0
         val maxItems = request.param(MAX_ITEMS_FIELD)?.toIntOrNull() ?: PluginSettings.defaultItemsQueryCount
         return when (request.method()) {
             GET -> RestChannelConsumer {
-                Metrics.REPORT_DEFINITION_LIST_TOTAL.counter.increment()
-                Metrics.REPORT_DEFINITION_LIST_INTERVAL_COUNT.counter.increment()
                 client.execute(GetAllReportDefinitionsAction.ACTION_TYPE,
                     GetAllReportDefinitionsRequest(from, maxItems),
                     RestResponseToXContentListener(it))
