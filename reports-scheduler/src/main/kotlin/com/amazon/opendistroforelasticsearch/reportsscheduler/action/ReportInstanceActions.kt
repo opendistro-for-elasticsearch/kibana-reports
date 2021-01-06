@@ -162,7 +162,7 @@ internal object ReportInstanceActions {
         val reportInstance = ReportInstancesIndex.getReportInstance(request.reportInstanceId)
         reportInstance
             ?: run {
-                Metrics.REPORT_INSTANCE_INFO_USER_ERROR.counter.increment()
+                Metrics.REPORT_INSTANCE_INFO_USER_ERROR_MISSING_REPORT_INSTANCE.counter.increment()
                 throw ElasticsearchStatusException("Report Instance ${request.reportInstanceId} not found", RestStatus.NOT_FOUND)
             }
 

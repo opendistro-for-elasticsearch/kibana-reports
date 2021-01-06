@@ -105,7 +105,6 @@ public enum Metrics {
     // GET _opendistro/_reports/instance/{reportInstanceId}
     REPORT_INSTANCE_INFO_TOTAL("report_instance.info.total", new BasicCounter()),
     REPORT_INSTANCE_INFO_INTERVAL_COUNT("report_instance.info.count", new RollingCounter()),
-    REPORT_INSTANCE_INFO_USER_ERROR("report_instance.info.user_error", new RollingCounter()),
     REPORT_INSTANCE_INFO_USER_ERROR_MISSING_REPORT_INSTANCE(
         "report_instance.info.user_error.missing_report_instance",
         new RollingCounter()
