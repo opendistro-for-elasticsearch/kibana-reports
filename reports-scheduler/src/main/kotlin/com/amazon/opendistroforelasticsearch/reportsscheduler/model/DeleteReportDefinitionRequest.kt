@@ -76,7 +76,7 @@ internal class DeleteReportDefinitionRequest(
                 }
             }
             reportDefinitionId ?: run {
-                Metrics.REPORT_DEFINITION_DELETE_USER_ERROR.counter.increment()
+                Metrics.REPORT_DEFINITION_DELETE_USER_ERROR_INVALID_REPORT_DEF_ID.counter.increment()
                 throw IllegalArgumentException("$REPORT_DEFINITION_ID_FIELD field absent")
             }
             return DeleteReportDefinitionRequest(reportDefinitionId)

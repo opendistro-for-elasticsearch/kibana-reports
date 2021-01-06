@@ -101,7 +101,7 @@ internal class GetAllReportDefinitionsRequest(
         return if (fromIndex < 0) {
             val exception = ActionRequestValidationException()
             exception.addValidationError("fromIndex should be greater than 0")
-            Metrics.REPORT_DEFINITION_LIST_USER_ERROR.counter.increment()
+            Metrics.REPORT_DEFINITION_LIST_USER_ERROR_INVALID_FROM_INDEX.counter.increment()
             exception
         } else {
             null

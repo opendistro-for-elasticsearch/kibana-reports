@@ -88,11 +88,11 @@ internal class UpdateReportInstanceStatusRequest(
                 }
             }
             reportInstanceId ?: run {
-                Metrics.REPORT_INSTANCE_UPDATE_USER_ERROR.counter.increment()
+                Metrics.REPORT_INSTANCE_UPDATE_USER_ERROR_INVALID_REPORT_ID.counter.increment()
                 throw IllegalArgumentException("$REPORT_INSTANCE_ID_FIELD field absent")
             }
             status ?: run {
-                Metrics.REPORT_INSTANCE_UPDATE_USER_ERROR.counter.increment()
+                Metrics.REPORT_INSTANCE_UPDATE_USER_ERROR_INVALID_STATUS.counter.increment()
                 throw IllegalArgumentException("$STATUS_FIELD field absent")
             }
             return UpdateReportInstanceStatusRequest(reportInstanceId, status, statusText)

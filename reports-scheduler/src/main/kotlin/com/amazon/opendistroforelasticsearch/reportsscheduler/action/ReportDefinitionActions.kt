@@ -76,7 +76,7 @@ internal object ReportDefinitionActions {
         val currentReportDefinitionDetails = ReportDefinitionsIndex.getReportDefinition(request.reportDefinitionId)
         currentReportDefinitionDetails
             ?: run {
-                Metrics.REPORT_DEFINITION_UPDATE_USER_ERROR.counter.increment()
+                Metrics.REPORT_DEFINITION_UPDATE_USER_ERROR_MISSING_REPORT_DEF_DETAILS.counter.increment()
                 throw ElasticsearchStatusException("Report Definition ${request.reportDefinitionId} not found", RestStatus.NOT_FOUND)
             }
 
@@ -132,7 +132,7 @@ internal object ReportDefinitionActions {
         val reportDefinitionDetails = ReportDefinitionsIndex.getReportDefinition(request.reportDefinitionId)
         reportDefinitionDetails
             ?: run {
-                Metrics.REPORT_DEFINITION_DELETE_USER_ERROR.counter.increment()
+                Metrics.REPORT_DEFINITION_DELETE_USER_ERROR_MISSING_REPORT_DEF_DETAILS.counter.increment()
                 throw ElasticsearchStatusException("Report Definition ${request.reportDefinitionId} not found", RestStatus.NOT_FOUND)
             }
 

@@ -70,7 +70,7 @@ internal class UpdateReportDefinitionResponse(
                 }
             }
             reportDefinitionId ?: run {
-                Metrics.REPORT_DEFINITION_UPDATE_USER_ERROR.counter.increment()
+                Metrics.REPORT_DEFINITION_UPDATE_SYSTEM_ERROR.counter.increment()
                 throw IllegalArgumentException("$REPORT_DEFINITION_ID_FIELD field absent")
             }
             return UpdateReportDefinitionResponse(reportDefinitionId)

@@ -119,15 +119,15 @@ internal class InContextReportCreateRequest : ActionRequest, ToXContentObject {
             }
         }
         beginTime ?: run {
-            Metrics.REPORT_FROM_DEFINITION_USER_ERROR.counter.increment()
+            Metrics.REPORT_FROM_DEFINITION_USER_ERROR_INVALID_BEGIN_TIME.counter.increment()
             throw IllegalArgumentException("$BEGIN_TIME_FIELD field absent")
         }
         endTime ?: run {
-            Metrics.REPORT_FROM_DEFINITION_USER_ERROR.counter.increment()
+            Metrics.REPORT_FROM_DEFINITION_USER_ERROR_INVALID_END_TIME.counter.increment()
             throw IllegalArgumentException("$END_TIME_FIELD field absent")
         }
         status ?: run {
-            Metrics.REPORT_FROM_DEFINITION_USER_ERROR.counter.increment()
+            Metrics.REPORT_FROM_DEFINITION_USER_ERROR_INVALID_STATUS.counter.increment()
             throw IllegalArgumentException("$STATUS_FIELD field absent")
         }
         this.beginTime = beginTime

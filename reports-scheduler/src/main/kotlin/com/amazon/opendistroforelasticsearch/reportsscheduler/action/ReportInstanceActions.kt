@@ -89,7 +89,7 @@ internal object ReportInstanceActions {
         val reportDefinitionDetails = ReportDefinitionsIndex.getReportDefinition(request.reportDefinitionId)
         reportDefinitionDetails
             ?: run {
-                Metrics.REPORT_DEFINITION_INFO_USER_ERROR.counter.increment()
+                Metrics.REPORT_DEFINITION_INFO_USER_ERROR_MISSING_REPORT_DEF_DETAILS.counter.increment()
                 throw ElasticsearchStatusException("Report Definition ${request.reportDefinitionId} not found", RestStatus.NOT_FOUND)
             }
 
@@ -129,7 +129,7 @@ internal object ReportInstanceActions {
         val currentReportInstance = ReportInstancesIndex.getReportInstance(request.reportInstanceId)
         currentReportInstance
             ?: run {
-                Metrics.REPORT_INSTANCE_UPDATE_USER_ERROR.counter.increment()
+                Metrics.REPORT_INSTANCE_UPDATE_USER_ERROR_MISSING_REPORT_INSTANCE.counter.increment()
                 throw ElasticsearchStatusException("Report Instance ${request.reportInstanceId} not found", RestStatus.NOT_FOUND)
             }
         if (!UserAccessManager.doesUserHasAccess(user, currentReportInstance.tenant, currentReportInstance.access)) {
@@ -137,7 +137,7 @@ internal object ReportInstanceActions {
             throw ElasticsearchStatusException("Permission denied for Report Definition ${request.reportInstanceId}", RestStatus.FORBIDDEN)
         }
         if (request.status == Status.Scheduled) { // Don't allow changing status to Scheduled
-            Metrics.REPORT_INSTANCE_UPDATE_USER_ERROR.counter.increment()
+            Metrics.REPORT_INSTANCE_UPDATE_USER_ERROR_INVALID_STATUS.counter.increment()
             throw ElasticsearchStatusException("Status cannot be updated to ${Status.Scheduled}", RestStatus.BAD_REQUEST)
         }
         val currentTime = Instant.now()

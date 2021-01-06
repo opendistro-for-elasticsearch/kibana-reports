@@ -76,7 +76,7 @@ internal class OnDemandReportCreateRequest(
                 }
             }
             reportDefinitionId ?: run {
-                Metrics.REPORT_FROM_DEFINITION_ID_USER_ERROR.counter.increment()
+                Metrics.REPORT_FROM_DEFINITION_ID_USER_ERROR_INVALID_REPORT_DEF_ID.counter.increment()
                 throw IllegalArgumentException("$REPORT_DEFINITION_ID_FIELD field absent")
             }
 

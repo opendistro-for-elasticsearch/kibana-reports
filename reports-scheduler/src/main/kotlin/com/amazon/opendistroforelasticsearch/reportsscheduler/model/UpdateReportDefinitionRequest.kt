@@ -85,11 +85,11 @@ internal class UpdateReportDefinitionRequest : ActionRequest, ToXContentObject {
             }
         }
         reportDefinitionId ?: run {
-            Metrics.REPORT_DEFINITION_UPDATE_USER_ERROR.counter.increment()
+            Metrics.REPORT_DEFINITION_UPDATE_USER_ERROR_INVALID_REPORT_DEF_ID.counter.increment()
             throw IllegalArgumentException("$REPORT_DEFINITION_ID_FIELD field absent")
         }
         reportDefinition ?: run {
-            Metrics.REPORT_DEFINITION_UPDATE_USER_ERROR.counter.increment()
+            Metrics.REPORT_DEFINITION_UPDATE_USER_ERROR_INVALID_REPORT_DEF.counter.increment()
             throw IllegalArgumentException("$REPORT_DEFINITION_FIELD field absent")
         }
         this.reportDefinitionId = reportDefinitionId
