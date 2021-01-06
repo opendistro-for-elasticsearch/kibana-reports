@@ -198,6 +198,11 @@ export const generateReportById = async (
       console.log('error on generating report by id:', error);
       if (error.body.statusCode === 403) {
         handlePermissionsMissingToast();
+      } else if (error.body.statusCode === 503) {
+        handleErrorToast(
+          'Error generating report.',
+          `Timed out generating report ID ${reportId}. Try again later.`
+        );
       } else {
         handleErrorToast();
       }

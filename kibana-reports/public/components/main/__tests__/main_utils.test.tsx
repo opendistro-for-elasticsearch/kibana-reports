@@ -129,4 +129,28 @@ describe('main_utils tests', () => {
       handleErrorToast
     );
   });
+
+  test('test generateReportById timeout error handling', async () => {
+    expect.assertions(1);
+    const reportId = '1';
+    const handleSuccessToast = jest.fn();
+    const handleErrorToast = jest.fn();
+    const handlePermissionsMissingToast = jest.fn();
+
+    httpClientMock.get.mockReturnValue(
+      Promise.reject({ body: { statusCode: 503 } })
+    );
+
+    await generateReportById(
+      reportId,
+      httpClientMock,
+      handleSuccessToast,
+      handleErrorToast,
+      handlePermissionsMissingToast
+    );
+    expect(handleErrorToast).toHaveBeenCalledWith(
+      'Error generating report.',
+      'Timed out generating report ID 1. Try again later.'
+    );
+  });
 });

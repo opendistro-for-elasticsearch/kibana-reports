@@ -20,6 +20,7 @@
     "plugin_helpers": "node ../../scripts/plugin_helpers"
   },
   "dependencies": {
+    "async-mutex": "^0.2.6",
     "babel-polyfill": "^6.26.0",
     "cheerio": "0.22.0",
     "cron-validator": "^1.1.1",
