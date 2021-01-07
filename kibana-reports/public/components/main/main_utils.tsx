@@ -59,9 +59,7 @@ export const addReportsTableContent = (data) => {
       sender: `\u2014`,
       kibanaRecipients: `\u2014`,
       emailRecipients: `\u2014`,
-      reportSource: reportParams.report_name.substring(
-        0, reportParams.report_name.lastIndexOf('_') 
-      ), // remove uuid from report name to display report source
+      reportSource: reportParams.description, // display report source name
       //TODO: wrong name
       timeCreated: report.time_created,
       state: report.state,

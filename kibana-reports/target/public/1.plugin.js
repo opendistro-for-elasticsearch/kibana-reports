@@ -1507,7 +1507,7 @@ function ReportsTable(props) {
   const reportsListSearch = {
     box: {
       incremental: true,
-      placeholder: 'Search by Report ID'
+      placeholder: 'Search by Report ID, Source'
     } // filters: [
     //   {
     //     type: 'field_value_selection',

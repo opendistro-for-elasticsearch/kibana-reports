@@ -73,7 +73,7 @@ exports[`<Main /> panel render component 1`] = `
               <input
                 aria-label="This is a search bar. As you type, the results lower in the page will automatically filter."
                 class="euiFieldSearch euiFieldSearch--fullWidth"
-                placeholder="Search by Report ID"
+                placeholder="Search by Report ID, Source"
                 type="search"
                 value=""
               />
@@ -377,7 +377,7 @@ exports[`<Main /> panel render component after create success 1`] = `
               <input
                 aria-label="This is a search bar. As you type, the results lower in the page will automatically filter."
                 class="euiFieldSearch euiFieldSearch--fullWidth"
-                placeholder="Search by Report ID"
+                placeholder="Search by Report ID, Source"
                 type="search"
                 value=""
               />
@@ -1729,7 +1729,7 @@ exports[`<Main /> panel render component after edit success 1`] = `
               <input
                 aria-label="This is a search bar. As you type, the results lower in the page will automatically filter."
                 class="euiFieldSearch euiFieldSearch--fullWidth"
-                placeholder="Search by Report ID"
+                placeholder="Search by Report ID, Source"
                 type="search"
                 value=""
               />
