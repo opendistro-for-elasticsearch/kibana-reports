@@ -21,6 +21,7 @@ import {
   reportGenerationFailure,
   permissionsMissingOnGeneration,
 } from './context_menu_ui';
+import { timeRangeMatcher } from '../utils/utils';
 
 const getReportSourceURL = (baseURI) => {
   const url = baseURI.substr(0, baseURI.indexOf('?'));
@@ -34,9 +35,7 @@ export const contextMenuViewReports = () =>
 export const getTimeFieldsFromUrl = () => {
   const url = window.location.href;
 
-  let [, fromDateString, toDateString] = url.match(
-    /time:\(from:(.+),to:(.+?)\)/
-  );
+  let [, fromDateString, toDateString] = url.match(timeRangeMatcher);
   fromDateString = fromDateString.replace(/[']+/g, '');
   // convert time range to from date format in case time range is relative
   const fromDateFormat = dateMath.parse(fromDateString);

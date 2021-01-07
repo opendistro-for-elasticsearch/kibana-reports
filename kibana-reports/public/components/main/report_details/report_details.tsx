@@ -38,9 +38,10 @@ import { GenerateReportLoadingModal } from '../loading_modal';
 import { ReportSchemaType } from '../../../../server/model';
 import { converter } from '../../report_definitions/utils';
 import dateMath from '@elastic/datemath';
-import { 
-  permissionsMissingActions, 
-  permissionsMissingToast 
+import {
+  permissionsMissingActions,
+  permissionsMissingToast,
+  timeRangeMatcher,
 } from '../../utils/utils';
 
 export const ReportDetailsComponent = (props) => {
@@ -88,11 +89,11 @@ export function ReportDetails(props) {
       permissionsMissingActions.GENERATING_REPORT
     );
     setToasts(toasts.concat(toast));
-  }
+  };
 
   const handlePermissionsMissingDownloadToast = () => {
     addPermissionsMissingDownloadToastHandler();
-  }
+  };
 
   const addErrorToastHandler = (title = 'Error loading report details.', text = '') => {
     const errorToast = {
@@ -142,7 +143,7 @@ export function ReportDetails(props) {
 
   const parseTimePeriod = (queryUrl: string) => {
     let [timeStringRegEx, fromDateString, toDateString] = queryUrl.match(
-      /time:\(from:(.+),to:(.+?)\)/
+      timeRangeMatcher
     );
 
     fromDateString = fromDateString.replace(/[']+/g, '');
@@ -244,15 +245,13 @@ export function ReportDetails(props) {
       handlePermissionsMissingDownloadToast
     );
     handleLoading(false);
-  }
+  };
 
   const fileFormatDownload = (data) => {
     let formatUpper = data['defaultFileFormat'];
     formatUpper = fileFormatsUpper[formatUpper];
     return (
-      <EuiLink
-        onClick={downloadIconDownload}
-      >
+      <EuiLink onClick={downloadIconDownload}>
         {formatUpper + ' '}
         <EuiIcon type="importAction" />
       </EuiLink>
