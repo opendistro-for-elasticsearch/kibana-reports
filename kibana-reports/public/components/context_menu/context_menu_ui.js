@@ -26,7 +26,7 @@ export const popoverMenu = (savedObjectAvailable) => {
     ? 'euiContextMenuItem'
     : 'euiContextMenuItem euiContextMenuItem-isDisabled';
   const button = savedObjectAvailable ? 'button' : 'button disabled';
-  const popoverHeight = savedObjectAvailable ? '395px' : '363px';
+  const popoverHeight = savedObjectAvailable ? '395px' : '373px';
   const message = savedObjectAvailable
     ? `Files can take a minute or two to generate depending on the size of your source data.`
     : `Save this Visualization/Dashboard to enable PDF/PNG reports.`;
