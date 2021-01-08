@@ -241,7 +241,7 @@ const isDiscoverNavMenu = (navMenu) => {
 }
 
 const isDashboardNavMenu = (navMenu) => {
-  return navMenu[0].children.length === 4 && 
+  return (navMenu[0].children.length === 4 || navMenu[0].children.length === 6) && 
     ($('[data-test-subj="breadcrumb first"]').prop('title') === 'Dashboard')
 }
 
