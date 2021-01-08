@@ -29,12 +29,11 @@ import {
   popoverMenuDiscover,
   getMenuItem,
 } from './context_menu_ui';
+import { timeRangeMatcher } from '../utils/utils';
 
 const replaceQueryURL = () => {
   let url = location.pathname + location.hash;
-  let [, fromDateString, toDateString] = url.match(
-    /time:\(from:(.+),to:(.+?)\)/
-  );
+  let [, fromDateString, toDateString] = url.match(timeRangeMatcher);
   fromDateString = fromDateString.replace(/[']+/g, '');
 
   // convert time range to from date format in case time range is relative
