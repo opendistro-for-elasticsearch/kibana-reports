@@ -12165,6 +12165,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _context_menu_ui__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./context_menu_ui */ "./public/components/context_menu/context_menu_ui.js");
 /* harmony import */ var uuid_v4__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! uuid/v4 */ "../../node_modules/uuid/v4.js");
 /* harmony import */ var uuid_v4__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(uuid_v4__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/utils */ "./public/components/utils/utils.tsx");
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -12188,9 +12189,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 const replaceQueryURL = () => {
   let url = location.pathname + location.hash;
-  let [, fromDateString, toDateString] = url.match(/time:\(from:(.+),to:(.+?)\)/);
+  let [, fromDateString, toDateString] = url.match(_utils_utils__WEBPACK_IMPORTED_MODULE_6__["timeRangeMatcher"]);
   fromDateString = fromDateString.replace(/[']+/g, ''); // convert time range to from date format in case time range is relative
 
   const fromDateFormat = _elastic_datemath__WEBPACK_IMPORTED_MODULE_1___default.a.parse(fromDateString);
@@ -12440,6 +12442,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "moment");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _context_menu_ui__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./context_menu_ui */ "./public/components/context_menu/context_menu_ui.js");
+/* harmony import */ var _utils_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/utils */ "./public/components/utils/utils.tsx");
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -12454,6 +12457,7 @@ __webpack_require__.r(__webpack_exports__);
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+
 
 
 
@@ -12483,7 +12487,7 @@ const contextMenuCreateReportDefinition = baseURI => {
 const contextMenuViewReports = () => window.location.assign('opendistro_kibana_reports#/');
 const getTimeFieldsFromUrl = () => {
   const url = window.location.href;
-  let [, fromDateString, toDateString] = url.match(/time:\(from:(.+),to:(.+?)\)/);
+  let [, fromDateString, toDateString] = url.match(_utils_utils__WEBPACK_IMPORTED_MODULE_3__["timeRangeMatcher"]);
   fromDateString = fromDateString.replace(/[']+/g, ''); // convert time range to from date format in case time range is relative
 
   const fromDateFormat = _elastic_datemath__WEBPACK_IMPORTED_MODULE_0___default.a.parse(fromDateString);
@@ -13083,6 +13087,58 @@ const generateReportById = async (reportId, httpClient, handleSuccessToast, hand
     }
   });
 };
+
+/***/ }),
+
+/***/ "./public/components/utils/utils.tsx":
+/*!*******************************************!*\
+  !*** ./public/components/utils/utils.tsx ***!
+  \*******************************************/
+/*! exports provided: permissionsMissingToast, permissionsMissingActions, timeRangeMatcher */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "permissionsMissingToast", function() { return permissionsMissingToast; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "permissionsMissingActions", function() { return permissionsMissingActions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "timeRangeMatcher", function() { return timeRangeMatcher; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/*
+ * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+
+const permissionsMissingToast = action => {
+  return {
+    title: 'Error ' + action,
+    color: 'danger',
+    iconType: 'alert',
+    id: 'permissionsMissingErrorToast' + action.replace(' ', ''),
+    text: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Insufficient permissions. Reach out to your Kibana administrator.")
+  };
+};
+const permissionsMissingActions = {
+  CHANGE_SCHEDULE_STATUS: 'changing schedule status.',
+  DELETE_REPORT_DEFINITION: 'deleting report definition.',
+  GENERATING_REPORT: 'generating report.',
+  LOADING_REPORTS_TABLE: 'loading reports table.',
+  LOADING_DEFINITIONS_TABLE: 'loading report definitions table.',
+  VIEWING_EDIT_PAGE: 'viewing edit page.',
+  UPDATING_DEFINITION: 'updating report definition',
+  CREATING_REPORT_DEFINITION: 'creating new report definition.'
+};
+const timeRangeMatcher = /time:\(from:(.+?),to:(.+?)\)/;
 
 /***/ }),
 

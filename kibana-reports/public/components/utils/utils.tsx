@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import React from "react";
+import React from 'react';
 
 export const permissionsMissingToast = (action: string) => {
   return {
@@ -35,5 +35,7 @@ export const permissionsMissingActions = {
   LOADING_DEFINITIONS_TABLE: 'loading report definitions table.',
   VIEWING_EDIT_PAGE: 'viewing edit page.',
   UPDATING_DEFINITION: 'updating report definition',
-  CREATING_REPORT_DEFINITION: 'creating new report definition.'
-}
+  CREATING_REPORT_DEFINITION: 'creating new report definition.',
+};
+
+export const timeRangeMatcher = /time:\(from:(.+?),to:(.+?)\)/;
