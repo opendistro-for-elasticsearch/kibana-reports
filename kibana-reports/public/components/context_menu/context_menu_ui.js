@@ -21,10 +21,18 @@ export const getMenuItem = (name) => {
     `;
 };
 
-export const popoverMenu = () => {
+export const popoverMenu = (savedObjectAvailable) => {
+  const buttonClass = savedObjectAvailable
+    ? 'euiContextMenuItem'
+    : 'euiContextMenuItem euiContextMenuItem-isDisabled';
+  const button = savedObjectAvailable ? 'button' : 'button disabled';
+  const popoverHeight = savedObjectAvailable ? '395px' : '380px';
+  const message = savedObjectAvailable
+    ? `Files can take a minute or two to generate depending on the size of your source data.`
+    : `Save this Visualization/Dashboard to enable PDF/PNG reports.`;
+
   const arrowRight = '100px';
   const popoverRight = '77px';
-  const popoverHeight = '395px';
 
   return `
     <div>
@@ -46,20 +54,18 @@ export const popoverMenu = () => {
                    </div>
                    <div>
                     <span class="euiContextMenuItem__text" style="padding-left: 10px; padding-right: 10px; margin-top: 10px; box-decoration-break: clone; display: inline-block;">
-                      Files can take a minute or two 
-                      to generate depending on the 
-                      size of your source data
+                      ${message}
                     </span>
                    </div>
                    <div>
                       <div>
-                         <button class="euiContextMenuItem" type="button" data-test-subj="downloadPanel-GeneratePDF" id="generatePDF">
+                         <${button} class="${buttonClass}" type="button" data-test-subj="downloadPanel-GeneratePDF" id="generatePDF">
                             <span class="euiContextMenu__itemLayout">
                             <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon" focusable="false" role="img" aria-hidden="true"><path d="M9 9.114l1.85-1.943a.52.52 0 01.77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 01-2.31 0L5.41 8a.617.617 0 010-.829.52.52 0 01.77 0L8 9.082V.556C8 .249 8.224 0 8.5 0s.5.249.5.556v8.558z"></path><path d="M16 13.006V10h-1v3.006a.995.995 0 01-.994.994H3.01a.995.995 0 01-.994-.994V10h-1v3.006c0 1.1.892 1.994 1.994 1.994h10.996c1.1 0 1.994-.893 1.994-1.994z"></path></svg>
                                <span class="euiContextMenuItem__text">Download PDF</span>
                             </span>
                          </button>
-                         <button class="euiContextMenuItem" type="button" data-test-subj="downloadPanel-GeneratePNG" id="generatePNG">
+                         <${button} class="${buttonClass}" type="button" data-test-subj="downloadPanel-GeneratePNG" id="generatePNG">
                             <span class="euiContextMenu__itemLayout">
                             <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon" focusable="false" role="img" aria-hidden="true"><path d="M9 9.114l1.85-1.943a.52.52 0 01.77 0c.214.228.214.6 0 .829l-1.95 2.05a1.552 1.552 0 01-2.31 0L5.41 8a.617.617 0 010-.829.52.52 0 01.77 0L8 9.082V.556C8 .249 8.224 0 8.5 0s.5.249.5.556v8.558z"></path><path d="M16 13.006V10h-1v3.006a.995.995 0 01-.994.994H3.01a.995.995 0 01-.994-.994V10h-1v3.006c0 1.1.892 1.994 1.994 1.994h10.996c1.1 0 1.994-.893 1.994-1.994z"></path></svg>
                                <span class="euiContextMenuItem__text">Download PNG</span>
@@ -73,7 +79,7 @@ export const popoverMenu = () => {
                     </span>
                   </div>
                   <div>
-                    <button class="euiContextMenuItem" type="button" data-test-subj="downloadPanel-GeneratePDF" id="createReportDefinition">
+                    <${button} class="${buttonClass}" type="button" data-test-subj="downloadPanel-GeneratePDF" id="createReportDefinition">
                       <span class="euiContextMenu__itemLayout">
                         <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon" focusable="false" role="img" aria-hidden="true"><path d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z" fill-rule="evenodd"></path></svg>
                         <span class="euiContextMenuItem__text">Create report definition</span>
@@ -108,13 +114,14 @@ export const popoverMenu = () => {
     `;
 };
 
-export const popoverMenuDiscover = (savedSearchAvailable) => {
-  const buttonClass = savedSearchAvailable
+// TODO: merge this function and popoverMenu() into one
+export const popoverMenuDiscover = (savedObjectAvailable) => {
+  const buttonClass = savedObjectAvailable
     ? 'euiContextMenuItem'
     : 'euiContextMenuItem euiContextMenuItem-isDisabled';
-  const button = savedSearchAvailable ? 'button' : 'button disabled';
-  const popoverHeight = savedSearchAvailable ? '354px' : '322px';
-  const message = savedSearchAvailable
+  const button = savedObjectAvailable ? 'button' : 'button disabled';
+  const popoverHeight = savedObjectAvailable ? '354px' : '322px';
+  const message = savedObjectAvailable
     ? `Files can take a minute or two to generate depending on the size of your source data.`
     : `Save this search to enable CSV reports.`;
   const arrowRight = '60px';
