@@ -76,9 +76,9 @@ const generateInContextReport = (
     time_to: timeRanges.time_to.valueOf(),
     report_definition: {
       report_params: {
-        report_name: $('span.euiBreadcrumb').prop('title') + '_' + uuidv4(),
+        report_name: reportSource + '_' + uuidv4(),
         report_source: reportSource,
-        description: 'In-context report download',
+        description: $('span.euiBreadcrumb').prop('title'),
         core_params: {
           base_url: baseUrl,
           report_format: fileFormat,
