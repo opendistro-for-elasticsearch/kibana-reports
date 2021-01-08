@@ -1192,7 +1192,7 @@ function ReportDetails(props) {
   };
 
   const parseTimePeriod = queryUrl => {
-    let [timeStringRegEx, fromDateString, toDateString] = queryUrl.match(/time:\(from:(.+),to:(.+?)\)/);
+    let [timeStringRegEx, fromDateString, toDateString] = queryUrl.match(_utils_utils__WEBPACK_IMPORTED_MODULE_6__["timeRangeMatcher"]);
     fromDateString = fromDateString.replace(/[']+/g, '');
     toDateString = toDateString.replace(/[']+/g, '');
     let fromDateParsed = _elastic_datemath__WEBPACK_IMPORTED_MODULE_5___default.a.parse(fromDateString);
@@ -4293,56 +4293,6 @@ const definitionInputValidation = async (metadata, error, setShowSettingsReportN
   }
 
   return error;
-};
-
-/***/ }),
-
-/***/ "./public/components/utils/utils.tsx":
-/*!*******************************************!*\
-  !*** ./public/components/utils/utils.tsx ***!
-  \*******************************************/
-/*! exports provided: permissionsMissingToast, permissionsMissingActions */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "permissionsMissingToast", function() { return permissionsMissingToast; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "permissionsMissingActions", function() { return permissionsMissingActions; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/*
- * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License").
- * You may not use this file except in compliance with the License.
- * A copy of the License is located at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * or in the "license" file accompanying this file. This file is distributed
- * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
- */
-
-const permissionsMissingToast = action => {
-  return {
-    title: 'Error ' + action,
-    color: 'danger',
-    iconType: 'alert',
-    id: 'permissionsMissingErrorToast' + action.replace(' ', ''),
-    text: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Insufficient permissions. Reach out to your Kibana administrator.")
-  };
-};
-const permissionsMissingActions = {
-  CHANGE_SCHEDULE_STATUS: 'changing schedule status.',
-  DELETE_REPORT_DEFINITION: 'deleting report definition.',
-  GENERATING_REPORT: 'generating report.',
-  LOADING_REPORTS_TABLE: 'loading reports table.',
-  LOADING_DEFINITIONS_TABLE: 'loading report definitions table.',
-  VIEWING_EDIT_PAGE: 'viewing edit page.',
-  UPDATING_DEFINITION: 'updating report definition',
-  CREATING_REPORT_DEFINITION: 'creating new report definition.'
 };
 
 /***/ })
