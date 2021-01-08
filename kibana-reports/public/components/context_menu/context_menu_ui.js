@@ -21,11 +21,20 @@ export const getMenuItem = (name) => {
       </span>
     </button>
   </div>
-  `
-}
+  `;
+};
 
-export const popoverMenu = () => {
-    return `
+export const popoverMenu = (savedObjectAvailable) => {
+  const buttonClass = savedObjectAvailable
+    ? 'euiContextMenuItem'
+    : 'euiContextMenuItem euiContextMenuItem-isDisabled';
+  const button = savedObjectAvailable ? 'button' : 'button disabled';
+  const popoverHeight = savedObjectAvailable ? '395px' : '380px';
+  const message = savedObjectAvailable
+    ? `Files can take a minute or two to generate depending on the size of your source data.`
+    : `Save this Visualization/Dashboard to enable PDF/PNG reports.`;
+
+  return `
     <div>
       <div data-focus-guard="true" tabindex="-1" style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;">
     </div>
@@ -45,14 +54,12 @@ export const popoverMenu = () => {
                    </div>
                    <div>
                     <span class="euiContextMenuItem__text" style="padding-left: 10px; padding-right: 10px; margin-top: 10px; box-decoration-break: clone; display: inline-block;">
-                      Files can take a minute or two 
-                      to generate depending on the 
-                      size of your source data
+                      ${message}
                     </span>
                    </div>
                    <div>
                       <div>
-                         <button class="euiContextMenuItem" type="button" data-test-subj="downloadPanel-GeneratePDF" id="generatePDF">
+                         <${button} class="${buttonClass}" type="button" data-test-subj="downloadPanel-GeneratePDF" id="generatePDF">
                             <span class="euiContextMenu__itemLayout">
                               <svg id="reports-icon" width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon">
                                   <g transform="translate(1.000000, 0.000000)" fill="currentColor">
@@ -63,7 +70,7 @@ export const popoverMenu = () => {
                                </svg>
                             </span>
                          </button>
-                         <button class="euiContextMenuItem" type="button" data-test-subj="downloadPanel-GeneratePNG" id="generatePNG">
+                         <${button} class="${buttonClass}" type="button" data-test-subj="downloadPanel-GeneratePNG" id="generatePNG">
                             <span class="euiContextMenu__itemLayout">
                               <svg id="reports-icon" width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon">
                                 <g transform="translate(1.000000, 0.000000)" fill="currentColor">
@@ -81,7 +88,7 @@ export const popoverMenu = () => {
                     </span>
                   </div>
                   <div hidden>
-                    <button class="euiContextMenuItem" type="button" data-test-subj="downloadPanel-GeneratePDF" id="createReportDefinition">
+                    <${button} class="${buttonClass}" type="button" data-test-subj="downloadPanel-GeneratePDF" id="createReportDefinition">
                       <span class="euiContextMenu__itemLayout">
                         <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon" focusable="false" role="img" aria-hidden="true"><path d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z" fill-rule="evenodd"></path></svg>
                         <span class="euiContextMenuItem__text">Create report definition</span>
@@ -113,16 +120,19 @@ export const popoverMenu = () => {
        </div>
     </div>
     <div data-focus-guard="true" tabindex="-1" style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"></div>
-    `
-   }
+    `;
+};
 
-export const popoverMenuDiscover = (savedSearchAvailable) => {
-  const buttonClass = savedSearchAvailable ? 'euiContextMenuItem' : 'euiContextMenuItem euiContextMenuItem-isDisabled';
-  const button = savedSearchAvailable ? 'button' : 'button disabled';
-  const popoverHeight = savedSearchAvailable ? '265px' : '235px';
-  const message = savedSearchAvailable ?
-    `Files can take a minute or two to generate depending on the size of your source data.` :
-    `Save this search to enable CSV reports.`;
+// TODO: merge this function and popoverMenu() into one
+export const popoverMenuDiscover = (savedObjectAvailable) => {
+  const buttonClass = savedObjectAvailable
+    ? 'euiContextMenuItem'
+    : 'euiContextMenuItem euiContextMenuItem-isDisabled';
+  const button = savedObjectAvailable ? 'button' : 'button disabled';
+  const popoverHeight = savedObjectAvailable ? '265px' : '235px';
+  const message = savedObjectAvailable
+    ? `Files can take a minute or two to generate depending on the size of your source data.`
+    : `Save this search to enable CSV reports.`;
 
   return `
     <div>
@@ -194,7 +204,7 @@ export const popoverMenuDiscover = (savedSearchAvailable) => {
        </div>
     </div>
     <div data-focus-guard="true" tabindex="-1" style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"></div>
-    `
+    `;
 };
 
 export const permissionsMissingOnGeneration = () => {
@@ -216,8 +226,8 @@ export const permissionsMissingOnGeneration = () => {
     <p>Insufficient permissions. Reach out to your Kibana administrator.</p>
   </div>
   </div>
-  `
-}
+  `;
+};
 
 export const reportGenerationSuccess = () => {
   return `
@@ -245,8 +255,8 @@ export const reportGenerationSuccess = () => {
         href="opendistro_kibana_reports#/" rel="noreferrer">Reports</a>.</p>
     </div>
   </div>
-  `
-}
+  `;
+};
 
 export const reportGenerationFailure = (
   title = 'Download error',
@@ -275,8 +285,8 @@ export const reportGenerationFailure = (
       <p>${text}</p>
     </div>
   </div>
-  `
-}
+  `;
+};
 
 export const reportGenerationInProgressModal = () => {
   return `
@@ -317,5 +327,5 @@ export const reportGenerationInProgressModal = () => {
   </div>
   <div data-focus-guard="true" tabindex="0" style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"></div>
 </div>
-  `
-}
+  `;
+};

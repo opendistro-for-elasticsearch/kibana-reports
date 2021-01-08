@@ -452,28 +452,24 @@ function Main(props) {
       text: 'Reporting',
       href: '#'
     }]);
-    refreshReportsTable();
-    refreshReportsDefinitionsTable();
+    refreshReportsTable(); // refreshReportsDefinitionsTable();
 
     if (window.location.href.includes('create=success')) {
       handleCreateReportDefinitionSuccessToast(); // refresh might not fetch the latest changes when coming from create or edit page
       // workaround to wait 1 second and refresh again
 
       setTimeout(() => {
-        refreshReportsTable();
-        refreshReportsDefinitionsTable();
+        refreshReportsTable(); // refreshReportsDefinitionsTable();
       }, 1000);
     } else if (window.location.href.includes('edit=success')) {
       handleEditReportDefinitionSuccessToast();
       setTimeout(() => {
-        refreshReportsTable();
-        refreshReportsDefinitionsTable();
+        refreshReportsTable(); // refreshReportsDefinitionsTable();
       }, 1000);
     } else if (window.location.href.includes('delete=success')) {
-      handleDeleteReportDefinitionSuccessToast();
+      // handleDeleteReportDefinitionSuccessToast();
       setTimeout(() => {
-        refreshReportsTable();
-        refreshReportsDefinitionsTable();
+        refreshReportsTable(); // refreshReportsDefinitionsTable();
       }, 1000);
     }
 
