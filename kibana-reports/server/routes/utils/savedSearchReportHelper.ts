@@ -109,11 +109,13 @@ async function populateMetaData(
       (metaData.timeFieldName = resIndexPattern.timeFieldName),
         (metaData.fields = resIndexPattern.fields); // Get all fields
       // Getting fields of type Date
+      const dateFields = [];
       for (const item of JSON.parse(metaData.fields)) {
         if (item.type === 'date') {
-          metaData.dateFields.push(item.name);
+          dateFields.push(item.name);
         }
       }
+      metaData.dateFields = dateFields;
     }
   }
 }
