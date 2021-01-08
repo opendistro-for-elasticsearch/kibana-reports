@@ -228,16 +228,32 @@ $(function () {
   locationHashChanged();
 });
 
+const isDiscoverNavMenu = (navMenu) => {
+  return navMenu[0].children.length === 5 && 
+    ($('[data-test-subj="breadcrumb first"]').prop('title') === 'Discover')
+}
+
+const isDashboardNavMenu = (navMenu) => {
+  return navMenu[0].children.length === 4 && 
+    ($('[data-test-subj="breadcrumb first"]').prop('title') === 'Dashboard')
+}
+
+const isVisualizationNavMenu = (navMenu) => {
+  return navMenu[0].children.length === 3
+    && ($('[data-test-subj="breadcrumb first"]').prop('title') === 'Visualize')
+}
+
 function locationHashChanged() {
   const observer = new MutationObserver(function (mutations) {
     const navMenu = document.querySelectorAll(
       'span.kbnTopNavMenu__wrapper > div.euiFlexGroup'
     );
-    if (navMenu && navMenu.length && navMenu[0].children.length > 1) {
+    if (navMenu && navMenu.length && (
+      isDiscoverNavMenu(navMenu) ||
+      isDashboardNavMenu(navMenu) ||
+      isVisualizationNavMenu(navMenu))
+    ) {
       try {
-        if ($('#downloadReport').length) {
-          return;
-        }
         const menuItem = document.createElement('div');
         menuItem.innerHTML = getMenuItem('Reporting');
         navMenu[0].appendChild(menuItem.children[0]);
@@ -264,9 +280,10 @@ const getUuidFromUrl = () =>
   );
 const isDiscover = () => window.location.href.includes('discover');
 
-window.onhashchange = function () {
+$(window).one('hashchange', function( e ) {    
   locationHashChanged();
-};
+});
+
 /**
  * for navigating to tabs from Kibana sidebar, it uses history.pushState, which doesn't trigger onHashchange.
  * https://stackoverflow.com/questions/4570093/how-to-get-notified-about-changes-of-the-history-via-history-pushstate/4585031
@@ -281,6 +298,6 @@ window.onhashchange = function () {
   };
 })(window.history);
 
-window.onpopstate = history.onpushstate = () => {
+window.onpopstate = () => {
   locationHashChanged();
 };
