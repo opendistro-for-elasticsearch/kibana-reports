@@ -121,8 +121,8 @@ const generateInContextReport = (
     }
   )
     .then((response) => {
+      $('#reportGenerationProgressModal').remove();
       if (response.status === 200) {
-        $('#reportGenerationProgressModal').remove();
         addSuccessOrFailureToast('success');
       } else {
         if (response.status === 403) {

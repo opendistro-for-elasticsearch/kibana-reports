@@ -191,7 +191,7 @@ export function Main(props) {
       },
     ]);
     refreshReportsTable();
-    refreshReportsDefinitionsTable();
+    // refreshReportsDefinitionsTable();
 
     if (window.location.href.includes('create=success')) {
       handleCreateReportDefinitionSuccessToast();
@@ -199,19 +199,19 @@ export function Main(props) {
       // workaround to wait 1 second and refresh again
       setTimeout(() => {
         refreshReportsTable();
-        refreshReportsDefinitionsTable();
+        // refreshReportsDefinitionsTable();
       }, 1000);
     } else if (window.location.href.includes('edit=success')) {
       handleEditReportDefinitionSuccessToast();
       setTimeout(() => {
         refreshReportsTable();
-        refreshReportsDefinitionsTable();
+        // refreshReportsDefinitionsTable();
       }, 1000);
     } else if (window.location.href.includes('delete=success')) {
-      handleDeleteReportDefinitionSuccessToast();
+      // handleDeleteReportDefinitionSuccessToast();
       setTimeout(() => {
         refreshReportsTable();
-        refreshReportsDefinitionsTable();
+        // refreshReportsDefinitionsTable();
       }, 1000);
     }
     window.location.href = 'opendistro_kibana_reports#/';
