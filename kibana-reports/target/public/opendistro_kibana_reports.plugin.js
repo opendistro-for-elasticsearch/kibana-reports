@@ -202,9 +202,9 @@
 /******/ ({
 
 /***/ "../../node_modules/css-loader/dist/cjs.js?!../../node_modules/postcss-loader/src/index.js?!../../node_modules/resolve-url-loader/index.js?!../../node_modules/sass-loader/dist/cjs.js?!./public/index.scss?v7dark":
-/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/css-loader/dist/cjs.js??ref--6-oneOf-0-1!/Users/davidcui/kibana-master/kibana/node_modules/postcss-loader/src??ref--6-oneOf-0-2!/Users/davidcui/kibana-master/kibana/node_modules/resolve-url-loader??ref--6-oneOf-0-3!/Users/davidcui/kibana-master/kibana/node_modules/sass-loader/dist/cjs.js??ref--6-oneOf-0-4!./public/index.scss?v7dark ***!
-  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/css-loader/dist/cjs.js??ref--6-oneOf-0-1!/Users/szhongna/Desktop/reporting/kibana/node_modules/postcss-loader/src??ref--6-oneOf-0-2!/Users/szhongna/Desktop/reporting/kibana/node_modules/resolve-url-loader??ref--6-oneOf-0-3!/Users/szhongna/Desktop/reporting/kibana/node_modules/sass-loader/dist/cjs.js??ref--6-oneOf-0-4!./public/index.scss?v7dark ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -220,9 +220,9 @@ module.exports = exports;
 /***/ }),
 
 /***/ "../../node_modules/css-loader/dist/cjs.js?!../../node_modules/postcss-loader/src/index.js?!../../node_modules/resolve-url-loader/index.js?!../../node_modules/sass-loader/dist/cjs.js?!./public/index.scss?v7light":
-/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/css-loader/dist/cjs.js??ref--6-oneOf-1-1!/Users/davidcui/kibana-master/kibana/node_modules/postcss-loader/src??ref--6-oneOf-1-2!/Users/davidcui/kibana-master/kibana/node_modules/resolve-url-loader??ref--6-oneOf-1-3!/Users/davidcui/kibana-master/kibana/node_modules/sass-loader/dist/cjs.js??ref--6-oneOf-1-4!./public/index.scss?v7light ***!
-  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/css-loader/dist/cjs.js??ref--6-oneOf-1-1!/Users/szhongna/Desktop/reporting/kibana/node_modules/postcss-loader/src??ref--6-oneOf-1-2!/Users/szhongna/Desktop/reporting/kibana/node_modules/resolve-url-loader??ref--6-oneOf-1-3!/Users/szhongna/Desktop/reporting/kibana/node_modules/sass-loader/dist/cjs.js??ref--6-oneOf-1-4!./public/index.scss?v7light ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -238,9 +238,9 @@ module.exports = exports;
 /***/ }),
 
 /***/ "../../node_modules/css-loader/dist/runtime/api.js":
-/*!****************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/css-loader/dist/runtime/api.js ***!
-  \****************************************************************************************/
+/*!********************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/css-loader/dist/runtime/api.js ***!
+  \********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -343,9 +343,9 @@ function toComment(sourceMap) {
 /***/ }),
 
 /***/ "../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js":
-/*!***************************************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js ***!
-  \***************************************************************************************************************/
+/*!*******************************************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js ***!
+  \*******************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -623,9 +623,9 @@ module.exports = function (list, options) {
 /***/ }),
 
 /***/ "../../node_modules/uuid/lib/bytesToUuid.js":
-/*!*********************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/uuid/lib/bytesToUuid.js ***!
-  \*********************************************************************************/
+/*!*************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/uuid/lib/bytesToUuid.js ***!
+  \*************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -658,9 +658,9 @@ module.exports = bytesToUuid;
 /***/ }),
 
 /***/ "../../node_modules/uuid/lib/rng-browser.js":
-/*!*********************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/uuid/lib/rng-browser.js ***!
-  \*********************************************************************************/
+/*!*************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/uuid/lib/rng-browser.js ***!
+  \*************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -703,9 +703,9 @@ if (getRandomValues) {
 /***/ }),
 
 /***/ "../../node_modules/uuid/v4.js":
-/*!********************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/uuid/v4.js ***!
-  \********************************************************************/
+/*!************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/uuid/v4.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -743,9 +743,9 @@ module.exports = v4;
 /***/ }),
 
 /***/ "../../node_modules/val-loader/dist/cjs.js?key=opendistro_kibana_reports!../../packages/kbn-ui-shared-deps/public_path_module_creator.js":
-/*!*************************************************************************************************************************************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/node_modules/val-loader/dist/cjs.js?key=opendistro_kibana_reports!/Users/davidcui/kibana-master/kibana/packages/kbn-ui-shared-deps/public_path_module_creator.js ***!
-  \*************************************************************************************************************************************************************************************************************/
+/*!*********************************************************************************************************************************************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/node_modules/val-loader/dist/cjs.js?key=opendistro_kibana_reports!/Users/szhongna/Desktop/reporting/kibana/packages/kbn-ui-shared-deps/public_path_module_creator.js ***!
+  \*********************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -785,9 +785,9 @@ module.exports = g;
 /***/ }),
 
 /***/ "../../packages/elastic-datemath/target/index.js":
-/*!**************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/packages/elastic-datemath/target/index.js ***!
-  \**************************************************************************************/
+/*!******************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/packages/elastic-datemath/target/index.js ***!
+  \******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1039,9 +1039,9 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ "../../packages/kbn-optimizer/target/worker/entry_point_creator.js":
-/*!********************************************************************************************************!*\
-  !*** /Users/davidcui/kibana-master/kibana/packages/kbn-optimizer/target/worker/entry_point_creator.js ***!
-  \********************************************************************************************************/
+/*!************************************************************************************************************!*\
+  !*** /Users/szhongna/Desktop/reporting/kibana/packages/kbn-optimizer/target/worker/entry_point_creator.js ***!
+  \************************************************************************************************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -12260,8 +12260,9 @@ const generateInContextReport = (timeRanges, queryUrl, fileFormat, rest = {}) =>
     mode: 'cors',
     credentials: 'include'
   }).then(response => {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#reportGenerationProgressModal').remove();
+
     if (response.status === 200) {
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#reportGenerationProgressModal').remove();
       Object(_context_menu_helpers__WEBPACK_IMPORTED_MODULE_3__["addSuccessOrFailureToast"])('success');
     } else {
       if (response.status === 403) {
@@ -12287,7 +12288,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(function () {
     if (popoverScreen) {
       try {
         const reportPopover = document.createElement('div');
-        reportPopover.innerHTML = isDiscover() ? Object(_context_menu_ui__WEBPACK_IMPORTED_MODULE_4__["popoverMenuDiscover"])(getUuidFromUrl()) : Object(_context_menu_ui__WEBPACK_IMPORTED_MODULE_4__["popoverMenu"])();
+        reportPopover.innerHTML = isDiscover() ? Object(_context_menu_ui__WEBPACK_IMPORTED_MODULE_4__["popoverMenuDiscover"])(getUuidFromUrl()) : Object(_context_menu_ui__WEBPACK_IMPORTED_MODULE_4__["popoverMenu"])(getUuidFromUrl());
         popoverScreen[0].appendChild(reportPopover.children[0]);
         jquery__WEBPACK_IMPORTED_MODULE_0___default()('#reportPopover').show();
       } catch (e) {
@@ -12586,7 +12587,11 @@ const getMenuItem = name => {
   </div>
   `;
 };
-const popoverMenu = () => {
+const popoverMenu = savedObjectAvailable => {
+  const buttonClass = savedObjectAvailable ? 'euiContextMenuItem' : 'euiContextMenuItem euiContextMenuItem-isDisabled';
+  const button = savedObjectAvailable ? 'button' : 'button disabled';
+  const popoverHeight = savedObjectAvailable ? '395px' : '380px';
+  const message = savedObjectAvailable ? `Files can take a minute or two to generate depending on the size of your source data.` : `Save this Visualization/Dashboard to enable PDF/PNG reports.`;
   return `
     <div>
       <div data-focus-guard="true" tabindex="-1" style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;">
@@ -12607,14 +12612,12 @@ const popoverMenu = () => {
                    </div>
                    <div>
                     <span class="euiContextMenuItem__text" style="padding-left: 10px; padding-right: 10px; margin-top: 10px; box-decoration-break: clone; display: inline-block;">
-                      Files can take a minute or two 
-                      to generate depending on the 
-                      size of your source data
+                      ${message}
                     </span>
                    </div>
                    <div>
                       <div>
-                         <button class="euiContextMenuItem" type="button" data-test-subj="downloadPanel-GeneratePDF" id="generatePDF">
+                         <${button} class="${buttonClass}" type="button" data-test-subj="downloadPanel-GeneratePDF" id="generatePDF">
                             <span class="euiContextMenu__itemLayout">
                               <svg id="reports-icon" width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon">
                                   <g transform="translate(1.000000, 0.000000)" fill="currentColor">
@@ -12625,7 +12628,7 @@ const popoverMenu = () => {
                                </svg>
                             </span>
                          </button>
-                         <button class="euiContextMenuItem" type="button" data-test-subj="downloadPanel-GeneratePNG" id="generatePNG">
+                         <${button} class="${buttonClass}" type="button" data-test-subj="downloadPanel-GeneratePNG" id="generatePNG">
                             <span class="euiContextMenu__itemLayout">
                               <svg id="reports-icon" width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon">
                                 <g transform="translate(1.000000, 0.000000)" fill="currentColor">
@@ -12643,7 +12646,7 @@ const popoverMenu = () => {
                     </span>
                   </div>
                   <div hidden>
-                    <button class="euiContextMenuItem" type="button" data-test-subj="downloadPanel-GeneratePDF" id="createReportDefinition">
+                    <${button} class="${buttonClass}" type="button" data-test-subj="downloadPanel-GeneratePDF" id="createReportDefinition">
                       <span class="euiContextMenu__itemLayout">
                         <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon" focusable="false" role="img" aria-hidden="true"><path d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z" fill-rule="evenodd"></path></svg>
                         <span class="euiContextMenuItem__text">Create report definition</span>
@@ -12676,12 +12679,13 @@ const popoverMenu = () => {
     </div>
     <div data-focus-guard="true" tabindex="-1" style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"></div>
     `;
-};
-const popoverMenuDiscover = savedSearchAvailable => {
-  const buttonClass = savedSearchAvailable ? 'euiContextMenuItem' : 'euiContextMenuItem euiContextMenuItem-isDisabled';
-  const button = savedSearchAvailable ? 'button' : 'button disabled';
-  const popoverHeight = savedSearchAvailable ? '265px' : '235px';
-  const message = savedSearchAvailable ? `Files can take a minute or two to generate depending on the size of your source data.` : `Save this search to enable CSV reports.`;
+}; // TODO: merge this function and popoverMenu() into one
+
+const popoverMenuDiscover = savedObjectAvailable => {
+  const buttonClass = savedObjectAvailable ? 'euiContextMenuItem' : 'euiContextMenuItem euiContextMenuItem-isDisabled';
+  const button = savedObjectAvailable ? 'button' : 'button disabled';
+  const popoverHeight = savedObjectAvailable ? '265px' : '235px';
+  const message = savedObjectAvailable ? `Files can take a minute or two to generate depending on the size of your source data.` : `Save this search to enable CSV reports.`;
   return `
     <div>
       <div data-focus-guard="true" tabindex="-1" style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;">

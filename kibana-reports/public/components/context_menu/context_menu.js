@@ -149,7 +149,7 @@ $(function () {
         const reportPopover = document.createElement('div');
         reportPopover.innerHTML = isDiscover()
           ? popoverMenuDiscover(getUuidFromUrl())
-          : popoverMenu();
+          : popoverMenu(getUuidFromUrl());
         popoverScreen[0].appendChild(reportPopover.children[0]);
         $('#reportPopover').show();
       } catch (e) {
