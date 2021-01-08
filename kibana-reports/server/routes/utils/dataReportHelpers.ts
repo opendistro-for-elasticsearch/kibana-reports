@@ -37,14 +37,16 @@ export var metaData = {
 
 // Get the selected columns by the user.
 export const getSelectedFields = async (columns) => {
+  const selectedFields = [];
   for (let column of columns) {
     if (column !== '_source') {
       metaData.fields_exist = true;
-      metaData.selectedFields.push(column);
+      selectedFields.push(column);
     } else {
-      metaData.selectedFields.push('_source');
+      selectedFields.push('_source');
     }
   }
+  metaData.selectedFields = selectedFields;
 };
 
 //Build the ES query from the meta data
