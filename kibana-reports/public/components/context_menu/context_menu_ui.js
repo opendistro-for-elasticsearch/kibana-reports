@@ -142,7 +142,7 @@ export const popoverMenuDiscover = (savedObjectAvailable) => {
     </div>
     <div data-focus-lock-disabled="disabled">
        <div class="euiPanel euiPopover__panel euiPopover__panel--bottom euiPopover__panel-isOpen euiPopover__panel-withTitle" aria-live="assertive" role="dialog" aria-modal="true" aria-describedby="i199c7fc0-f92e-11ea-a40d-395bfe9dc89a" style="top: 97px; left: 255.583px; z-index: 2000;" id="reportPopover">
-          <div class="euiPopover__panelArrow euiPopover__panelArrow--bottom" style="left: 15.9417px; top: 0px;">
+          <div class="euiPopover__panelArrow euiPopover__panelArrow--bottom" style="left: 30.9417px; top: 0px;">
         </div>
           <div>
              <div class="euiContextMenu" data-test-subj="shareContextMenu" style="height: ${popoverHeight}; width: 235px;">
