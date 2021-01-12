@@ -1,12 +1,9 @@
 name: Release Reports Scheduler Artifacts
 # This workflow is triggered on creating tags to master or an opendistro release branch
 on:
-  # push:
-  #   tags:
-  #     - "v*"
   push:
-    branches:
-      - "release-workflow-patch"
+    tags:
+      - "v*"
 
 jobs:
   build:
@@ -33,7 +30,7 @@ jobs:
           cd reports-scheduler
           ./gradlew build buildDeb buildRpm --no-daemon --refresh-dependencies -Dbuild.snapshot=false
 
-      - name: Upload plugin artifacts to S3
+      - name: Upload to S3
         shell: bash
         run: |
           cd reports-scheduler
