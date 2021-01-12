@@ -36,9 +36,10 @@ jobs:
       - name: Upload plugin artifacts to S3
         shell: bash
         run: |
-          zip=`ls ./build/distributions/*.zip`
-          rpm=`ls ./build/distributions/*.rpm`
-          deb=`ls ./build/distributions/*.deb`
+          ls -ltr
+          zip=`ls build/distributions/*.zip`
+          rpm=`ls build/distributions/*.rpm`
+          deb=`ls build/distributions/*.deb`
 
           # Inject the build number before the suffix
           zip_outfile=`basename ${zip%.zip}-build-${GITHUB_RUN_NUMBER}.zip`
