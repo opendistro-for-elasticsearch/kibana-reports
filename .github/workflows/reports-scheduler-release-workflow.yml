@@ -36,9 +36,9 @@ jobs:
       - name: Upload plugin artifacts to S3
         shell: bash
         run: |
-          zip=`ls build/distributions/*.zip`
-          rpm=`ls build/distributions/*.rpm`
-          deb=`ls build/distributions/*.deb`
+          zip=`ls ./build/distributions/*.zip`
+          rpm=`ls ./build/distributions/*.rpm`
+          deb=`ls ./build/distributions/*.deb`
 
           # Inject the build number before the suffix
           zip_outfile=`basename ${zip%.zip}-build-${GITHUB_RUN_NUMBER}.zip`
@@ -49,9 +49,9 @@ jobs:
 
           echo "Copying ${zip} to ${s3_prefix}${zip_outfile}"
           aws s3 cp --quiet $zip ${s3_prefix}${zip_outfile}
-
+          
           echo "Copying ${rpm} to ${s3_prefix}${rpm_outfile}"
           aws s3 cp --quiet $rpm ${s3_prefix}${rpm_outfile}
-          
+
           echo "Copying ${deb} to ${s3_prefix}${deb_outfile}"
           aws s3 cp --quiet $deb ${s3_prefix}${deb_outfile}
