@@ -85,7 +85,7 @@ jobs:
           linux_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip`
 
           #Inject build number before the suffix and upload to S3
-          linux_artifact_outfile=`basename ${linux_artifact%.zip}-build-${GITHUB_RUN_NUMBER}-linux-x64.zip`
+          linux_artifact_outfile=`basename ${linux_artifact%.zip}-linux-x64-build-${GITHUB_RUN_NUMBER}.zip`
           echo "Copying $linux_artifact to ${s3_prefix}${linux_artifact_outfile}"
           aws s3 cp --quiet $linux_artifact ${s3_prefix}${linux_artifact_outfile}
           cd ..
@@ -98,7 +98,7 @@ jobs:
           arm_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip`
 
           #Inject build number before the suffix and upload to S3
-          arm_artifact_outfile=`basename ${arm_artifact%.zip}-build-${GITHUB_RUN_NUMBER}-linux-arm64.zip`
+          arm_artifact_outfile=`basename ${arm_artifact%.zip}-linux-arm64-build-${GITHUB_RUN_NUMBER}.zip`
           echo "Copying $arm_artifact to ${s3_prefix}${arm_artifact_outfile}"
           aws s3 cp --quiet $arm_artifact ${s3_prefix}${arm_artifact_outfile}
           cd ..
@@ -111,6 +111,6 @@ jobs:
           windows_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip`
 
           #Inject build number before the suffix and upload to S3
-          windows_artifact_outfile=`basename ${windows_artifact%.zip}-build-${GITHUB_RUN_NUMBER}-windows-x64.zip`
+          windows_artifact_outfile=`basename ${windows_artifact%.zip}-windows-x64-build-${GITHUB_RUN_NUMBER}.zip`
           echo "Copying $windows_artifact to ${s3_prefix}${windows_artifact_outfile}"
           aws s3 cp --quiet $windows_artifact ${s3_prefix}${windows_artifact_outfile}
