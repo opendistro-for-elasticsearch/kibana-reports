@@ -1,12 +1,9 @@
 name: Release Kibana Reports Artifacts
 
 on:
-  # push:
-  #   tags:
-  #     - "v*"
   push:
-    branches:
-      - "release-workflow-patch"
+    tags:
+      - "v*"
 
 env:
   PLUGIN_NAME: opendistroReportsKibana
@@ -75,6 +72,7 @@ jobs:
           cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux-x64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip
           cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux-arm64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip
           mv ./${{ env.PLUGIN_NAME }}-*.zip ./windows-x64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip
+
           s3_prefix="s3://staging.artifacts.opendistroforelasticsearch.amazon.com/snapshots/kibana-plugins/reports/"
 
           cd linux-x64
