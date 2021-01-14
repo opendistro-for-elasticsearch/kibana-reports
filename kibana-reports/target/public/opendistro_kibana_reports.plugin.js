@@ -11592,7 +11592,7 @@ const getMenuItem = name => {
 const popoverMenu = savedObjectAvailable => {
   const buttonClass = savedObjectAvailable ? 'euiContextMenuItem' : 'euiContextMenuItem euiContextMenuItem-isDisabled';
   const button = savedObjectAvailable ? 'button' : 'button disabled';
-  const popoverHeight = savedObjectAvailable ? '395px' : '380px';
+  const popoverHeight = savedObjectAvailable ? '213px' : '198px';
   const message = savedObjectAvailable ? `Files can take a minute or two to generate depending on the size of your source data.` : `Save this Visualization/Dashboard to enable PDF/PNG reports.`;
   return `
     <div>
@@ -11605,7 +11605,7 @@ const popoverMenu = savedObjectAvailable => {
           <div class="euiPopover__panelArrow euiPopover__panelArrow--bottom" style="left: 15.9417px; top: 0px;">
         </div>
           <div>
-             <div class="euiContextMenu" data-test-subj="shareContextMenu" style="height: 213px; width: 235px;">
+             <div class="euiContextMenu" data-test-subj="shareContextMenu" style="height: ${popoverHeight}; width: 235px;">
                 <div class="euiContextMenuPanel euiContextMenu__panel" tabindex="0">
                    <div class="euiPopoverTitle">
                       <span class="euiContextMenu__itemLayout">
@@ -11668,7 +11668,7 @@ const popoverMenu = savedObjectAvailable => {
 const popoverMenuDiscover = savedObjectAvailable => {
   const buttonClass = savedObjectAvailable ? 'euiContextMenuItem' : 'euiContextMenuItem euiContextMenuItem-isDisabled';
   const button = savedObjectAvailable ? 'button' : 'button disabled';
-  const popoverHeight = savedObjectAvailable ? '171px' : '171px';
+  const popoverHeight = savedObjectAvailable ? '171px' : '141px';
   const message = savedObjectAvailable ? `Files can take a minute or two to generate depending on the size of your source data.` : `Save this search to enable CSV reports.`;
   return `
     <div>
