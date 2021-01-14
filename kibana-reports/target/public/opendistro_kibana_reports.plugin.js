@@ -11749,7 +11749,7 @@ const reportGenerationSuccess = () => {
   return `
   <div class="euiToast euiToast--success" id="reportSuccessToast">
     <p class="euiScreenReaderOnly">A new notification appears</p>
-    <div class="euiToastHeader euiToastHeader--withBody"
+    <div class="euiToastHeader"
     aria-label="Notification" data-test-subj="euiToastHeader">
       <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
       class="euiIcon euiIcon--medium euiToastHeader__icon" focusable="false"
