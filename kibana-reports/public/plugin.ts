@@ -35,28 +35,28 @@ export class OpendistroKibanaReportsPlugin
     > {
   public setup(core: CoreSetup): OpendistroKibanaReportsPluginSetup {
     // Register an application into the side navigation menu
-    core.application.register({
-      id: PLUGIN_NAME,
-      title: 'Reporting',
-      category: {
-        id: 'odfe',
-        label: 'Open Distro for Elasticsearch',
-        order: 2000,
-      },
-      order: 2000,
-      async mount(params: AppMountParameters) {
-        // Load application bundle
-        const { renderApp } = await import('./application');
-        // Get start services as specified in kibana.json
-        const [coreStart, depsStart] = await core.getStartServices();
-        // Render the application
-        return renderApp(
-          coreStart,
-          depsStart as AppPluginStartDependencies,
-          params
-        );
-      },
-    });
+    // core.application.register({
+    //   id: PLUGIN_NAME,
+    //   title: 'Reporting',
+    //   category: {
+    //     id: 'odfe',
+    //     label: 'Open Distro for Elasticsearch',
+    //     order: 2000,
+    //   },
+    //   order: 2000,
+    //   async mount(params: AppMountParameters) {
+    //     // Load application bundle
+    //     const { renderApp } = await import('./application');
+    //     // Get start services as specified in kibana.json
+    //     const [coreStart, depsStart] = await core.getStartServices();
+    //     // Render the application
+    //     return renderApp(
+    //       coreStart,
+    //       depsStart as AppPluginStartDependencies,
+    //       params
+    //     );
+    //   },
+    // });
 
     // Return methods that should be available to other plugins
     return {};
