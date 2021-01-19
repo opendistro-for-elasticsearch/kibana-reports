@@ -23,5 +23,5 @@ export default function (router: IRouter) {
   registerReportRoute(router);
   // registerReportDefinitionRoute(router);
   // registerReportSourceRoute(router);
-  // registerMetricRoute(router);
+  registerMetricRoute(router);
 }
