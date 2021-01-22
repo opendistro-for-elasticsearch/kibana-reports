@@ -69,9 +69,9 @@ jobs:
 
           cd build
           mkdir -p ./{linux-x64,linux-arm64,windows-x64}/kibana/${{ env.PLUGIN_NAME }}
-          cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux-x64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip
-          cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux-arm64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip
-          mv ./${{ env.PLUGIN_NAME }}-*.zip ./windows-x64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip
+          cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux-x64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-x64.zip
+          cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux-arm64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-arm64.zip
+          mv ./${{ env.PLUGIN_NAME }}-*.zip ./windows-x64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-windows-x64.zip
 
           s3_prefix="s3://staging.artifacts.opendistroforelasticsearch.amazon.com/snapshots/kibana-plugins/reports/"
 
@@ -80,8 +80,8 @@ jobs:
           unzip chromium-linux-x64.zip -d ./kibana/${{ env.PLUGIN_NAME }}
           rm chromium-linux-x64.zip
           zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
-          linux_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip`
-
+          linux_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-x64.zip`
+          
           #Inject build number before the suffix and upload to S3
           linux_artifact_outfile=`basename ${linux_artifact%.zip}-build-${GITHUB_RUN_NUMBER}.zip`
           echo "Copying $linux_artifact to ${s3_prefix}${linux_artifact_outfile}"
@@ -93,7 +93,7 @@ jobs:
           unzip chromium-linux-arm64.zip -d ./kibana/${{ env.PLUGIN_NAME }}
           rm chromium-linux-arm64.zip
           zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
-          arm_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip`
+          arm_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-arm64.zip`
 
           #Inject build number before the suffix and upload to S3
           arm_artifact_outfile=`basename ${arm_artifact%.zip}-build-${GITHUB_RUN_NUMBER}.zip`
@@ -106,7 +106,8 @@ jobs:
           unzip chromium-windows-x64.zip -d ./kibana/${{ env.PLUGIN_NAME }}
           rm chromium-windows-x64.zip
           zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
-          windows_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}.zip`
+          windows_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-windows-x64.zip`
+          cd ..
 
           #Inject build number before the suffix and upload to S3
           windows_artifact_outfile=`basename ${windows_artifact%.zip}-build-${GITHUB_RUN_NUMBER}.zip`

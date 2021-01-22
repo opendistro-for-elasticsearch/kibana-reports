@@ -67,5 +67,10 @@
     "react-test-renderer": "^16.12.0",
     "ts-jest": "^26.1.0",
     "tsc": "^1.20150623.0"
+  },
+  "resolutions": {
+    "trim": "^1.0.0",
+    "doc-path": "2.1.2",
+    "y18n": "^5.0.5"
   }
 }
