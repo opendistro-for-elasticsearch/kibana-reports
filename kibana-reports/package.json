@@ -15,7 +15,7 @@
     "start": "yarn plugin_helpers start",
     "build": "yarn plugin_helpers build",
     "test": "../../node_modules/.bin/jest --config ./test/jest.config.js",
-    "cypress:run": "../../node_modules/.bin/cypress run",
+    "cypress:run": "cypress run",
     "cypress:open": "../../node_modules/.bin/cypress open",
     "plugin_helpers": "node ../../scripts/plugin_helpers"
   },

@@ -42,12 +42,19 @@ import org.elasticsearch.common.xcontent.NamedXContentRegistry
 import org.elasticsearch.common.xcontent.XContentType
 import org.elasticsearch.test.rest.ESRestTestCase
 import org.junit.After
+import org.junit.AfterClass
 import org.junit.Before
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
+import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.charset.StandardCharsets
 import java.security.cert.X509Certificate
+import javax.management.MBeanServerInvocationHandler
+import javax.management.ObjectName
+import javax.management.remote.JMXConnectorFactory
+import javax.management.remote.JMXServiceURL
 
 abstract class PluginRestTestCase : ESRestTestCase() {
 
@@ -227,6 +234,46 @@ abstract class PluginRestTestCase : ESRestTestCase() {
     protected class ClusterSetting(val type: String, val name: String, var value: Any?) {
         init {
             this.value = if (value == null) "null" else "\"" + value + "\""
+        }
+    }
+
+    companion object {
+        internal interface IProxy {
+            val version: String?
+            var sessionId: String?
+
+            fun getExecutionData(reset: Boolean): ByteArray?
+            fun dump(reset: Boolean)
+            fun reset()
+        }
+
+        /*
+        * We need to be able to dump the jacoco coverage before the cluster shuts down.
+        * The new internal testing framework removed some gradle tasks we were listening to,
+        * to choose a good time to do it. This will dump the executionData to file after each test.
+        * TODO: This is also currently just overwriting integTest.exec with the updated execData without
+        *   resetting after writing each time. This can be improved to either write an exec file per test
+        *   or by letting jacoco append to the file.
+        * */
+        @JvmStatic
+        @AfterClass
+        fun dumpCoverage() {
+            // jacoco.dir set in esplugin-coverage.gradle, if it doesn't exist we don't
+            // want to collect coverage, so we can return early
+            val jacocoBuildPath = System.getProperty("jacoco.dir") ?: return
+            val serverUrl = "service:jmx:rmi:///jndi/rmi://127.0.0.1:7777/jmxrmi"
+            JMXConnectorFactory.connect(JMXServiceURL(serverUrl)).use { connector ->
+                val proxy = MBeanServerInvocationHandler.newProxyInstance(
+                        connector.mBeanServerConnection,
+                        ObjectName("org.jacoco:type=Runtime"),
+                        IProxy::class.java,
+                        false
+                )
+                proxy.getExecutionData(false)?.let {
+                    val path = Path.of("$jacocoBuildPath/integTest.exec")
+                    Files.write(path, it)
+                }
+            }
         }
     }
 }
