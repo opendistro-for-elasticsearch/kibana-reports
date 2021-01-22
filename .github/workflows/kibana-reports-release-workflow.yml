@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - "v*"
+    branches:
+      - "release-workflow-patch"
 
 env:
   PLUGIN_NAME: opendistroReportsKibana
@@ -81,7 +83,7 @@ jobs:
           rm chromium-linux-x64.zip
           zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
           linux_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-x64.zip`
-          
+
           #Inject build number before the suffix and upload to S3
           linux_artifact_outfile=`basename ${linux_artifact%.zip}-build-${GITHUB_RUN_NUMBER}.zip`
           echo "Copying $linux_artifact to ${s3_prefix}${linux_artifact_outfile}"
