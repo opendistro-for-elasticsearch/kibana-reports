@@ -50,9 +50,11 @@ jobs:
           max_attempts: 3
           command: cd kibana/plugins/${{ env.PLUGIN_NAME }}; yarn test --coverage
 
-      - name: Uploads coverage
+      - name: Upload coverage
         uses: codecov/codecov-action@v1
         with:
+          flags: Kibana-reports
+          directory: kibana/plugins/
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Build Artifact
