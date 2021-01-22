@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - "v*"
-    branches:
-      - "release-workflow-patch"
 
 env:
   PLUGIN_NAME: opendistroReportsKibana
