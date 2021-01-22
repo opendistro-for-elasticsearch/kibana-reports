@@ -19,7 +19,7 @@ jobs:
           cd reports-scheduler
           ./gradlew build
 
-      - name: Uploads coverage
+      - name: Upload coverage
         uses: codecov/codecov-action@v1
         with:
           flags: ES plugin
