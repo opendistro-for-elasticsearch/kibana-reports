@@ -22,7 +22,7 @@ jobs:
       - name: Uploads coverage
         uses: codecov/codecov-action@v1
         with:
-          flags: backend
+          flags: ES plugin
           directory: reports-scheduler/
           token: ${{ secrets.CODECOV_TOKEN }}
 

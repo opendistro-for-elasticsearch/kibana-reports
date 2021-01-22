@@ -53,7 +53,7 @@ jobs:
       - name: Uploads coverage
         uses: codecov/codecov-action@v1
         with:
-          flags: frontend
+          flags: Kibana plugin
           directory: kibana/plugins/
           token: ${{ secrets.CODECOV_TOKEN }}
 
