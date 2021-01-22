@@ -109,7 +109,6 @@ jobs:
           rm chromium-windows-x64.zip
           zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
           windows_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-windows-x64.zip`
-          cd ..
 
           #Inject build number before the suffix and upload to S3
           windows_artifact_outfile=`basename ${windows_artifact%.zip}-build-${GITHUB_RUN_NUMBER}.zip`
