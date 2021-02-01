@@ -17,8 +17,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_STAGING_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_STAGING_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
       - name: Checkout Plugin
@@ -62,7 +62,7 @@ jobs:
           max_attempts: 3
           command: cd kibana/plugins/${{ env.PLUGIN_NAME }}; yarn test
 
-      - name: Build Artifact
+      - name: Build Artifact and upload to S3
         run: |
           cd kibana/plugins/${{ env.PLUGIN_NAME }}
           yarn build
@@ -73,13 +73,19 @@ jobs:
           cp ./${{ env.PLUGIN_NAME }}-*.zip ./linux-arm64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-arm64.zip
           mv ./${{ env.PLUGIN_NAME }}-*.zip ./windows-x64/${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-windows-x64.zip
 
+          s3_prefix="s3://staging.artifacts.opendistroforelasticsearch.amazon.com/snapshots/kibana-plugins/reports/"
+
           cd linux-x64
           wget https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/download/chromium-1.12.0.0/chromium-linux-x64.zip
           unzip chromium-linux-x64.zip -d ./kibana/${{ env.PLUGIN_NAME }}
           rm chromium-linux-x64.zip
           zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
-          linux_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-x64.zip`
-          aws s3 cp $linux_artifact s3://artifacts.opendistroforelasticsearch.amazon.com/downloads/kibana-plugins/opendistro-reports/linux/x64/
+          linux_x64_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-x64.zip`
+
+          #Inject build number before the suffix and upload to S3
+          linux_x64_artifact_outfile=`basename ${linux_x64_artifact%.zip}-build-${GITHUB_RUN_NUMBER}.zip`
+          echo "Copying $linux_x64_artifact to ${s3_prefix}${linux_x64_artifact_outfile}"
+          aws s3 cp --quiet $linux_x64_artifact ${s3_prefix}${linux_x64_artifact_outfile}
           cd ..
 
           cd linux-arm64
@@ -87,8 +93,12 @@ jobs:
           unzip chromium-linux-arm64.zip -d ./kibana/${{ env.PLUGIN_NAME }}
           rm chromium-linux-arm64.zip
           zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
-          arm_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-arm64.zip`
-          aws s3 cp $arm_artifact s3://artifacts.opendistroforelasticsearch.amazon.com/downloads/kibana-plugins/opendistro-reports/linux/arm64/
+          linux_arm64_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-linux-arm64.zip`
+
+          #Inject build number before the suffix and upload to S3
+          linux_arm64_artifact_outfile=`basename ${linux_arm64_artifact%.zip}-build-${GITHUB_RUN_NUMBER}.zip`
+          echo "Copying $linux_arm64_artifact to ${s3_prefix}${linux_arm64_artifact_outfile}"
+          aws s3 cp --quiet $linux_arm64_artifact ${s3_prefix}${linux_arm64_artifact_outfile}
           cd ..
 
           cd windows-x64
@@ -96,8 +106,9 @@ jobs:
           unzip chromium-windows-x64.zip -d ./kibana/${{ env.PLUGIN_NAME }}
           rm chromium-windows-x64.zip
           zip -ur ./${{ env.PLUGIN_NAME }}-*.zip ./kibana
-          windows_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-windows-x64.zip`
-          aws s3 cp $windows_artifact s3://artifacts.opendistroforelasticsearch.amazon.com/downloads/kibana-plugins/opendistro-reports/windows/x64/
-          cd ..
+          windows_x64_artifact=`ls ./${{ env.PLUGIN_NAME }}-${{ env.OD_VERSION }}-windows-x64.zip`
 
-          aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths "/downloads/*"
+          #Inject build number before the suffix and upload to S3
+          windows_x64_artifact_outfile=`basename ${windows_x64_artifact%.zip}-build-${GITHUB_RUN_NUMBER}.zip`
+          echo "Copying $windows_x64_artifact to ${s3_prefix}${windows_x64_artifact_outfile}"
+          aws s3 cp --quiet $windows_x64_artifact ${s3_prefix}${windows_x64_artifact_outfile}
