@@ -18,10 +18,11 @@ import registerReportDefinitionRoute from './reportDefinition';
 import registerReportSourceRoute from './reportSource';
 import registerMetricRoute from './metric';
 import { IRouter } from '../../../../src/core/server';
+import { AccessInfoType } from 'server';
 
-export default function (router: IRouter) {
-  registerReportRoute(router);
-  registerReportDefinitionRoute(router);
+export default function (router: IRouter, accessInfo: AccessInfoType) {
+  registerReportRoute(router, accessInfo);
+  registerReportDefinitionRoute(router, accessInfo);
   registerReportSourceRoute(router);
   registerMetricRoute(router);
 }

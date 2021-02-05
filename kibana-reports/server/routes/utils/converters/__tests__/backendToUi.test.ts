@@ -13,6 +13,7 @@
  * permissions and limitations under the License.
  */
 
+import { AccessInfoType } from 'server';
 import {
   BackendReportInstanceType,
   BACKEND_DELIVERY_FORMAT,
@@ -73,6 +74,16 @@ const input: BackendReportInstanceType = {
   status: BACKEND_REPORT_STATE.success,
 };
 
+const testAccessInfo: AccessInfoType = {
+  basePath: '',
+  serverInfo: {
+    name: '',
+    hostname: 'localhost',
+    port: 5601,
+    protocol: 'http',
+  },
+};
+
 const output = {
   query_url:
     "/app/dashboards#/view/722b74f0-b882-11e8-a6d9-e546fe2bba5f?_g=(time:(from:'2020-11-11T00:32:00.000Z',to:'2020-11-11T01:02:00.000Z'))",
@@ -125,7 +136,7 @@ const output = {
 
 describe('test backend to ui model conversion', () => {
   test('convert backend to ui report', async () => {
-    const res = backendToUiReport(input);
+    const res = backendToUiReport(input, testAccessInfo.basePath);
     expect(res).toEqual(output);
   }, 20000);
 });

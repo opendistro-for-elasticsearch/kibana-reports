@@ -31,8 +31,10 @@ import {
 } from './utils/converters/backendToUi';
 import { addToMetric } from './utils/metricHelper';
 import { validateReport } from '../../server/utils/validationHelper';
+import { AccessInfoType } from 'server';
 
-export default function (router: IRouter) {
+export default function (router: IRouter, accessInfo: AccessInfoType) {
+  const { basePath } = accessInfo;
   // generate report (with provided metadata)
   router.post(
     {
@@ -60,7 +62,8 @@ export default function (router: IRouter) {
           request.headers.origin;
         report = await validateReport(
           context.core.elasticsearch.legacy.client,
-          report
+          report,
+          basePath
         );
       } catch (error) {
         logger.error(`Failed input validation for create report ${error}`);
@@ -69,7 +72,12 @@ export default function (router: IRouter) {
       }
 
       try {
-        const reportData = await createReport(request, context, report);
+        const reportData = await createReport(
+          request,
+          context,
+          report,
+          accessInfo
+        );
 
         // if not deliver to user himself , no need to send actual file data to client
         const delivery = report.report_definition.delivery;
@@ -133,12 +141,13 @@ export default function (router: IRouter) {
           }
         );
         // convert report to use UI model
-        report = backendToUiReport(esResp.reportInstance);
+        const report = backendToUiReport(esResp.reportInstance, basePath);
         // generate report
         const reportData = await createReport(
           request,
           context,
           report,
+          accessInfo,
           savedReportId
         );
         addToMetric('report', 'download', 'count', report);
@@ -198,12 +207,13 @@ export default function (router: IRouter) {
         );
         const reportId = esResp.reportInstance.id;
         // convert report to use UI model
-        report = backendToUiReport(esResp.reportInstance);
+        const report = backendToUiReport(esResp.reportInstance, basePath);
         // generate report
         const reportData = await createReport(
           request,
           context,
           report,
+          accessInfo,
           reportId
         );
         addToMetric('report', 'create_from_definition', 'count', report);
@@ -260,7 +270,10 @@ export default function (router: IRouter) {
           }
         );
 
-        const reportsList = backendToUiReportsList(esResp.reportInstanceList);
+        const reportsList = backendToUiReportsList(
+          esResp.reportInstanceList,
+          basePath
+        );
 
         return response.ok({
           body: {
@@ -307,7 +320,7 @@ export default function (router: IRouter) {
           }
         );
 
-        const report = backendToUiReport(esResp.reportInstance);
+        const report = backendToUiReport(esResp.reportInstance, basePath);
 
         return response.ok({
           body: report,
