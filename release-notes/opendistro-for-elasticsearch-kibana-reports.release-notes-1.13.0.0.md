@@ -5,6 +5,7 @@
 * Definition Details Modal & Delete Toast ([#258](https://github.com/opendistro-for-elasticsearch/kibana-reports/pull/258))
 * Support creating report for saved objects with custom id ([#283](https://github.com/opendistro-for-elasticsearch/kibana-reports/pull/283))
 * Add Search box to Report Source Selection ([#286](https://github.com/opendistro-for-elasticsearch/kibana-reports/pull/286))
+* Support customized server config ([#313](https://github.com/opendistro-for-elasticsearch/kibana-reports/pull/313))
 
 
 ### Enhancements
