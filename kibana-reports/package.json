@@ -1,11 +1,11 @@
 {
   "name": "opendistro_kibana_reports",
-  "version": "1.12.0.0",
+  "version": "1.13.0.0",
   "description": "Kibana Reporting Plugin",
   "license": "Apache-2.0",
   "main": "index.ts",
   "kibana": {
-    "version": "7.10.0",
+    "version": "7.10.2",
     "templateVersion": "1.0.0"
   },
   "scripts": {
