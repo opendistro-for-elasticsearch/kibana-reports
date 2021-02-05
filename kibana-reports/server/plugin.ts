@@ -33,7 +33,6 @@ import registerRoutes from './routes';
 import { pollAndExecuteJob } from './executor/executor';
 import { POLL_INTERVAL } from './utils/constants';
 import { AccessInfoType, KibanaReportsPluginConfigType } from 'server';
-import { first } from 'rxjs/operators';
 
 export interface ReportsPluginRequestContext {
   logger: Logger;
@@ -55,7 +54,7 @@ export class OpendistroKibanaReportsPlugin
   private readonly logger: Logger;
   private readonly semaphore: SemaphoreInterface;
 
-  constructor(private readonly initializerContext: PluginInitializerContext) {
+  constructor(initializerContext: PluginInitializerContext) {
     this.logger = initializerContext.logger.get();
 
     const timeoutError = new Error('Server busy');
@@ -63,11 +62,9 @@ export class OpendistroKibanaReportsPlugin
     this.semaphore = withTimeout(new Semaphore(1), 180000, timeoutError);
   }
 
-  public async setup(core: CoreSetup) {
+  public setup(core: CoreSetup) {
     this.logger.debug('opendistro_kibana_reports: Setup');
 
-    // const config$ = this.initializerContext.config.create<KibanaReportsPluginConfigType>();
-    // const config: KibanaReportsPluginConfigType = await config$.pipe(first()).toPromise();
     const config = core.http.getServerInfo();
     const serverBasePath = core.http.basePath.serverBasePath;
     const accessInfo: AccessInfoType = {

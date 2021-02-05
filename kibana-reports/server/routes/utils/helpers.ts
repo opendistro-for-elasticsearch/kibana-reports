@@ -19,7 +19,6 @@ import {
   ILegacyClusterClient,
   ILegacyScopedClusterClient,
 } from '../../../../../src/core/server';
-import { ReportSchemaType } from 'server/model';
 
 /**
  * ES error response body:
@@ -94,22 +93,4 @@ export const checkErrorType = (error: any) => {
   } else {
     return 'system_error';
   }
-};
-
-export const validate = (schema: any, content: any, basePath: string) => {
-  // report
-  if (content.query_url) {
-    content.query_url = content.query_url.replace(basePath, '');
-    content.report_definition.report_params.core_params.base_url = content.report_definition.report_params.core_params.base_url.replace(
-      basePath,
-      ''
-    );
-  } else {
-    // report definition
-    content.report_params.core_params.base_url = content.report_params.core_params.base_url.replace(
-      basePath,
-      ''
-    );
-  }
-  return schema.validate(content);
 };
