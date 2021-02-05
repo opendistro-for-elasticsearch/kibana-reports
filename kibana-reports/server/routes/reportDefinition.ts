@@ -31,8 +31,10 @@ import { updateReportDefinition } from './lib/updateReportDefinition';
 import { DEFAULT_MAX_SIZE } from './utils/constants';
 import { addToMetric } from './utils/metricHelper';
 import { validateReportDefinition } from '../../server/utils/validationHelper';
+import { AccessInfoType } from 'server';
 
-export default function (router: IRouter) {
+export default function (router: IRouter, accessInfo: AccessInfoType) {
+  const { basePath, serverInfo } = accessInfo;
   // Create report Definition
   router.post(
     {
@@ -56,7 +58,8 @@ export default function (router: IRouter) {
           request.headers.origin;
         reportDefinition = await validateReportDefinition(
           context.core.elasticsearch.legacy.client,
-          reportDefinition
+          reportDefinition,
+          basePath
         );
       } catch (error) {
         logger.error(
@@ -114,7 +117,8 @@ export default function (router: IRouter) {
           request.headers.origin;
         reportDefinition = await validateReportDefinition(
           context.core.elasticsearch.legacy.client,
-          reportDefinition
+          reportDefinition,
+          basePath
         );
       } catch (error) {
         logger.error(
@@ -182,7 +186,8 @@ export default function (router: IRouter) {
         );
 
         const reportDefinitionsList = backendToUiReportDefinitionsList(
-          esResp.reportDefinitionDetailsList
+          esResp.reportDefinitionDetailsList,
+          basePath
         );
 
         return response.ok({
@@ -231,7 +236,8 @@ export default function (router: IRouter) {
         );
 
         const reportDefinition = backendToUiReportDefinition(
-          esResp.reportDefinitionDetails
+          esResp.reportDefinitionDetails,
+          basePath
         );
 
         return response.ok({

@@ -45,8 +45,14 @@ export const regexRelativeUrl = /^\/(_plugin\/kibana\/app|app)\/(dashboards|visu
 
 export const validateReport = async (
   client: ILegacyScopedClusterClient,
-  report: ReportSchemaType
+  report: ReportSchemaType,
+  basePath: String
 ) => {
+  report.query_url = report.query_url.replace(basePath, '');
+  report.report_definition.report_params.core_params.base_url = report.report_definition.report_params.core_params.base_url.replace(
+    basePath,
+    ''
+  );
   // validate basic schema
   report = reportSchema.validate(report);
   // parse to retrieve data
@@ -63,8 +69,13 @@ export const validateReport = async (
 
 export const validateReportDefinition = async (
   client: ILegacyScopedClusterClient,
-  reportDefinition: ReportDefinitionSchemaType
+  reportDefinition: ReportDefinitionSchemaType,
+  basePath: String
 ) => {
+  reportDefinition.report_params.core_params.base_url = reportDefinition.report_params.core_params.base_url.replace(
+    basePath,
+    ''
+  );
   // validate basic schema
   reportDefinition = reportDefinitionSchema.validate(reportDefinition);
   // parse to retrieve data

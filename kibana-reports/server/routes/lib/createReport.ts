@@ -36,11 +36,13 @@ import { deliverReport } from './deliverReport';
 import { updateReportState } from './updateReportState';
 import { saveReport } from './saveReport';
 import { SemaphoreInterface } from 'async-mutex';
+import { AccessInfoType } from 'server';
 
 export const createReport = async (
   request: KibanaRequest,
   context: RequestHandlerContext,
   report: ReportSchemaType,
+  accessInfo: AccessInfoType,
   savedReportId?: string
 ): Promise<CreateReportResultType> => {
   const isScheduledTask = false;
@@ -59,6 +61,10 @@ export const createReport = async (
   const esClient = context.core.elasticsearch.legacy.client;
   // @ts-ignore
   const timezone = request.query.timezone;
+  const {
+    basePath,
+    serverInfo: { protocol, port, hostname },
+  } = accessInfo;
 
   let createReportResult: CreateReportResultType;
   let reportId;
@@ -89,7 +95,10 @@ export const createReport = async (
     } else {
       // report source can only be one of [saved search, visualization, dashboard]
       // compose url
-      const completeQueryUrl = `${LOCAL_HOST}${report.query_url}`;
+      const relativeUrl = report.query_url.startsWith(basePath)
+        ? report.query_url
+        : `${basePath}${report.query_url}`;
+      const completeQueryUrl = `${protocol}://${hostname}:${port}${relativeUrl}`;
       // Check if security is enabled. TODO: is there a better way to check?
       let cookieObject: SetCookie | undefined;
       if (request.headers.cookie) {
@@ -101,6 +110,7 @@ export const createReport = async (
               name: cookie[0],
               value: cookie[1],
               url: completeQueryUrl,
+              path: basePath,
             };
           }
         });

@@ -73,7 +73,7 @@ export enum SELECTOR {
 // https://www.elastic.co/guide/en/elasticsearch/reference/6.8/search-request-from-size.html
 export const DEFAULT_MAX_SIZE = 10000;
 
-export const LOCAL_HOST = 'http://localhost:5601';
+export const LOCAL_HOST = 'localhost';
 
 export const DEFAULT_REPORT_HEADER = '<h1>Open Distro Kibana Reports</h1>';
 
