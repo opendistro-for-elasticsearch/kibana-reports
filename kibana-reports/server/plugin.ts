@@ -32,7 +32,7 @@ import {
 import registerRoutes from './routes';
 import { pollAndExecuteJob } from './executor/executor';
 import { POLL_INTERVAL } from './utils/constants';
-import { AccessInfoType, KibanaReportsPluginConfigType } from 'server';
+import { AccessInfoType } from 'server';
 
 export interface ReportsPluginRequestContext {
   logger: Logger;

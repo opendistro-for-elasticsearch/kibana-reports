@@ -14,28 +14,10 @@
  */
 
 import { OpendistroKibanaReportsPlugin } from './plugin';
-import { schema, TypeOf } from '@kbn/config-schema';
 import {
   PluginInitializerContext,
-  PluginConfigDescriptor,
   HttpServerInfo,
 } from '../../../src/core/server';
-
-export const configSchema = schema.object({
-  access: schema.object({
-    port: schema.number({ defaultValue: 5601 }),
-    basePath: schema.string({ defaultValue: '' }),
-  }),
-});
-
-export type KibanaReportsPluginConfigType = TypeOf<typeof configSchema>;
-
-export const config: PluginConfigDescriptor<KibanaReportsPluginConfigType> = {
-  exposeToBrowser: {
-    access: true,
-  },
-  schema: configSchema,
-};
 
 export type AccessInfoType = {
   basePath: string;

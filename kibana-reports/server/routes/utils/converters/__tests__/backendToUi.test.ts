@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import { KibanaReportsPluginConfigType } from 'server';
+import { AccessInfoType } from 'server';
 import {
   BackendReportInstanceType,
   BACKEND_DELIVERY_FORMAT,
@@ -74,10 +74,13 @@ const input: BackendReportInstanceType = {
   status: BACKEND_REPORT_STATE.success,
 };
 
-const testConfig: KibanaReportsPluginConfigType = {
-  access: {
+const testAccessInfo: AccessInfoType = {
+  basePath: '',
+  serverInfo: {
+    name: '',
+    hostname: 'localhost',
     port: 5601,
-    basePath: '',
+    protocol: 'http',
   },
 };
 
@@ -133,7 +136,7 @@ const output = {
 
 describe('test backend to ui model conversion', () => {
   test('convert backend to ui report', async () => {
-    const res = backendToUiReport(input, testConfig.access.basePath);
+    const res = backendToUiReport(input, testAccessInfo.basePath);
     expect(res).toEqual(output);
   }, 20000);
 });
