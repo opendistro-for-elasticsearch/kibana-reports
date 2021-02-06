@@ -1,0 +1,10 @@
+{
+  "configPath": "opendistro_kibana_reports",
+  "id": "opendistroReportsKibana",
+  "version": "1.12.0.9",
+  "kibanaVersion": "kibana",
+  "requiredPlugins": ["navigation", "data"],
+  "optionalPlugins": ["share"],
+  "server": true,
+  "ui": true
+}

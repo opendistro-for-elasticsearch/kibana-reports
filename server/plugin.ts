@@ -1,0 +1,160 @@
+/*
+ * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+import { Observable } from 'rxjs';
+import { first } from 'rxjs/operators';
+import {
+  PluginInitializerContext,
+  CoreSetup,
+  CoreStart,
+  Plugin,
+  Logger,
+  ILegacyClusterClient,
+} from '../../../src/core/server';
+import { setIntervalAsync } from 'set-interval-async/dynamic';
+import { Semaphore, SemaphoreInterface, withTimeout } from 'async-mutex';
+import esReportsPlugin from './backend/opendistro-es-reports-plugin';
+import notificationPlugin from './backend/opendistro-notification-plugin';
+import {
+  OpendistroKibanaReportsPluginSetup,
+  OpendistroKibanaReportsPluginStart,
+  KibanaConfig,
+} from './types';
+import registerRoutes from './routes';
+import { pollAndExecuteJob } from './executor/executor';
+import { POLL_INTERVAL } from './utils/constants';
+
+export interface ReportsPluginRequestContext {
+  logger: Logger;
+  esClient: ILegacyClusterClient;
+}
+//@ts-ignore
+declare module 'kibana/server' {
+  interface RequestHandlerContext {
+    reports_plugin: ReportsPluginRequestContext;
+  }
+}
+
+export class OpendistroKibanaReportsPlugin
+  implements
+    Plugin<
+      OpendistroKibanaReportsPluginSetup,
+      OpendistroKibanaReportsPluginStart
+    > {
+  private readonly logger: Logger;
+  private readonly semaphore: SemaphoreInterface;
+  private readonly config$: Observable<KibanaConfig>;
+  private readonly kbn_index: any;
+
+  constructor(initializerContext: PluginInitializerContext) {
+    this.logger = initializerContext.logger.get();
+    
+    initializerContext.config.legacy.globalConfig$.forEach(item => {
+      this.kbn_index = item.kibana.index;
+      
+    });
+    /*
+    - Read config value exposed via initializerContext. No config path is required.
+      const config$ = this.initializerContext.config.create();
+      // or if config is optional:
+      const config$ = this.initializerContext.config.createIfExists();
+      */
+    //this.config$ = initializerContext.config.create<KibanaConfig>();
+    this.config$ = initializerContext.config.createIfExists<KibanaConfig>();
+
+    const timeoutError = new Error('Server busy');
+    timeoutError.statusCode = 503;
+    this.semaphore = withTimeout(new Semaphore(1), 180000, timeoutError);
+  }
+
+  public async setup(core: CoreSetup) {
+    //Access kibana.yml parameters
+    this.logger.debug('opendistro_kibana_reports: Setup');
+    const router = core.http.createRouter();
+    const config = await this.config$.pipe(first()).toPromise();
+    config.kibana_index = this.kbn_index;
+
+    // Deprecated API. Switch to the new elasticsearch client as soon as https://github.com/elastic/kibana/issues/35508 done.
+    const esReportsClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
+      'es_reports',
+      {
+        plugins: [esReportsPlugin],
+      }
+    );
+
+    const notificationClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
+      'notification',
+      {
+        plugins: [notificationPlugin],
+      }
+    );
+
+    // Register server side APIs
+    registerRoutes(router, config, core);
+
+    // put logger into route handler context, so that we don't need to pass through parameters
+    core.http.registerRouteHandlerContext(
+      //@ts-ignore
+      'reporting_plugin',
+      (context, request) => {
+        return {
+          logger: this.logger,
+          semaphore: this.semaphore,
+          notificationClient,
+          esReportsClient,
+        };
+      }
+    );
+
+    return {};
+  }
+
+  public start(core: CoreStart) {
+    this.logger.debug('opendistro_kibana_reports: Started');
+
+    const esReportsClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
+      'es_reports',
+      {
+        plugins: [esReportsPlugin],
+      }
+    );
+
+    const notificationClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
+      'notification',
+      {
+        plugins: [notificationPlugin],
+      }
+    );
+    const esClient: ILegacyClusterClient = core.elasticsearch.legacy.client;
+    /*
+    setIntervalAsync provides the same familiar interface as built-in setInterval for asynchronous functions,
+    while preventing multiple executions from overlapping in time.
+    Polling at at a 5 min fixed interval
+    
+    TODO: need further optimization polling with a mix approach of
+    random delay and dynamic delay based on the amount of jobs. 
+    */
+    // setIntervalAsync(
+    //   pollAndExecuteJob,
+    //   POLL_INTERVAL,
+    //   esReportsClient,
+    //   notificationClient,
+    //   esClient,
+    //   this.logger
+    // );
+    return {};
+  }
+
+  public stop() {}
+}
