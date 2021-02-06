@@ -1,21 +1,13 @@
-.DS_Store
-
-*.iml
-.gradle
-out
-local-test
-.local-*
-
 npm-debug.log*
 node_modules
 /build/
 /public/app.css
 .idea/
-.vscode/
 yarn-error.log
 /coverage/
+.DS_Store
 .history/
 .eslintcache
-
-# Kibana
-.empty
+package-lock.json
+/target/
+.chromium/
