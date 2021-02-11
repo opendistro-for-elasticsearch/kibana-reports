@@ -45,8 +45,12 @@ headless-chrome.sh chrome-version-SHA (arch_name (arm64))
       |-libGLESv2.so
       |-libGLESv2.so.TOC
 # Additional libaries:
-  libnss3-dev
-  fonts-liberation
-  libfontconfig
-  (installation command example : sudo apt update && apt install libnss3-dev fonts-liberation libfontconfig)
+- Ubuntu needs additional dependencies to run chromium 
+```
+sudo apt install -y libnss3-dev fonts-liberation libfontconfig1
+```
+- RedHat/CentOS needs additional dependencies to run chromium
+```
+sudo yum install -y libnss3.so xorg-x11-fonts-100dpi xorg-x11-fonts-75dpi xorg-x11-utils xorg-x11-fonts-cyrillic xorg-x11-fonts-Type1 xorg-x11-fonts-misc fontconfig freetype
+```
 
