@@ -16,9 +16,8 @@
 import {
   REPORT_TYPE,
   REPORT_STATE,
-  LOCAL_HOST,
-  SECURITY_AUTH_COOKIE_NAME,
   DELIVERY_TYPE,
+  SECURITY_CONSTANTS,
 } from '../utils/constants';
 
 import {
@@ -105,7 +104,7 @@ export const createReport = async (
         const cookies = request.headers.cookie.split(';');
         cookies.map((item: string) => {
           const cookie = item.trim().split('=');
-          if (cookie[0] === SECURITY_AUTH_COOKIE_NAME) {
+          if (cookie[0] === SECURITY_CONSTANTS.AUTH_COOKIE_NAME) {
             cookieObject = {
               name: cookie[0],
               value: cookie[1],

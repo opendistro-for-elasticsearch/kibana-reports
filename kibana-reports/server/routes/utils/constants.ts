@@ -75,7 +75,10 @@ export const DEFAULT_MAX_SIZE = 10000;
 
 export const DEFAULT_REPORT_HEADER = '<h1>Open Distro Kibana Reports</h1>';
 
-export const SECURITY_AUTH_COOKIE_NAME = 'security_authentication';
+export const SECURITY_CONSTANTS = {
+  AUTH_COOKIE_NAME: 'security_authentication',
+  TENANT_LOCAL_STORAGE_KEY: 'opendistro::security::tenant::show_popup',
+};
 
 export const CHROMIUM_PATH = `${__dirname}/../../../.chromium/headless_shell`;
 

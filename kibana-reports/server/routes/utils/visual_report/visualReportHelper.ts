@@ -23,6 +23,7 @@ import {
   FORMAT,
   SELECTOR,
   CHROMIUM_PATH,
+  SECURITY_CONSTANTS,
 } from '../constants';
 import { getFileName } from '../helpers';
 import { CreateReportResultType } from '../types';
@@ -87,6 +88,15 @@ export const createVisualReport = async (
     await page.setCookie(cookie);
   }
   logger.info(`original queryUrl ${queryUrl}`);
+  await page.goto(queryUrl, { waitUntil: 'networkidle0' });
+  // should add to local storage after page.goto, then access the page again - browser must have an url to register local storage item on it
+  await page.evaluate(
+    /* istanbul ignore next */
+    (key) => {
+      localStorage.setItem(key, 'false');
+    },
+    SECURITY_CONSTANTS.TENANT_LOCAL_STORAGE_KEY
+  );
   await page.goto(queryUrl, { waitUntil: 'networkidle0' });
   logger.info(`page url ${page.url()}`);
 
