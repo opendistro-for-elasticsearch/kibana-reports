@@ -91,6 +91,7 @@ export const createVisualReport = async (
   await page.goto(queryUrl, { waitUntil: 'networkidle0' });
   // should add to local storage after page.goto, then access the page again - browser must have an url to register local storage item on it
   await page.evaluate((key) => {
+    /* istanbul ignore next */
     localStorage.setItem(key, 'false');
   }, SECURITY_CONSTANTS.TENANT_LOCAL_STORAGE_KEY);
   await page.goto(queryUrl, { waitUntil: 'networkidle0' });
