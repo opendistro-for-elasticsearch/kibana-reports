@@ -14,11 +14,20 @@ Please add your feature requests here [ New Requests ](https://github.com/opendi
 
 ## Setup & Build
 
-Complete Kibana Reports is composed of 3 plugins. Refer to README in each plugin folder for more details.
+Complete Kibana Report feature is composed of 2 plugins. Refer to README in each plugin folder for more details.
 
 - [Kibana reports plugin](./kibana-reports/README.md)
 - [Reports scheduler ES plugin](./reports-scheduler/README.md)（TODO）
-- [Reports notification ES plugin]() (TODO)
+
+## Troubleshooting
+
+#### Fail to launch Chromium
+
+There could be two reasons for this problem
+
+1. You are not having the correct version of headless-chrome matching to the OS that your Kibana is running. Different versions of headless-chrome can be found [here](https://github.com/opendistro-for-elasticsearch/kibana-reports/releases/tag/chromium-1.12.0.0)
+
+2. Missing additional dependencies. Please refer to [additional dependencies section](./kibana-reports/rendering-engine/headless-chrome/README.md#additional-libaries) to install required dependencies according to your operating system.
 
 ## Contributing to Kibana reports for Open Distro
 
