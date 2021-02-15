@@ -27,6 +27,7 @@ export type BackendReportInstanceType = {
   beginTimeMs: number;
   endTimeMs: number;
   access?: string[];
+  tenant?: string;
   status: BACKEND_REPORT_STATE;
   statusText?: string;
   inContextDownloadUrlPath?: string;
