@@ -30,6 +30,7 @@ import {
   getMenuItem,
 } from './context_menu_ui';
 import { timeRangeMatcher } from '../utils/utils';
+import { parse } from 'url';
 
 const replaceQueryURL = () => {
   let url = location.pathname + location.hash;
@@ -50,7 +51,7 @@ const replaceQueryURL = () => {
   return url;
 };
 
-const generateInContextReport = (
+const generateInContextReport = async (
   timeRanges,
   queryUrl,
   fileFormat,
@@ -58,6 +59,17 @@ const generateInContextReport = (
 ) => {
   displayLoadingModal();
   const baseUrl = queryUrl.substr(0, queryUrl.indexOf('?'));
+  // Add selected tenant info to url
+  try {
+    const tenant = await getTenantInfoIfExists();
+    if (tenant) {
+      queryUrl = addTenantToURL(queryUrl, tenant);
+    }
+  } catch (error) {
+    addSuccessOrFailureToast('failure');
+    console.log(`failed to get user tenant: ${error}`);
+  }
+
   let reportSource = '';
   if (baseUrl.includes('dashboard')) {
     reportSource = 'Dashboard';
@@ -235,32 +247,39 @@ $(function () {
 });
 
 const isDiscoverNavMenu = (navMenu) => {
-  return navMenu[0].children.length === 5 && 
+  return (
+    navMenu[0].children.length === 5 &&
     ($('[data-test-subj="breadcrumb first"]').prop('title') === 'Discover' ||
-    $('[data-test-subj="breadcrumb first last"]').prop('title') === 'Discover')
-}
+      $('[data-test-subj="breadcrumb first last"]').prop('title') ===
+        'Discover')
+  );
+};
 
 const isDashboardNavMenu = (navMenu) => {
-  return (navMenu[0].children.length === 4 || navMenu[0].children.length === 6) && 
-    ($('[data-test-subj="breadcrumb first"]').prop('title') === 'Dashboard')
-}
+  return (
+    (navMenu[0].children.length === 4 || navMenu[0].children.length === 6) &&
+    $('[data-test-subj="breadcrumb first"]').prop('title') === 'Dashboard'
+  );
+};
 
 const isVisualizationNavMenu = (navMenu) => {
-  return navMenu[0].children.length === 3
-    && ($('[data-test-subj="breadcrumb first"]').prop('title') === 'Visualize')
-}
-
-
+  return (
+    navMenu[0].children.length === 3 &&
+    $('[data-test-subj="breadcrumb first"]').prop('title') === 'Visualize'
+  );
+};
 
 function locationHashChanged() {
   const observer = new MutationObserver(function (mutations) {
     const navMenu = document.querySelectorAll(
       'span.kbnTopNavMenu__wrapper > nav.euiHeaderLinks > div.euiHeaderLinks__list'
     );
-    if (navMenu && navMenu.length && (
-      isDiscoverNavMenu(navMenu) ||
-      isDashboardNavMenu(navMenu) ||
-      isVisualizationNavMenu(navMenu))
+    if (
+      navMenu &&
+      navMenu.length &&
+      (isDiscoverNavMenu(navMenu) ||
+        isDashboardNavMenu(navMenu) ||
+        isVisualizationNavMenu(navMenu))
     ) {
       try {
         if ($('#downloadReport').length) {
@@ -285,7 +304,7 @@ function locationHashChanged() {
   });
 }
 
-$(window).one('hashchange', function( e ) {    
+$(window).one('hashchange', function (e) {
   locationHashChanged();
 });
 /**
@@ -305,3 +324,64 @@ $(window).one('hashchange', function( e ) {
 window.onpopstate = history.onpushstate = () => {
   locationHashChanged();
 };
+
+async function getTenantInfoIfExists() {
+  const res = await fetch(`../api/v1/multitenancy/tenant`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'kbn-version': '7.10.2',
+      accept: '*/*',
+      'accept-language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7,zh-TW;q=0.6',
+      pragma: 'no-cache',
+      'sec-fetch-dest': 'empty',
+      'sec-fetch-mode': 'cors',
+      'sec-fetch-site': 'same-origin',
+    },
+    method: 'GET',
+    referrerPolicy: 'strict-origin-when-cross-origin',
+    mode: 'cors',
+    credentials: 'include',
+  })
+    .then((response) => {
+      if (response.status === 404) {
+        console.log(`security plugin is not enabled: ${response.statusText}`);
+        return undefined;
+      } else {
+        return response.text();
+      }
+    })
+    .then((tenant) => {
+      if (tenant === '') {
+        tenant = 'global';
+      } else if (tenant === '__user__') {
+        tenant = 'private';
+      }
+      return tenant;
+    });
+
+  return res;
+}
+
+// helper function to add tenant info to url(if tenant is available)
+function addTenantToURL(url, userRequestedTenant) {
+  // build fake url from relative url
+  const fakeUrl = `http://opendistro.com${url}`;
+  const tenantKey = 'security_tenant';
+  const tenantKeyAndValue =
+    tenantKey + '=' + encodeURIComponent(userRequestedTenant);
+
+  const { pathname, search } = parse(fakeUrl);
+  const queryDelimiter = !search ? '?' : '&';
+  // The url parser returns null if the search is empty. Change that to an empty
+  // string so that we can use it to build the values later
+  if (search && search.toLowerCase().indexOf(tenantKey) > -1) {
+    // If we for some reason already have a tenant in the URL we skip any updates
+    return url;
+  }
+
+  // A helper for finding the part in the string that we want to extend/replace
+  const valueToReplace = pathname + (search || '');
+  const replaceWith = valueToReplace + queryDelimiter + tenantKeyAndValue;
+
+  return url.replace(valueToReplace, replaceWith);
+}
