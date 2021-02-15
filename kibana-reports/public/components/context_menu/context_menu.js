@@ -344,7 +344,7 @@ async function getTenantInfoIfExists() {
   })
     .then((response) => {
       if (response.status === 404) {
-        console.log(`security plugin is not enabled: ${response.statusText}`);
+        // endpoint doesn't exist, security plugin is not enabled.
         return undefined;
       } else {
         return response.text();
