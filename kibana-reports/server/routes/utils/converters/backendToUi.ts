@@ -207,12 +207,15 @@ const getUiQueryUrl = (
   const timeFrom = moment(beginTimeMs).toISOString();
   const timeTo = moment(endTimeMs).toISOString();
   let queryUrl = `${baseUrl}?_g=(time:(from:'${timeFrom}',to:'${timeTo}'))`;
-  if (tenant) {
-    if (tenant === '__user__') {
+  if (tenant !== undefined) {
+    if (tenant === '') {
+      tenant = 'global';
+    } else if (tenant === '__user__') {
       tenant = 'private';
     }
     queryUrl = addTenantToURL(queryUrl, tenant);
   }
+
   return queryUrl;
 };
 
