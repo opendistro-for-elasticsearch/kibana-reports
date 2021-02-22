@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import puppeteer, { ElementHandle, SetCookie } from 'puppeteer-core';
+import puppeteer, { ElementHandle, SetCookie, Headers } from 'puppeteer-core';
 import createDOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 import { Logger } from '../../../../../../src/core/server';
@@ -36,6 +36,7 @@ export const createVisualReport = async (
   queryUrl: string,
   logger: Logger,
   cookie?: SetCookie,
+  additionalheaders?: Headers,
   timezone?: string
 ): Promise<CreateReportResultType> => {
   const {
@@ -86,6 +87,10 @@ export const createVisualReport = async (
   if (cookie) {
     logger.info('domain enables security, use session cookie to access');
     await page.setCookie(cookie);
+  }
+  if (additionalheaders) {
+    logger.info('domain passed proxy auth headers, passing to backend');
+    await page.setExtraHTTPHeaders(additionalheaders);
   }
   logger.info(`original queryUrl ${queryUrl}`);
   await page.goto(queryUrl, { waitUntil: 'networkidle0' });
