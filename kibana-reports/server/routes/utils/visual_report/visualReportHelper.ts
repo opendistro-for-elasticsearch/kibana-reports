@@ -140,6 +140,9 @@ export const createVisualReport = async (
         `report source can only be one of [Dashboard, Visualization]`
       );
   }
+  
+  // wait for page content to render
+  await page.waitFor(10000);
 
   const screenshot = await page.screenshot({ fullPage: true });
 
