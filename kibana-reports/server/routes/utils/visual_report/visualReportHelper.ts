@@ -59,6 +59,24 @@ export const createVisualReport = async (
     ? DOMPurify.sanitize(header)
     : DEFAULT_REPORT_HEADER;
   const reportFooter = footer ? DOMPurify.sanitize(footer) : '';
+  
+  // add waitForDynamicContent function
+  const waitForDynamicContent = async(page, timeout = 30000, interval = 1000, checks = 5) => {
+    const maxChecks    = timeout / interval;
+    let passedChecks   = 0;
+    let previousLength = 0;
+    
+    let i=0; while(i++ <= maxChecks){
+      let pageContent   = await page.content();
+      let currentLength = pageContent.length;
+      
+      (previousLength === 0 || previousLength != currentLength) ? passedChecks = 0 : passedChecks++;
+      if (passedChecks >= checks) { break; }
+      
+      previousLength = currentLength;
+      await page.waitFor(interval);
+    }
+  }
 
   // set up puppeteer
   const browser = await puppeteer.launch({
@@ -141,8 +159,8 @@ export const createVisualReport = async (
       );
   }
   
-  // wait for page content to render
-  await page.waitFor(10000);
+  // wait for dynamic page content to render
+  await waitForDynamicContent(page);
 
   const screenshot = await page.screenshot({ fullPage: true });
 
