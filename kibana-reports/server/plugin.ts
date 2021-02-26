@@ -32,7 +32,6 @@ import {
 import registerRoutes from './routes';
 import { pollAndExecuteJob } from './executor/executor';
 import { POLL_INTERVAL } from './utils/constants';
-import { AccessInfoType } from 'server';
 
 export interface ReportsPluginRequestContext {
   logger: Logger;
@@ -64,14 +63,6 @@ export class OpendistroKibanaReportsPlugin
 
   public setup(core: CoreSetup) {
     this.logger.debug('opendistro_kibana_reports: Setup');
-
-    const config = core.http.getServerInfo();
-    const serverBasePath = core.http.basePath.serverBasePath;
-    const accessInfo: AccessInfoType = {
-      basePath: serverBasePath,
-      serverInfo: config,
-    };
-
     const router = core.http.createRouter();
     // Deprecated API. Switch to the new elasticsearch client as soon as https://github.com/elastic/kibana/issues/35508 done.
     const esReportsClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
@@ -87,8 +78,9 @@ export class OpendistroKibanaReportsPlugin
         plugins: [notificationPlugin],
       }
     );
+
     // Register server side APIs
-    registerRoutes(router, accessInfo);
+    registerRoutes(router);
 
     // put logger into route handler context, so that we don't need to pass through parameters
     core.http.registerRouteHandlerContext(
@@ -109,6 +101,7 @@ export class OpendistroKibanaReportsPlugin
 
   public start(core: CoreStart) {
     this.logger.debug('opendistro_kibana_reports: Started');
+
     const esReportsClient: ILegacyClusterClient = core.elasticsearch.legacy.createClient(
       'es_reports',
       {

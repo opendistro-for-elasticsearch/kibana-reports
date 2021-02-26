@@ -13,16 +13,8 @@
  * permissions and limitations under the License.
  */
 
+import { PluginInitializerContext } from '../../../src/core/server';
 import { OpendistroKibanaReportsPlugin } from './plugin';
-import {
-  PluginInitializerContext,
-  HttpServerInfo,
-} from '../../../src/core/server';
-
-export type AccessInfoType = {
-  basePath: string;
-  serverInfo: HttpServerInfo;
-};
 
 //  This exports static code and TypeScript types,
 //  as well as, Kibana Platform `plugin()` initializer.

@@ -16,8 +16,8 @@
 import {
   DataReportSchemaType,
   DeliverySchemaType,
-  reportDefinitionSchema,
   ReportDefinitionSchemaType,
+  reportSchema,
   ReportSchemaType,
   TriggerSchemaType,
   VisualReportSchemaType,
@@ -51,8 +51,7 @@ import moment from 'moment';
 import { parse } from 'url';
 
 export const backendToUiReport = (
-  backendReportInstance: BackendReportInstanceType,
-  serverBasePath: string
+  backendReportInstance: BackendReportInstanceType
 ): ReportSchemaType => {
   const {
     inContextDownloadUrlPath,
@@ -85,33 +84,25 @@ export const backendToUiReport = (
     time_created: reportCreatedTimeMs,
     state: getUiReportState(status, delivery),
     report_definition: backendToUiReportDefinition(
-      backendReportDefinitionDetails,
-      serverBasePath
+      backendReportDefinitionDetails
     ),
   };
-
-  // Add severbasePath back to query_url
-  report.query_url = serverBasePath + report.query_url;
-
+  // validate to assign default values to some fields for UI model
+  report = reportSchema.validate(report);
   return report;
 };
 
 export const backendToUiReportsList = (
-  backendReportsList: BackendReportInstanceType[],
-  serverBasePath: string
+  backendReportsList: BackendReportInstanceType[]
 ) => {
   const res = backendReportsList.map((backendReport) => {
-    return {
-      _id: backendReport.id,
-      _source: backendToUiReport(backendReport, serverBasePath),
-    };
+    return { _id: backendReport.id, _source: backendToUiReport(backendReport) };
   });
   return res;
 };
 
 export const backendToUiReportDefinition = (
-  backendReportDefinitionDetails: BackendReportDefinitionDetailsType,
-  serverBasePath: string
+  backendReportDefinitionDetails: BackendReportDefinitionDetailsType
 ): ReportDefinitionSchemaType => {
   const {
     lastUpdatedTimeMs,
@@ -165,16 +156,11 @@ export const backendToUiReportDefinition = (
     status: getUiReportDefinitionStatus(isEnabled),
   };
 
-  // validate to assign default values to some fields for UI model
-  uiReportDefinition = reportDefinitionSchema.validate(uiReportDefinition);
-  uiReportDefinition.report_params.core_params.base_url =
-    serverBasePath + uiReportDefinition.report_params.core_params.base_url;
   return uiReportDefinition;
 };
 
 export const backendToUiReportDefinitionsList = (
-  backendReportDefinitionDetailsList: BackendReportDefinitionDetailsType[],
-  serverBasePath: string
+  backendReportDefinitionDetailsList: BackendReportDefinitionDetailsType[]
 ) => {
   const res = backendReportDefinitionDetailsList.map(
     (backendReportDefinitionDetails) => {
@@ -183,8 +169,7 @@ export const backendToUiReportDefinitionsList = (
         _source: {
           // TODO: this property can be removed, but need UI changes as well
           report_definition: backendToUiReportDefinition(
-            backendReportDefinitionDetails,
-            serverBasePath
+            backendReportDefinitionDetails
           ),
         },
       };
