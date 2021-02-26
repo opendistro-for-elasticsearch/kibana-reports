@@ -22,7 +22,7 @@ import { AccessInfoType } from 'server';
 
 export default function (router: IRouter, accessInfo: AccessInfoType) {
   registerReportRoute(router, accessInfo);
-  registerReportDefinitionRoute(router, accessInfo);
-  registerReportSourceRoute(router);
+  // registerReportDefinitionRoute(router, accessInfo);
+  // registerReportSourceRoute(router);
   registerMetricRoute(router);
 }

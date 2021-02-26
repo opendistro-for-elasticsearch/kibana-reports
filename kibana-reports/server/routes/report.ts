@@ -106,233 +106,233 @@ export default function (router: IRouter, accessInfo: AccessInfoType) {
   );
 
   // generate report from report id
-  router.get(
-    {
-      path: `${API_PREFIX}/generateReport/{reportId}`,
-      validate: {
-        params: schema.object({
-          reportId: schema.string(),
-        }),
-        query: schema.object({
-          timezone: schema.string(),
-        }),
-      },
-    },
-    async (
-      context,
-      request,
-      response
-    ): Promise<IKibanaResponse<any | ResponseError>> => {
-      addToMetric('report', 'download', 'count');
-      //@ts-ignore
-      const logger: Logger = context.reporting_plugin.logger;
-      let report: any;
-      try {
-        const savedReportId = request.params.reportId;
-        // @ts-ignore
-        const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
-          request
-        );
-        // get report
-        const esResp = await esReportsClient.callAsCurrentUser(
-          'es_reports.getReportById',
-          {
-            reportInstanceId: savedReportId,
-          }
-        );
-        // convert report to use UI model
-        const report = backendToUiReport(esResp.reportInstance, basePath);
-        // generate report
-        const reportData = await createReport(
-          request,
-          context,
-          report,
-          accessInfo,
-          savedReportId
-        );
-        addToMetric('report', 'download', 'count', report);
+  // router.get(
+  //   {
+  //     path: `${API_PREFIX}/generateReport/{reportId}`,
+  //     validate: {
+  //       params: schema.object({
+  //         reportId: schema.string(),
+  //       }),
+  //       query: schema.object({
+  //         timezone: schema.string(),
+  //       }),
+  //     },
+  //   },
+  //   async (
+  //     context,
+  //     request,
+  //     response
+  //   ): Promise<IKibanaResponse<any | ResponseError>> => {
+  //     addToMetric('report', 'download', 'count');
+  //     //@ts-ignore
+  //     const logger: Logger = context.reporting_plugin.logger;
+  //     let report: any;
+  //     try {
+  //       const savedReportId = request.params.reportId;
+  //       // @ts-ignore
+  //       const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
+  //         request
+  //       );
+  //       // get report
+  //       const esResp = await esReportsClient.callAsCurrentUser(
+  //         'es_reports.getReportById',
+  //         {
+  //           reportInstanceId: savedReportId,
+  //         }
+  //       );
+  //       // convert report to use UI model
+  //       const report = backendToUiReport(esResp.reportInstance, basePath);
+  //       // generate report
+  //       const reportData = await createReport(
+  //         request,
+  //         context,
+  //         report,
+  //         accessInfo,
+  //         savedReportId
+  //       );
+  //       addToMetric('report', 'download', 'count', report);
 
-        return response.ok({
-          body: {
-            data: reportData.dataUrl,
-            filename: reportData.fileName,
-          },
-        });
-      } catch (error) {
-        logger.error(`Failed to generate report by id: ${error}`);
-        logger.error(error);
-        addToMetric('report', 'download', checkErrorType(error));
-        return errorResponse(response, error);
-      }
-    }
-  );
+  //       return response.ok({
+  //         body: {
+  //           data: reportData.dataUrl,
+  //           filename: reportData.fileName,
+  //         },
+  //       });
+  //     } catch (error) {
+  //       logger.error(`Failed to generate report by id: ${error}`);
+  //       logger.error(error);
+  //       addToMetric('report', 'download', checkErrorType(error));
+  //       return errorResponse(response, error);
+  //     }
+  //   }
+  // );
 
   // create report from existing report definition
-  router.post(
-    {
-      path: `${API_PREFIX}/generateReport/{reportDefinitionId}`,
-      validate: {
-        params: schema.object({
-          reportDefinitionId: schema.string(),
-        }),
-        query: schema.object({
-          timezone: schema.string(),
-        }),
-      },
-    },
-    async (
-      context,
-      request,
-      response
-    ): Promise<IKibanaResponse<any | ResponseError>> => {
-      addToMetric('report', 'create_from_definition', 'count');
-      //@ts-ignore
-      const logger: Logger = context.reporting_plugin.logger;
-      const reportDefinitionId = request.params.reportDefinitionId;
-      let report: any;
-      try {
-        // @ts-ignore
-        const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
-          request
-        );
-        // call ES API to create report from definition
-        const esResp = await esReportsClient.callAsCurrentUser(
-          'es_reports.createReportFromDefinition',
-          {
-            reportDefinitionId: reportDefinitionId,
-            body: {
-              reportDefinitionId: reportDefinitionId,
-            },
-          }
-        );
-        const reportId = esResp.reportInstance.id;
-        // convert report to use UI model
-        const report = backendToUiReport(esResp.reportInstance, basePath);
-        // generate report
-        const reportData = await createReport(
-          request,
-          context,
-          report,
-          accessInfo,
-          reportId
-        );
-        addToMetric('report', 'create_from_definition', 'count', report);
+  // router.post(
+  //   {
+  //     path: `${API_PREFIX}/generateReport/{reportDefinitionId}`,
+  //     validate: {
+  //       params: schema.object({
+  //         reportDefinitionId: schema.string(),
+  //       }),
+  //       query: schema.object({
+  //         timezone: schema.string(),
+  //       }),
+  //     },
+  //   },
+  //   async (
+  //     context,
+  //     request,
+  //     response
+  //   ): Promise<IKibanaResponse<any | ResponseError>> => {
+  //     addToMetric('report', 'create_from_definition', 'count');
+  //     //@ts-ignore
+  //     const logger: Logger = context.reporting_plugin.logger;
+  //     const reportDefinitionId = request.params.reportDefinitionId;
+  //     let report: any;
+  //     try {
+  //       // @ts-ignore
+  //       const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
+  //         request
+  //       );
+  //       // call ES API to create report from definition
+  //       const esResp = await esReportsClient.callAsCurrentUser(
+  //         'es_reports.createReportFromDefinition',
+  //         {
+  //           reportDefinitionId: reportDefinitionId,
+  //           body: {
+  //             reportDefinitionId: reportDefinitionId,
+  //           },
+  //         }
+  //       );
+  //       const reportId = esResp.reportInstance.id;
+  //       // convert report to use UI model
+  //       const report = backendToUiReport(esResp.reportInstance, basePath);
+  //       // generate report
+  //       const reportData = await createReport(
+  //         request,
+  //         context,
+  //         report,
+  //         accessInfo,
+  //         reportId
+  //       );
+  //       addToMetric('report', 'create_from_definition', 'count', report);
 
-        return response.ok({
-          body: {
-            data: reportData.dataUrl,
-            filename: reportData.fileName,
-          },
-        });
-      } catch (error) {
-        logger.error(
-          `Failed to generate report from reportDefinition id ${reportDefinitionId} : ${error}`
-        );
-        logger.error(error);
-        addToMetric('report', 'create_from_definition', checkErrorType(error));
-        return errorResponse(response, error);
-      }
-    }
-  );
+  //       return response.ok({
+  //         body: {
+  //           data: reportData.dataUrl,
+  //           filename: reportData.fileName,
+  //         },
+  //       });
+  //     } catch (error) {
+  //       logger.error(
+  //         `Failed to generate report from reportDefinition id ${reportDefinitionId} : ${error}`
+  //       );
+  //       logger.error(error);
+  //       addToMetric('report', 'create_from_definition', checkErrorType(error));
+  //       return errorResponse(response, error);
+  //     }
+  //   }
+  // );
 
   // get all reports details
-  router.get(
-    {
-      path: `${API_PREFIX}/reports`,
-      validate: {
-        query: schema.object({
-          fromIndex: schema.maybe(schema.number()),
-          maxItems: schema.maybe(schema.number()),
-        }),
-      },
-    },
-    async (
-      context,
-      request,
-      response
-    ): Promise<IKibanaResponse<any | ResponseError>> => {
-      addToMetric('report', 'list', 'count');
-      const { fromIndex, maxItems } = request.query as {
-        fromIndex: number;
-        maxItems: number;
-      };
+  // router.get(
+  //   {
+  //     path: `${API_PREFIX}/reports`,
+  //     validate: {
+  //       query: schema.object({
+  //         fromIndex: schema.maybe(schema.number()),
+  //         maxItems: schema.maybe(schema.number()),
+  //       }),
+  //     },
+  //   },
+  //   async (
+  //     context,
+  //     request,
+  //     response
+  //   ): Promise<IKibanaResponse<any | ResponseError>> => {
+  //     addToMetric('report', 'list', 'count');
+  //     const { fromIndex, maxItems } = request.query as {
+  //       fromIndex: number;
+  //       maxItems: number;
+  //     };
 
-      try {
-        // @ts-ignore
-        const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
-          request
-        );
-        const esResp = await esReportsClient.callAsCurrentUser(
-          'es_reports.getReports',
-          {
-            fromIndex: fromIndex,
-            maxItems: maxItems || DEFAULT_MAX_SIZE,
-          }
-        );
+  //     try {
+  //       // @ts-ignore
+  //       const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
+  //         request
+  //       );
+  //       const esResp = await esReportsClient.callAsCurrentUser(
+  //         'es_reports.getReports',
+  //         {
+  //           fromIndex: fromIndex,
+  //           maxItems: maxItems || DEFAULT_MAX_SIZE,
+  //         }
+  //       );
 
-        const reportsList = backendToUiReportsList(
-          esResp.reportInstanceList,
-          basePath
-        );
+  //       const reportsList = backendToUiReportsList(
+  //         esResp.reportInstanceList,
+  //         basePath
+  //       );
 
-        return response.ok({
-          body: {
-            data: reportsList,
-          },
-        });
-      } catch (error) {
-        //@ts-ignore
-        context.reporting_plugin.logger.error(
-          `Failed to get reports details: ${error}`
-        );
-        addToMetric('report', 'list', checkErrorType(error));
-        return errorResponse(response, error);
-      }
-    }
-  );
+  //       return response.ok({
+  //         body: {
+  //           data: reportsList,
+  //         },
+  //       });
+  //     } catch (error) {
+  //       //@ts-ignore
+  //       context.reporting_plugin.logger.error(
+  //         `Failed to get reports details: ${error}`
+  //       );
+  //       addToMetric('report', 'list', checkErrorType(error));
+  //       return errorResponse(response, error);
+  //     }
+  //   }
+  // );
 
-  // get single report details by id
-  router.get(
-    {
-      path: `${API_PREFIX}/reports/{reportId}`,
-      validate: {
-        params: schema.object({
-          reportId: schema.string(),
-        }),
-      },
-    },
-    async (
-      context,
-      request,
-      response
-    ): Promise<IKibanaResponse<any | ResponseError>> => {
-      addToMetric('report', 'info', 'count');
-      try {
-        // @ts-ignore
-        const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
-          request
-        );
+  // // get single report details by id
+  // router.get(
+  //   {
+  //     path: `${API_PREFIX}/reports/{reportId}`,
+  //     validate: {
+  //       params: schema.object({
+  //         reportId: schema.string(),
+  //       }),
+  //     },
+  //   },
+  //   async (
+  //     context,
+  //     request,
+  //     response
+  //   ): Promise<IKibanaResponse<any | ResponseError>> => {
+  //     addToMetric('report', 'info', 'count');
+  //     try {
+  //       // @ts-ignore
+  //       const esReportsClient: ILegacyScopedClusterClient = context.reporting_plugin.esReportsClient.asScoped(
+  //         request
+  //       );
 
-        const esResp = await esReportsClient.callAsCurrentUser(
-          'es_reports.getReportById',
-          {
-            reportInstanceId: request.params.reportId,
-          }
-        );
+  //       const esResp = await esReportsClient.callAsCurrentUser(
+  //         'es_reports.getReportById',
+  //         {
+  //           reportInstanceId: request.params.reportId,
+  //         }
+  //       );
 
-        const report = backendToUiReport(esResp.reportInstance, basePath);
+  //       const report = backendToUiReport(esResp.reportInstance, basePath);
 
-        return response.ok({
-          body: report,
-        });
-      } catch (error) {
-        //@ts-ignore
-        context.reporting_plugin.logger.error(
-          `Failed to get single report details: ${error}`
-        );
-        addToMetric('report', 'info', checkErrorType(error));
-        return errorResponse(response, error);
-      }
-    }
-  );
+  //       return response.ok({
+  //         body: report,
+  //       });
+  //     } catch (error) {
+  //       //@ts-ignore
+  //       context.reporting_plugin.logger.error(
+  //         `Failed to get single report details: ${error}`
+  //       );
+  //       addToMetric('report', 'info', checkErrorType(error));
+  //       return errorResponse(response, error);
+  //     }
+  //   }
+  // );
 }
