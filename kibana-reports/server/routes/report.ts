@@ -31,10 +31,8 @@ import {
 } from './utils/converters/backendToUi';
 import { addToMetric } from './utils/metricHelper';
 import { validateReport } from '../../server/utils/validationHelper';
-import { AccessInfoType } from 'server';
 
-export default function (router: IRouter, accessInfo: AccessInfoType) {
-  const { basePath } = accessInfo;
+export default function (router: IRouter) {
   // generate report (with provided metadata)
   router.post(
     {
@@ -62,8 +60,7 @@ export default function (router: IRouter, accessInfo: AccessInfoType) {
           request.headers.origin;
         report = await validateReport(
           context.core.elasticsearch.legacy.client,
-          report,
-          basePath
+          report
         );
       } catch (error) {
         logger.error(`Failed input validation for create report ${error}`);
@@ -72,12 +69,7 @@ export default function (router: IRouter, accessInfo: AccessInfoType) {
       }
 
       try {
-        const reportData = await createReport(
-          request,
-          context,
-          report,
-          accessInfo
-        );
+        const reportData = await createReport(request, context, report);
 
         // if not deliver to user himself , no need to send actual file data to client
         const delivery = report.report_definition.delivery;
