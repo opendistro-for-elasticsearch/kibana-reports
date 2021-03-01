@@ -48,6 +48,7 @@ import {
   TRIGGER_TYPE,
 } from '../constants';
 import moment from 'moment';
+import { parse } from 'url';
 
 export const backendToUiReport = (
   backendReportInstance: BackendReportInstanceType
@@ -56,6 +57,7 @@ export const backendToUiReport = (
     inContextDownloadUrlPath,
     beginTimeMs,
     endTimeMs,
+    tenant,
     status,
     lastUpdatedTimeMs: reportLastUpdatedTimeMs,
     createdTimeMs: reportCreatedTimeMs,
@@ -73,9 +75,9 @@ export const backendToUiReport = (
 
   let report: ReportSchemaType = {
     // inContextDownloadUrlPath may not exist for report instance created from scheduled job
-    query_url: inContextDownloadUrlPath
-      ? inContextDownloadUrlPath
-      : getUiQueryUrl(baseUrl, beginTimeMs, endTimeMs),
+    query_url:
+      inContextDownloadUrlPath ||
+      getUiQueryUrl(baseUrl, beginTimeMs, endTimeMs, tenant),
     time_from: beginTimeMs,
     time_to: endTimeMs,
     last_updated: reportLastUpdatedTimeMs,
@@ -199,11 +201,21 @@ const getVisualReportCoreParams = (
 const getUiQueryUrl = (
   baseUrl: string,
   beginTimeMs: number,
-  endTimeMs: number
+  endTimeMs: number,
+  tenant?: string
 ) => {
   const timeFrom = moment(beginTimeMs).toISOString();
   const timeTo = moment(endTimeMs).toISOString();
-  const queryUrl = `${baseUrl}?_g=(time:(from:'${timeFrom}',to:'${timeTo}'))`;
+  let queryUrl = `${baseUrl}?_g=(time:(from:'${timeFrom}',to:'${timeTo}'))`;
+  if (tenant !== undefined) {
+    if (tenant === '') {
+      tenant = 'global';
+    } else if (tenant === '__user__') {
+      tenant = 'private';
+    }
+    queryUrl = addTenantToURL(queryUrl, tenant);
+  }
+
   return queryUrl;
 };
 
@@ -351,4 +363,29 @@ const getUiDeliveryParams = (
     params = kibanaUserDeliveryParams;
   }
   return params;
+};
+
+// helper function to add tenant info to url(if tenant is available)
+const addTenantToURL = (url: string, userRequestedTenant: string) => {
+  // build fake url from relative url
+  const fakeUrl = `http://opendistro.com${url}`;
+  const tenantKey = 'security_tenant';
+  const tenantKeyAndValue =
+    tenantKey + '=' + encodeURIComponent(userRequestedTenant);
+
+  const { pathname, search } = parse(fakeUrl);
+  const queryDelimiter = !search ? '?' : '&';
+
+  // The url parser returns null if the search is empty. Change that to an empty
+  // string so that we can use it to build the values later
+  if (search && search.toLowerCase().indexOf(tenantKey) > -1) {
+    // If we for some reason already have a tenant in the URL we skip any updates
+    return url;
+  }
+
+  // A helper for finding the part in the string that we want to extend/replace
+  const valueToReplace = pathname! + (search || '');
+  const replaceWith = valueToReplace + queryDelimiter + tenantKeyAndValue;
+
+  return url.replace(valueToReplace, replaceWith);
 };
