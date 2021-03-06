@@ -115,13 +115,13 @@ export const createReport = async (
         });
       }
       // If header exists assuming that it needs forwarding
-      let AdditionalHeaders: Headers | undefined;
+      let additionalHeaders: Headers | undefined;
       if (request.headers[SECURITY_CONSTANTS.PROXY_AUTH_USER_HEADER]) {
-        AdditionalHeaders = {}
-        AdditionalHeaders[SECURITY_CONSTANTS.PROXY_AUTH_USER_HEADER] = request.headers[SECURITY_CONSTANTS.PROXY_AUTH_USER_HEADER];
-        AdditionalHeaders[SECURITY_CONSTANTS.PROXY_AUTH_IP_HEADER] = request.headers[SECURITY_CONSTANTS.PROXY_AUTH_IP_HEADER];
+        additionalHeaders = {}
+        additionalHeaders[SECURITY_CONSTANTS.PROXY_AUTH_USER_HEADER] = request.headers[SECURITY_CONSTANTS.PROXY_AUTH_USER_HEADER];
+        additionalHeaders[SECURITY_CONSTANTS.PROXY_AUTH_IP_HEADER] = request.headers[SECURITY_CONSTANTS.PROXY_AUTH_IP_HEADER];
         if (request.headers[SECURITY_CONSTANTS.PROXY_AUTH_ROLES_HEADER]) {
-          AdditionalHeaders[SECURITY_CONSTANTS.PROXY_AUTH_ROLES_HEADER] = request.headers[SECURITY_CONSTANTS.PROXY_AUTH_ROLES_HEADER]
+          additionalHeaders[SECURITY_CONSTANTS.PROXY_AUTH_ROLES_HEADER] = request.headers[SECURITY_CONSTANTS.PROXY_AUTH_ROLES_HEADER]
         }
       }
       const [value, release] = await semaphore.acquire();
@@ -131,7 +131,7 @@ export const createReport = async (
           completeQueryUrl,
           logger,
           cookieObject,
-          AdditionalHeaders,
+          additionalHeaders,
           timezone
         );
       } finally {
