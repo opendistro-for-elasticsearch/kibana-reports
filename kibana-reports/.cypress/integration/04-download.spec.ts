@@ -89,22 +89,9 @@ describe('Cypress', () => {
       'include',
       '/opendistro_kibana_reports'
     );
-    cy.wait(12500);
-    cy.get('#createReportHomepageButton').click();
-
-    // enter a report name
-    cy.get('#reportSettingsName').type('Create cypress test on-demand report');
-
-    // enter a report description
-    cy.get('#reportSettingsDescription').type('Description for cypress test');
-
-    // create an on-demand report definition
-    cy.get('#createNewReportDefinition').click({ force: true });
-
     cy.wait(10000);
 
-    // visit the details page of the newly created on-demand definition
-    cy.get('#reportDefinitionDetailsLink').first().click();
+    cy.get('tr.euiTableRow-isSelectable:nth-child(1) > td:nth-child(1) > div:nth-child(2) > button:nth-child(1)').first().click(); 
 
     cy.url().should('include', 'report_definition_details');
 

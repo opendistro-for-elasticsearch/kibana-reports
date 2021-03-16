@@ -396,7 +396,7 @@ export function ReportDefinitionDetails(props) {
     let formatUpper = data['fileFormat'];
     formatUpper = fileFormatsUpper[formatUpper];
     return (
-      <EuiLink onClick={downloadIconDownload}>
+      <EuiLink onClick={downloadIconDownload} id='generateReportFromDetailsButton'>
         {formatUpper + ' '}
         <EuiIcon type="importAction" />
       </EuiLink>
