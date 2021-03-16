@@ -240,6 +240,7 @@ exports[`<ReportDefinitionDetails /> panel render 5 hours recurring definition d
             >
               <button
                 class="euiLink euiLink--primary"
+                id="generateReportFromDetailsButton"
                 type="button"
               >
                 undefined 
@@ -640,6 +641,7 @@ exports[`<ReportDefinitionDetails /> panel render disabled daily definition, cli
             >
               <button
                 class="euiLink euiLink--primary"
+                id="generateReportFromDetailsButton"
                 type="button"
               >
                 undefined 
@@ -1040,6 +1042,7 @@ exports[`<ReportDefinitionDetails /> panel render on demand definition details 1
             >
               <button
                 class="euiLink euiLink--primary"
+                id="generateReportFromDetailsButton"
                 type="button"
               >
                 undefined 
