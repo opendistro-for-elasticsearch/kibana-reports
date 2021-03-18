@@ -100,6 +100,31 @@ export const getSavedSearchBaseUrlCreate = (
   );
 };
 
+export const getNotebooksBaseUrlCreate = (
+  edit: boolean,
+  editDefinitionId: string,
+  fromInContext: boolean
+) => {
+  let baseUrl;
+  if (!fromInContext) {
+    baseUrl = location.pathname + location.hash;
+  } else {
+    baseUrl = '/app/opendistro-notebooks-kibana#/';
+  }
+  if (edit) {
+    return baseUrl.replace(
+      `opendistro_kibana_reports#/edit/${editDefinitionId}`,
+      'opendistro-notebooks-kibana#/'
+    );
+  } else if (fromInContext) {
+    return baseUrl;
+  }
+  return baseUrl.replace(
+    'opendistro_kibana_reports#/create',
+    'opendistro-notebooks-kibana#/'
+  );
+}
+
 export const getDashboardOptions = (data) => {
   let index;
   let dashboard_options = [];
@@ -138,6 +163,19 @@ export const getSavedSearchOptions = (data: string | any[]) => {
   }
   return options;
 };
+
+export const getNotebooksOptions = (data: string | any[]) => {
+  let index;
+  let options = [];
+  for (index = 0; index < data.length; ++index) {
+    let entry = {
+      value: data[index]['_id'],
+      label: data[index]['_source']['notebook']['name']
+    }
+    options.push(entry);
+  }
+  return options;
+}
 
 export const handleDataToVisualReportSourceChange = (
   reportDefinitionRequest

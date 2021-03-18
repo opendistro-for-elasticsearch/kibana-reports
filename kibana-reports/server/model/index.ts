@@ -200,6 +200,7 @@ export const reportParamsSchema = schema.object({
     schema.literal(REPORT_TYPE.dashboard),
     schema.literal(REPORT_TYPE.visualization),
     schema.literal(REPORT_TYPE.savedSearch),
+    schema.literal(REPORT_TYPE.notebook)
   ]),
   description: schema.string(),
   core_params: schema.conditional(

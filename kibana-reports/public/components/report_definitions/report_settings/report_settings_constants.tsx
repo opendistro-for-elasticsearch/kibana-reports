@@ -26,6 +26,10 @@ export const REPORT_SOURCE_RADIOS = [
     id: 'savedSearchReportSource',
     label: 'Saved search',
   },
+  {
+    id: 'notebooksReportSource',
+    label: 'Notebooks'
+  }
 ];
 
 export const PDF_PNG_FILE_FORMAT_OPTIONS = [
@@ -64,6 +68,7 @@ export const REPORT_SOURCE_TYPES = {
   dashboard: 'Dashboard',
   visualization: 'Visualization',
   savedSearch: 'Saved search',
+  notebook: 'Notebook'
 };
 
 export const commonTimeRanges = [

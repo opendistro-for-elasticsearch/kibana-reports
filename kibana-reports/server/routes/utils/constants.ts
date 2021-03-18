@@ -49,6 +49,7 @@ export enum REPORT_TYPE {
   savedSearch = 'Saved search',
   dashboard = 'Dashboard',
   visualization = 'Visualization',
+  notebook = 'Notebook'
 }
 
 export enum DATA_REPORT_CONFIG {
