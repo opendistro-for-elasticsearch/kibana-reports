@@ -15,7 +15,7 @@
 
 describe('Cypress', () => {
   it('Download from reporting homepage', () => {
-    cy.visit('http://localhost:5601/app/opendistro_kibana_reports#/');
+    cy.visit(`${Cypress.env('kibana')}/app/opendistro_kibana_reports#/`);
     cy.location('pathname', { timeout: 60000 }).should(
       'include',
       '/opendistro_kibana_reports'
@@ -34,7 +34,7 @@ describe('Cypress', () => {
   });
 
   it('Download pdf from in-context menu', () => {
-    cy.visit('http://localhost:5601/app/dashboards#');
+    cy.visit(`${Cypress.env('kibana')}/app/dashboards#`);
     cy.wait(5000);
 
     // click first entry in dashboards page
@@ -50,7 +50,7 @@ describe('Cypress', () => {
   });
 
   it('Download png from in-context menu', () => {
-    cy.visit('http://localhost:5601/app/dashboards#');
+    cy.visit(`${Cypress.env('kibana')}/app/dashboards#`);
     cy.wait(5000);
 
     // click first entry in dashboards page
@@ -65,7 +65,7 @@ describe('Cypress', () => {
   });
 
   it('Download csv from saved search in-context menu', () => {
-    cy.visit('http://localhost:5601/app/discover#');
+    cy.visit(`${Cypress.env('kibana')}/app/discover#`);
     cy.wait(5000);
 
     // open saved search list
@@ -84,7 +84,7 @@ describe('Cypress', () => {
   it('Download from Report definition details page', () => {
     // create an on-demand report definition 
 
-    cy.visit('http://localhost:5601/app/opendistro_kibana_reports#/');
+    cy.visit(`${Cypress.env('kibana')}/app/opendistro_kibana_reports#/`);
     cy.location('pathname', { timeout: 60000 }).should(
       'include',
       '/opendistro_kibana_reports'
