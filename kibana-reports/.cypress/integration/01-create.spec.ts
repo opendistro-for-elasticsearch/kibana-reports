@@ -15,7 +15,6 @@
 
 describe('Cypress', () => {
   it('Visits Reporting homepage', () => {
-    // ${Cypress.env('kibana')}
     cy.visit(`${Cypress.env('kibana')}/app/opendistro_kibana_reports#/`);
     cy.location('pathname', { timeout: 60000 }).should(
       'include',
