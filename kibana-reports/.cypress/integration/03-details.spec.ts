@@ -15,7 +15,7 @@
 
 describe('Cypress', () => {
   it('Visit report definition details page', () => {
-    cy.visit('http://localhost:5601/app/opendistro_kibana_reports#/');
+    cy.visit(`${Cypress.env('kibana')}/app/opendistro_kibana_reports#/`);
     cy.location('pathname', { timeout: 60000 }).should(
       'include',
       '/opendistro_kibana_reports'
@@ -43,7 +43,7 @@ describe('Cypress', () => {
   });
 
   it('Visit report details page', () => {
-    cy.visit('http://localhost:5601/app/opendistro_kibana_reports#/');
+    cy.visit(`${Cypress.env('kibana')}/app/opendistro_kibana_reports#/`);
     cy.location('pathname', { timeout: 60000 }).should(
       'include',
       '/opendistro_kibana_reports'
