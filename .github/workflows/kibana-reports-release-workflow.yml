@@ -7,7 +7,7 @@ on:
 
 env:
   PLUGIN_NAME: opendistroReportsKibana
-  OD_VERSION: 1.13.0.0
+  OD_VERSION: 1.13.2.0
 
 jobs:
   build:
