@@ -512,7 +512,7 @@ export function ReportSettings(props: ReportSettingProps) {
     }
   };
 
-  const setDefaultEditValues = async (response, reportSourceOptions) => {
+  const setDefaultEditValues = async (response, reportSourceOptions) => {    
     setReportName(response.report_definition.report_params.report_name);
     setReportDescription(response.report_definition.report_params.description);
     reportDefinitionRequest.report_params.report_name =
@@ -605,6 +605,9 @@ export function ReportSettings(props: ReportSettingProps) {
         let notebooksOptions = getNotebooksOptions(response['hits']['hits']);
         reportSourceOptions.notebooks = notebooksOptions;
         await handleNotebooks(notebooksOptions);
+      })
+      .catch((error) => {
+        console.log('error when fetching notebooks:', error);
       })
     return reportSourceOptions;
   };

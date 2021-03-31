@@ -28,7 +28,7 @@ export const REPORT_SOURCE_RADIOS = [
   },
   {
     id: 'notebooksReportSource',
-    label: 'Notebooks'
+    label: 'Notebook'
   }
 ];
 
