@@ -60,7 +60,6 @@ import {
 import { TimeRangeSelect } from './time_range';
 import { converter } from '../utils';
 import { ReportDefinitionSchemaType } from 'server/model';
-import { convertSavedDashboardPanelToPanelState } from '../../../../../../src/plugins/dashboard/public/application/lib/embeddable_saved_object_converters';
 
 type ReportSettingProps = {
   edit: boolean;
