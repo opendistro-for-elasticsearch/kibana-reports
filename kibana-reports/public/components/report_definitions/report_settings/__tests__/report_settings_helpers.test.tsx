@@ -16,6 +16,8 @@
 import {
   getDashboardBaseUrlCreate,
   getDashboardOptions,
+  getNotebooksBaseUrlCreate,
+  getNotebooksOptions,
   getSavedSearchBaseUrlCreate,
   getSavedSearchOptions,
   getVisualizationBaseUrlCreate,
@@ -101,6 +103,14 @@ describe('report_settings_helpers tests', () => {
   test('getSavedSearchBaseUrlCreate not from in-context', () => {
     const baseUrl = getSavedSearchBaseUrlCreate(false, TEST_DEFINITION_ID, false);
     expect(baseUrl).toBe('/');
+  });
+
+  test('getNotebookBaseUrlCreate', () => {
+    const baseUrl = getNotebooksBaseUrlCreate(true, TEST_DEFINITION_ID, true);
+    expect(baseUrl).toBe('/app/opendistro-notebooks-kibana#/');
+
+    const baseUrlNotFromEdit = getNotebooksBaseUrlCreate(false, TEST_DEFINITION_ID, true);
+    expect('/app/opendistro-notebooks-kibana#/')
   })
 
   test('getDashboardOptions', () => {
@@ -151,6 +161,22 @@ describe('report_settings_helpers tests', () => {
     const options = getSavedSearchOptions(mockData);
     expect(options[0].value).toBe('1234567890abcdefghijk');
     expect(options[0].label).toBe('Mock saved search title');
+  });
+
+  test('getNotebooksOptions', () => {
+    const mockData = [
+      {
+        _id: 'abcdefgh1234',
+        _source: {
+          notebook: {
+            name: 'Mock notebook name'
+          }
+        }
+      }
+    ];
+    const options = getNotebooksOptions(mockData);
+    expect(options[0].value).toBe('abcdefgh1234');
+    expect(options[0].label).toBe('Mock notebook name');
   });
 
   test('handleDataToVisualReportSourceChange', () => {

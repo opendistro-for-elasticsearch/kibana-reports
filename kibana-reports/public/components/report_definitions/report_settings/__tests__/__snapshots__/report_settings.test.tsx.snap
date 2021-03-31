@@ -200,7 +200,7 @@ exports[`<ReportSettings /> panel dashboard create from in-context 1`] = `
               class="euiRadio__label"
               for="notebooksReportSource"
             >
-              Notebooks
+              Notebook
             </label>
           </div>
         </div>
@@ -1313,7 +1313,7 @@ exports[`<ReportSettings /> panel display errors on create 1`] = `
               class="euiRadio__label"
               for="notebooksReportSource"
             >
-              Notebooks
+              Notebook
             </label>
           </div>
         </div>
@@ -2433,7 +2433,7 @@ exports[`<ReportSettings /> panel render component 1`] = `
               class="euiRadio__label"
               for="notebooksReportSource"
             >
-              Notebooks
+              Notebook
             </label>
           </div>
         </div>
@@ -2973,7 +2973,7 @@ exports[`<ReportSettings /> panel render edit, dashboard source 1`] = `
               class="euiRadio__label"
               for="notebooksReportSource"
             >
-              Notebooks
+              Notebook
             </label>
           </div>
         </div>
@@ -3528,7 +3528,7 @@ exports[`<ReportSettings /> panel render edit, dashboard source 2`] = `
               class="euiRadio__label"
               for="notebooksReportSource"
             >
-              Notebooks
+              Notebook
             </label>
           </div>
         </div>
@@ -4083,7 +4083,7 @@ exports[`<ReportSettings /> panel render edit, saved search source 1`] = `
               class="euiRadio__label"
               for="notebooksReportSource"
             >
-              Notebooks
+              Notebook
             </label>
           </div>
         </div>
@@ -4638,7 +4638,7 @@ exports[`<ReportSettings /> panel render edit, visualization source 1`] = `
               class="euiRadio__label"
               for="notebooksReportSource"
             >
-              Notebooks
+              Notebook
             </label>
           </div>
         </div>
@@ -5193,7 +5193,7 @@ exports[`<ReportSettings /> panel render edit, visualization source 2`] = `
               class="euiRadio__label"
               for="notebooksReportSource"
             >
-              Notebooks
+              Notebook
             </label>
           </div>
         </div>
@@ -5744,7 +5744,7 @@ exports[`<ReportSettings /> panel saved search create from in-context 1`] = `
               class="euiRadio__label"
               for="notebooksReportSource"
             >
-              Notebooks
+              Notebook
             </label>
           </div>
         </div>
@@ -6857,7 +6857,7 @@ exports[`<ReportSettings /> panel visualization create from in-context 1`] = `
               class="euiRadio__label"
               for="notebooksReportSource"
             >
-              Notebooks
+              Notebook
             </label>
           </div>
         </div>
