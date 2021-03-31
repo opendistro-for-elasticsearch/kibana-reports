@@ -721,6 +721,21 @@ export function ReportSettings(props: ReportSettingProps) {
       )
     ): null;
 
+  const displayTimeRangeSelect = 
+    reportSourceId != 'notebooksReportSource' ? (
+      <div>
+        <TimeRangeSelect
+          timeRange={timeRange}
+          reportDefinitionRequest={reportDefinitionRequest}
+          edit={edit}
+          id={editDefinitionId}
+          httpClientProps={httpClientProps}
+          showTimeRangeError={showTimeRangeError}
+        />
+        <EuiSpacer />
+      </div>
+    ): null;
+
   const displayVisualReportsFormatAndMarkdown =
     reportSourceId != 'savedSearchReportSource' ? (
       <div>
@@ -793,15 +808,7 @@ export function ReportSettings(props: ReportSettingProps) {
         {displayVisualizationSelect}
         {displaySavedSearchSelect}
         {displayNotebooksSelect}
-        <TimeRangeSelect
-          timeRange={timeRange}
-          reportDefinitionRequest={reportDefinitionRequest}
-          edit={edit}
-          id={editDefinitionId}
-          httpClientProps={httpClientProps}
-          showTimeRangeError={showTimeRangeError}
-        />
-        <EuiSpacer />
+        {displayTimeRangeSelect}
         {displayVisualReportsFormatAndMarkdown}
       </EuiPageContentBody>
     </EuiPageContent>

@@ -19,7 +19,7 @@ export interface CreateReportResultType {
   fileName: string;
 }
 
-type ReportSourceType = 'dashboard' | 'visualization' | 'saved_search';
+type ReportSourceType = 'dashboard' | 'visualization' | 'saved_search' | 'notebook';
 type ReportFormatType = 'pdf' | 'png' | 'csv';
 type UsageActionType = 'download';
 export type EntityType = 'report' | 'report_definition' | 'report_source';

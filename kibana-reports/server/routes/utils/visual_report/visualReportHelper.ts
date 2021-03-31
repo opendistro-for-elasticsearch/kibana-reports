@@ -158,12 +158,16 @@ export const createVisualReport = async (
         visible: true,
       });
       break;
+    case REPORT_TYPE.notebook:
+      await page.waitForSelector(SELECTOR.notebook, {
+        visible: true,
+      });
+      break;
     default:
       throw Error(
         `report source can only be one of [Dashboard, Visualization]`
       );
   }
-  
   // wait for dynamic page content to render
   await waitForDynamicContent(page);
 
@@ -175,7 +179,6 @@ export const createVisualReport = async (
     screenshot.toString('base64')
   );
   await page.setContent(templateHtml);
-
   // create pdf or png accordingly
   if (reportFormat === FORMAT.pdf) {
     const scrollHeight = await page.evaluate(
@@ -200,7 +203,6 @@ export const createVisualReport = async (
   const timeCreated = curTime.valueOf();
   const fileName = `${getFileName(reportName, curTime)}.${reportFormat}`;
   await browser.close();
-
   return { timeCreated, dataUrl: buffer.toString('base64'), fileName };
 };
 

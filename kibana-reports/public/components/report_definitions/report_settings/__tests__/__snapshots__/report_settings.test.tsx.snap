@@ -184,6 +184,25 @@ exports[`<ReportSettings /> panel dashboard create from in-context 1`] = `
               Saved search
             </label>
           </div>
+          <div
+            class="euiRadio euiRadioGroup__item"
+          >
+            <input
+              class="euiRadio__input"
+              id="notebooksReportSource"
+              type="radio"
+              value=""
+            />
+            <div
+              class="euiRadio__circle"
+            />
+            <label
+              class="euiRadio__label"
+              for="notebooksReportSource"
+            >
+              Notebooks
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -284,70 +303,53 @@ exports[`<ReportSettings /> panel dashboard create from in-context 1`] = `
     </div>
     <div>
       <div>
-        <div
-          class="euiFormRow"
-          id="random_html_id-row"
-        >
+        <div>
           <div
-            class="euiFormRow__labelWrapper"
-          >
-            <label
-              aria-invalid="false"
-              class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
-            >
-              Time range
-            </label>
-          </div>
-          <div
-            class="euiFormRow__fieldWrapper"
+            class="euiFormRow"
+            id="random_html_id-row"
           >
             <div
-              class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
+              class="euiFormRow__labelWrapper"
+            >
+              <label
+                aria-invalid="false"
+                class="euiFormLabel euiFormRow__label"
+                for="random_html_id"
+              >
+                Time range
+              </label>
+            </div>
+            <div
+              class="euiFormRow__fieldWrapper"
             >
               <div
-                class="euiFlexItem"
+                class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
               >
                 <div
-                  class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
+                  class="euiFlexItem"
                 >
                   <div
-                    class="euiPopover euiPopover--anchorDownLeft"
-                    id="QuickSelectPopover"
+                    class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
                   >
                     <div
-                      class="euiPopover__anchor euiQuickSelectPopover__anchor"
+                      class="euiPopover euiPopover--anchorDownLeft"
+                      id="QuickSelectPopover"
                     >
-                      <button
-                        aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
-                        data-test-subj="superDatePickerToggleQuickMenuButton"
-                        type="button"
+                      <div
+                        class="euiPopover__anchor euiQuickSelectPopover__anchor"
                       >
-                        <span
-                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                        <button
+                          aria-label="Date quick select"
+                          class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
+                          data-test-subj="superDatePickerToggleQuickMenuButton"
+                          type="button"
                         >
-                          <svg
-                            aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiButtonContent__icon"
-                            focusable="false"
-                            height="16"
-                            role="img"
-                            viewBox="0 0 16 16"
-                            width="16"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
-                              fill-rule="non-zero"
-                            />
-                          </svg>
                           <span
-                            class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                           >
                             <svg
                               aria-hidden="true"
-                              class="euiIcon euiIcon--medium"
+                              class="euiIcon euiIcon--medium euiButtonContent__icon"
                               focusable="false"
                               height="16"
                               role="img"
@@ -356,85 +358,104 @@ exports[`<ReportSettings /> panel dashboard create from in-context 1`] = `
                               xmlns="http://www.w3.org/2000/svg"
                             >
                               <path
-                                d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z"
-                                fill-rule="evenodd"
+                                d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
+                                fill-rule="non-zero"
                               />
                             </svg>
+                            <span
+                              class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="euiIcon euiIcon--medium"
+                                focusable="false"
+                                height="16"
+                                role="img"
+                                viewBox="0 0 16 16"
+                                width="16"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z"
+                                  fill-rule="evenodd"
+                                />
+                              </svg>
+                            </span>
                           </span>
-                        </span>
-                      </button>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    class="euiFormControlLayout__childrenWrapper"
-                  >
                     <div
-                      class="euiDatePickerRange euiDatePickerRange--inGroup"
+                      class="euiFormControlLayout__childrenWrapper"
                     >
                       <div
-                        class="euiPopover euiPopover--anchorDownLeft euiPopover--displayBlock euiSuperDatePicker__startPopoverButton"
+                        class="euiDatePickerRange euiDatePickerRange--inGroup"
                       >
                         <div
-                          class="euiPopover__anchor"
+                          class="euiPopover euiPopover--anchorDownLeft euiPopover--displayBlock euiSuperDatePicker__startPopoverButton"
                         >
-                          <button
-                            class="euiDatePopoverButton euiDatePopoverButton--start"
-                            data-test-subj="superDatePickerstartDatePopoverButton"
-                            title="2020-10-26T20:52:56.382Z"
+                          <div
+                            class="euiPopover__anchor"
                           >
-                            Oct 26, 2020 @ 13:52:56.382
-                          </button>
+                            <button
+                              class="euiDatePopoverButton euiDatePopoverButton--start"
+                              data-test-subj="superDatePickerstartDatePopoverButton"
+                              title="2020-10-26T20:52:56.382Z"
+                            >
+                              Oct 26, 2020 @ 13:52:56.382
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                      <div
-                        class="euiText euiText--small euiDatePickerRange__delimeter"
-                      >
                         <div
-                          class="euiTextColor euiTextColor--subdued"
+                          class="euiText euiText--small euiDatePickerRange__delimeter"
                         >
-                          →
-                        </div>
-                      </div>
-                      <div
-                        class="euiPopover euiPopover--anchorDownRight euiPopover--displayBlock"
-                      >
-                        <div
-                          class="euiPopover__anchor"
-                        >
-                          <button
-                            class="euiDatePopoverButton euiDatePopoverButton--end"
-                            data-test-subj="superDatePickerendDatePopoverButton"
-                            title="2020-10-27T20:52:56.384Z"
+                          <div
+                            class="euiTextColor euiTextColor--subdued"
                           >
-                            Oct 27, 2020 @ 13:52:56.384
-                          </button>
+                            →
+                          </div>
+                        </div>
+                        <div
+                          class="euiPopover euiPopover--anchorDownRight euiPopover--displayBlock"
+                        >
+                          <div
+                            class="euiPopover__anchor"
+                          >
+                            <button
+                              class="euiDatePopoverButton euiDatePopoverButton--end"
+                              data-test-subj="superDatePickerendDatePopoverButton"
+                              title="2020-10-27T20:52:56.384Z"
+                            >
+                              Oct 27, 2020 @ 13:52:56.384
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="euiFormHelpText euiFormRow__text"
-              id="random_html_id-help"
-            >
-              Time range is relative to the report creation date on the report trigger.
+              <div
+                class="euiFormHelpText euiFormRow__text"
+                id="random_html_id-help"
+              >
+                Time range is relative to the report creation date on the report trigger.
+              </div>
             </div>
           </div>
         </div>
+        <div>
+          <div
+            aria-live="polite"
+            class="euiGlobalToastList euiGlobalToastList--right"
+            role="region"
+          />
+        </div>
       </div>
-      <div>
-        <div
-          aria-live="polite"
-          class="euiGlobalToastList euiGlobalToastList--right"
-          role="region"
-        />
-      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
     <div>
       <div>
         <div>
@@ -1276,6 +1297,25 @@ exports[`<ReportSettings /> panel display errors on create 1`] = `
               Saved search
             </label>
           </div>
+          <div
+            class="euiRadio euiRadioGroup__item"
+          >
+            <input
+              class="euiRadio__input"
+              id="notebooksReportSource"
+              type="radio"
+              value=""
+            />
+            <div
+              class="euiRadio__circle"
+            />
+            <label
+              class="euiRadio__label"
+              for="notebooksReportSource"
+            >
+              Notebooks
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -1376,70 +1416,53 @@ exports[`<ReportSettings /> panel display errors on create 1`] = `
     </div>
     <div>
       <div>
-        <div
-          class="euiFormRow"
-          id="random_html_id-row"
-        >
+        <div>
           <div
-            class="euiFormRow__labelWrapper"
-          >
-            <label
-              aria-invalid="true"
-              class="euiFormLabel euiFormRow__label euiFormLabel-isInvalid"
-              for="random_html_id"
-            >
-              Time range
-            </label>
-          </div>
-          <div
-            class="euiFormRow__fieldWrapper"
+            class="euiFormRow"
+            id="random_html_id-row"
           >
             <div
-              class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
+              class="euiFormRow__labelWrapper"
+            >
+              <label
+                aria-invalid="true"
+                class="euiFormLabel euiFormRow__label euiFormLabel-isInvalid"
+                for="random_html_id"
+              >
+                Time range
+              </label>
+            </div>
+            <div
+              class="euiFormRow__fieldWrapper"
             >
               <div
-                class="euiFlexItem"
+                class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
               >
                 <div
-                  class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
+                  class="euiFlexItem"
                 >
                   <div
-                    class="euiPopover euiPopover--anchorDownLeft"
-                    id="QuickSelectPopover"
+                    class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
                   >
                     <div
-                      class="euiPopover__anchor euiQuickSelectPopover__anchor"
+                      class="euiPopover euiPopover--anchorDownLeft"
+                      id="QuickSelectPopover"
                     >
-                      <button
-                        aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
-                        data-test-subj="superDatePickerToggleQuickMenuButton"
-                        type="button"
+                      <div
+                        class="euiPopover__anchor euiQuickSelectPopover__anchor"
                       >
-                        <span
-                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                        <button
+                          aria-label="Date quick select"
+                          class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
+                          data-test-subj="superDatePickerToggleQuickMenuButton"
+                          type="button"
                         >
-                          <svg
-                            aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiButtonContent__icon"
-                            focusable="false"
-                            height="16"
-                            role="img"
-                            viewBox="0 0 16 16"
-                            width="16"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
-                              fill-rule="non-zero"
-                            />
-                          </svg>
                           <span
-                            class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                           >
                             <svg
                               aria-hidden="true"
-                              class="euiIcon euiIcon--medium"
+                              class="euiIcon euiIcon--medium euiButtonContent__icon"
                               focusable="false"
                               height="16"
                               role="img"
@@ -1448,92 +1471,111 @@ exports[`<ReportSettings /> panel display errors on create 1`] = `
                               xmlns="http://www.w3.org/2000/svg"
                             >
                               <path
-                                d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z"
-                                fill-rule="evenodd"
+                                d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
+                                fill-rule="non-zero"
                               />
                             </svg>
+                            <span
+                              class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="euiIcon euiIcon--medium"
+                                focusable="false"
+                                height="16"
+                                role="img"
+                                viewBox="0 0 16 16"
+                                width="16"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z"
+                                  fill-rule="evenodd"
+                                />
+                              </svg>
+                            </span>
                           </span>
-                        </span>
-                      </button>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    class="euiFormControlLayout__childrenWrapper"
-                  >
                     <div
-                      class="euiDatePickerRange euiDatePickerRange--inGroup"
+                      class="euiFormControlLayout__childrenWrapper"
                     >
                       <div
-                        class="euiPopover euiPopover--anchorDownLeft euiPopover--displayBlock euiSuperDatePicker__startPopoverButton"
+                        class="euiDatePickerRange euiDatePickerRange--inGroup"
                       >
                         <div
-                          class="euiPopover__anchor"
+                          class="euiPopover euiPopover--anchorDownLeft euiPopover--displayBlock euiSuperDatePicker__startPopoverButton"
                         >
-                          <button
-                            class="euiDatePopoverButton euiDatePopoverButton--start"
-                            data-test-subj="superDatePickerstartDatePopoverButton"
-                            title="2020-10-26T20:52:56.382Z"
+                          <div
+                            class="euiPopover__anchor"
                           >
-                            Oct 26, 2020 @ 13:52:56.382
-                          </button>
+                            <button
+                              class="euiDatePopoverButton euiDatePopoverButton--start"
+                              data-test-subj="superDatePickerstartDatePopoverButton"
+                              title="2020-10-26T20:52:56.382Z"
+                            >
+                              Oct 26, 2020 @ 13:52:56.382
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                      <div
-                        class="euiText euiText--small euiDatePickerRange__delimeter"
-                      >
                         <div
-                          class="euiTextColor euiTextColor--subdued"
+                          class="euiText euiText--small euiDatePickerRange__delimeter"
                         >
-                          →
-                        </div>
-                      </div>
-                      <div
-                        class="euiPopover euiPopover--anchorDownRight euiPopover--displayBlock"
-                      >
-                        <div
-                          class="euiPopover__anchor"
-                        >
-                          <button
-                            class="euiDatePopoverButton euiDatePopoverButton--end"
-                            data-test-subj="superDatePickerendDatePopoverButton"
-                            title="2020-10-27T20:52:56.384Z"
+                          <div
+                            class="euiTextColor euiTextColor--subdued"
                           >
-                            Oct 27, 2020 @ 13:52:56.384
-                          </button>
+                            →
+                          </div>
+                        </div>
+                        <div
+                          class="euiPopover euiPopover--anchorDownRight euiPopover--displayBlock"
+                        >
+                          <div
+                            class="euiPopover__anchor"
+                          >
+                            <button
+                              class="euiDatePopoverButton euiDatePopoverButton--end"
+                              data-test-subj="superDatePickerendDatePopoverButton"
+                              title="2020-10-27T20:52:56.384Z"
+                            >
+                              Oct 27, 2020 @ 13:52:56.384
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              aria-live="polite"
-              class="euiFormErrorText euiFormRow__text"
-              id="random_html_id-error-0"
-            >
-              Invalid time range selected.
-            </div>
-            <div
-              class="euiFormHelpText euiFormRow__text"
-              id="random_html_id-help"
-            >
-              Time range is relative to the report creation date on the report trigger.
+              <div
+                aria-live="polite"
+                class="euiFormErrorText euiFormRow__text"
+                id="random_html_id-error-0"
+              >
+                Invalid time range selected.
+              </div>
+              <div
+                class="euiFormHelpText euiFormRow__text"
+                id="random_html_id-help"
+              >
+                Time range is relative to the report creation date on the report trigger.
+              </div>
             </div>
           </div>
         </div>
+        <div>
+          <div
+            aria-live="polite"
+            class="euiGlobalToastList euiGlobalToastList--right"
+            role="region"
+          />
+        </div>
       </div>
-      <div>
-        <div
-          aria-live="polite"
-          class="euiGlobalToastList euiGlobalToastList--right"
-          role="region"
-        />
-      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
     <div>
       <div>
         <div>
@@ -2375,6 +2417,25 @@ exports[`<ReportSettings /> panel render component 1`] = `
               Saved search
             </label>
           </div>
+          <div
+            class="euiRadio euiRadioGroup__item"
+          >
+            <input
+              class="euiRadio__input"
+              id="notebooksReportSource"
+              type="radio"
+              value=""
+            />
+            <div
+              class="euiRadio__circle"
+            />
+            <label
+              class="euiRadio__label"
+              for="notebooksReportSource"
+            >
+              Notebooks
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -2470,65 +2531,53 @@ exports[`<ReportSettings /> panel render component 1`] = `
     </div>
     <div>
       <div>
-        <div
-          class="euiFormRow"
-          id="random_html_id-row"
-        >
+        <div>
           <div
-            class="euiFormRow__labelWrapper"
-          >
-            <label
-              aria-invalid="false"
-              class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
-            >
-              Time range
-            </label>
-          </div>
-          <div
-            class="euiFormRow__fieldWrapper"
+            class="euiFormRow"
+            id="random_html_id-row"
           >
             <div
-              class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
+              class="euiFormRow__labelWrapper"
+            >
+              <label
+                aria-invalid="false"
+                class="euiFormLabel euiFormRow__label"
+                for="random_html_id"
+              >
+                Time range
+              </label>
+            </div>
+            <div
+              class="euiFormRow__fieldWrapper"
             >
               <div
-                class="euiFlexItem"
+                class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
               >
                 <div
-                  class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
+                  class="euiFlexItem"
                 >
                   <div
-                    class="euiPopover euiPopover--anchorDownLeft"
-                    id="QuickSelectPopover"
+                    class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
                   >
                     <div
-                      class="euiPopover__anchor euiQuickSelectPopover__anchor"
+                      class="euiPopover euiPopover--anchorDownLeft"
+                      id="QuickSelectPopover"
                     >
-                      <button
-                        aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
-                        data-test-subj="superDatePickerToggleQuickMenuButton"
-                        type="button"
+                      <div
+                        class="euiPopover__anchor euiQuickSelectPopover__anchor"
                       >
-                        <span
-                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                        <button
+                          aria-label="Date quick select"
+                          class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
+                          data-test-subj="superDatePickerToggleQuickMenuButton"
+                          type="button"
                         >
-                          <svg
-                            aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonContent__icon"
-                            focusable="false"
-                            height="16"
-                            role="img"
-                            viewBox="0 0 16 16"
-                            width="16"
-                            xmlns="http://www.w3.org/2000/svg"
-                          />
                           <span
-                            class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                           >
                             <svg
                               aria-hidden="true"
-                              class="euiIcon euiIcon--medium euiIcon-isLoading"
+                              class="euiIcon euiIcon--medium euiIcon-isLoading euiButtonContent__icon"
                               focusable="false"
                               height="16"
                               role="img"
@@ -2536,53 +2585,67 @@ exports[`<ReportSettings /> panel render component 1`] = `
                               width="16"
                               xmlns="http://www.w3.org/2000/svg"
                             />
+                            <span
+                              class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="euiIcon euiIcon--medium euiIcon-isLoading"
+                                focusable="false"
+                                height="16"
+                                role="img"
+                                viewBox="0 0 16 16"
+                                width="16"
+                                xmlns="http://www.w3.org/2000/svg"
+                              />
+                            </span>
                           </span>
-                        </span>
-                      </button>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    class="euiFormControlLayout__childrenWrapper"
-                  >
                     <div
-                      class="euiDatePickerRange euiDatePickerRange--inGroup"
+                      class="euiFormControlLayout__childrenWrapper"
                     >
-                      <button
-                        class="euiSuperDatePicker__prettyFormat"
-                        data-test-subj="superDatePickerShowDatesButton"
+                      <div
+                        class="euiDatePickerRange euiDatePickerRange--inGroup"
                       >
-                        Last 30 minutes
-                        <span
-                          class="euiSuperDatePicker__prettyFormatLink"
+                        <button
+                          class="euiSuperDatePicker__prettyFormat"
+                          data-test-subj="superDatePickerShowDatesButton"
                         >
-                          Show dates
-                        </span>
-                      </button>
+                          Last 30 minutes
+                          <span
+                            class="euiSuperDatePicker__prettyFormatLink"
+                          >
+                            Show dates
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="euiFormHelpText euiFormRow__text"
-              id="random_html_id-help"
-            >
-              Time range is relative to the report creation date on the report trigger.
+              <div
+                class="euiFormHelpText euiFormRow__text"
+                id="random_html_id-help"
+              >
+                Time range is relative to the report creation date on the report trigger.
+              </div>
             </div>
           </div>
         </div>
+        <div>
+          <div
+            aria-live="polite"
+            class="euiGlobalToastList euiGlobalToastList--right"
+            role="region"
+          />
+        </div>
       </div>
-      <div>
-        <div
-          aria-live="polite"
-          class="euiGlobalToastList euiGlobalToastList--right"
-          role="region"
-        />
-      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
     <div>
       <div>
         <div>
@@ -2893,6 +2956,26 @@ exports[`<ReportSettings /> panel render edit, dashboard source 1`] = `
               Saved search
             </label>
           </div>
+          <div
+            class="euiRadio euiRadioGroup__item"
+          >
+            <input
+              class="euiRadio__input"
+              disabled=""
+              id="notebooksReportSource"
+              type="radio"
+              value=""
+            />
+            <div
+              class="euiRadio__circle"
+            />
+            <label
+              class="euiRadio__label"
+              for="notebooksReportSource"
+            >
+              Notebooks
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -2993,70 +3076,53 @@ exports[`<ReportSettings /> panel render edit, dashboard source 1`] = `
     </div>
     <div>
       <div>
-        <div
-          class="euiFormRow"
-          id="random_html_id-row"
-        >
+        <div>
           <div
-            class="euiFormRow__labelWrapper"
-          >
-            <label
-              aria-invalid="false"
-              class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
-            >
-              Time range
-            </label>
-          </div>
-          <div
-            class="euiFormRow__fieldWrapper"
+            class="euiFormRow"
+            id="random_html_id-row"
           >
             <div
-              class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
+              class="euiFormRow__labelWrapper"
+            >
+              <label
+                aria-invalid="false"
+                class="euiFormLabel euiFormRow__label"
+                for="random_html_id"
+              >
+                Time range
+              </label>
+            </div>
+            <div
+              class="euiFormRow__fieldWrapper"
             >
               <div
-                class="euiFlexItem"
+                class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
               >
                 <div
-                  class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
+                  class="euiFlexItem"
                 >
                   <div
-                    class="euiPopover euiPopover--anchorDownLeft"
-                    id="QuickSelectPopover"
+                    class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
                   >
                     <div
-                      class="euiPopover__anchor euiQuickSelectPopover__anchor"
+                      class="euiPopover euiPopover--anchorDownLeft"
+                      id="QuickSelectPopover"
                     >
-                      <button
-                        aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
-                        data-test-subj="superDatePickerToggleQuickMenuButton"
-                        type="button"
+                      <div
+                        class="euiPopover__anchor euiQuickSelectPopover__anchor"
                       >
-                        <span
-                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                        <button
+                          aria-label="Date quick select"
+                          class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
+                          data-test-subj="superDatePickerToggleQuickMenuButton"
+                          type="button"
                         >
-                          <svg
-                            aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiButtonContent__icon"
-                            focusable="false"
-                            height="16"
-                            role="img"
-                            viewBox="0 0 16 16"
-                            width="16"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
-                              fill-rule="non-zero"
-                            />
-                          </svg>
                           <span
-                            class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                           >
                             <svg
                               aria-hidden="true"
-                              class="euiIcon euiIcon--medium"
+                              class="euiIcon euiIcon--medium euiButtonContent__icon"
                               focusable="false"
                               height="16"
                               role="img"
@@ -3065,57 +3131,76 @@ exports[`<ReportSettings /> panel render edit, dashboard source 1`] = `
                               xmlns="http://www.w3.org/2000/svg"
                             >
                               <path
-                                d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z"
-                                fill-rule="evenodd"
+                                d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
+                                fill-rule="non-zero"
                               />
                             </svg>
+                            <span
+                              class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="euiIcon euiIcon--medium"
+                                focusable="false"
+                                height="16"
+                                role="img"
+                                viewBox="0 0 16 16"
+                                width="16"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z"
+                                  fill-rule="evenodd"
+                                />
+                              </svg>
+                            </span>
                           </span>
-                        </span>
-                      </button>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    class="euiFormControlLayout__childrenWrapper"
-                  >
                     <div
-                      class="euiDatePickerRange euiDatePickerRange--inGroup"
+                      class="euiFormControlLayout__childrenWrapper"
                     >
-                      <button
-                        class="euiSuperDatePicker__prettyFormat"
-                        data-test-subj="superDatePickerShowDatesButton"
+                      <div
+                        class="euiDatePickerRange euiDatePickerRange--inGroup"
                       >
-                        Last 30 minutes
-                        <span
-                          class="euiSuperDatePicker__prettyFormatLink"
+                        <button
+                          class="euiSuperDatePicker__prettyFormat"
+                          data-test-subj="superDatePickerShowDatesButton"
                         >
-                          Show dates
-                        </span>
-                      </button>
+                          Last 30 minutes
+                          <span
+                            class="euiSuperDatePicker__prettyFormatLink"
+                          >
+                            Show dates
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="euiFormHelpText euiFormRow__text"
-              id="random_html_id-help"
-            >
-              Time range is relative to the report creation date on the report trigger.
+              <div
+                class="euiFormHelpText euiFormRow__text"
+                id="random_html_id-help"
+              >
+                Time range is relative to the report creation date on the report trigger.
+              </div>
             </div>
           </div>
         </div>
+        <div>
+          <div
+            aria-live="polite"
+            class="euiGlobalToastList euiGlobalToastList--right"
+            role="region"
+          />
+        </div>
       </div>
-      <div>
-        <div
-          aria-live="polite"
-          class="euiGlobalToastList euiGlobalToastList--right"
-          role="region"
-        />
-      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
     <div>
       <div>
         <div>
@@ -3426,6 +3511,26 @@ exports[`<ReportSettings /> panel render edit, dashboard source 2`] = `
               Saved search
             </label>
           </div>
+          <div
+            class="euiRadio euiRadioGroup__item"
+          >
+            <input
+              class="euiRadio__input"
+              disabled=""
+              id="notebooksReportSource"
+              type="radio"
+              value=""
+            />
+            <div
+              class="euiRadio__circle"
+            />
+            <label
+              class="euiRadio__label"
+              for="notebooksReportSource"
+            >
+              Notebooks
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -3526,70 +3631,53 @@ exports[`<ReportSettings /> panel render edit, dashboard source 2`] = `
     </div>
     <div>
       <div>
-        <div
-          class="euiFormRow"
-          id="random_html_id-row"
-        >
+        <div>
           <div
-            class="euiFormRow__labelWrapper"
-          >
-            <label
-              aria-invalid="false"
-              class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
-            >
-              Time range
-            </label>
-          </div>
-          <div
-            class="euiFormRow__fieldWrapper"
+            class="euiFormRow"
+            id="random_html_id-row"
           >
             <div
-              class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
+              class="euiFormRow__labelWrapper"
+            >
+              <label
+                aria-invalid="false"
+                class="euiFormLabel euiFormRow__label"
+                for="random_html_id"
+              >
+                Time range
+              </label>
+            </div>
+            <div
+              class="euiFormRow__fieldWrapper"
             >
               <div
-                class="euiFlexItem"
+                class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
               >
                 <div
-                  class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
+                  class="euiFlexItem"
                 >
                   <div
-                    class="euiPopover euiPopover--anchorDownLeft"
-                    id="QuickSelectPopover"
+                    class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
                   >
                     <div
-                      class="euiPopover__anchor euiQuickSelectPopover__anchor"
+                      class="euiPopover euiPopover--anchorDownLeft"
+                      id="QuickSelectPopover"
                     >
-                      <button
-                        aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
-                        data-test-subj="superDatePickerToggleQuickMenuButton"
-                        type="button"
+                      <div
+                        class="euiPopover__anchor euiQuickSelectPopover__anchor"
                       >
-                        <span
-                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                        <button
+                          aria-label="Date quick select"
+                          class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
+                          data-test-subj="superDatePickerToggleQuickMenuButton"
+                          type="button"
                         >
-                          <svg
-                            aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiButtonContent__icon"
-                            focusable="false"
-                            height="16"
-                            role="img"
-                            viewBox="0 0 16 16"
-                            width="16"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
-                              fill-rule="non-zero"
-                            />
-                          </svg>
                           <span
-                            class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                           >
                             <svg
                               aria-hidden="true"
-                              class="euiIcon euiIcon--medium"
+                              class="euiIcon euiIcon--medium euiButtonContent__icon"
                               focusable="false"
                               height="16"
                               role="img"
@@ -3598,57 +3686,76 @@ exports[`<ReportSettings /> panel render edit, dashboard source 2`] = `
                               xmlns="http://www.w3.org/2000/svg"
                             >
                               <path
-                                d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z"
-                                fill-rule="evenodd"
+                                d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
+                                fill-rule="non-zero"
                               />
                             </svg>
+                            <span
+                              class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="euiIcon euiIcon--medium"
+                                focusable="false"
+                                height="16"
+                                role="img"
+                                viewBox="0 0 16 16"
+                                width="16"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z"
+                                  fill-rule="evenodd"
+                                />
+                              </svg>
+                            </span>
                           </span>
-                        </span>
-                      </button>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    class="euiFormControlLayout__childrenWrapper"
-                  >
                     <div
-                      class="euiDatePickerRange euiDatePickerRange--inGroup"
+                      class="euiFormControlLayout__childrenWrapper"
                     >
-                      <button
-                        class="euiSuperDatePicker__prettyFormat"
-                        data-test-subj="superDatePickerShowDatesButton"
+                      <div
+                        class="euiDatePickerRange euiDatePickerRange--inGroup"
                       >
-                        Last 30 minutes
-                        <span
-                          class="euiSuperDatePicker__prettyFormatLink"
+                        <button
+                          class="euiSuperDatePicker__prettyFormat"
+                          data-test-subj="superDatePickerShowDatesButton"
                         >
-                          Show dates
-                        </span>
-                      </button>
+                          Last 30 minutes
+                          <span
+                            class="euiSuperDatePicker__prettyFormatLink"
+                          >
+                            Show dates
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="euiFormHelpText euiFormRow__text"
-              id="random_html_id-help"
-            >
-              Time range is relative to the report creation date on the report trigger.
+              <div
+                class="euiFormHelpText euiFormRow__text"
+                id="random_html_id-help"
+              >
+                Time range is relative to the report creation date on the report trigger.
+              </div>
             </div>
           </div>
         </div>
+        <div>
+          <div
+            aria-live="polite"
+            class="euiGlobalToastList euiGlobalToastList--right"
+            role="region"
+          />
+        </div>
       </div>
-      <div>
-        <div
-          aria-live="polite"
-          class="euiGlobalToastList euiGlobalToastList--right"
-          role="region"
-        />
-      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
     <div>
       <div>
         <div>
@@ -3959,6 +4066,26 @@ exports[`<ReportSettings /> panel render edit, saved search source 1`] = `
               Saved search
             </label>
           </div>
+          <div
+            class="euiRadio euiRadioGroup__item"
+          >
+            <input
+              class="euiRadio__input"
+              disabled=""
+              id="notebooksReportSource"
+              type="radio"
+              value=""
+            />
+            <div
+              class="euiRadio__circle"
+            />
+            <label
+              class="euiRadio__label"
+              for="notebooksReportSource"
+            >
+              Notebooks
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -4059,70 +4186,53 @@ exports[`<ReportSettings /> panel render edit, saved search source 1`] = `
     </div>
     <div>
       <div>
-        <div
-          class="euiFormRow"
-          id="random_html_id-row"
-        >
+        <div>
           <div
-            class="euiFormRow__labelWrapper"
-          >
-            <label
-              aria-invalid="false"
-              class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
-            >
-              Time range
-            </label>
-          </div>
-          <div
-            class="euiFormRow__fieldWrapper"
+            class="euiFormRow"
+            id="random_html_id-row"
           >
             <div
-              class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
+              class="euiFormRow__labelWrapper"
+            >
+              <label
+                aria-invalid="false"
+                class="euiFormLabel euiFormRow__label"
+                for="random_html_id"
+              >
+                Time range
+              </label>
+            </div>
+            <div
+              class="euiFormRow__fieldWrapper"
             >
               <div
-                class="euiFlexItem"
+                class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
               >
                 <div
-                  class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
+                  class="euiFlexItem"
                 >
                   <div
-                    class="euiPopover euiPopover--anchorDownLeft"
-                    id="QuickSelectPopover"
+                    class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
                   >
                     <div
-                      class="euiPopover__anchor euiQuickSelectPopover__anchor"
+                      class="euiPopover euiPopover--anchorDownLeft"
+                      id="QuickSelectPopover"
                     >
-                      <button
-                        aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
-                        data-test-subj="superDatePickerToggleQuickMenuButton"
-                        type="button"
+                      <div
+                        class="euiPopover__anchor euiQuickSelectPopover__anchor"
                       >
-                        <span
-                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                        <button
+                          aria-label="Date quick select"
+                          class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
+                          data-test-subj="superDatePickerToggleQuickMenuButton"
+                          type="button"
                         >
-                          <svg
-                            aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiButtonContent__icon"
-                            focusable="false"
-                            height="16"
-                            role="img"
-                            viewBox="0 0 16 16"
-                            width="16"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
-                              fill-rule="non-zero"
-                            />
-                          </svg>
                           <span
-                            class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                           >
                             <svg
                               aria-hidden="true"
-                              class="euiIcon euiIcon--medium"
+                              class="euiIcon euiIcon--medium euiButtonContent__icon"
                               focusable="false"
                               height="16"
                               role="img"
@@ -4131,57 +4241,76 @@ exports[`<ReportSettings /> panel render edit, saved search source 1`] = `
                               xmlns="http://www.w3.org/2000/svg"
                             >
                               <path
-                                d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z"
-                                fill-rule="evenodd"
+                                d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
+                                fill-rule="non-zero"
                               />
                             </svg>
+                            <span
+                              class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="euiIcon euiIcon--medium"
+                                focusable="false"
+                                height="16"
+                                role="img"
+                                viewBox="0 0 16 16"
+                                width="16"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z"
+                                  fill-rule="evenodd"
+                                />
+                              </svg>
+                            </span>
                           </span>
-                        </span>
-                      </button>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    class="euiFormControlLayout__childrenWrapper"
-                  >
                     <div
-                      class="euiDatePickerRange euiDatePickerRange--inGroup"
+                      class="euiFormControlLayout__childrenWrapper"
                     >
-                      <button
-                        class="euiSuperDatePicker__prettyFormat"
-                        data-test-subj="superDatePickerShowDatesButton"
+                      <div
+                        class="euiDatePickerRange euiDatePickerRange--inGroup"
                       >
-                        Last 30 minutes
-                        <span
-                          class="euiSuperDatePicker__prettyFormatLink"
+                        <button
+                          class="euiSuperDatePicker__prettyFormat"
+                          data-test-subj="superDatePickerShowDatesButton"
                         >
-                          Show dates
-                        </span>
-                      </button>
+                          Last 30 minutes
+                          <span
+                            class="euiSuperDatePicker__prettyFormatLink"
+                          >
+                            Show dates
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="euiFormHelpText euiFormRow__text"
-              id="random_html_id-help"
-            >
-              Time range is relative to the report creation date on the report trigger.
+              <div
+                class="euiFormHelpText euiFormRow__text"
+                id="random_html_id-help"
+              >
+                Time range is relative to the report creation date on the report trigger.
+              </div>
             </div>
           </div>
         </div>
+        <div>
+          <div
+            aria-live="polite"
+            class="euiGlobalToastList euiGlobalToastList--right"
+            role="region"
+          />
+        </div>
       </div>
-      <div>
-        <div
-          aria-live="polite"
-          class="euiGlobalToastList euiGlobalToastList--right"
-          role="region"
-        />
-      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
     <div>
       <div>
         <div>
@@ -4492,6 +4621,26 @@ exports[`<ReportSettings /> panel render edit, visualization source 1`] = `
               Saved search
             </label>
           </div>
+          <div
+            class="euiRadio euiRadioGroup__item"
+          >
+            <input
+              class="euiRadio__input"
+              disabled=""
+              id="notebooksReportSource"
+              type="radio"
+              value=""
+            />
+            <div
+              class="euiRadio__circle"
+            />
+            <label
+              class="euiRadio__label"
+              for="notebooksReportSource"
+            >
+              Notebooks
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -4592,70 +4741,53 @@ exports[`<ReportSettings /> panel render edit, visualization source 1`] = `
     </div>
     <div>
       <div>
-        <div
-          class="euiFormRow"
-          id="random_html_id-row"
-        >
+        <div>
           <div
-            class="euiFormRow__labelWrapper"
-          >
-            <label
-              aria-invalid="false"
-              class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
-            >
-              Time range
-            </label>
-          </div>
-          <div
-            class="euiFormRow__fieldWrapper"
+            class="euiFormRow"
+            id="random_html_id-row"
           >
             <div
-              class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
+              class="euiFormRow__labelWrapper"
+            >
+              <label
+                aria-invalid="false"
+                class="euiFormLabel euiFormRow__label"
+                for="random_html_id"
+              >
+                Time range
+              </label>
+            </div>
+            <div
+              class="euiFormRow__fieldWrapper"
             >
               <div
-                class="euiFlexItem"
+                class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
               >
                 <div
-                  class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
+                  class="euiFlexItem"
                 >
                   <div
-                    class="euiPopover euiPopover--anchorDownLeft"
-                    id="QuickSelectPopover"
+                    class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
                   >
                     <div
-                      class="euiPopover__anchor euiQuickSelectPopover__anchor"
+                      class="euiPopover euiPopover--anchorDownLeft"
+                      id="QuickSelectPopover"
                     >
-                      <button
-                        aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
-                        data-test-subj="superDatePickerToggleQuickMenuButton"
-                        type="button"
+                      <div
+                        class="euiPopover__anchor euiQuickSelectPopover__anchor"
                       >
-                        <span
-                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                        <button
+                          aria-label="Date quick select"
+                          class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
+                          data-test-subj="superDatePickerToggleQuickMenuButton"
+                          type="button"
                         >
-                          <svg
-                            aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiButtonContent__icon"
-                            focusable="false"
-                            height="16"
-                            role="img"
-                            viewBox="0 0 16 16"
-                            width="16"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
-                              fill-rule="non-zero"
-                            />
-                          </svg>
                           <span
-                            class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                           >
                             <svg
                               aria-hidden="true"
-                              class="euiIcon euiIcon--medium"
+                              class="euiIcon euiIcon--medium euiButtonContent__icon"
                               focusable="false"
                               height="16"
                               role="img"
@@ -4664,57 +4796,76 @@ exports[`<ReportSettings /> panel render edit, visualization source 1`] = `
                               xmlns="http://www.w3.org/2000/svg"
                             >
                               <path
-                                d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z"
-                                fill-rule="evenodd"
+                                d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
+                                fill-rule="non-zero"
                               />
                             </svg>
+                            <span
+                              class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="euiIcon euiIcon--medium"
+                                focusable="false"
+                                height="16"
+                                role="img"
+                                viewBox="0 0 16 16"
+                                width="16"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z"
+                                  fill-rule="evenodd"
+                                />
+                              </svg>
+                            </span>
                           </span>
-                        </span>
-                      </button>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    class="euiFormControlLayout__childrenWrapper"
-                  >
                     <div
-                      class="euiDatePickerRange euiDatePickerRange--inGroup"
+                      class="euiFormControlLayout__childrenWrapper"
                     >
-                      <button
-                        class="euiSuperDatePicker__prettyFormat"
-                        data-test-subj="superDatePickerShowDatesButton"
+                      <div
+                        class="euiDatePickerRange euiDatePickerRange--inGroup"
                       >
-                        Last 30 minutes
-                        <span
-                          class="euiSuperDatePicker__prettyFormatLink"
+                        <button
+                          class="euiSuperDatePicker__prettyFormat"
+                          data-test-subj="superDatePickerShowDatesButton"
                         >
-                          Show dates
-                        </span>
-                      </button>
+                          Last 30 minutes
+                          <span
+                            class="euiSuperDatePicker__prettyFormatLink"
+                          >
+                            Show dates
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="euiFormHelpText euiFormRow__text"
-              id="random_html_id-help"
-            >
-              Time range is relative to the report creation date on the report trigger.
+              <div
+                class="euiFormHelpText euiFormRow__text"
+                id="random_html_id-help"
+              >
+                Time range is relative to the report creation date on the report trigger.
+              </div>
             </div>
           </div>
         </div>
+        <div>
+          <div
+            aria-live="polite"
+            class="euiGlobalToastList euiGlobalToastList--right"
+            role="region"
+          />
+        </div>
       </div>
-      <div>
-        <div
-          aria-live="polite"
-          class="euiGlobalToastList euiGlobalToastList--right"
-          role="region"
-        />
-      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
     <div>
       <div>
         <div>
@@ -5025,6 +5176,26 @@ exports[`<ReportSettings /> panel render edit, visualization source 2`] = `
               Saved search
             </label>
           </div>
+          <div
+            class="euiRadio euiRadioGroup__item"
+          >
+            <input
+              class="euiRadio__input"
+              disabled=""
+              id="notebooksReportSource"
+              type="radio"
+              value=""
+            />
+            <div
+              class="euiRadio__circle"
+            />
+            <label
+              class="euiRadio__label"
+              for="notebooksReportSource"
+            >
+              Notebooks
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -5125,70 +5296,53 @@ exports[`<ReportSettings /> panel render edit, visualization source 2`] = `
     </div>
     <div>
       <div>
-        <div
-          class="euiFormRow"
-          id="random_html_id-row"
-        >
+        <div>
           <div
-            class="euiFormRow__labelWrapper"
-          >
-            <label
-              aria-invalid="false"
-              class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
-            >
-              Time range
-            </label>
-          </div>
-          <div
-            class="euiFormRow__fieldWrapper"
+            class="euiFormRow"
+            id="random_html_id-row"
           >
             <div
-              class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
+              class="euiFormRow__labelWrapper"
+            >
+              <label
+                aria-invalid="false"
+                class="euiFormLabel euiFormRow__label"
+                for="random_html_id"
+              >
+                Time range
+              </label>
+            </div>
+            <div
+              class="euiFormRow__fieldWrapper"
             >
               <div
-                class="euiFlexItem"
+                class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
               >
                 <div
-                  class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
+                  class="euiFlexItem"
                 >
                   <div
-                    class="euiPopover euiPopover--anchorDownLeft"
-                    id="QuickSelectPopover"
+                    class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
                   >
                     <div
-                      class="euiPopover__anchor euiQuickSelectPopover__anchor"
+                      class="euiPopover euiPopover--anchorDownLeft"
+                      id="QuickSelectPopover"
                     >
-                      <button
-                        aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
-                        data-test-subj="superDatePickerToggleQuickMenuButton"
-                        type="button"
+                      <div
+                        class="euiPopover__anchor euiQuickSelectPopover__anchor"
                       >
-                        <span
-                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                        <button
+                          aria-label="Date quick select"
+                          class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
+                          data-test-subj="superDatePickerToggleQuickMenuButton"
+                          type="button"
                         >
-                          <svg
-                            aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiButtonContent__icon"
-                            focusable="false"
-                            height="16"
-                            role="img"
-                            viewBox="0 0 16 16"
-                            width="16"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
-                              fill-rule="non-zero"
-                            />
-                          </svg>
                           <span
-                            class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                           >
                             <svg
                               aria-hidden="true"
-                              class="euiIcon euiIcon--medium"
+                              class="euiIcon euiIcon--medium euiButtonContent__icon"
                               focusable="false"
                               height="16"
                               role="img"
@@ -5197,57 +5351,76 @@ exports[`<ReportSettings /> panel render edit, visualization source 2`] = `
                               xmlns="http://www.w3.org/2000/svg"
                             >
                               <path
-                                d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z"
-                                fill-rule="evenodd"
+                                d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
+                                fill-rule="non-zero"
                               />
                             </svg>
+                            <span
+                              class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="euiIcon euiIcon--medium"
+                                focusable="false"
+                                height="16"
+                                role="img"
+                                viewBox="0 0 16 16"
+                                width="16"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z"
+                                  fill-rule="evenodd"
+                                />
+                              </svg>
+                            </span>
                           </span>
-                        </span>
-                      </button>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    class="euiFormControlLayout__childrenWrapper"
-                  >
                     <div
-                      class="euiDatePickerRange euiDatePickerRange--inGroup"
+                      class="euiFormControlLayout__childrenWrapper"
                     >
-                      <button
-                        class="euiSuperDatePicker__prettyFormat"
-                        data-test-subj="superDatePickerShowDatesButton"
+                      <div
+                        class="euiDatePickerRange euiDatePickerRange--inGroup"
                       >
-                        Last 30 minutes
-                        <span
-                          class="euiSuperDatePicker__prettyFormatLink"
+                        <button
+                          class="euiSuperDatePicker__prettyFormat"
+                          data-test-subj="superDatePickerShowDatesButton"
                         >
-                          Show dates
-                        </span>
-                      </button>
+                          Last 30 minutes
+                          <span
+                            class="euiSuperDatePicker__prettyFormatLink"
+                          >
+                            Show dates
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="euiFormHelpText euiFormRow__text"
-              id="random_html_id-help"
-            >
-              Time range is relative to the report creation date on the report trigger.
+              <div
+                class="euiFormHelpText euiFormRow__text"
+                id="random_html_id-help"
+              >
+                Time range is relative to the report creation date on the report trigger.
+              </div>
             </div>
           </div>
         </div>
+        <div>
+          <div
+            aria-live="polite"
+            class="euiGlobalToastList euiGlobalToastList--right"
+            role="region"
+          />
+        </div>
       </div>
-      <div>
-        <div
-          aria-live="polite"
-          class="euiGlobalToastList euiGlobalToastList--right"
-          role="region"
-        />
-      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
     <div>
       <div>
         <div>
@@ -5555,6 +5728,25 @@ exports[`<ReportSettings /> panel saved search create from in-context 1`] = `
               Saved search
             </label>
           </div>
+          <div
+            class="euiRadio euiRadioGroup__item"
+          >
+            <input
+              class="euiRadio__input"
+              id="notebooksReportSource"
+              type="radio"
+              value=""
+            />
+            <div
+              class="euiRadio__circle"
+            />
+            <label
+              class="euiRadio__label"
+              for="notebooksReportSource"
+            >
+              Notebooks
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -5655,70 +5847,53 @@ exports[`<ReportSettings /> panel saved search create from in-context 1`] = `
     </div>
     <div>
       <div>
-        <div
-          class="euiFormRow"
-          id="random_html_id-row"
-        >
+        <div>
           <div
-            class="euiFormRow__labelWrapper"
-          >
-            <label
-              aria-invalid="false"
-              class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
-            >
-              Time range
-            </label>
-          </div>
-          <div
-            class="euiFormRow__fieldWrapper"
+            class="euiFormRow"
+            id="random_html_id-row"
           >
             <div
-              class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
+              class="euiFormRow__labelWrapper"
+            >
+              <label
+                aria-invalid="false"
+                class="euiFormLabel euiFormRow__label"
+                for="random_html_id"
+              >
+                Time range
+              </label>
+            </div>
+            <div
+              class="euiFormRow__fieldWrapper"
             >
               <div
-                class="euiFlexItem"
+                class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
               >
                 <div
-                  class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
+                  class="euiFlexItem"
                 >
                   <div
-                    class="euiPopover euiPopover--anchorDownLeft"
-                    id="QuickSelectPopover"
+                    class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
                   >
                     <div
-                      class="euiPopover__anchor euiQuickSelectPopover__anchor"
+                      class="euiPopover euiPopover--anchorDownLeft"
+                      id="QuickSelectPopover"
                     >
-                      <button
-                        aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
-                        data-test-subj="superDatePickerToggleQuickMenuButton"
-                        type="button"
+                      <div
+                        class="euiPopover__anchor euiQuickSelectPopover__anchor"
                       >
-                        <span
-                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                        <button
+                          aria-label="Date quick select"
+                          class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
+                          data-test-subj="superDatePickerToggleQuickMenuButton"
+                          type="button"
                         >
-                          <svg
-                            aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiButtonContent__icon"
-                            focusable="false"
-                            height="16"
-                            role="img"
-                            viewBox="0 0 16 16"
-                            width="16"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
-                              fill-rule="non-zero"
-                            />
-                          </svg>
                           <span
-                            class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                           >
                             <svg
                               aria-hidden="true"
-                              class="euiIcon euiIcon--medium"
+                              class="euiIcon euiIcon--medium euiButtonContent__icon"
                               focusable="false"
                               height="16"
                               role="img"
@@ -5727,85 +5902,104 @@ exports[`<ReportSettings /> panel saved search create from in-context 1`] = `
                               xmlns="http://www.w3.org/2000/svg"
                             >
                               <path
-                                d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z"
-                                fill-rule="evenodd"
+                                d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
+                                fill-rule="non-zero"
                               />
                             </svg>
+                            <span
+                              class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="euiIcon euiIcon--medium"
+                                focusable="false"
+                                height="16"
+                                role="img"
+                                viewBox="0 0 16 16"
+                                width="16"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z"
+                                  fill-rule="evenodd"
+                                />
+                              </svg>
+                            </span>
                           </span>
-                        </span>
-                      </button>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    class="euiFormControlLayout__childrenWrapper"
-                  >
                     <div
-                      class="euiDatePickerRange euiDatePickerRange--inGroup"
+                      class="euiFormControlLayout__childrenWrapper"
                     >
                       <div
-                        class="euiPopover euiPopover--anchorDownLeft euiPopover--displayBlock euiSuperDatePicker__startPopoverButton"
+                        class="euiDatePickerRange euiDatePickerRange--inGroup"
                       >
                         <div
-                          class="euiPopover__anchor"
+                          class="euiPopover euiPopover--anchorDownLeft euiPopover--displayBlock euiSuperDatePicker__startPopoverButton"
                         >
-                          <button
-                            class="euiDatePopoverButton euiDatePopoverButton--start"
-                            data-test-subj="superDatePickerstartDatePopoverButton"
-                            title="2020-10-26T20:52:56.382Z"
+                          <div
+                            class="euiPopover__anchor"
                           >
-                            Oct 26, 2020 @ 13:52:56.382
-                          </button>
+                            <button
+                              class="euiDatePopoverButton euiDatePopoverButton--start"
+                              data-test-subj="superDatePickerstartDatePopoverButton"
+                              title="2020-10-26T20:52:56.382Z"
+                            >
+                              Oct 26, 2020 @ 13:52:56.382
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                      <div
-                        class="euiText euiText--small euiDatePickerRange__delimeter"
-                      >
                         <div
-                          class="euiTextColor euiTextColor--subdued"
+                          class="euiText euiText--small euiDatePickerRange__delimeter"
                         >
-                          →
-                        </div>
-                      </div>
-                      <div
-                        class="euiPopover euiPopover--anchorDownRight euiPopover--displayBlock"
-                      >
-                        <div
-                          class="euiPopover__anchor"
-                        >
-                          <button
-                            class="euiDatePopoverButton euiDatePopoverButton--end"
-                            data-test-subj="superDatePickerendDatePopoverButton"
-                            title="2020-10-27T20:52:56.384Z"
+                          <div
+                            class="euiTextColor euiTextColor--subdued"
                           >
-                            Oct 27, 2020 @ 13:52:56.384
-                          </button>
+                            →
+                          </div>
+                        </div>
+                        <div
+                          class="euiPopover euiPopover--anchorDownRight euiPopover--displayBlock"
+                        >
+                          <div
+                            class="euiPopover__anchor"
+                          >
+                            <button
+                              class="euiDatePopoverButton euiDatePopoverButton--end"
+                              data-test-subj="superDatePickerendDatePopoverButton"
+                              title="2020-10-27T20:52:56.384Z"
+                            >
+                              Oct 27, 2020 @ 13:52:56.384
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="euiFormHelpText euiFormRow__text"
-              id="random_html_id-help"
-            >
-              Time range is relative to the report creation date on the report trigger.
+              <div
+                class="euiFormHelpText euiFormRow__text"
+                id="random_html_id-help"
+              >
+                Time range is relative to the report creation date on the report trigger.
+              </div>
             </div>
           </div>
         </div>
+        <div>
+          <div
+            aria-live="polite"
+            class="euiGlobalToastList euiGlobalToastList--right"
+            role="region"
+          />
+        </div>
       </div>
-      <div>
-        <div
-          aria-live="polite"
-          class="euiGlobalToastList euiGlobalToastList--right"
-          role="region"
-        />
-      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
     <div>
       <div>
         <div>
@@ -6647,6 +6841,25 @@ exports[`<ReportSettings /> panel visualization create from in-context 1`] = `
               Saved search
             </label>
           </div>
+          <div
+            class="euiRadio euiRadioGroup__item"
+          >
+            <input
+              class="euiRadio__input"
+              id="notebooksReportSource"
+              type="radio"
+              value=""
+            />
+            <div
+              class="euiRadio__circle"
+            />
+            <label
+              class="euiRadio__label"
+              for="notebooksReportSource"
+            >
+              Notebooks
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -6747,70 +6960,53 @@ exports[`<ReportSettings /> panel visualization create from in-context 1`] = `
     </div>
     <div>
       <div>
-        <div
-          class="euiFormRow"
-          id="random_html_id-row"
-        >
+        <div>
           <div
-            class="euiFormRow__labelWrapper"
-          >
-            <label
-              aria-invalid="false"
-              class="euiFormLabel euiFormRow__label"
-              for="random_html_id"
-            >
-              Time range
-            </label>
-          </div>
-          <div
-            class="euiFormRow__fieldWrapper"
+            class="euiFormRow"
+            id="random_html_id-row"
           >
             <div
-              class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
+              class="euiFormRow__labelWrapper"
+            >
+              <label
+                aria-invalid="false"
+                class="euiFormLabel euiFormRow__label"
+                for="random_html_id"
+              >
+                Time range
+              </label>
+            </div>
+            <div
+              class="euiFormRow__fieldWrapper"
             >
               <div
-                class="euiFlexItem"
+                class="euiFlexGroup euiFlexGroup--gutterSmall euiFlexGroup--directionRow euiSuperDatePicker__flexWrapper euiSuperDatePicker__flexWrapper--noUpdateButton"
               >
                 <div
-                  class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
+                  class="euiFlexItem"
                 >
                   <div
-                    class="euiPopover euiPopover--anchorDownLeft"
-                    id="QuickSelectPopover"
+                    class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"
                   >
                     <div
-                      class="euiPopover__anchor euiQuickSelectPopover__anchor"
+                      class="euiPopover euiPopover--anchorDownLeft"
+                      id="QuickSelectPopover"
                     >
-                      <button
-                        aria-label="Date quick select"
-                        class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
-                        data-test-subj="superDatePickerToggleQuickMenuButton"
-                        type="button"
+                      <div
+                        class="euiPopover__anchor euiQuickSelectPopover__anchor"
                       >
-                        <span
-                          class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
+                        <button
+                          aria-label="Date quick select"
+                          class="euiButtonEmpty euiButtonEmpty--primary euiButtonEmpty--xSmall euiFormControlLayout__prepend"
+                          data-test-subj="superDatePickerToggleQuickMenuButton"
+                          type="button"
                         >
-                          <svg
-                            aria-hidden="true"
-                            class="euiIcon euiIcon--medium euiButtonContent__icon"
-                            focusable="false"
-                            height="16"
-                            role="img"
-                            viewBox="0 0 16 16"
-                            width="16"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
-                              fill-rule="non-zero"
-                            />
-                          </svg>
                           <span
-                            class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            class="euiButtonContent euiButtonContent--iconRight euiButtonEmpty__content"
                           >
                             <svg
                               aria-hidden="true"
-                              class="euiIcon euiIcon--medium"
+                              class="euiIcon euiIcon--medium euiButtonContent__icon"
                               focusable="false"
                               height="16"
                               role="img"
@@ -6819,85 +7015,104 @@ exports[`<ReportSettings /> panel visualization create from in-context 1`] = `
                               xmlns="http://www.w3.org/2000/svg"
                             >
                               <path
-                                d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z"
-                                fill-rule="evenodd"
+                                d="M13.069 5.157L8.384 9.768a.546.546 0 01-.768 0L2.93 5.158a.552.552 0 00-.771 0 .53.53 0 000 .759l4.684 4.61c.641.631 1.672.63 2.312 0l4.684-4.61a.53.53 0 000-.76.552.552 0 00-.771 0z"
+                                fill-rule="non-zero"
                               />
                             </svg>
+                            <span
+                              class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                class="euiIcon euiIcon--medium"
+                                focusable="false"
+                                height="16"
+                                role="img"
+                                viewBox="0 0 16 16"
+                                width="16"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z"
+                                  fill-rule="evenodd"
+                                />
+                              </svg>
+                            </span>
                           </span>
-                        </span>
-                      </button>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    class="euiFormControlLayout__childrenWrapper"
-                  >
                     <div
-                      class="euiDatePickerRange euiDatePickerRange--inGroup"
+                      class="euiFormControlLayout__childrenWrapper"
                     >
                       <div
-                        class="euiPopover euiPopover--anchorDownLeft euiPopover--displayBlock euiSuperDatePicker__startPopoverButton"
+                        class="euiDatePickerRange euiDatePickerRange--inGroup"
                       >
                         <div
-                          class="euiPopover__anchor"
+                          class="euiPopover euiPopover--anchorDownLeft euiPopover--displayBlock euiSuperDatePicker__startPopoverButton"
                         >
-                          <button
-                            class="euiDatePopoverButton euiDatePopoverButton--start"
-                            data-test-subj="superDatePickerstartDatePopoverButton"
-                            title="2020-10-26T20:52:56.382Z"
+                          <div
+                            class="euiPopover__anchor"
                           >
-                            Oct 26, 2020 @ 13:52:56.382
-                          </button>
+                            <button
+                              class="euiDatePopoverButton euiDatePopoverButton--start"
+                              data-test-subj="superDatePickerstartDatePopoverButton"
+                              title="2020-10-26T20:52:56.382Z"
+                            >
+                              Oct 26, 2020 @ 13:52:56.382
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                      <div
-                        class="euiText euiText--small euiDatePickerRange__delimeter"
-                      >
                         <div
-                          class="euiTextColor euiTextColor--subdued"
+                          class="euiText euiText--small euiDatePickerRange__delimeter"
                         >
-                          →
-                        </div>
-                      </div>
-                      <div
-                        class="euiPopover euiPopover--anchorDownRight euiPopover--displayBlock"
-                      >
-                        <div
-                          class="euiPopover__anchor"
-                        >
-                          <button
-                            class="euiDatePopoverButton euiDatePopoverButton--end"
-                            data-test-subj="superDatePickerendDatePopoverButton"
-                            title="2020-10-27T20:52:56.384Z"
+                          <div
+                            class="euiTextColor euiTextColor--subdued"
                           >
-                            Oct 27, 2020 @ 13:52:56.384
-                          </button>
+                            →
+                          </div>
+                        </div>
+                        <div
+                          class="euiPopover euiPopover--anchorDownRight euiPopover--displayBlock"
+                        >
+                          <div
+                            class="euiPopover__anchor"
+                          >
+                            <button
+                              class="euiDatePopoverButton euiDatePopoverButton--end"
+                              data-test-subj="superDatePickerendDatePopoverButton"
+                              title="2020-10-27T20:52:56.384Z"
+                            >
+                              Oct 27, 2020 @ 13:52:56.384
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="euiFormHelpText euiFormRow__text"
-              id="random_html_id-help"
-            >
-              Time range is relative to the report creation date on the report trigger.
+              <div
+                class="euiFormHelpText euiFormRow__text"
+                id="random_html_id-help"
+              >
+                Time range is relative to the report creation date on the report trigger.
+              </div>
             </div>
           </div>
         </div>
+        <div>
+          <div
+            aria-live="polite"
+            class="euiGlobalToastList euiGlobalToastList--right"
+            role="region"
+          />
+        </div>
       </div>
-      <div>
-        <div
-          aria-live="polite"
-          class="euiGlobalToastList euiGlobalToastList--right"
-          role="region"
-        />
-      </div>
+      <div
+        class="euiSpacer euiSpacer--l"
+      />
     </div>
-    <div
-      class="euiSpacer euiSpacer--l"
-    />
     <div>
       <div>
         <div>

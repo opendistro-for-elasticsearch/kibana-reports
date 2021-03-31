@@ -217,7 +217,6 @@ export default function (router: IRouter, accessInfo: AccessInfoType) {
           reportId
         );
         addToMetric('report', 'create_from_definition', 'count', report);
-
         return response.ok({
           body: {
             data: reportData.dataUrl,

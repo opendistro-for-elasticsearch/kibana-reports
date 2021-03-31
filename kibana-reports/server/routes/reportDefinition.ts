@@ -177,6 +177,7 @@ export default function (router: IRouter, accessInfo: AccessInfoType) {
           request
         );
 
+
         const esResp = await esReportsClient.callAsCurrentUser(
           'es_reports.getReportDefinitions',
           {
@@ -184,6 +185,7 @@ export default function (router: IRouter, accessInfo: AccessInfoType) {
             maxItems: maxItems || DEFAULT_MAX_SIZE,
           }
         );
+
 
         const reportDefinitionsList = backendToUiReportDefinitionsList(
           esResp.reportDefinitionDetailsList,

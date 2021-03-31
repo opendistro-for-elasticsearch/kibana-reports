@@ -99,6 +99,7 @@ export enum BACKEND_REPORT_SOURCE {
   dashboard = 'Dashboard',
   visualization = 'Visualization',
   savedSearch = 'SavedSearch',
+  notebook = 'Notebook'
 }
 
 export enum BACKEND_REPORT_STATE {
@@ -132,6 +133,7 @@ export const REPORT_SOURCE_DICT = {
   [REPORT_TYPE.dashboard]: BACKEND_REPORT_SOURCE.dashboard,
   [REPORT_TYPE.visualization]: BACKEND_REPORT_SOURCE.visualization,
   [REPORT_TYPE.savedSearch]: BACKEND_REPORT_SOURCE.savedSearch,
+  [REPORT_TYPE.notebook]: BACKEND_REPORT_SOURCE.notebook
 };
 
 export const REPORT_FORMAT_DICT = {
@@ -155,4 +157,5 @@ export const URL_PREFIX_DICT = {
   [BACKEND_REPORT_SOURCE.dashboard]: '/app/dashboards#/view/',
   [BACKEND_REPORT_SOURCE.savedSearch]: '/app/discover#/view/',
   [BACKEND_REPORT_SOURCE.visualization]: '/app/visualize#/edit/',
+  [BACKEND_REPORT_SOURCE.notebook]: '/app/opendistro-notebooks-kibana#/'
 };

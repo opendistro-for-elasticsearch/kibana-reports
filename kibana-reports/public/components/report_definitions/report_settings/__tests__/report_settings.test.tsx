@@ -64,6 +64,9 @@ const dashboardHits = {
           timeTo: 'now',
           title: 'Mock Dashboard',
         },
+        notebook: {
+          name: 'mock notebook name'
+        }
       },
     },
   ],
@@ -78,6 +81,9 @@ const visualizationHits = {
           description: 'mock visualization value',
           title: 'Mock Visualization',
         },
+        notebook: {
+          name: 'mock notebook name'
+        },
       },
     },
   ],
@@ -90,6 +96,9 @@ const savedSearchHits = {
       _source: {
         search: {
           title: 'Mock saved search value',
+        },
+        notebook: {
+          name: 'mock notebook name'
         },
       },
     },

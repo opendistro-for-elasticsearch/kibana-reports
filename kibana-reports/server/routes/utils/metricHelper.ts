@@ -40,10 +40,8 @@ export const addToMetric = (
   const count = 1;
   // remove outdated key-value pairs
   trim();
-
   const timeKey = getKey(Date.now());
   const rollingCounters = time2CountWin.get(timeKey);
-
   time2CountWin.set(
     timeKey,
     updateCounters(

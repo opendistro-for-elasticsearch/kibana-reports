@@ -67,7 +67,6 @@ export const createReport = async (
 
   let createReportResult: CreateReportResultType;
   let reportId;
-
   const {
     report_definition: {
       report_params: reportParams,
@@ -92,7 +91,7 @@ export const createReport = async (
         isScheduledTask
       );
     } else {
-      // report source can only be one of [saved search, visualization, dashboard]
+      // report source can only be one of [saved search, visualization, dashboard, notebook]
       // compose url
       const relativeUrl = report.query_url.startsWith(basePath)
         ? report.query_url
