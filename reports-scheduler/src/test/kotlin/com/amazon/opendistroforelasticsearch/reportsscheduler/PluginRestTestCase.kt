@@ -87,7 +87,9 @@ abstract class PluginRestTestCase : ESRestTestCase() {
                 val jsonObject: Map<*, *> = index as java.util.HashMap<*, *>
                 val indexName: String = jsonObject["index"] as String
                 // .opendistro_security isn't allowed to delete from cluster
-                if (".opendistro_security" != indexName) {
+                // !indexName.startsWith(".kibana") && !indexName.startsWith(".opendistro")
+                // ".opendistro_security" != indexName
+                if (!indexName.startsWith(".kibana") && !indexName.startsWith(".opendistro")) {
                     client().performRequest(Request("DELETE", "/$indexName"))
                 }
             }

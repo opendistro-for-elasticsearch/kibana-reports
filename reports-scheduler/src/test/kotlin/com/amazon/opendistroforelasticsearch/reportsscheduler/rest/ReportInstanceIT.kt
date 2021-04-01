@@ -260,7 +260,7 @@ class ReportInstanceIT : PluginRestTestCase() {
         )
         val newReportInstance = newOnDemandResponse.get("reportInstance").asJsonObject
         val newReportInstanceId = newReportInstance.get("id").asString
-        Thread.sleep(1000)
+        Thread.sleep(5000)
         val listReportInstancesResponse = executeRequest(
             RestRequest.Method.GET.name,
             "$BASE_REPORTS_URI/instances",

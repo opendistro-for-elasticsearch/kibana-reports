@@ -306,7 +306,7 @@ class ReportDefinitionIT : PluginRestTestCase() {
             RestStatus.OK.status
         )
         val totalHits = listReportDefinitions.get("totalHits").asInt
-        Assert.assertEquals(totalHits, 2)
+        Assert.assertEquals(totalHits, 3)
         val reportDefinitionsList = listReportDefinitions.get("reportDefinitionDetailsList").asJsonArray
         Assert.assertEquals(
             reportDefinitionId,
