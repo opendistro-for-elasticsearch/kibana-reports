@@ -22,7 +22,6 @@ import {
   EuiGlobalToastList,
   EuiSuperDatePicker,
 } from '@elastic/eui';
-import { UI_SETTINGS } from '../../../../../../src/plugins/data/common';
 
 export function TimeRangeSelect(props) {
   const {
@@ -194,7 +193,7 @@ export function TimeRangeSelect(props) {
   };
 
   const commonlyUsedRanges = uiSettings!
-    .get(UI_SETTINGS.TIMEPICKER_QUICK_RANGES)
+    .get('timepicker:quickRanges')
     .map(({ from, to, display }: { from: string; to: string; display: string }) => {
       return {
         start: from,
