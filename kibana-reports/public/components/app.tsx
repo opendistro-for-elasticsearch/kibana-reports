@@ -47,7 +47,6 @@ export interface CoreInterface {
 
 interface OpendistroKibanaReportsAppDeps {
   basename: string;
-  notifications: CoreStart['notifications'];
   http: CoreStart['http'];
   // navigation: NavigationPublicPluginStart;
   chrome: CoreStart['chrome'];

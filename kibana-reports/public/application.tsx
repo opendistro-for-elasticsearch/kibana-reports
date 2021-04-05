@@ -20,14 +20,13 @@ import { AppPluginStartDependencies } from './types';
 import { OpendistroKibanaReportsApp } from './components/app';
 
 export const renderApp = (
-  { notifications, http, chrome, uiSettings }: CoreStart,
+  { http, chrome, uiSettings }: CoreStart,
   {  }: AppPluginStartDependencies,
   { appBasePath, element }: AppMountParameters
 ) => {
   ReactDOM.render(
     <OpendistroKibanaReportsApp
       basename={appBasePath}
-      notifications={notifications}
       http={http}
       uiSettings={uiSettings}
       chrome={chrome}
