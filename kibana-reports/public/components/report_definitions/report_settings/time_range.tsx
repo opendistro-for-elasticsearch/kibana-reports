@@ -22,7 +22,7 @@ import {
   EuiGlobalToastList,
   EuiSuperDatePicker,
 } from '@elastic/eui';
-import { commonTimeRanges } from './report_settings_constants';
+import { UI_SETTINGS } from '../../../../../../src/plugins/data/common';
 
 export function TimeRangeSelect(props) {
   const {
@@ -32,6 +32,7 @@ export function TimeRangeSelect(props) {
     id,
     httpClientProps,
     showTimeRangeError,
+    uiSettings
   } = props;
 
   const [recentlyUsedRanges, setRecentlyUsedRanges] = useState([]);
@@ -192,6 +193,15 @@ export function TimeRangeSelect(props) {
     setIsLoading(false);
   };
 
+  const commonlyUsedRanges = uiSettings!
+    .get(UI_SETTINGS.TIMEPICKER_QUICK_RANGES)
+    .map(({ from, to, display }: { from: string; to: string; display: string }) => {
+      return {
+        start: from,
+        end: to,
+        label: display,
+      };
+    });
 
   return (
     <div>
@@ -209,7 +219,7 @@ export function TimeRangeSelect(props) {
             end={end}
             onTimeChange={onTimeChange}
             showUpdateButton={false}
-            commonlyUsedRanges={commonTimeRanges}
+            commonlyUsedRanges={commonlyUsedRanges}
           />
         </EuiFormRow>
       </div>
