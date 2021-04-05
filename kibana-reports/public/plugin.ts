@@ -30,8 +30,10 @@ import { PLUGIN_NAME } from '../common';
 export class OpendistroKibanaReportsPlugin
   implements
     Plugin<
+      OpendistroKibanaReportsPluginStart,
       OpendistroKibanaReportsPluginSetup,
-      OpendistroKibanaReportsPluginStart
+      AppPluginStartDependencies,
+      any
     > {
   public setup(core: CoreSetup): OpendistroKibanaReportsPluginSetup {
     // Register an application into the side navigation menu

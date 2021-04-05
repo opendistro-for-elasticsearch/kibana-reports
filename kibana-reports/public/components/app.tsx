@@ -31,7 +31,7 @@ import {
   ChromeBreadcrumb,
   IUiSettingsClient,
 } from '../../../../src/core/public';
-import { NavigationPublicPluginStart } from '../../../../src/plugins/navigation/public';
+// import { NavigationPublicPluginStart } from '../../../../src/plugins/navigation/public';
 
 import { CreateReport } from './report_definitions/create/create_report_definition';
 import { Main } from './main/main';
@@ -49,8 +49,9 @@ interface OpendistroKibanaReportsAppDeps {
   basename: string;
   notifications: CoreStart['notifications'];
   http: CoreStart['http'];
-  navigation: NavigationPublicPluginStart;
+  // navigation: NavigationPublicPluginStart;
   chrome: CoreStart['chrome'];
+  uiSettings: IUiSettingsClient;
 }
 
 const styles: CSS.Properties = {
@@ -61,10 +62,9 @@ const styles: CSS.Properties = {
 
 export const OpendistroKibanaReportsApp = ({
   basename,
-  notifications,
   http,
-  navigation,
   chrome,
+  uiSettings
 }: OpendistroKibanaReportsAppDeps) => {
   // Render the application DOM.
   return (
@@ -117,6 +117,7 @@ export const OpendistroKibanaReportsApp = ({
                       <EditReportDefinition
                         title="Edit Report Definition"
                         httpClient={http}
+                        uiSettings={uiSettings}
                         {...props}
                         setBreadcrumbs={chrome.setBreadcrumbs}
                       />
