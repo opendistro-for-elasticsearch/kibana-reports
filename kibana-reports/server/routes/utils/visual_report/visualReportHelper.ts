@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import puppeteer, { ElementHandle, SetCookie, Headers } from 'puppeteer-core';
+import puppeteer, { SetCookie, Headers } from 'puppeteer-core';
 import createDOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 import { Logger } from '../../../../../../src/core/server';
@@ -29,7 +29,6 @@ import { getFileName } from '../helpers';
 import { CreateReportResultType } from '../types';
 import { ReportParamsSchemaType, VisualReportSchemaType } from 'server/model';
 import fs from 'fs';
-import cheerio from 'cheerio';
 
 export const createVisualReport = async (
   reportParams: ReportParamsSchemaType,
@@ -60,20 +59,20 @@ export const createVisualReport = async (
     ? DOMPurify.sanitize(header)
     : DEFAULT_REPORT_HEADER;
   const reportFooter = footer ? DOMPurify.sanitize(footer) : '';
-  
+
   // add waitForDynamicContent function
   const waitForDynamicContent = async(page, timeout = 30000, interval = 1000, checks = 5) => {
     const maxChecks    = timeout / interval;
     let passedChecks   = 0;
     let previousLength = 0;
-    
+
     let i=0; while(i++ <= maxChecks){
       let pageContent   = await page.content();
       let currentLength = pageContent.length;
-      
+
       (previousLength === 0 || previousLength != currentLength) ? passedChecks = 0 : passedChecks++;
       if (passedChecks >= checks) { break; }
-      
+
       previousLength = currentLength;
       await page.waitFor(interval);
     }
@@ -92,6 +91,7 @@ export const createVisualReport = async (
       '--disable-gpu',
       '--no-zygote',
       '--single-process',
+      '--font-render-hinting=none',
     ],
     executablePath: CHROMIUM_PATH,
     ignoreHTTPSErrors: true,
@@ -131,19 +131,24 @@ export const createVisualReport = async (
   let buffer: Buffer;
   // remove top nav bar
   await page.evaluate(
-    /* istanbul ignore next */
-    () => {
-      // remove buttons
-      document
-        .querySelectorAll("[class^='euiButton']")
-        .forEach((e) => e.remove());
-      // remove top navBar
-      document
-        .querySelectorAll("[class^='euiHeader']")
-        .forEach((e) => e.remove());
-      document.body.style.paddingTop = '0px';
-    }
+      /* istanbul ignore next */
+      () => {
+        // remove buttons
+        document
+            .querySelectorAll("[class^='euiButton']")
+            .forEach((e) => e.remove());
+        // remove query bar
+        document
+            .querySelectorAll("[class='globalQueryBar']")
+            .forEach((e) => e.remove());
+        // remove top navBar
+        document
+            .querySelectorAll("[class^='euiHeader']")
+            .forEach((e) => e.remove());
+        document.body.style.paddingTop = '0px';
+      }
   );
+
   // force wait for any resize to load after the above DOM modification
   await page.waitFor(1000);
   // crop content
@@ -160,27 +165,22 @@ export const createVisualReport = async (
       break;
     default:
       throw Error(
-        `report source can only be one of [Dashboard, Visualization]`
+          `report source can only be one of [Dashboard, Visualization]`
       );
   }
-  
+
   // wait for dynamic page content to render
   await waitForDynamicContent(page);
 
-  const screenshot = await page.screenshot({ fullPage: true });
-
-  const templateHtml = composeReportHtml(
-    reportHeader,
-    reportFooter,
-    screenshot.toString('base64')
-  );
-  await page.setContent(templateHtml);
+  await addReportStyle(page);
+  await addReportHeader(page, reportHeader);
+  await addReportFooter(page, reportFooter);
 
   // create pdf or png accordingly
   if (reportFormat === FORMAT.pdf) {
     const scrollHeight = await page.evaluate(
-      /* istanbul ignore next */
-      () => document.documentElement.scrollHeight
+        /* istanbul ignore next */
+        () => document.documentElement.scrollHeight
     );
 
     buffer = await page.pdf({
@@ -204,26 +204,44 @@ export const createVisualReport = async (
   return { timeCreated, dataUrl: buffer.toString('base64'), fileName };
 };
 
-const composeReportHtml = (
-  header: string,
-  footer: string,
-  screenshot: string
-) => {
-  const $ = cheerio.load(fs.readFileSync(`${__dirname}/report_template.html`), {
-    decodeEntities: false,
-  });
+const addReportStyle = async (page) => {
+  const css = fs.readFileSync(`${__dirname}/style.css`).toString();
 
-  $('.reportWrapper img').attr('src', `data:image/png;base64,${screenshot}`);
-  $('#reportingHeader > div.mde-preview > div.mde-preview-content').html(
-    header
-  );
-  if (footer === '') {
-    $('#reportingFooter').attr('hidden', 'true');
-  } else {
-    $('#reportingFooter > div.mde-preview > div.mde-preview-content').html(
-      footer
-    );
-  }
+  await page.evaluate((style) => {
+    const styleElement = document.createElement('style');
+    styleElement.innerHTML = style;
+    document.getElementsByTagName('head')[0].appendChild(styleElement);
+  }, css)
+}
 
-  return $.root().html() || '';
-};
+const addReportHeader = async (page, header) => {
+  const headerHtml = fs.readFileSync(`${__dirname}/header_template.html`)
+    .toString()
+    .replace('<!--CONTENT-->', header);
+
+  await page.evaluate((headerHtml: string) => {
+    const dashboardViewport = document.querySelector('#dashboardViewport');
+
+    const headerContainer = document.createElement('div');
+    headerContainer.className = 'reportWrapper'
+    headerContainer.innerHTML = headerHtml;
+
+    dashboardViewport?.parentNode?.insertBefore(headerContainer, dashboardViewport);
+  }, headerHtml)
+}
+
+const addReportFooter = async (page, footer) => {
+  const headerHtml = fs.readFileSync(`${__dirname}/footer_template.html`)
+    .toString()
+    .replace('<!--CONTENT-->', footer);
+
+  await page.evaluate((headerHtml: string) => {
+    const dashboardViewport = document.querySelector('#dashboardViewport');
+
+    const headerContainer = document.createElement('div');
+    headerContainer.className = 'reportWrapper'
+    headerContainer.innerHTML = headerHtml;
+
+    dashboardViewport?.parentNode?.insertBefore(headerContainer, null);
+  }, headerHtml)
+}
