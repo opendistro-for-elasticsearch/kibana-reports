@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import puppeteer, { ElementHandle, SetCookie, Headers } from 'puppeteer-core';
+import puppeteer, { SetCookie, Headers } from 'puppeteer-core';
 import createDOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 import { Logger } from '../../../../../../src/core/server';
@@ -29,7 +29,6 @@ import { getFileName } from '../helpers';
 import { CreateReportResultType } from '../types';
 import { ReportParamsSchemaType, VisualReportSchemaType } from 'server/model';
 import fs from 'fs';
-import cheerio from 'cheerio';
 
 export const createVisualReport = async (
   reportParams: ReportParamsSchemaType,
@@ -61,34 +60,6 @@ export const createVisualReport = async (
     : DEFAULT_REPORT_HEADER;
   const reportFooter = footer ? DOMPurify.sanitize(footer) : '';
 
-  // add waitForDynamicContent function
-  const waitForDynamicContent = async (
-    page,
-    timeout = 30000,
-    interval = 1000,
-    checks = 5
-  ) => {
-    const maxChecks = timeout / interval;
-    let passedChecks = 0;
-    let previousLength = 0;
-
-    let i = 0;
-    while (i++ <= maxChecks) {
-      let pageContent = await page.content();
-      let currentLength = pageContent.length;
-
-      previousLength === 0 || previousLength != currentLength
-        ? (passedChecks = 0)
-        : passedChecks++;
-      if (passedChecks >= checks) {
-        break;
-      }
-
-      previousLength = currentLength;
-      await page.waitFor(interval);
-    }
-  };
-
   // set up puppeteer
   const browser = await puppeteer.launch({
     headless: true,
@@ -102,6 +73,7 @@ export const createVisualReport = async (
       '--disable-gpu',
       '--no-zygote',
       '--single-process',
+      '--font-render-hinting=none',
     ],
     executablePath: CHROMIUM_PATH,
     ignoreHTTPSErrors: true,
@@ -163,6 +135,7 @@ export const createVisualReport = async (
     reportSource,
     REPORT_TYPE
   );
+
   // force wait for any resize to load after the above DOM modification
   await page.waitFor(1000);
   // crop content
@@ -186,14 +159,9 @@ export const createVisualReport = async (
   // wait for dynamic page content to render
   await waitForDynamicContent(page);
 
-  const screenshot = await page.screenshot({ fullPage: true });
-
-  const templateHtml = composeReportHtml(
-    reportHeader,
-    reportFooter,
-    screenshot.toString('base64')
-  );
-  await page.setContent(templateHtml);
+  await addReportStyle(page);
+  await addReportHeader(page, reportHeader);
+  await addReportFooter(page, reportFooter);
 
   // create pdf or png accordingly
   if (reportFormat === FORMAT.pdf) {
@@ -223,26 +191,82 @@ export const createVisualReport = async (
   return { timeCreated, dataUrl: buffer.toString('base64'), fileName };
 };
 
-const composeReportHtml = (
-  header: string,
-  footer: string,
-  screenshot: string
-) => {
-  const $ = cheerio.load(fs.readFileSync(`${__dirname}/report_template.html`), {
-    decodeEntities: false,
-  });
+const addReportStyle = async (page: puppeteer.Page) => {
+  const css = fs.readFileSync(`${__dirname}/style.css`).toString();
 
-  $('.reportWrapper img').attr('src', `data:image/png;base64,${screenshot}`);
-  $('#reportingHeader > div.mde-preview > div.mde-preview-content').html(
-    header
+  await page.evaluate(
+    /* istanbul ignore next */
+    (style: string) => {
+      const styleElement = document.createElement('style');
+      styleElement.innerHTML = style;
+      document.getElementsByTagName('head')[0].appendChild(styleElement);
+    },
+    css
   );
-  if (footer === '') {
-    $('#reportingFooter').attr('hidden', 'true');
-  } else {
-    $('#reportingFooter > div.mde-preview > div.mde-preview-content').html(
-      footer
-    );
-  }
+};
 
-  return $.root().html() || '';
+const addReportHeader = async (page: puppeteer.Page, header: string) => {
+  const headerHtml = fs
+    .readFileSync(`${__dirname}/header_template.html`)
+    .toString()
+    .replace('<!--CONTENT-->', header);
+
+  await page.evaluate(
+    /* istanbul ignore next */
+    (headerHtml: string) => {
+      const content = document.body.firstChild;
+      const headerContainer = document.createElement('div');
+      headerContainer.className = 'reportWrapper';
+      headerContainer.innerHTML = headerHtml;
+      content?.parentNode?.insertBefore(headerContainer, content);
+    },
+    headerHtml
+  );
+};
+
+const addReportFooter = async (page: puppeteer.Page, footer: string) => {
+  const headerHtml = fs
+    .readFileSync(`${__dirname}/footer_template.html`)
+    .toString()
+    .replace('<!--CONTENT-->', footer);
+
+  await page.evaluate(
+    /* istanbul ignore next */
+    (headerHtml: string) => {
+      const content = document.body.firstChild;
+      const headerContainer = document.createElement('div');
+      headerContainer.className = 'reportWrapper';
+      headerContainer.innerHTML = headerHtml;
+      content?.parentNode?.insertBefore(headerContainer, null);
+    },
+    headerHtml
+  );
+};
+
+// add waitForDynamicContent function
+const waitForDynamicContent = async (
+  page,
+  timeout = 30000,
+  interval = 1000,
+  checks = 5
+) => {
+  const maxChecks = timeout / interval;
+  let passedChecks = 0;
+  let previousLength = 0;
+
+  let i = 0;
+  while (i++ <= maxChecks) {
+    let pageContent = await page.content();
+    let currentLength = pageContent.length;
+
+    previousLength === 0 || previousLength != currentLength
+      ? (passedChecks = 0)
+      : passedChecks++;
+    if (passedChecks >= checks) {
+      break;
+    }
+
+    previousLength = currentLength;
+    await page.waitFor(interval);
+  }
 };
