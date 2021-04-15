@@ -219,7 +219,6 @@ class ReportInstanceIT : PluginRestTestCase() {
     }
 
     fun `test listing all report instances`() {
-
         val reportDefinitionRequest = constructReportDefinitionRequest()
         val reportDefinitionResponse = executeRequest(
             RestRequest.Method.POST.name,
