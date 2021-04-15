@@ -219,6 +219,7 @@ class ReportInstanceIT : PluginRestTestCase() {
     }
 
     fun `test listing all report instances`() {
+
         val reportDefinitionRequest = constructReportDefinitionRequest()
         val reportDefinitionResponse = executeRequest(
             RestRequest.Method.POST.name,
@@ -260,7 +261,7 @@ class ReportInstanceIT : PluginRestTestCase() {
         )
         val newReportInstance = newOnDemandResponse.get("reportInstance").asJsonObject
         val newReportInstanceId = newReportInstance.get("id").asString
-        Thread.sleep(5000)
+        Thread.sleep(1000)
         val listReportInstancesResponse = executeRequest(
             RestRequest.Method.GET.name,
             "$BASE_REPORTS_URI/instances",
