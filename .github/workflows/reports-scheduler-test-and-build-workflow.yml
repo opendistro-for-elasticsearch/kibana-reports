@@ -19,13 +19,6 @@ jobs:
           cd reports-scheduler
           ./gradlew build
 
-      - name: Upload coverage
-        uses: codecov/codecov-action@v1
-        with:
-          flags: reports-scheduler
-          directory: reports-scheduler/
-          token: ${{ secrets.CODECOV_TOKEN }}
-
       - name: Create Artifact Path
         run: |
           mkdir -p reports-scheduler-builds
