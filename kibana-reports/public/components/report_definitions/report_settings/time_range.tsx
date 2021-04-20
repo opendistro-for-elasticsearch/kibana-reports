@@ -15,6 +15,7 @@
 
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
+import { i18n } from '@kbn/i18n';
 import { parseInContextUrl } from './report_settings_helpers';
 import dateMath from '@elastic/datemath';
 import {
@@ -43,7 +44,7 @@ export function TimeRangeSelect(props) {
 
   const addInvalidTimeRangeToastHandler = () => {
     const errorToast = {
-      title: 'Invalid time range selected',
+      title: i18n.translate('odfe.reports.timeRange.invalidTimeRange', { defaultMessage:'Invalid time range selected' }),
       color: 'danger',
       iconType: 'alert',
       id: 'timeRangeErrorToast',
@@ -197,10 +198,10 @@ export function TimeRangeSelect(props) {
     <div>
       <div>
         <EuiFormRow
-          label="Time range"
-          helpText="Time range is relative to the report creation date on the report trigger."
+          label={i18n.translate('odfe.reports.timeRange.label.timeRange', { defaultMessage:'Time range' })}
+          helpText={i18n.translate('odfe.reports.timeRange.help.timeRange', { defaultMessage:'Time range is relative to the report creation date on the report trigger.' })}
           isInvalid={showTimeRangeError}
-          error={'Invalid time range selected.'}
+          error={  i18n.translate('odfe.reports.timeRange.invalidTimeRange', { defaultMessage:'Invalid time range selected' }) }
         >
           <EuiSuperDatePicker
             isDisabled={false}

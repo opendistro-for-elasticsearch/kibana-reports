@@ -14,10 +14,11 @@
  */
 
 import { isValidCron } from "cron-validator";
+import { i18n } from '@kbn/i18n';
 import moment from "moment";
 
  export const definitionInputValidation = async (
-     metadata, 
+     metadata,
      error,
      setShowSettingsReportNameError,
      setSettingsReportNameErrorMessage,
@@ -60,7 +61,7 @@ import moment from "moment";
     // if report source is blank
     if (metadata.report_params.core_params.base_url === "") {
       setShowSettingsReportSourceError(true);
-      setSettingsReportSourceErrorMessage('Report source must not be empty.');
+      setSettingsReportSourceErrorMessage(i18n.translate('odfe.reports.error.reportSourceMustNotBeEmpty', { defaultMessage:'Report source must not be empty.' }));
       error = true;
     }
 
@@ -89,7 +90,7 @@ import moment from "moment";
       if (metadata.delivery.delivery_params.recipients.length === 0) {
         setShowEmailRecipientsError(true);
         setEmailRecipientsErrorMessage(
-          'Email recipients list cannot be empty.'
+          i18n.translate('odfe.reports.error.emailRecipientsListCannotBeEmpty', { defaultMessage:'Email recipients list cannot be empty.' })
         );
         error = true;
       }
@@ -101,7 +102,7 @@ import moment from "moment";
         if (recipients[0].search(emailRegExp) === -1) {
           setShowEmailRecipientsError(true);
           setEmailRecipientsErrorMessage(
-            'Invalid email addresses in recipients list.'
+            i18n.translate('odfe.reports.error.invalidEmailAddresses', { defaultMessage:'Invalid email addresses in recipients list.' })
           );
           error = true;
         }

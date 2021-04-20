@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { i18n } from '@kbn/i18n';
 import {
   EuiFlexGroup,
   EuiFlexItem,
@@ -95,7 +96,7 @@ export function ReportDetails(props) {
     addPermissionsMissingDownloadToastHandler();
   };
 
-  const addErrorToastHandler = (title = 'Error loading report details.', text = '') => {
+  const addErrorToastHandler = (title = i18n.translate('odfe.reports.details.errorLoadingReportDetails', { defaultMessage:'Error loading report details.' }), text = '') => {
     const errorToast = {
       title,
       text,
@@ -114,7 +115,7 @@ export function ReportDetails(props) {
     const successToast = {
       title: 'Success',
       color: 'success',
-      text: <p>Report successfully downloaded!</p>,
+      text: <p>{i18n.translate("odfe.reports.details.reportSuccessfullyDownloaded", { defaultMessage:"Report successfully downloaded!" })}</p>,
       id: 'onDemandDownloadSuccessToast',
     };
     setToasts(toasts.concat(successToast));
@@ -219,13 +220,12 @@ export function ReportDetails(props) {
         handleReportDetails(getReportDetailsData(response));
         props.setBreadcrumbs([
           {
-            text: 'Reporting',
+            text: i18n.translate('odfe.reports.details.breadcrumb.reporting', { defaultMessage:'Reporting' }),
             href: '#',
           },
           {
             text:
-              'Report details: ' +
-              response.report_definition.report_params.report_name,
+              i18n.translate('odfe.reports.details.breadcrumb.reportDetails', { defaultMessage:'Report details: {name}', values: {name:response.report_definition.report_params.report_name} }),
           },
         ]);
       })
@@ -267,13 +267,13 @@ export function ReportDetails(props) {
   };
 
   const showLoadingModal = showLoading ?
-    <GenerateReportLoadingModal setShowLoading={setShowLoading} /> : null; 
+    <GenerateReportLoadingModal setShowLoading={setShowLoading} /> : null;
 
   return (
     <EuiPage>
       <EuiPageBody>
         <EuiTitle size="l">
-          <h1>Report details</h1>
+          <h1>{i18n.translate("odfe.reports.details.title", { defaultMessage:"Report details" })}</h1>
         </EuiTitle>
         <EuiSpacer size="m" />
         <EuiPageContent panelPaddingSize={'l'}>
@@ -290,56 +290,56 @@ export function ReportDetails(props) {
           </EuiPageHeader>
           <EuiHorizontalRule />
           <EuiTitle>
-            <h3>Report Settings</h3>
+            <h3>{i18n.translate("odfe.reports.details.reportSettings", { defaultMessage:"Report Settings" })}</h3>
           </EuiTitle>
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Name'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.details.reportSettings.name', { defaultMessage:'Name' })}
               reportDetailsComponentContent={reportDetails['reportName']}
             />
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Description'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.details.reportSettings.description', { defaultMessage:'Description' })}
               reportDetailsComponentContent={reportDetails['description']}
             />
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Created'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.details.reportSettings.created', { defaultMessage:'Created' })}
               reportDetailsComponentContent={reportDetails['created']}
             />
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Last updated'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.details.reportSettings.lastUpdated', { defaultMessage:'Last updated' })}
               reportDetailsComponentContent={reportDetails['lastUpdated']}
             />
           </EuiFlexGroup>
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Source'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.details.reportSettings.source', { defaultMessage:'Source' })}
               reportDetailsComponentContent={sourceURL(reportDetails)}
             />
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Time period'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.details.reportSettings.timePeriod', { defaultMessage:'Time period' })}
               reportDetailsComponentContent={reportDetails.time_period}
             />
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'File format'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.details.reportSettings.fileFormat', { defaultMessage:'File format' })}
               reportDetailsComponentContent={fileFormatDownload(reportDetails)}
             />
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'State'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.details.reportSettings.state', { defaultMessage:'State' })}
               reportDetailsComponentContent={reportDetails['state']}
             />
           </EuiFlexGroup>
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Report header'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.details.reportSettings.reportHeader', { defaultMessage:'Report header' })}
               reportDetailsComponentContent={trimAndRenderAsText(
                 reportDetails['reportHeader']
               )}
             />
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Report footer'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.details.reportSettings.reportFooter', { defaultMessage:'Report footer' })}
               reportDetailsComponentContent={trimAndRenderAsText(
                 reportDetails['reportFooter']
               )}
@@ -349,20 +349,20 @@ export function ReportDetails(props) {
           </EuiFlexGroup>
           <EuiSpacer />
           <EuiTitle>
-            <h3>Report trigger</h3>
+            <h3>{i18n.translate('odfe.reports.details.reportTrigger', { defaultMessage:'Report trigger' })}</h3>
           </EuiTitle>
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Report type'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.details.reportTrigger.reportType', { defaultMessage:'Report type' })}
               reportDetailsComponentContent={reportDetails['triggerType']}
             />
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Schedule type'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.details.reportTrigger.scheduleType', { defaultMessage:'Schedule type' })}
               reportDetailsComponentContent={reportDetails['scheduleType']}
             />
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Schedule details'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.details.reportTrigger.scheduleDetails', { defaultMessage:'Schedule details' })}
               reportDetailsComponentContent={reportDetails['scheduleDetails']}
             />
             <ReportDetailsComponent />

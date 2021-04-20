@@ -38,6 +38,7 @@ import { Main } from './main/main';
 import { ReportDetails } from './main/report_details/report_details';
 import { ReportDefinitionDetails } from './main/report_definition_details/report_definition_details';
 import { EditReportDefinition } from './report_definitions/edit/edit_report_definition';
+import { i18n } from '@kbn/i18n';
 
 export interface CoreInterface {
   http: CoreStart['http'];
@@ -82,7 +83,7 @@ export const OpendistroKibanaReportsApp = ({
                     path="/report_details/:reportId"
                     render={(props) => (
                       <ReportDetails
-                        title="Report Details"
+                        title={i18n.translate("odfe.reports.app.reportDetails", {defaultMessage: "Report Details"})}
                         httpClient={http}
                         {...props}
                         setBreadcrumbs={chrome.setBreadcrumbs}
@@ -93,7 +94,7 @@ export const OpendistroKibanaReportsApp = ({
                     path="/report_definition_details/:reportDefinitionId"
                     render={(props) => (
                       <ReportDefinitionDetails
-                        title="Report Definition Details"
+                        title={i18n.translate("odfe.reports.app.reportDefinitionDetails", {defaultMessage: "Report Definition Details"})}
                         httpClient={http}
                         {...props}
                         setBreadcrumbs={chrome.setBreadcrumbs}
@@ -104,7 +105,7 @@ export const OpendistroKibanaReportsApp = ({
                     path="/create"
                     render={(props) => (
                       <CreateReport
-                        title="Create Report"
+                        title={i18n.translate("odfe.reports.app.createReport", {defaultMessage: "Create Report"})}
                         httpClient={http}
                         {...props}
                         setBreadcrumbs={chrome.setBreadcrumbs}
@@ -115,7 +116,7 @@ export const OpendistroKibanaReportsApp = ({
                     path="/edit/:reportDefinitionId"
                     render={(props) => (
                       <EditReportDefinition
-                        title="Edit Report Definition"
+                        title={i18n.translate("odfe.reports.app.editReportDefinition", {defaultMessage: "Edit Report Definition"})}
                         httpClient={http}
                         {...props}
                         setBreadcrumbs={chrome.setBreadcrumbs}
@@ -126,7 +127,7 @@ export const OpendistroKibanaReportsApp = ({
                     path="/"
                     render={(props) => (
                       <Main
-                        title="Reporting Homepage"
+                        title={i18n.translate("odfe.reports.app.reportingHomepage", {defaultMessage: "Reporting Homepage"})}
                         httpClient={http}
                         {...props}
                         setBreadcrumbs={chrome.setBreadcrumbs}

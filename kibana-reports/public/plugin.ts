@@ -24,6 +24,7 @@ import {
   OpendistroKibanaReportsPluginStart,
   AppPluginStartDependencies,
 } from './types';
+import { i18n } from '@kbn/i18n';
 import './components/context_menu/context_menu';
 import { PLUGIN_NAME } from '../common';
 
@@ -37,10 +38,10 @@ export class OpendistroKibanaReportsPlugin
     // Register an application into the side navigation menu
     core.application.register({
       id: PLUGIN_NAME,
-      title: 'Reporting',
+      title: i18n.translate('odfe.reports.pluginName', { defaultMessage:'Reporting' }),
       category: {
         id: 'odfe',
-        label: 'Open Distro for Elasticsearch',
+        label: i18n.translate('odfe.reports.categoryName', { defaultMessage:'Open Distro for Elasticsearch' }),
         order: 2000,
       },
       order: 2000,

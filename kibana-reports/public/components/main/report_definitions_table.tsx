@@ -22,22 +22,23 @@ import {
   EuiText,
   EuiIcon,
 } from '@elastic/eui';
+import { i18n } from '@kbn/i18n';
 import { humanReadableDate } from './main_utils';
 
 const emptyMessageReportDefinitions = (
   <EuiEmptyPrompt
-    title={<h3>No report definitions to display</h3>}
+    title={<h3>{i18n.translate('odfe.reports.reportDefinitionsTable.emptyMessageReports.noReportDefinitions', { defaultMessage: 'No report definitions to display' })}</h3>}
     titleSize="xs"
     body={
       <div>
-        <EuiText>Create a new report definition to get started</EuiText>
+        <EuiText>{i18n.translate('odfe.reports.reportDefinitionsTable.emptyMessageReports.createANewDefinition', { defaultMessage: 'Create a new report definition to get started' })}</EuiText>
         <EuiText>
-          To learn more, see{' '}
+          {i18n.translate('odfe.reports.reportDefinitionsTable.emptyMessageReports.toLearnMore', { defaultMessage: 'To learn more, see' })}{' '}
           <EuiLink
             href="https://opendistro.github.io/for-elasticsearch-docs/docs/kibana/reporting/"
             target="_blank"
           >
-            Get started with Kibana reporting <EuiIcon type="popout" />
+            {i18n.translate('odfe.reports.reportDefinitionsTable.emptyMessageReports.getStarted', { defaultMessage: 'Get started with Kibana reporting  Kibana reporting' })} <EuiIcon type="popout" />
           </EuiLink>
         </EuiText>
       </div>
@@ -49,7 +50,7 @@ const emptyMessageReportDefinitions = (
             window.location.assign('opendistro_kibana_reports#/create');
           }}
         >
-          Create report definition
+          {i18n.translate('odfe.reports.reportDefinitionsTable.emptyMessageReports.createReportDefinition', { defaultMessage: 'Create report definition' })}
         </EuiButton>
       </div>
     }
@@ -99,7 +100,7 @@ export function ReportDefinitions(props) {
   const reportDefinitionsColumns = [
     {
       field: 'reportName',
-      name: 'Name',
+      name: i18n.translate('odfe.reports.reportDefinitionsTable.columns.name', { defaultMessage: 'Name' }),
       render: (name) => (
         <EuiLink
           onClick={() => navigateToDefinitionDetails(name)}
@@ -111,7 +112,7 @@ export function ReportDefinitions(props) {
     },
     {
       field: 'source',
-      name: 'Source',
+      name: i18n.translate('odfe.reports.reportDefinitionsTable.columns.source', { defaultMessage: 'Source' }),
       render: (value, item) => (
         <EuiLink href={item.baseUrl} target="_blank">
           {value}
@@ -120,19 +121,19 @@ export function ReportDefinitions(props) {
     },
     {
       field: 'type',
-      name: 'Type',
+      name: i18n.translate('odfe.reports.reportDefinitionsTable.columns.type', { defaultMessage: 'Type' }),
       sortable: true,
       truncateText: false,
     },
     {
       field: 'details',
-      name: 'Schedule details',
+      name: i18n.translate('odfe.reports.reportDefinitionsTable.columns.scheduleDetails', { defaultMessage: 'Schedule details' }),
       sortable: false,
       truncateText: true,
     },
     {
       field: 'lastUpdated',
-      name: 'Last Updated',
+      name: i18n.translate('odfe.reports.reportDefinitionsTable.columns.lastUpdated', { defaultMessage: 'Last Updated' }),
       render: (date) => {
         let readable = humanReadableDate(date);
         return <EuiText size="s">{readable}</EuiText>;
@@ -140,7 +141,7 @@ export function ReportDefinitions(props) {
     },
     {
       field: 'status',
-      name: 'Status',
+      name: i18n.translate('odfe.reports.reportDefinitionsTable.columns.status', { defaultMessage: 'Status' }),
       sortable: true,
       truncateText: false,
     },
@@ -149,7 +150,7 @@ export function ReportDefinitions(props) {
   const displayMessage =
     reportDefinitionsTableContent.length === 0
       ? emptyMessageReportDefinitions
-      : '0 report definitions match the search criteria. Search again.';
+      : i18n.translate('odfe.reports.reportDefinitionsTable.emptyMessageReports.noDefinitionsFound', { defaultMessage: '0 report definitions match the search criteria. Search again.' });
 
   return (
     <div>
