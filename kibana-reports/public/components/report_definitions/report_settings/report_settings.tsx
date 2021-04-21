@@ -597,23 +597,11 @@ export function ReportSettings(props: ReportSettingProps) {
       .catch((error) => {
         console.log('error when fetching saved searches:', error);
       });
-
-      /**
-       *   fetchNotebooks = () => {
-    return this.props.http
-      .get(`${API_PREFIX}/`)
-      .then((res) => this.setState(res))
-      .catch((err) => {
-        console.error('Issue in fetching the notebooks', err.body.message);
-      });
-  };
-       */
     
     await httpClientProps
       .get('/api/notebooks/')
       .then(async (response: any) => {
-        console.log('response is', response);
-        let notebooksOptions = getNotebooksOptions(response['hits']['hits']);
+        let notebooksOptions = getNotebooksOptions(response.data);
         reportSourceOptions.notebooks = notebooksOptions;
         await handleNotebooks(notebooksOptions);
       })

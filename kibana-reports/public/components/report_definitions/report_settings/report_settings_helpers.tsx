@@ -164,13 +164,13 @@ export const getSavedSearchOptions = (data: string | any[]) => {
   return options;
 };
 
-export const getNotebooksOptions = (data: string | any[]) => {
+export const getNotebooksOptions = (data: any) => {
   let index;
   let options = [];
   for (index = 0; index < data.length; ++index) {
     let entry = {
-      value: data[index]['_id'],
-      label: data[index]['_source']['notebook']['name']
+      value: data[index]['id'],
+      label: data[index]['path']
     }
     options.push(entry);
   }
