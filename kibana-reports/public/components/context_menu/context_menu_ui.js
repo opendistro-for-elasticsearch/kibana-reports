@@ -226,7 +226,7 @@ export const reportGenerationSuccess = () => {
   return `
   <div class="euiToast euiToast--success" id="reportSuccessToast">
     <p class="euiScreenReaderOnly">A new notification appears</p>
-    <div class="euiToastHeader"
+    <div class="euiToastHeader euiToastHeader--withBody"
     aria-label="Notification" data-test-subj="euiToastHeader">
       <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
       class="euiIcon euiIcon--medium euiToastHeader__icon" focusable="false"
@@ -242,7 +242,7 @@ export const reportGenerationSuccess = () => {
         <path d="M7.293 8L3.146 3.854a.5.5 0 11.708-.708L8 7.293l4.146-4.147a.5.5 0 01.708.708L8.707 8l4.147 4.146a.5.5 0 01-.708.708L8 8.707l-4.146 4.147a.5.5 0 01-.708-.708L7.293 8z"></path>
       </svg>
     </button>
-    <div class="euiText euiText--small euiToastBody" hidden>
+    <div class="euiText euiText--small euiToastBody">
       <p>View 
         <a class="euiLink euiLink--primary"
         href="opendistro_kibana_reports#/" rel="noreferrer">Reports</a>.</p>
