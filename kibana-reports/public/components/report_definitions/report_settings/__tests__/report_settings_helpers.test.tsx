@@ -166,12 +166,8 @@ describe('report_settings_helpers tests', () => {
   test('getNotebooksOptions', () => {
     const mockData = [
       {
-        _id: 'abcdefgh1234',
-        _source: {
-          notebook: {
-            name: 'Mock notebook name'
-          }
-        }
+        id: 'abcdefgh1234',
+        path: 'Mock notebook name'
       }
     ];
     const options = getNotebooksOptions(mockData);
