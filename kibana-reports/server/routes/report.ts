@@ -133,13 +133,12 @@ export default function (router: IRouter) {
           }
         );
         // convert report to use UI model
-        const report = backendToUiReport(esResp.reportInstance, basePath);
+        const report = backendToUiReport(esResp.reportInstance);
         // generate report
         const reportData = await createReport(
           request,
           context,
           report,
-          accessInfo,
           savedReportId
         );
         addToMetric('report', 'download', 'count', report);
@@ -199,13 +198,12 @@ export default function (router: IRouter) {
         );
         const reportId = esResp.reportInstance.id;
         // convert report to use UI model
-        const report = backendToUiReport(esResp.reportInstance, basePath);
+        const report = backendToUiReport(esResp.reportInstance);
         // generate report
         const reportData = await createReport(
           request,
           context,
           report,
-          accessInfo,
           reportId
         );
         addToMetric('report', 'create_from_definition', 'count', report);
@@ -262,10 +260,7 @@ export default function (router: IRouter) {
           }
         );
 
-        const reportsList = backendToUiReportsList(
-          esResp.reportInstanceList,
-          basePath
-        );
+        const reportsList = backendToUiReportsList(esResp.reportInstanceList);
 
         return response.ok({
           body: {
@@ -312,7 +307,7 @@ export default function (router: IRouter) {
           }
         );
 
-        const report = backendToUiReport(esResp.reportInstance, basePath);
+        const report = backendToUiReport(esResp.reportInstance);
 
         return response.ok({
           body: report,
