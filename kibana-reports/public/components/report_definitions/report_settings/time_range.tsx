@@ -44,7 +44,7 @@ export function TimeRangeSelect(props) {
 
   const addInvalidTimeRangeToastHandler = () => {
     const errorToast = {
-      title: i18n.translate('odfe.reports.timeRange.invalidTimeRange', { defaultMessage:'Invalid time range selected' }),
+      title: i18n.translate('odfe.reports.timeRange.invalidTimeRange', { defaultMessage:'Invalid time range selected.' }),
       color: 'danger',
       iconType: 'alert',
       id: 'timeRangeErrorToast',
@@ -201,7 +201,7 @@ export function TimeRangeSelect(props) {
           label={i18n.translate('odfe.reports.timeRange.label.timeRange', { defaultMessage:'Time range' })}
           helpText={i18n.translate('odfe.reports.timeRange.help.timeRange', { defaultMessage:'Time range is relative to the report creation date on the report trigger.' })}
           isInvalid={showTimeRangeError}
-          error={  i18n.translate('odfe.reports.timeRange.invalidTimeRange', { defaultMessage:'Invalid time range selected' }) }
+          error={  i18n.translate('odfe.reports.timeRange.invalidTimeRange', { defaultMessage:'Invalid time range selected.' }) }
         >
           <EuiSuperDatePicker
             isDisabled={false}

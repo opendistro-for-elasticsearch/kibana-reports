@@ -47,11 +47,10 @@ const emptyMessageReports = (
     body={
       <div>
         <EuiText>
-          {i18n.translate('odfe.reports.reportsTable.emptyMessageReports.createAReportDefinition', { defaultMessage: 'Create a report definition, or share/download a report from a dashboard, saved search or visualization.' })}<br/>
+          {i18n.translate('odfe.reports.reportsTable.emptyMessageReports.createAReportDefinition', { defaultMessage: 'Create a report definition, or share/download a report from a dashboard, saved search or visualization.' })}
         </EuiText>
         <EuiText>
-          {i18n.translate('odfe.reports.reportsTable.emptyMessageReports.toLearnMore', { defaultMessage: 'To learn more, see' })}<br/>
-          {' '}
+          {i18n.translate('odfe.reports.reportsTable.emptyMessageReports.toLearnMore', { defaultMessage: 'To learn more, see' })}{' '}
           <EuiLink
             href="https://opendistro.github.io/for-elasticsearch-docs/docs/kibana/reporting/"
             target="_blank"

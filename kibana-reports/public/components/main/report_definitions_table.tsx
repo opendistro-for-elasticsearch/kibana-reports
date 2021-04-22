@@ -38,7 +38,7 @@ const emptyMessageReportDefinitions = (
             href="https://opendistro.github.io/for-elasticsearch-docs/docs/kibana/reporting/"
             target="_blank"
           >
-            {i18n.translate('odfe.reports.reportDefinitionsTable.emptyMessageReports.getStarted', { defaultMessage: 'Get started with Kibana reporting  Kibana reporting' })} <EuiIcon type="popout" />
+            {i18n.translate('odfe.reports.reportDefinitionsTable.emptyMessageReports.getStarted', { defaultMessage: 'Get started with Kibana reporting' })}<EuiIcon type="popout" />
           </EuiLink>
         </EuiText>
       </div>

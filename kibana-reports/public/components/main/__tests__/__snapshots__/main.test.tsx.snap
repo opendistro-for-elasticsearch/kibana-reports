@@ -431,7 +431,7 @@ exports[`<Main /> panel render component 1`] = `
                                   rel="noopener noreferrer"
                                   target="_blank"
                                 >
-                                  Get started with Kibana reporting 
+                                  Get started with Kibana reporting
                                   <svg
                                     aria-hidden="true"
                                     class="euiIcon euiIcon--medium euiIcon-isLoading"
@@ -831,7 +831,7 @@ exports[`<Main /> panel render component 1`] = `
                                     rel="noopener noreferrer"
                                     target="_blank"
                                   >
-                                    Get started with Kibana reporting 
+                                    Get started with Kibana reporting
                                     <svg
                                       aria-hidden="true"
                                       class="euiIcon euiIcon--medium euiIcon-isLoading"
@@ -1343,7 +1343,7 @@ exports[`<Main /> panel render component after create success 1`] = `
                                   rel="noopener noreferrer"
                                   target="_blank"
                                 >
-                                  Get started with Kibana reporting 
+                                  Get started with Kibana reporting
                                   <svg
                                     aria-hidden="true"
                                     class="euiIcon euiIcon--medium"
@@ -1760,7 +1760,7 @@ exports[`<Main /> panel render component after create success 1`] = `
                                     rel="noopener noreferrer"
                                     target="_blank"
                                   >
-                                    Get started with Kibana reporting 
+                                    Get started with Kibana reporting
                                     <svg
                                       aria-hidden="true"
                                       class="euiIcon euiIcon--medium"
@@ -2325,7 +2325,7 @@ exports[`<Main /> panel render component after delete success 1`] = `
                                   rel="noopener noreferrer"
                                   target="_blank"
                                 >
-                                  Get started with Kibana reporting 
+                                  Get started with Kibana reporting
                                   <svg
                                     aria-hidden="true"
                                     class="euiIcon euiIcon--medium"
@@ -2742,7 +2742,7 @@ exports[`<Main /> panel render component after delete success 1`] = `
                                     rel="noopener noreferrer"
                                     target="_blank"
                                   >
-                                    Get started with Kibana reporting 
+                                    Get started with Kibana reporting
                                     <svg
                                       aria-hidden="true"
                                       class="euiIcon euiIcon--medium"
@@ -3316,7 +3316,7 @@ exports[`<Main /> panel render component after edit success 1`] = `
                                   rel="noopener noreferrer"
                                   target="_blank"
                                 >
-                                  Get started with Kibana reporting 
+                                  Get started with Kibana reporting
                                   <svg
                                     aria-hidden="true"
                                     class="euiIcon euiIcon--medium"
@@ -3733,7 +3733,7 @@ exports[`<Main /> panel render component after edit success 1`] = `
                                     rel="noopener noreferrer"
                                     target="_blank"
                                   >
-                                    Get started with Kibana reporting 
+                                    Get started with Kibana reporting
                                     <svg
                                       aria-hidden="true"
                                       class="euiIcon euiIcon--medium"

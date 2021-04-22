@@ -909,7 +909,7 @@ exports[`<ReportDefinitions /> panel render empty table 1`] = `
                                 rel="noopener noreferrer"
                                 target="_blank"
                               >
-                                Get started with Kibana reporting 
+                                Get started with Kibana reporting
                                 <svg
                                   aria-hidden="true"
                                   class="euiIcon euiIcon--medium euiIcon-isLoading"

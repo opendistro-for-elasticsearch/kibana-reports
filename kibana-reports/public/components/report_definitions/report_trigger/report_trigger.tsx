@@ -658,7 +658,7 @@ export function ReportTrigger(props: ReportTriggerProps) {
       </EuiPageHeader>
       <EuiHorizontalRule />
       <EuiPageContentBody>
-        <EuiFormRow label={i18n.translate('odfe.reports.reportTrigger.form.triggerType', { defaultMessage: 'trigger type' })} id="reportDefinitionTriggerTypes">
+        <EuiFormRow label={i18n.translate('odfe.reports.reportTrigger.form.triggerType', { defaultMessage: 'Trigger type' })} id="reportDefinitionTriggerTypes">
           <EuiRadioGroup
             options={TRIGGER_TYPE_OPTIONS}
             idSelected={reportTriggerType}
