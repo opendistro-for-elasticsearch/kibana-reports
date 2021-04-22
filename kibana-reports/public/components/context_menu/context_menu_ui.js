@@ -26,7 +26,7 @@ export const popoverMenu = (savedObjectAvailable) => {
     ? 'euiContextMenuItem'
     : 'euiContextMenuItem euiContextMenuItem-isDisabled';
   const button = savedObjectAvailable ? 'button' : 'button disabled';
-  const popoverHeight = savedObjectAvailable ? '213px' : '198px';
+  const popoverHeight = savedObjectAvailable ? '395px' : '380px';
   const message = savedObjectAvailable
     ? `Files can take a minute or two to generate depending on the size of your source data.`
     : `Save this Visualization/Dashboard to enable PDF/PNG reports.`;
@@ -73,12 +73,12 @@ export const popoverMenu = (savedObjectAvailable) => {
                          </button>
                       </div>
                    </div>
-                   <div class="euiPopoverTitle" hidden>
+                   <div class="euiPopoverTitle">
                     <span class="euiContextMenu__itemLayout">
                       Schedule and share
                     </span>
                   </div>
-                  <div hidden>
+                  <div>
                     <${button} class="${buttonClass}" type="button" data-test-subj="downloadPanel-GeneratePDF" id="createReportDefinition">
                       <span class="euiContextMenu__itemLayout">
                         <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon" focusable="false" role="img" aria-hidden="true"><path d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z" fill-rule="evenodd"></path></svg>
@@ -87,12 +87,12 @@ export const popoverMenu = (savedObjectAvailable) => {
                       </span>
                     </button>
                   </div>
-                  <div class="euiPopoverTitle" hidden>
+                  <div class="euiPopoverTitle">
                     <span class="euiContextMenu__itemLayout">
                       View
                     </span>
                   </div>
-                  <div hidden>
+                  <div>
                     <button class="euiContextMenuItem" type="button" data-test-subj="downloadPanel-GeneratePDF" id="viewReports">
                       <span class="euiContextMenu__itemLayout">
                         <svg id="reports-icon" width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon">
@@ -120,7 +120,7 @@ export const popoverMenuDiscover = (savedObjectAvailable) => {
     ? 'euiContextMenuItem'
     : 'euiContextMenuItem euiContextMenuItem-isDisabled';
   const button = savedObjectAvailable ? 'button' : 'button disabled';
-  const popoverHeight = savedObjectAvailable ? '171px' : '141px';
+  const popoverHeight = savedObjectAvailable ? '354px' : '322px';
   const message = savedObjectAvailable
     ? `Files can take a minute or two to generate depending on the size of your source data.`
     : `Save this search to enable CSV reports.`;
@@ -159,12 +159,12 @@ export const popoverMenuDiscover = (savedObjectAvailable) => {
                       </span>
                     </button>
                   </div>
-                   <div hidden class="euiPopoverTitle">
+                   <div class="euiPopoverTitle">
                     <span class="euiContextMenu__itemLayout">
                       Schedule and share
                     </span>
                   </div>
-                  <div hidden>
+                  <div>
                     <${button} class="${buttonClass}" type="button" data-test-subj="downloadPanel-GeneratePDF" id="createReportDefinition">
                       <span class="euiContextMenu__itemLayout">
                         <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon" focusable="false" role="img" aria-hidden="true"><path d="M14 4v-.994C14 2.45 13.55 2 12.994 2H11v1h-1V2H6v1H5V2H3.006C2.45 2 2 2.45 2 3.006v9.988C2 13.55 2.45 14 3.006 14h9.988C13.55 14 14 13.55 14 12.994V5H2V4h12zm-3-3h1.994C14.102 1 15 1.897 15 3.006v9.988A2.005 2.005 0 0112.994 15H3.006A2.005 2.005 0 011 12.994V3.006C1 1.898 1.897 1 3.006 1H5V0h1v1h4V0h1v1zM4 7h2v1H4V7zm3 0h2v1H7V7zm3 0h2v1h-2V7zM4 9h2v1H4V9zm3 0h2v1H7V9zm3 0h2v1h-2V9zm-6 2h2v1H4v-1zm3 0h2v1H7v-1zm3 0h2v1h-2v-1z" fill-rule="evenodd"></path></svg>
@@ -173,12 +173,12 @@ export const popoverMenuDiscover = (savedObjectAvailable) => {
                       </span>
                     </button>
                   </div>
-                  <div class="euiPopoverTitle" hidden>
+                  <div class="euiPopoverTitle">
                     <span class="euiContextMenu__itemLayout">
                       View
                     </span>
                   </div>
-                  <div hidden>
+                  <div>
                     <button class="euiContextMenuItem" type="button" data-test-subj="downloadPanel-GeneratePDF" id="viewReports">
                       <span class="euiContextMenu__itemLayout">
                         <svg id="reports-icon" width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="euiIcon euiIcon--medium euiIcon-isLoaded euiContextMenu__icon">
@@ -226,7 +226,7 @@ export const reportGenerationSuccess = () => {
   return `
   <div class="euiToast euiToast--success" id="reportSuccessToast">
     <p class="euiScreenReaderOnly">A new notification appears</p>
-    <div class="euiToastHeader"
+    <div class="euiToastHeader euiToastHeader--withBody"
     aria-label="Notification" data-test-subj="euiToastHeader">
       <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"
       class="euiIcon euiIcon--medium euiToastHeader__icon" focusable="false"
@@ -242,7 +242,7 @@ export const reportGenerationSuccess = () => {
         <path d="M7.293 8L3.146 3.854a.5.5 0 11.708-.708L8 7.293l4.146-4.147a.5.5 0 01.708.708L8.707 8l4.147 4.146a.5.5 0 01-.708.708L8 8.707l-4.146 4.147a.5.5 0 01-.708-.708L7.293 8z"></path>
       </svg>
     </button>
-    <div class="euiText euiText--small euiToastBody" hidden>
+    <div class="euiText euiText--small euiToastBody">
       <p>View 
         <a class="euiLink euiLink--primary"
         href="opendistro_kibana_reports#/" rel="noreferrer">Reports</a>.</p>

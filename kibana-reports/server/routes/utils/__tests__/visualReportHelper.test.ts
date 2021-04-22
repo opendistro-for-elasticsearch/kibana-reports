@@ -62,7 +62,7 @@ const input = {
 const queryUrl =
   'https://demo.elastic.co/app/kibana#/dashboard/welcome_dashboard';
 
-describe.skip('test create visual report', () => {
+describe('test create visual report', () => {
   test('create report with valid input', async () => {
     // Check if the assumption of input is up-to-date
     reportSchema.validate(input);
