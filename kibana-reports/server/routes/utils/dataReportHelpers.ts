@@ -223,6 +223,8 @@ function traverse(data, keys, result = {}) {
  */
 function sanitize(doc: any) {
   for (const field in doc) {
+    if (doc[field] == null)
+      continue
     if (
       doc[field].toString().startsWith('+') ||
       doc[field].toString().startsWith('-') ||
