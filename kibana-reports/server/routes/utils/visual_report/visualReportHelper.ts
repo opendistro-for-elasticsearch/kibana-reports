@@ -129,10 +129,10 @@ export const createVisualReport = async (
   });
 
   let buffer: Buffer;
-  // remove top nav bar
+  // remove unwanted elements
   await page.evaluate(
     /* istanbul ignore next */
-    () => {
+    (reportSource, REPORT_TYPE) => {
       // remove buttons
       document
         .querySelectorAll("[class^='euiButton']")
@@ -141,8 +141,17 @@ export const createVisualReport = async (
       document
         .querySelectorAll("[class^='euiHeader']")
         .forEach((e) => e.remove());
+      // remove visualization editor
+      if (reportSource === REPORT_TYPE.visualization) {
+        document
+          .querySelector('[data-test-subj="splitPanelResizer"]')
+          ?.remove();
+        document.querySelector('.visEditor__collapsibleSidebar')?.remove();
+      }
       document.body.style.paddingTop = '0px';
-    }
+    },
+    reportSource,
+    REPORT_TYPE
   );
   // force wait for any resize to load after the above DOM modification
   await page.waitFor(1000);
