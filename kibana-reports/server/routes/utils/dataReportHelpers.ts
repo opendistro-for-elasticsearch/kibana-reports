@@ -17,8 +17,7 @@ import { DATA_REPORT_CONFIG } from './constants';
 
 import esb from 'elastic-builder';
 import moment from 'moment';
-import { parseAsync,  transforms as Transforms } from 'json2csv';
-import _ from 'lodash';
+import converter from 'json-2-csv';
 
 export var metaData = {
   saved_search_id: <string>null,
@@ -169,7 +168,7 @@ export const getEsData = (arrayHits, report, params) => {
       }
       delete data['fields'];
       if (report._source.fields_exist === true) {
-        let result = traverse(data._source, report._source.selectedFields);
+        let result = traverse(data, report._source.selectedFields);
         hits.push(params.excel ? sanitize(result) : result);
       } else {
         hits.push(params.excel ? sanitize(data) : data);
@@ -186,16 +185,34 @@ export const getEsData = (arrayHits, report, params) => {
 
 //Convert the data to Csv format
 export const convertToCSV = async (dataset) => {
-  const transforms = [Transforms.flatten()];
-  return parseAsync(dataset[0], { transforms });
+  let convertedData: any = [];
+  const options = {
+    delimiter: { field: ',', eol: '\n' },
+    emptyFieldValue: ' ',
+  };
+  await converter.json2csvAsync(dataset[0], options).then((csv) => {
+    convertedData = csv;
+  });
+  return convertedData;
 };
 
 //Return only the selected fields
 function traverse(data, keys, result = {}) {
-  keys.forEach((key) => {
-    const value = _.get(data, key, undefined);
-    if (value !== undefined) result[key] = value;
-  });
+  for (let k of Object.keys(data)) {
+    if (keys.includes(k)) {
+      result = Object.assign({}, result, {
+        [k]: data[k],
+      });
+      continue;
+    }
+    if (
+      data[k] &&
+      typeof data[k] === 'object' &&
+      Object.keys(data[k]).length > 0
+    ) {
+      result = traverse(data[k], keys, result);
+    }
+  }
   return result;
 }
 
