@@ -235,20 +235,22 @@ describe('test create saved search report', () => {
   test('create report for data set with nested fields', async () => {
     const hits = [
       hit({
-        a: { a: 'a1' },
-        'a.a': 'a2',
-        'a.b': { c: 'c1' },
-        'a.c': { d: 'd', e: 'e' },
+        'geoip.country_iso_code': 'GB',
+        'geoip.location': {"lon": -0.1, "lat": 51.5 },
       }),
-      hit({ a: { 'b.c': 'c2' } })
+      hit({
+        'geoip.country_iso_code': 'US',
+        'geoip.city_name': 'New York',
+        'geoip.location': { "lon": -74, "lat": 40.8 },
+      }),
     ];
-    const client = mockEsClient(hits, '"a.a", "a.b.c", "a.c"');
+    const client = mockEsClient(hits, '"geoip.country_iso_code", "geoip.city_name", "geoip.location"');
     const { dataUrl } = await createSavedSearchReport(input, client);
 
     expect(dataUrl).toEqual(
-      'a.a,a.b.c,a.c.d,a.c.e\n' +
-      'a2,c1,d,e\n' +
-      ' ,c2, , '
+      'geoip.country_iso_code,geoip.location.lon,geoip.location.lat,geoip.city_name\n' +
+      'GB,-0.1,51.5, \n' +
+      'US,-74,40.8,New York'
     );
   }, 20000);
 
