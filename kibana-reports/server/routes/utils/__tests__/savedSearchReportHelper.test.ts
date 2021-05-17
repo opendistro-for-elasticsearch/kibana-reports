@@ -236,21 +236,24 @@ describe('test create saved search report', () => {
     const hits = [
       hit({
         'geoip.country_iso_code': 'GB',
-        'geoip.location': {"lon": -0.1, "lat": 51.5 },
+        'geoip.location': { lon: -0.1, lat: 51.5 },
       }),
       hit({
         'geoip.country_iso_code': 'US',
         'geoip.city_name': 'New York',
-        'geoip.location': { "lon": -74, "lat": 40.8 },
+        'geoip.location': { lon: -74, lat: 40.8 },
       }),
     ];
-    const client = mockEsClient(hits, '"geoip.country_iso_code", "geoip.city_name", "geoip.location"');
+    const client = mockEsClient(
+      hits,
+      '"geoip.country_iso_code", "geoip.city_name", "geoip.location"'
+    );
     const { dataUrl } = await createSavedSearchReport(input, client);
 
     expect(dataUrl).toEqual(
       'geoip.country_iso_code,geoip.location.lon,geoip.location.lat,geoip.city_name\n' +
-      'GB,-0.1,51.5, \n' +
-      'US,-74,40.8,New York'
+        'GB,-0.1,51.5, \n' +
+        'US,-74,40.8,New York'
     );
   }, 20000);
 
