@@ -232,6 +232,26 @@ describe('test create saved search report', () => {
     );
   }, 20000);
 
+  test('create report for data set with nested fields', async () => {
+    const hits = [
+      hit({
+        a: { a: 'a1' },
+        'a.a': 'a2',
+        'a.b': { c: 'c1' },
+        'a.c': { d: 'd', e: 'e' },
+      }),
+      hit({ a: { 'b.c': 'c2' } })
+    ];
+    const client = mockEsClient(hits, '"a.a", "a.b.c", "a.c"');
+    const { dataUrl } = await createSavedSearchReport(input, client);
+
+    expect(dataUrl).toEqual(
+      'a.a,a.b.c,a.c.d,a.c.e\n' +
+      'a2,c1,d,e\n' +
+      ' ,c2, , '
+    );
+  }, 20000);
+
   test('create report by sanitizing data set for Excel', async () => {
     const hits = [
       hit({ category: 'c1', customer_gender: '=Male' }),
@@ -281,7 +301,10 @@ describe('test create saved search report', () => {
 /**
  * Mock Elasticsearch client and return different mock objects based on endpoint and parameters.
  */
-function mockEsClient(mockHits: Array<{ _source: any }>) {
+function mockEsClient(
+  mockHits: Array<{ _source: any }>,
+  columns = '"category", "customer_gender"'
+) {
   let call = 0;
   const client = jest.fn();
   client.callAsInternalUser = jest
@@ -292,7 +315,7 @@ function mockEsClient(mockHits: Array<{ _source: any }>) {
           return {
             _source: params.id.startsWith('index-pattern:')
               ? mockIndexPattern()
-              : mockSavedSearch(),
+              : mockSavedSearch(columns),
           };
         case 'indices.getSettings':
           return mockIndexSettings();
@@ -326,9 +349,9 @@ function mockEsClient(mockHits: Array<{ _source: any }>) {
 }
 
 /**
- * Mock a saved search for kibana_sample_data_ecommerce with 2 selected fields: category and customer_gender.
+ * Mock a saved search for kibana_sample_data_ecommerce with 2 default selected fields: category and customer_gender.
  */
-function mockSavedSearch() {
+function mockSavedSearch(columns = '"category", "customer_gender"') {
   return JSON.parse(`
   {
     "type": "search",
@@ -337,10 +360,7 @@ function mockSavedSearch() {
       "title": "Show category and gender",
       "description": "",
       "hits": 0,
-      "columns": [
-        "category",
-        "customer_gender"
-      ],
+      "columns": [ ${columns} ],
       "sort": [],
       "version": 1,
       "kibanaSavedObjectMeta": {
