@@ -197,11 +197,35 @@ export const convertToCSV = async (dataset) => {
   return convertedData;
 };
 
+function flattenHits(hits, result = {}, prefix = '') {
+  for (const [key, value] of Object.entries(hits)) {
+    if (!hits.hasOwnProperty(key)) continue;
+    if (
+      value != null &&
+      typeof value === 'object' &&
+      !Array.isArray(value) &&
+      Object.keys(value).length > 0
+    ) {
+      flattenHits(value, result, prefix + key + '.');
+    } else {
+      result[prefix + key] = value;
+    }
+  }
+  return result;
+}
+
 //Return only the selected fields
 function traverse(data, keys, result = {}) {
+  data = flattenHits(data);
+  const sourceKeys = Object.keys(data);
   keys.forEach((key) => {
     const value = _.get(data, key, undefined);
-    if (value !== undefined) _.set(result, key, value);
+    if (value !== undefined) result[key] = value;
+    else {
+      Object.keys(data)
+        .filter((sourceKey) => sourceKey.startsWith(key + '.'))
+        .forEach((sourceKey) => (result[sourceKey] = data[sourceKey]));
+    }
   });
   return result;
 }
