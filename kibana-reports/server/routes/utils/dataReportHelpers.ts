@@ -227,7 +227,7 @@ function sanitize(doc: any) {
       continue
     if (
       doc[field].toString().startsWith('+') ||
-      doc[field].toString().startsWith('-') ||
+      (doc[field].toString().startsWith('-') && typeof doc[field] !== "number") ||
       doc[field].toString().startsWith('=') ||
       doc[field].toString().startsWith('@')
     ) {
