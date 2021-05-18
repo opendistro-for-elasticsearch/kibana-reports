@@ -76,12 +76,16 @@ export const DEFAULT_MAX_SIZE = 10000;
 export const DEFAULT_REPORT_HEADER = '<h1>Open Distro Kibana Reports</h1>';
 
 export const SECURITY_CONSTANTS = {
-  AUTH_COOKIE_NAME: 'security_authentication',
   TENANT_LOCAL_STORAGE_KEY: 'opendistro::security::tenant::show_popup',
-  PROXY_AUTH_USER_HEADER: 'x-proxy-user',
-  PROXY_AUTH_ROLES_HEADER: 'x-proxy-roles',
-  PROXY_AUTH_IP_HEADER: 'x-forwarded-for',
 };
+
+export const EXTRA_HEADERS = [
+  'cookie',
+  'x-amzn-aes-auth-required',
+  'x-forward-proto',
+  'x-proxy-user',
+  'x-proxy-roles',
+];
 
 export const CHROMIUM_PATH = `${__dirname}/../../../.chromium/headless_shell`;
 
