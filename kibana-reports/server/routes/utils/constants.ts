@@ -82,7 +82,6 @@ export const SECURITY_CONSTANTS = {
 export const EXTRA_HEADERS = [
   'cookie',
   'x-amzn-aes-auth-required',
-  'x-forward-proto',
   'x-proxy-user',
   'x-proxy-roles',
 ];
