@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-import puppeteer, { ElementHandle, SetCookie, Headers } from 'puppeteer-core';
+import puppeteer, { Headers } from 'puppeteer-core';
 import createDOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
 import { Logger } from '../../../../../../src/core/server';
@@ -30,13 +30,13 @@ import { CreateReportResultType } from '../types';
 import { ReportParamsSchemaType, VisualReportSchemaType } from 'server/model';
 import fs from 'fs';
 import cheerio from 'cheerio';
+import _ from 'lodash';
 
 export const createVisualReport = async (
   reportParams: ReportParamsSchemaType,
   queryUrl: string,
   logger: Logger,
-  cookie?: SetCookie,
-  additionalheaders?: Headers,
+  extraHeaders: Headers,
   timezone?: string
 ): Promise<CreateReportResultType> => {
   const {
@@ -60,24 +60,34 @@ export const createVisualReport = async (
     ? DOMPurify.sanitize(header)
     : DEFAULT_REPORT_HEADER;
   const reportFooter = footer ? DOMPurify.sanitize(footer) : '';
-  
+
   // add waitForDynamicContent function
-  const waitForDynamicContent = async(page, timeout = 30000, interval = 1000, checks = 5) => {
-    const maxChecks    = timeout / interval;
-    let passedChecks   = 0;
+  const waitForDynamicContent = async (
+    page,
+    timeout = 30000,
+    interval = 1000,
+    checks = 5
+  ) => {
+    const maxChecks = timeout / interval;
+    let passedChecks = 0;
     let previousLength = 0;
-    
-    let i=0; while(i++ <= maxChecks){
-      let pageContent   = await page.content();
+
+    let i = 0;
+    while (i++ <= maxChecks) {
+      let pageContent = await page.content();
       let currentLength = pageContent.length;
-      
-      (previousLength === 0 || previousLength != currentLength) ? passedChecks = 0 : passedChecks++;
-      if (passedChecks >= checks) { break; }
-      
+
+      previousLength === 0 || previousLength != currentLength
+        ? (passedChecks = 0)
+        : passedChecks++;
+      if (passedChecks >= checks) {
+        break;
+      }
+
       previousLength = currentLength;
       await page.waitFor(interval);
     }
-  }
+  };
 
   // set up puppeteer
   const browser = await puppeteer.launch({
@@ -102,14 +112,13 @@ export const createVisualReport = async (
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(0);
   page.setDefaultTimeout(60000); // use 60s timeout instead of default 30s
-  if (cookie) {
-    logger.info('domain enables security, use session cookie to access');
-    await page.setCookie(cookie);
+
+  // Set extra headers that are needed
+  if (!_.isEmpty(extraHeaders)) {
+    await page.setExtraHTTPHeaders(extraHeaders);
+    logger.info('forwarded extra headers to headless browser');
   }
-  if (additionalheaders) {
-    logger.info('domain passed proxy auth headers, passing to backend');
-    await page.setExtraHTTPHeaders(additionalheaders);
-  }
+
   logger.info(`original queryUrl ${queryUrl}`);
   await page.goto(queryUrl, { waitUntil: 'networkidle0' });
   // should add to local storage after page.goto, then access the page again - browser must have an url to register local storage item on it
@@ -172,7 +181,7 @@ export const createVisualReport = async (
         `report source can only be one of [Dashboard, Visualization]`
       );
   }
-  
+
   // wait for dynamic page content to render
   await waitForDynamicContent(page);
 
