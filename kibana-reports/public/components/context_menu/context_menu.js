@@ -23,6 +23,7 @@ import {
   displayLoadingModal,
   addSuccessOrFailureToast,
   contextMenuViewReports,
+  replaceQueryURL,
 } from './context_menu_helpers';
 import {
   popoverMenu,
@@ -31,25 +32,7 @@ import {
 } from './context_menu_ui';
 import { timeRangeMatcher } from '../utils/utils';
 import { parse } from 'url';
-
-const replaceQueryURL = () => {
-  let url = location.pathname + location.hash;
-  let [, fromDateString, toDateString] = url.match(timeRangeMatcher);
-  fromDateString = fromDateString.replace(/[']+/g, '');
-
-  // convert time range to from date format in case time range is relative
-  const fromDateFormat = dateMath.parse(fromDateString);
-  toDateString = toDateString.replace(/[']+/g, '');
-  const toDateFormat = dateMath.parse(toDateString);
-
-  // replace to and from dates with absolute date
-  url = url.replace(fromDateString, "'" + fromDateFormat.toISOString() + "'");
-  url = url.replace(
-    toDateString + '))',
-    "'" + toDateFormat.toISOString() + "'))"
-  );
-  return url;
-};
+import { unhashUrl } from '../../../../../src/plugins/kibana_utils/public';
 
 const generateInContextReport = async (
   timeRanges,
@@ -179,21 +162,21 @@ $(function () {
   // generate PDF onclick
   $(document).on('click', '#generatePDF', function () {
     const timeRanges = getTimeFieldsFromUrl();
-    const queryUrl = replaceQueryURL();
+    const queryUrl = replaceQueryURL(location.href);
     generateInContextReport(timeRanges, queryUrl, 'pdf');
   });
 
   // generate PNG onclick
   $(document).on('click', '#generatePNG', function () {
     const timeRanges = getTimeFieldsFromUrl();
-    const queryUrl = replaceQueryURL();
+    const queryUrl = replaceQueryURL(location.href);
     generateInContextReport(timeRanges, queryUrl, 'png');
   });
 
   // generate CSV onclick
   $(document).on('click', '#generateCSV', function () {
     const timeRanges = getTimeFieldsFromUrl();
-    const queryUrl = replaceQueryURL();
+    const queryUrl = replaceQueryURL(location.href);
     const saved_search_id = getUuidFromUrl()[1];
     generateInContextReport(timeRanges, queryUrl, 'csv', { saved_search_id });
   });
