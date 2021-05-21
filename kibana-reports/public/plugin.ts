@@ -26,7 +26,6 @@ import {
 } from './types';
 import './components/context_menu/context_menu';
 import { PLUGIN_NAME } from '../common';
-
 export class OpendistroKibanaReportsPlugin
   implements
     Plugin<
