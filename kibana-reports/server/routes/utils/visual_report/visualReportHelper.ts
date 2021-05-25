@@ -111,7 +111,7 @@ export const createVisualReport = async (
   });
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(0);
-  page.setDefaultTimeout(60000); // use 60s timeout instead of default 30s
+  page.setDefaultTimeout(100000); // use 100s timeout instead of default 30s
   if (cookie) {
     logger.info('domain enables security, use session cookie to access');
     await page.setCookie(cookie);
