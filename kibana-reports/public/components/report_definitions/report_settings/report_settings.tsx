@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { i18n } from '@kbn/i18n';
 import {
   EuiFieldText,
   EuiFlexGroup,
@@ -166,12 +167,12 @@ export function ReportSettings(props: ReportSettingProps) {
 
   const handleDashboardSelect = (e: string | any[]) => {
       setDashboardSourceSelect(e);
-  
+
     let fromInContext = false;
     if (window.location.href.includes('?')) {
       fromInContext = true;
     }
-    
+
     if (e.length > 0) {
       reportDefinitionRequest.report_params.core_params.base_url =
         getDashboardBaseUrlCreate(edit, editDefinitionId, fromInContext) +
@@ -192,7 +193,7 @@ export function ReportSettings(props: ReportSettingProps) {
     if (e.length > 0) {
       reportDefinitionRequest.report_params.core_params.base_url =
         getVisualizationBaseUrlCreate(edit, editDefinitionId, fromInContext) +
-        e[0].value;      
+        e[0].value;
     }
     else {
       reportDefinitionRequest.report_params.core_params.base_url = "";
@@ -226,7 +227,7 @@ export function ReportSettings(props: ReportSettingProps) {
   const PDFandPNGFileFormats = () => {
     return (
       <div>
-        <EuiFormRow label="File format">
+        <EuiFormRow label={i18n.translate('odfe.reports.reportSettingProps.fileFormat', { defaultMessage:'File format' })}>
           <EuiRadioGroup
             options={PDF_PNG_FILE_FORMAT_OPTIONS}
             idSelected={fileFormat}
@@ -274,7 +275,7 @@ export function ReportSettings(props: ReportSettingProps) {
     };
 
     const showFooter = checkboxIdSelectHeaderFooter.footer ? (
-      <EuiFormRow label="Footer" fullWidth={true}>
+      <EuiFormRow label={i18n.translate('odfe.reports.reportSettingProps.footer', { defaultMessage:'Footer' })} fullWidth={true}>
         <ReactMde
           value={footer}
           onChange={handleFooter}
@@ -292,7 +293,7 @@ export function ReportSettings(props: ReportSettingProps) {
     ) : null;
 
     const showHeader = checkboxIdSelectHeaderFooter.header ? (
-      <EuiFormRow label="Header" fullWidth={true}>
+      <EuiFormRow label={i18n.translate('odfe.reports.reportSettingProps.header', { defaultMessage:'Header' })} fullWidth={true}>
         <ReactMde
           value={header}
           onChange={handleHeader}
@@ -366,7 +367,7 @@ export function ReportSettings(props: ReportSettingProps) {
           options={HEADER_FOOTER_CHECKBOX}
           idToSelectedMap={checkboxIdSelectHeaderFooter}
           onChange={handleCheckboxHeaderFooter}
-          legend={{ children: 'Header and footer' }}
+          legend={{ children: i18n.translate('odfe.reports.reportSettingProps.headerAndFooter', { defaultMessage:'Header and footer' }) }}
         />
         <EuiSpacer />
         {showHeader}
@@ -444,7 +445,7 @@ export function ReportSettings(props: ReportSettingProps) {
       }
     }
   }
- 
+
   const setInContextDefaultConfiguration = (response) => {
     const url = window.location.href;
     const id = parseInContextUrl(url, 'id');
@@ -589,14 +590,14 @@ export function ReportSettings(props: ReportSettingProps) {
     reportSourceId === 'dashboardReportSource' ? (
       (
         <div>
-          <EuiFormRow 
-            label="Select dashboard"
+          <EuiFormRow
+            label={i18n.translate('odfe.reports.reportSettingProps.selectDashboard', { defaultMessage:'Select dashboard' })}
             isInvalid={showSettingsReportSourceError}
             error={settingsReportSourceErrorMessage}
           >
             <EuiComboBox
               id="reportSourceDashboardSelect"
-              placeholder="Select a dashboard"
+              placeholder={i18n.translate('odfe.reports.reportSettingProps.placeholder.selectDashboard', { defaultMessage:'Select a dashboard' })}
               singleSelection={{ asPlainText: true }}
               options={dashboards}
               onChange={handleDashboardSelect}
@@ -612,14 +613,14 @@ export function ReportSettings(props: ReportSettingProps) {
     reportSourceId === 'visualizationReportSource' ? (
       (
         <div>
-          <EuiFormRow 
-            label="Select visualization"
+          <EuiFormRow
+            label={i18n.translate('odfe.reports.reportSettingProps.form.selectVisualization', { defaultMessage:'Select visualization' })}
             isInvalid={showSettingsReportSourceError}
             error={settingsReportSourceErrorMessage}
           >
             <EuiComboBox
               id="reportSourceVisualizationSelect"
-              placeholder="Select a visualization"
+              placeholder={i18n.translate('odfe.reports.reportSettingProps.form.placeholder.selectAVisualization', { defaultMessage:'Select a visualization' })}
               singleSelection={{ asPlainText: true }}
               options={visualizations}
               onChange={handleVisualizationSelect}
@@ -636,13 +637,13 @@ export function ReportSettings(props: ReportSettingProps) {
       (
         <div>
           <EuiFormRow
-            label="Select saved search"
+            label={i18n.translate('odfe.reports.reportSettingProps.form.selectSavedSearch', { defaultMessage:'Select saved search' })}
             isInvalid={showSettingsReportSourceError}
             error={settingsReportSourceErrorMessage}
           >
             <EuiComboBox
               id="reportSourceSavedSearchSelect"
-              placeholder="Select a saved search"
+              placeholder={i18n.translate('odfe.reports.reportSettingProps.form.placeholder.selectASavedSearch', { defaultMessage:'Select a saved search' })}
               singleSelection={{ asPlainText: true }}
               options={savedSearches}
               onChange={handleSavedSearchSelect}
@@ -662,7 +663,7 @@ export function ReportSettings(props: ReportSettingProps) {
       </div>
     ) : (
       <div>
-        <EuiFormRow label="File format">
+        <EuiFormRow label={i18n.translate('odfe.reports.reportSettingProps.form.fileFormat', { defaultMessage:'File format' })}>
           <EuiText>
             <p>CSV</p>
           </EuiText>
@@ -676,7 +677,7 @@ export function ReportSettings(props: ReportSettingProps) {
     <EuiPageContent panelPaddingSize={'l'}>
       <EuiPageHeader>
         <EuiTitle>
-          <h2>Report Settings</h2>
+          <h2>{i18n.translate("odfe.reports.reportSettingProps.form.reportSettings", { defaultMessage:"Report Settings" })}</h2>
         </EuiTitle>
       </EuiPageHeader>
       <EuiHorizontalRule />
@@ -684,14 +685,14 @@ export function ReportSettings(props: ReportSettingProps) {
         <EuiFlexGroup>
           <EuiFlexItem>
             <EuiFormRow
-              label="Name"
-              helpText="Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space)."
+              label={i18n.translate('odfe.reports.reportSettingProps.form.name', { defaultMessage:'Name' })}
+              helpText={i18n.translate('odfe.reports.reportSettingProps.form.help.name', { defaultMessage:'Valid characters are a-z, A-Z, 0-9, (), [], _ (underscore), - (hyphen) and (space).' })}
               isInvalid={showSettingsReportNameError}
               error={settingsReportNameErrorMessage}
               id={'reportSettingsName'}
             >
               <EuiFieldText
-                placeholder="Report name (e.g Log Traffic Daily Report)"
+                placeholder={i18n.translate('odfe.reports.reportSettingProps.form.placeholder.reportName', { defaultMessage:'Report name (e.g Log Traffic Daily Report)' })}
                 value={reportName}
                 onChange={handleReportName}
               />
@@ -701,11 +702,11 @@ export function ReportSettings(props: ReportSettingProps) {
         <EuiFlexGroup style={{ maxWidth: 600 }}>
           <EuiFlexItem>
             <EuiFormRow
-              label="Description (optional)"
+              label={i18n.translate('odfe.reports.reportSettingProps.form.description', { defaultMessage:'Description (optional)' })}
               id={'reportSettingsDescription'}
             >
               <EuiTextArea
-                placeholder="Describe this report (e.g Morning daily reports for log traffic)"
+                placeholder={i18n.translate('odfe.reports.reportSettingProps.form.placeholder.description', { defaultMessage:'Describe this report (e.g Morning daily reports for log traffic)' })}
                 value={reportDescription}
                 onChange={handleReportDescription}
               />
@@ -713,7 +714,7 @@ export function ReportSettings(props: ReportSettingProps) {
           </EuiFlexItem>
         </EuiFlexGroup>
         <EuiSpacer />
-        <EuiFormRow label="Report source">
+        <EuiFormRow label={i18n.translate('odfe.reports.reportSettingProps.form.reportSource', { defaultMessage:'Report source' })}>
           <EuiRadioGroup
             options={REPORT_SOURCE_RADIOS}
             idSelected={reportSourceId}

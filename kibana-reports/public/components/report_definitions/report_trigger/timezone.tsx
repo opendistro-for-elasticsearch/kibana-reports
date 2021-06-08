@@ -15,6 +15,7 @@
 
 import { EuiFormRow, EuiSelect } from '@elastic/eui';
 import React, { useState, useEffect } from 'react';
+import { i18n } from '@kbn/i18n';
 import { TIMEZONE_OPTIONS } from './report_trigger_constants';
 
 export function TimezoneSelect(props) {
@@ -62,7 +63,7 @@ export function TimezoneSelect(props) {
 
   return (
     <div>
-      <EuiFormRow label="Timezone">
+      <EuiFormRow label={i18n.translate('odfe.reports.reportTrigger.timezone', { defaultMessage: 'Timezone' })}>
         <EuiSelect
           id="setTimezone"
           options={TIMEZONE_OPTIONS}

@@ -14,37 +14,38 @@
  */
 
 import moment from 'moment-timezone';
+import { i18n } from '@kbn/i18n';
 
 export const TRIGGER_TYPE_OPTIONS = [
   {
     id: 'On demand',
-    label: 'On demand',
+    label: i18n.translate('odfe.reports.reportTriggerConstants.triggerTypeOptions.onDemand', { defaultMessage: 'On demand' }),
   },
   {
     id: 'Schedule',
-    label: 'Schedule',
+    label: i18n.translate('odfe.reports.reportTriggerConstants.triggerTypeOptions.schedule', { defaultMessage: 'Schedule' }),
   },
 ];
 
 export const SCHEDULE_TYPE_OPTIONS = [
   {
     id: 'Recurring',
-    label: 'Recurring',
+    label: i18n.translate('odfe.reports.reportTriggerConstants.scheduleTypeOptions.recurring', { defaultMessage: 'Recurring' }),
   },
   {
     id: 'Cron based',
-    label: 'Cron-based',
+    label: i18n.translate('odfe.reports.reportTriggerConstants.scheduleTypeOptions.cronBased', { defaultMessage: 'Cron-based' }),
   },
 ];
 
 export const SCHEDULE_RECURRING_OPTIONS = [
   {
     value: 'daily',
-    text: 'Daily',
+    text: i18n.translate('odfe.reports.reportTriggerConstants.scheduleRecurringOptions.daily', { defaultMessage: 'Daily' }),
   },
   {
     value: 'byInterval',
-    text: 'By interval',
+    text: i18n.translate('odfe.reports.reportTriggerConstants.scheduleRecurringOptions.byInterval', { defaultMessage: 'By interval' }),
   },
   // TODO: disable on UI. Add them back once we support
 //   {
@@ -60,53 +61,53 @@ export const SCHEDULE_RECURRING_OPTIONS = [
 export const INTERVAL_TIME_PERIODS = [
   {
     value: 'MINUTES',
-    text: 'Minutes',
+    text: i18n.translate('odfe.reports.reportTriggerConstants.intervalTimePeriods.minutes', { defaultMessage: 'Minutes' }),
   },
   {
     value: 'HOURS',
-    text: 'Hours',
+    text: i18n.translate('odfe.reports.reportTriggerConstants.intervalTimePeriods.hours', { defaultMessage: 'Hours' }),
   },
   {
     value: 'DAYS',
-    text: 'Days',
+    text: i18n.translate('odfe.reports.reportTriggerConstants.intervalTimePeriods.days', { defaultMessage: 'Days' }),
   },
 ];
 
 export const WEEKLY_CHECKBOX_OPTIONS = [
   {
     id: 'monCheckbox',
-    label: 'Mon',
+    label: i18n.translate('odfe.reports.reportTriggerConstants.weeklyCheckboxOptions.mon', { defaultMessage: 'Mon'}),
   },
   {
     id: 'tueCheckbox',
-    label: 'Tue',
+    label: i18n.translate('odfe.reports.reportTriggerConstants.weeklyCheckboxOptions.tue', { defaultMessage: 'Tue' }),
   },
   {
     id: 'wedCheckbox',
-    label: 'Wed',
+    label: i18n.translate('odfe.reports.reportTriggerConstants.weeklyCheckboxOptions.wed', { defaultMessage: 'Wed' }),
   },
   {
     id: 'thuCheckbox',
-    label: 'Thu',
+    label: i18n.translate('odfe.reports.reportTriggerConstants.weeklyCheckboxOptions.thu', { defaultMessage: 'Thu' }),
   },
   {
     id: 'friCheckbox',
-    label: 'Fri',
+    label: i18n.translate('odfe.reports.reportTriggerConstants.weeklyCheckboxOptions.fri', { defaultMessage: 'Fri' }),
   },
   {
     id: 'satCheckbox',
-    label: 'Sat',
+    label: i18n.translate('odfe.reports.reportTriggerConstants.weeklyCheckboxOptions.sat', { defaultMessage: 'Sat' }),
   },
   {
     id: 'sunCheckbox',
-    label: 'Sun',
+    label: i18n.translate('odfe.reports.reportTriggerConstants.weeklyCheckboxOptions.sun', { defaultMessage: 'Sun' }),
   },
 ];
 
 export const MONTHLY_ON_THE_OPTIONS = [
   {
     value: 'day',
-    text: 'Day',
+    text: i18n.translate('odfe.reports.reportTriggerConstants.monthlyOnTheOptions.day', { defaultMessage: 'Day' }),
   },
 ];
 

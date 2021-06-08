@@ -4,8 +4,10 @@
     "tsconfig.json",
     "yarn.lock",
     "kibana.json",
+    ".i18nrc.json",
     "common/**/*",
     "public/**/*",
-    "server/**/*"
+    "server/**/*",
+    "translations/**/*"
   ]
 }

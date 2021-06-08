@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { i18n } from '@kbn/i18n';
 import {
   EuiButtonEmpty,
   EuiFlexGroup,
@@ -160,7 +161,7 @@ export function CreateReport(props) {
 
   const addInputValidationErrorToastHandler = () => {
     const errorToast = {
-      title: 'One or more fields have an error. Please check and try again.',
+      title: i18n.translate('odfe.reports.createReportDefinition.error.fieldsHaveAnError', { defaultMessage:'One or more fields have an error. Please check and try again.' }),
       color: 'danger',
       iconType: 'alert',
       id: 'errorToast',
@@ -180,7 +181,7 @@ export function CreateReport(props) {
       );
     } else if (errorType === 'API') {
       toast = {
-        title: 'Error creating report definition.',
+        title: i18n.translate('odfe.reports.createReportDefinition.error.errorCreating', { defaultMessage:'Error creating report definition.' }),
         color: 'danger',
         iconType: 'alert',
         id: 'errorToast',
@@ -195,7 +196,7 @@ export function CreateReport(props) {
 
   const addInvalidTimeRangeToastHandler = () => {
     const errorToast = {
-      title: 'Invalid time range selected.',
+      title: i18n.translate('odfe.reports.createReportDefinition.error.invalidTimeRange', { defaultMessage:'Invalid time range selected.' }),
       color: 'danger',
       iconType: 'alert',
       id: 'timeRangeErrorToast',
@@ -231,7 +232,7 @@ export function CreateReport(props) {
 
     let error = false;
     await definitionInputValidation(
-      metadata, 
+      metadata,
       error,
       setShowSettingsReportNameError,
       setSettingsReportNameErrorMessage,
@@ -292,11 +293,11 @@ export function CreateReport(props) {
     window.scrollTo(0, 0);
     props.setBreadcrumbs([
       {
-        text: 'Reporting',
+        text: i18n.translate('odfe.reports.createReportDefinition.breadcrumb.reporting', { defaultMessage:'Reporting' }),
         href: '#',
       },
       {
-        text: 'Create report definition',
+        text: i18n.translate('odfe.reports.createReportDefinition.breadcrumb.createReportDefinition', { defaultMessage:'Create report definition' }),
         href: '#/create',
       },
     ]);
@@ -306,7 +307,7 @@ export function CreateReport(props) {
     <div>
       <EuiPageBody>
         <EuiTitle>
-          <h1>Create report definition</h1>
+          <h1>{i18n.translate('odfe.reports.createReportDefinition.title', { defaultMessage:'Create report definition' })}</h1>
         </EuiTitle>
         <EuiSpacer />
         <ReportSettings
@@ -342,7 +343,7 @@ export function CreateReport(props) {
                 window.location.assign(`opendistro_kibana_reports#/`);
               }}
             >
-              Cancel
+              {i18n.translate('odfe.reports.createReportDefinition.cancel', { defaultMessage:'Cancel' })}
             </EuiButtonEmpty>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
@@ -356,7 +357,7 @@ export function CreateReport(props) {
               }
               id={'createNewReportDefinition'}
             >
-              Create
+              {i18n.translate('odfe.reports.createReportDefinition.create', { defaultMessage:'Create' })}
             </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>

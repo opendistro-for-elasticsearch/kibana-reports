@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { i18n } from '@kbn/i18n';
 import {
   EuiFlexGroup,
   EuiFlexItem,
@@ -95,7 +96,7 @@ export function ReportDefinitionDetails(props) {
 
   const addErrorLoadingDetailsToastHandler = () => {
     const errorToast = {
-      title: 'Error loading report definition details.',
+      title: i18n.translate('odfe.reports.reportDefinitionsDetails.toast.errorLoadingReportDefinitionDetails. ', { defaultMessage: 'Error loading report definition details.' }),
       color: 'danger',
       iconType: 'alert',
       id: 'reportDefinitionDetailsErrorToast',
@@ -109,7 +110,7 @@ export function ReportDefinitionDetails(props) {
 
   const addSuccessGeneratingReportToastHandler = () => {
     const successToast = {
-      title: 'Successfully generated report.',
+      title: i18n.translate('odfe.reports.reportDefinitionsDetails.toast.successfullyGeneratedReport. ', { defaultMessage: 'Successfully generated report.' }),
       color: 'success',
       iconType: 'check',
       id: 'generateReportSuccessToast',
@@ -123,7 +124,7 @@ export function ReportDefinitionDetails(props) {
 
   const addErrorGeneratingReportToastHandler = () => {
     const errorToast = {
-      title: 'Error generating report.',
+      title: i18n.translate('odfe.reports.reportDefinitionsDetails.toast.errorGeneratingReport. ', { defaultMessage: 'Error generating report.' }),
       color: 'danger',
       iconType: 'alert',
       id: 'generateReportErrorToast',
@@ -141,7 +142,7 @@ export function ReportDefinitionDetails(props) {
 
   const addSuccessEnablingScheduleToastHandler = () => {
     const successToast = {
-      title: 'Successfully enabled schedule.',
+      title: i18n.translate('odfe.reports.reportDefinitionsDetails.toast.successfullyEnabledSchedule. ', { defaultMessage: 'Successfully enabled schedule.' }),
       color: 'success',
       iconType: 'check',
       id: 'successEnableToast',
@@ -151,7 +152,7 @@ export function ReportDefinitionDetails(props) {
 
   const addErrorEnablingScheduleToastHandler = () => {
     const errorToast = {
-      title: 'Error enabling schedule.',
+      title: i18n.translate('odfe.reports.reportDefinitionsDetails.toast.errorEnablingSchedule. ', { defaultMessage: 'Error enabling schedule.' }),
       color: 'danger',
       iconType: 'alert',
       id: 'errorToast',
@@ -161,7 +162,7 @@ export function ReportDefinitionDetails(props) {
 
   const addSuccessDisablingScheduleToastHandler = () => {
     const successToast = {
-      title: 'Successfully disabled schedule.',
+      title: i18n.translate('odfe.reports.reportDefinitionsDetails.toast.successfullyDisabledSchedule.  ', { defaultMessage: 'Successfully disabled schedule.' }),
       color: 'success',
       iconType: 'check',
       id: 'successDisableToast',
@@ -179,7 +180,7 @@ export function ReportDefinitionDetails(props) {
 
   const addErrorDisablingScheduleToastHandler = () => {
     const errorToast = {
-      title: 'Error disabling schedule.',
+      title: i18n.translate('odfe.reports.reportDefinitionsDetails.toast.errorDisablingSchedule.  ', { defaultMessage: 'Error disabling schedule.' }),
       color: 'danger',
       iconType: 'alert',
       id: 'errorDisableToast',
@@ -199,7 +200,7 @@ export function ReportDefinitionDetails(props) {
 
   const addErrorDeletingReportDefinitionToastHandler = () => {
     const errorToast = {
-      title: 'Error deleting report definition.',
+      title: i18n.translate('odfe.reports.reportDefinitionsDetails.toast.errorDeletingReport definition.  ', { defaultMessage: 'Error deleting report definition.' }),
       color: 'danger',
       iconType: 'alert',
       id: 'errorDeleteToast',
@@ -232,16 +233,16 @@ export function ReportDefinitionDetails(props) {
       <div>
         <EuiOverlayMask>
           <EuiConfirmModal
-            title="Delete report definition"
+            title={i18n.translate('odfe.reports.reportDefinitionsDetails.button.delete.title', { defaultMessage: 'Delete report definition' })}
             onCancel={closeModal}
             onConfirm={deleteReportDefinition}
-            cancelButtonText="Cancel"
-            confirmButtonText="Delete"
+            cancelButtonText={i18n.translate('odfe.reports.reportDefinitionsDetails.button.delete.cancel', { defaultMessage: 'Cancel' })}
+            confirmButtonText={i18n.translate('odfe.reports.reportDefinitionsDetails.button.delete.confirm', {defaultMessage: 'Delete'})}
             buttonColor="danger"
             defaultFocusedButton="confirm"
           >
             <p>
-              Are you sure you want to delete "{reportDefinitionDetails.name}"?
+              {i18n.translate('odfe.reports.reportDefinitionsDetails.button.delete.query', { defaultMessage: 'Are you sure you want to delete "{name}"?', values:{name:reportDefinitionDetails.name} })}
             </p>
           </EuiConfirmModal>
         </EuiOverlayMask>
@@ -261,30 +262,29 @@ export function ReportDefinitionDetails(props) {
           const date = new Date(
             trigger.trigger_params.schedule.interval.start_time
           );
-          scheduleDetails = 'Daily @ ' + date.toTimeString();
+          scheduleDetails = i18n.translate('odfe.reports.reportDefinitionsDetails.schedule.dailyAt', { defaultMessage:'Daily @ {time}', values:{time:date.toTimeString()} });
         }
         // By interval
         else {
           const date = new Date(
             trigger.trigger_params.schedule.interval.start_time
           );
-          scheduleDetails =
-            'By interval, every ' +
-            trigger.trigger_params.schedule.interval.period +
-            ' ' +
-            trigger.trigger_params.schedule.interval.unit.toLowerCase() +
-            ', starting @ ' +
-            date.toTimeString();
+          scheduleDetails = i18n.translate('odfe.reports.reportDefinitionsDetails.schedule.byInterval', {
+            defaultMessage:'By interval, every  {period} {unit}, starting @ {time}', values: {
+              period: trigger.trigger_params.schedule.interval.period,
+              unit: trigger.trigger_params.schedule.interval.unit.toLowerCase(),
+              time: date.toTimeString()
+              }
+          });
         }
       }
       // Cron
       else if (trigger.trigger_params.schedule_type === 'Cron based') {
-        scheduleDetails =
-          'Cron based: ' +
-          trigger.trigger_params.schedule.cron.expression +
-          ' (' +
-          trigger.trigger_params.schedule.cron.timezone +
-          ')';
+        scheduleDetails = i18n.translate(
+          'odfe.reports.reportDefinitionsDetails.schedule.cronBased', {
+            defaultMessage:'Cron based: {expression} ({timezone})',
+            values: {expression : trigger.trigger_params.schedule.cron.expression, timezone: trigger.trigger_params.schedule.cron.timezone}
+          });
       }
     }
     return scheduleDetails;
@@ -372,16 +372,19 @@ export function ReportDefinitionDetails(props) {
         );
         props.setBreadcrumbs([
           {
-            text: 'Reporting',
+            text: i18n.translate('odfe.reports.reportDefinitionsDetails.schedule.breadcrumb.reporting', { defaultMessage:'Reporting' }),
             href: '#',
           },
           {
-            text: `Report definition details: ${response.report_definition.report_params.report_name}`,
+            text: i18n.translate('odfe.reports.reportDefinitionsDetails.schedule.breadcrumb.reportDefinitionDetails', {
+              defaultMessage:'Report definition details: {name}',
+              values:{name: response.report_definition.report_params.report_name}
+            }),
           },
         ]);
       })
       .catch((error) => {
-        console.error('error when getting report definition details:', error);
+        console.error(i18n.translate('odfe.reports.reportDefinitionsDetails.schedule.breadcrumb.error', { defaultMessage:'error when getting report definition details: {error}', values: {error:error}  }));
         handleDetailsErrorToast();
       });
   }, []);
@@ -525,23 +528,23 @@ export function ReportDefinitionDetails(props) {
   const triggerSection =
     reportDefinitionDetails.triggerType === ON_DEMAND ? (
       <ReportDetailsComponent
-        reportDetailsComponentTitle={'Trigger type'}
+        reportDetailsComponentTitle={i18n.translate('odfe.reports.reportDefinitionsDetails.schedule.triggerSection.triggerType', { defaultMessage:'Trigger type' })}
         reportDetailsComponentContent={reportDefinitionDetails.triggerType}
       />
     ) : (
       <EuiFlexGroup>
         <ReportDetailsComponent
-          reportDetailsComponentTitle={'Trigger type'}
+          reportDetailsComponentTitle={i18n.translate('odfe.reports.reportDefinitionsDetails.schedule.triggerSection.triggerType', { defaultMessage:'Trigger type' })}
           reportDetailsComponentContent={reportDefinitionDetails.triggerType}
         />
         <ReportDetailsComponent
-          reportDetailsComponentTitle={'Schedule details'}
+          reportDetailsComponentTitle={i18n.translate('odfe.reports.reportDefinitionsDetails.schedule.triggerSection.scheduleDetails', { defaultMessage:'Schedule details' })}
           reportDetailsComponentContent={
             reportDefinitionDetails.scheduleDetails
           }
         />
         <ReportDetailsComponent
-          reportDetailsComponentTitle={'Status'}
+          reportDetailsComponentTitle={i18n.translate('odfe.reports.reportDefinitionsDetails.schedule.triggerSection.status', { defaultMessage:'Status' })}
           reportDetailsComponentContent={reportDefinitionDetails.status}
         />
         <ReportDetailsComponent />
@@ -559,7 +562,7 @@ export function ReportDefinitionDetails(props) {
     <EuiPage>
       <EuiPageBody>
         <EuiTitle size="l">
-          <h1>Report definition details</h1>
+          <h1>{i18n.translate('odfe.reports.reportDefinitionsDetails.title', { defaultMessage:'Report definition details' })}</h1>
         </EuiTitle>
         <EuiSpacer size="m" />
         <EuiPageContent panelPaddingSize={'l'}>
@@ -584,7 +587,7 @@ export function ReportDefinitionDetails(props) {
                   onClick={handleShowDeleteModal}
                   id={'deleteReportDefinitionButton'}
                 >
-                  Delete
+                  {i18n.translate('odfe.reports.reportDefinitionsDetails.deleteReportDefinitionButton', { defaultMessage:'Delete' })}
                 </EuiButton>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>{showActionButton}</EuiFlexItem>
@@ -598,33 +601,33 @@ export function ReportDefinitionDetails(props) {
                   }}
                   id={'editReportDefinitionButton'}
                 >
-                  Edit
+                  {i18n.translate('odfe.reports.reportDefinitionsDetails.editReportDefinitionButton', { defaultMessage:'Edit' })}
                 </EuiButton>
               </EuiFlexItem>
             </EuiFlexGroup>
           </EuiPageHeader>
           <EuiHorizontalRule />
           <EuiTitle>
-            <h3>Report settings</h3>
+            <h3>{i18n.translate('odfe.reports.reportDefinitionsDetails.reportSettings', { defaultMessage:'Report settings' })}</h3>
           </EuiTitle>
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Name'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.reportDefinitionsDetails.fields.name', { defaultMessage:'Name' })}
               reportDetailsComponentContent={reportDefinitionDetails.name}
             />
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Description'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.reportDefinitionsDetails.fields.description', { defaultMessage:'Description' })}
               reportDetailsComponentContent={
                 reportDefinitionDetails.description
               }
             />
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Created'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.reportDefinitionsDetails.fields.created', { defaultMessage:'Created' })}
               reportDetailsComponentContent={reportDefinitionDetails.created}
             />
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Last updated'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.reportDefinitionsDetails.fields.lastUpdated', { defaultMessage:'Last updated' })}
               reportDetailsComponentContent={
                 reportDefinitionDetails.lastUpdated
               }
@@ -633,15 +636,15 @@ export function ReportDefinitionDetails(props) {
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Source'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.reportDefinitionsDetails.fields.source', { defaultMessage:'Source' })}
               reportDetailsComponentContent={sourceURL(reportDefinitionDetails)}
             />
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Time period'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.reportDefinitionsDetails.fields.timePeriod', { defaultMessage:'Time period' })}
               reportDetailsComponentContent={`Last ${reportDefinitionDetails.timePeriod}`}
             />
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'File format'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.reportDefinitionsDetails.fields.fileFormat', { defaultMessage:'File format' })}
               reportDetailsComponentContent={fileFormatDownload(
                 reportDefinitionDetails
               )}
@@ -651,13 +654,13 @@ export function ReportDefinitionDetails(props) {
           <EuiSpacer />
           <EuiFlexGroup>
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Report header'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.reportDefinitionsDetails.fields.reportHeader', { defaultMessage:'Report header' })}
               reportDetailsComponentContent={trimAndRenderAsText(
                 reportDefinitionDetails.reportHeader
               )}
             />
             <ReportDetailsComponent
-              reportDetailsComponentTitle={'Report footer'}
+              reportDetailsComponentTitle={i18n.translate('odfe.reports.reportDefinitionsDetails.fields.reportFooter', { defaultMessage:'Report footer' })}
               reportDetailsComponentContent={trimAndRenderAsText(
                 reportDefinitionDetails.reportFooter
               )}
@@ -667,7 +670,7 @@ export function ReportDefinitionDetails(props) {
           </EuiFlexGroup>
           <EuiSpacer />
           <EuiTitle>
-            <h3>Report trigger</h3>
+            <h3>{i18n.translate('odfe.reports.reportDefinitionsDetails.fields.reportTrigger', { defaultMessage:'Report trigger' })}</h3>
           </EuiTitle>
           <EuiSpacer />
           {triggerSection}

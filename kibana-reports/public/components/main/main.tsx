@@ -14,6 +14,7 @@
  */
 
 import React, { Fragment, useState, useEffect } from 'react';
+import { i18n } from '@kbn/i18n';
 import {
   EuiFlexGroup,
   EuiFlexItem,
@@ -69,7 +70,7 @@ export function Main(props) {
       );
     } else if (errorType === 'API') {
       toast = {
-        title: 'Error generating reports table.',
+        title: i18n.translate('odfe.reports.main.errorGeneratingReportsTable.', { defaultMessage: 'Error generating reports table.' }),
         color: 'danger',
         iconType: 'alert',
         id: 'reportsTableErrorToast',
@@ -90,7 +91,7 @@ export function Main(props) {
       );
     } else if (errorType === 'API') {
       toast = {
-        title: 'Error generating report definitions table.',
+        title: i18n.translate('odfe.reports.main.errorGeneratingReportDefinitionsTable.', { defaultMessage: 'Error generating report definitions table.' }),
         color: 'danger',
         iconType: 'alert',
         id: 'reportDefinitionsTableErrorToast',
@@ -103,7 +104,7 @@ export function Main(props) {
     addReportDefinitionsTableErrorToastHandler(errorType);
   };
 
-  const addErrorOnDemandDownloadToastHandler = (title = 'Error downloading report.', text = '') => {
+  const addErrorOnDemandDownloadToastHandler = (title = i18n.translate('odfe.reports.main.errorDownloadingReport', { defaultMessage: 'Error downloading report.' }), text = '') => {
     const errorToast = {
       title,
       text,
@@ -120,7 +121,7 @@ export function Main(props) {
 
   const addSuccessOnDemandDownloadToastHandler = () => {
     const successToast = {
-      title: 'Successfully downloaded report.',
+      title: i18n.translate('odfe.reports.main.successfullyDownloadedReport', { defaultMessage: 'Successfully downloaded report.' }),
       color: 'success',
       iconType: 'check',
       id: 'onDemandDownloadSuccessToast',
@@ -134,7 +135,7 @@ export function Main(props) {
 
   const addCreateReportDefinitionSuccessToastHandler = () => {
     const successToast = {
-      title: 'Successfully created report definition.',
+      title: i18n.translate('odfe.reports.main.successfullyCreatedReportDefinition', { defaultMessage: 'Successfully created report definition.' }),
       color: 'success',
       iconType: 'check',
       id: 'createReportDefinitionSuccessToast',
@@ -148,7 +149,7 @@ export function Main(props) {
 
   const addEditReportDefinitionSuccessToastHandler = () => {
     const successToast = {
-      title: 'Successfully updated report definition.',
+      title: i18n.translate('odfe.reports.main.successfullyUpdatedReportDefinition', { defaultMessage: 'Successfully updated report definition.' }),
       color: 'success',
       iconType: 'check',
       id: 'editReportDefinitionSuccessToast',
@@ -162,7 +163,7 @@ export function Main(props) {
 
   const addDeleteReportDefinitionSuccessToastHandler = () => {
     const successToast = {
-      title: 'Successfully deleted report definition.',
+      title: i18n.translate('odfe.reports.main.successfullyDeletedReportDefinition', { defaultMessage: 'Successfully deleted report definition.' }),
       color: 'success',
       iconType: 'check',
       id: 'deleteReportDefinitionSuccessToast'
@@ -186,7 +187,7 @@ export function Main(props) {
   useEffect(() => {
     props.setBreadcrumbs([
       {
-        text: 'Reporting',
+        text: i18n.translate('odfe.reports.main.title.reporting', { defaultMessage: 'Reporting' }),
         href: '#',
       },
     ]);
@@ -261,18 +262,18 @@ export function Main(props) {
           <EuiFlexItem>
             <EuiTitle>
               <h2>
-                Reports{' '}
+                {i18n.translate('odfe.reports.main.title.reports', { defaultMessage: 'Reports' })}{' '}
                 <p style={reportCountStyles}> ({reportsTableContent.length})</p>
               </h2>
             </EuiTitle>
           </EuiFlexItem>
           <EuiFlexItem component="span" grow={false}>
-            <EuiButton 
-              onClick={refreshReportsTable} 
-              iconSide='left' 
+            <EuiButton
+              onClick={refreshReportsTable}
+              iconSide='left'
               iconType='refresh'
             >
-              Refresh
+              {i18n.translate("odfe.reports.main.reports.button.refresh", { defaultMessage:"Refresh" })}
             </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
@@ -292,7 +293,7 @@ export function Main(props) {
           <EuiFlexItem>
             <EuiTitle>
               <h2>
-                Report definitions
+                {i18n.translate('odfe.reports.main.title.reportDefinitions', { defaultMessage: 'Report definitions' })}
                 <p style={reportCountStyles}>
                   {' '}
                   ({reportDefinitionsTableContent.length})
@@ -301,12 +302,12 @@ export function Main(props) {
             </EuiTitle>
           </EuiFlexItem>
           <EuiFlexItem grow={false}>
-            <EuiButton 
-              onClick={refreshReportsDefinitionsTable} 
-              iconSide='left' 
+            <EuiButton
+              onClick={refreshReportsDefinitionsTable}
+              iconSide='left'
               iconType='refresh'
             >
-              Refresh
+              {i18n.translate("odfe.reports.main.reportDefinitions.button.refresh", { defaultMessage:"Refresh" })}
             </EuiButton>
           </EuiFlexItem>
           <EuiFlexItem component="span" grow={false}>
@@ -317,7 +318,7 @@ export function Main(props) {
               }}
               id={'createReportHomepageButton'}
             >
-              Create
+              {i18n.translate("odfe.reports.main.reportDefinitions.button.create", { defaultMessage:"Create" })}
             </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
