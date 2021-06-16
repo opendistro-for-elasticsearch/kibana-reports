@@ -15,7 +15,7 @@
 
 import { DATA_REPORT_CONFIG } from './constants';
 
-import esb from 'elastic-builder';
+import esb, { Sort } from 'elastic-builder';
 import moment from 'moment';
 import converter from 'json-2-csv';
 import _ from 'lodash';
@@ -50,7 +50,7 @@ export const getSelectedFields = async (columns) => {
   metaData.selectedFields = selectedFields;
 };
 
-//Build the ES query from the meta data
+// Build the ES query from the meta data
 // is_count is set to 1 if we building the count query but 0 if we building the fetch data query
 export const buildQuery = (report, is_count) => {
   let requestBody = esb.boolQuery();
@@ -136,14 +136,10 @@ export const buildQuery = (report, is_count) => {
   let reqBody = esb.requestBodySearch().query(requestBody).version(true);
 
   if (report._source.sorting.length > 0) {
-    if (report._source.sorting.length === 1)
-      reqBody.sort(
-        esb.sort(report._source.sorting[0][0], report._source.sorting[0][1])
-      );
-    else
-      reqBody.sort(
-        esb.sort(report._source.sorting[0], report._source.sorting[1])
-      );
+    const sortings: Sort[] = report._source.sorting.map((element: string[]) => {
+      return esb.sort(element[0], element[1]);
+    });
+    reqBody.sorts(sortings);
   }
 
   //get the selected fields only
@@ -159,7 +155,7 @@ export const getEsData = (arrayHits, report, params) => {
   for (let valueRes of arrayHits) {
     for (let data of valueRes.hits) {
       const fields = data.fields;
-      //get  all the fields of type date and fromat them to excel format
+      // get all the fields of type date and format them to excel format
       for (let dateType of report._source.dateFields) {
         if (data._source[dateType]) {
           data._source[dateType] = moment(fields[dateType][0]).format(
@@ -237,11 +233,11 @@ function traverse(data, keys, result = {}) {
  */
 function sanitize(doc: any) {
   for (const field in doc) {
-    if (doc[field] == null)
-      continue
+    if (doc[field] == null) continue;
     if (
       doc[field].toString().startsWith('+') ||
-      (doc[field].toString().startsWith('-') && typeof doc[field] !== "number") ||
+      (doc[field].toString().startsWith('-') &&
+        typeof doc[field] !== 'number') ||
       doc[field].toString().startsWith('=') ||
       doc[field].toString().startsWith('@')
     ) {

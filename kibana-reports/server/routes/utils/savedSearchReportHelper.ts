@@ -26,6 +26,8 @@ import {
 } from '../../../../../src/core/server';
 import { getFileName, callCluster } from './helpers';
 import { CreateReportResultType } from './types';
+import { RequestParams } from '@elastic/elasticsearch';
+import esb from 'elastic-builder';
 
 /**
  * Specify how long scroll context should be maintained for scrolled search
@@ -189,18 +191,14 @@ async function generateReportData(
   }
 
   async function getEsDataByScroll() {
+    const searchParams: RequestParams.Search = {
+      index: report._source.paternName,
+      scroll: scrollTimeout,
+      body: reqBody,
+      size: maxResultSize,
+    };
     // Open scroll context by fetching first batch
-    esData = await callCluster(
-      client,
-      'search',
-      {
-        index: report._source.paternName,
-        scroll: scrollTimeout,
-        body: reqBody,
-        size: maxResultSize,
-      },
-      isScheduledTask
-    );
+    esData = await callCluster(client, 'search', searchParams, isScheduledTask);
     arrayHits.push(esData.hits);
 
     // Start scrolling till the end
@@ -232,20 +230,17 @@ async function generateReportData(
   }
 
   async function getEsDataBySearch() {
-    esData = await callCluster(
-      client,
-      'search',
-      {
-        index: report._source.paternName,
-        body: reqBody,
-        size: total,
-      },
-      isScheduledTask
-    );
+    const searchParams: RequestParams.Search = {
+      index: report._source.paternName,
+      body: reqBody,
+      size: total,
+    };
+
+    esData = await callCluster(client, 'search', searchParams, isScheduledTask);
     arrayHits.push(esData.hits);
   }
 
-  function buildRequestBody(query: any) {
+  function buildRequestBody(query: esb.RequestBodySearch) {
     const docvalues = [];
     for (const dateType of report._source.dateFields) {
       docvalues.push({
@@ -254,8 +249,10 @@ async function generateReportData(
       });
     }
 
+    // elastic-builder doesn't provide function to build docvalue_fields with format,
+    // this is a workaround which appends docvalues field to the request body.
     return {
-      query: query.toJSON().query,
+      ...query.toJSON(),
       docvalue_fields: docvalues,
     };
   }
