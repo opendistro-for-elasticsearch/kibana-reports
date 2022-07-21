@@ -43,7 +43,7 @@
     "react-toast-notifications": "^2.4.0",
     "set-interval-async": "1.0.33",
     "showdown": "^1.9.1",
-    "ws": "^7.2.3"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "@elastic/eslint-import-resolver-kibana": "link:../../packages/kbn-eslint-import-resolver-kibana",
